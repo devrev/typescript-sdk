@@ -56,7 +56,7 @@
   },
   "homepage": "https://github.com/devrev/typescript-sdk#readme",
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "registry": "https://registry.npmjs.org"
   },
   "files": [
     "dist"
