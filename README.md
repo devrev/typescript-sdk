@@ -4,33 +4,25 @@ Setup an env variable `DEVREV_TOKEN` It will be used as an auth token by default
 
 # Installation
 
-Make sure your GitHub token has the permission for the devrev org. To install the package to your project folder, run
-
-```
-npm login --scope=@devrev --auth-type=legacy --registry=https://npm.pkg.github.com
-```
-
-Login with your GitHub username and Github PAT.
-
 ```
 npm install @devrev/typescript-sdk
 ```
 The version can be found in package.json
 Make sure that your project's **package.json** contains `"type":"module"` setting.
 
-# Example Usage of the Internal SDK
+# Example Usage of the Beta SDK
 
 ```
-import {client, internalSDK} from "@devrev/typescript-sdk";
+import {client, betaSDK} from "@devrev/typescript-sdk";
 
-const devrevInternalSDK = client.setupInternal({ endpoint: "https://api.devrev.ai",
+const devrevInternalSDK = client.setupBeta({ endpoint: "https://api.devrev.ai",
 token: process.env.DEVREV_TOKEN });
 
 async function test(){
-    const response = await devrevInternalSDK.worksCreate({title:"New work item!",
+    const response = await devrevBetaSDK.worksCreate({title:"New work item!",
     applies_to_part: "PROD-1",
     owned_by:["DEVU-16"],
-    type: internalSDK.WorkType.Issue})
+    type: betaSDK.WorkType.Issue})
     console.log(response)
 }
 
