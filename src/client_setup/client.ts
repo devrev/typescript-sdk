@@ -1,5 +1,5 @@
 import { AxiosRequestConfig } from 'axios';
-import { betaSDK, internalSDK, publicSDK } from '../index';
+import { betaSDK, publicSDK } from '../index';
 
 
 export declare namespace client {
@@ -45,34 +45,6 @@ export class client {
             },
         };
         const devrevSDK = new betaSDK.Api({
-            ...axiosConfig,
-        });
-
-        devrevSDK.instance.interceptors.request.use((config) => {
-            for (const key in config.params) {
-                // Check if the property is an array
-                if (Array.isArray(config.params[key])) {
-                    // Join the array with a comma
-                    config.params[key] = config.params[key]
-                        .map((value: any) => {
-                            return `"${value}"`;
-                        })
-                        .join(',');
-                }
-            }
-            return config;
-        });
-        return devrevSDK;
-    }
-    public static setupInternal(setup_options: client.SetupOptions) {
-        const axiosConfig: AxiosRequestConfig = {
-            baseURL: setup_options.endpoint,
-            headers: {
-                Authorization: setup_options.token,
-                'X-Devrev-Scope': 'internal',
-            },
-        };
-        const devrevSDK = new internalSDK.Api({
             ...axiosConfig,
         });
 
