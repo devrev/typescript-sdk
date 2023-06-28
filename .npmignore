@@ -26,11 +26,10 @@
 
 # Tests
 /src/main.ts
-/src/templates/
 /templates/
+/examples
 /.vscode/
 /.github/
 *.js
 *.sh
-myscrpt.ts
 README.md
