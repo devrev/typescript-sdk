@@ -31,13 +31,13 @@ fi
 # cp $API_YAML_FILE_PATH $CONTRACT_DIRECTORY
 
 readonly PUBLIC_API_YAML_FILE="$API_REPO_ROOT_PATH/apiv2/specs/public/openapi.yaml"
-readonly PUBLIC_API_JSON_FILE="./src/contract/public-data-contracts.json"
+readonly PUBLIC_API_JSON_FILE="./src/external/contract/public-data-contracts.json"
 readonly PUBLIC_API_OUTPUT_FILE_NAME=public-data-contracts.ts
 readonly PUBLIC_API_FILE_NAME="$OUTPUT_DIRECTORY/$PUBLIC_API_OUTPUT_FILE_NAME"
 #cp $PUBLIC_API_YAML_FILE $OUTPUT_DIRECTORY
 
 readonly BETA_API_YAML_FILE="$API_REPO_ROOT_PATH/apiv2/specs/beta/openapi-beta.yaml"
-readonly BETA_API_JSON_FILE="./src/contract/beta-data-contracts.json"
+readonly BETA_API_JSON_FILE="./src/external/contract/beta-data-contracts.json"
 readonly BETA_API_OUTPUT_FILE_NAME=beta-internal-data-contracts.ts
 #cp $BETA_API_YAML_FILE $OUTPUT_DIRECTORY
 
