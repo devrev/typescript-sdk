@@ -4,8 +4,8 @@
 name: Node.js Build
 
 on:
-  pull_request_target:
-    types: [opened, ready_for_review]
+  pull_request:
+    branches: [ main ]
 jobs:
   build:
     runs-on: ubuntu-latest
