@@ -1,13 +1,13 @@
 # Authorization
 
-Setup an env variable `DEVREV_TOKEN` It will be used as an auth token by default, You can also pass in the url and token in `client.setup()` as a param (see below).
+Setup an env variable `DEVREV_TOKEN` It will be used as an auth token by default, You can also pass in the url and token in `client.setup()` as a param (see below). It is also required to run tests.
 
 # Installation
 
 ```
 npm install @devrev/typescript-sdk
 ```
-The version can be found in package.json
+The version can be found in package.json. The SDK is currently beta.
 Make sure that your project's **package.json** contains `"type":"module"` setting.
 
 # Example Usage of the Beta SDK
@@ -44,3 +44,9 @@ async function test(){
 
 test()
 ```
+
+# Execute tests in the repo
+```
+npm test
+```
+
