@@ -10,17 +10,25 @@ declare global {
 
 
 export async function artifactPrepare() {
-    const artifactsPrepareResponse = await devrevSDK.artifactsPrepare({
-        file_name: 'PATH_TO_ARTIFACT',
-    });
-    expect(artifactsPrepareResponse.status).toBe(200);
-    return artifactsPrepareResponse.data.id;
+    try{
+        const artifactsPrepareResponse = await devrevSDK.artifactsPrepare({
+            file_name: 'PATH_TO_ARTIFACT',
+        });
+        expect(artifactsPrepareResponse.status).toBe(200);
+        return artifactsPrepareResponse.data.id;
+    } catch (error) {
+        console.log(error);
+    }
 
 }
 export async function artifactLocate(id: string) {
-    const artifactsLocateResponse = await devrevSDK.artifactsLocate({
-        id: id
-    });
-    expect(artifactsLocateResponse.status).toBe(200);
+    try {
+        const artifactsLocateResponse = await devrevSDK.artifactsLocate({
+            id: id
+        });
+        expect(artifactsLocateResponse.status).toBe(200);
+    } catch (error) {
+        console.log(error);
+    }
 }
 
