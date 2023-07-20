@@ -70,39 +70,39 @@ export async function partsDeleteGet(id: string) {
 }
 export async function partsList() {
   try {
-  const partsCreateResponse1 = await devrevSDK.partsCreate(
-    {
+    const partsCreateResponse1 = await devrevSDK.partsCreate(
+      {
+        owned_by: ['DEVU-1'],
+        type: publicSDK.PartType.Product,
+        name: 'Typescript Part-Test1',
+        description: 'test part 1',
+      },
+    );
+    const partsCreateResponse2 = await devrevSDK.partsCreate(
+      {
+        owned_by: ['DEVU-2'],
+        type: publicSDK.PartType.Product,
+        name: 'Typescript Part-Test2',
+        description: 'test part 2',
+      },
+    );
+    const partsCreateResponse3 = await devrevSDK.partsCreate(
+      {
+        owned_by: ['DEVU-2'],
+        type: publicSDK.PartType.Product,
+        name: 'Typescript Part-Test3',
+        description: 'test part 3',
+      },
+    );
+    const partsListResponse = await devrevSDK.partsList({
+      name: ['Typescript Part-Test1'],
       owned_by: ['DEVU-1'],
-      type: publicSDK.PartType.Product,
-      name: 'Typescript Part-Test1',
-      description: 'test part 1',
-    },
-  );
-  const partsCreateResponse2 = await devrevSDK.partsCreate(
-    {
-      owned_by: ['DEVU-2'],
-      type: publicSDK.PartType.Product,
-      name: 'Typescript Part-Test2',
-      description: 'test part 2',
-    },
-  );
-  const partsCreateResponse3 = await devrevSDK.partsCreate(
-    {
-      owned_by: ['DEVU-2'],
-      type: publicSDK.PartType.Product,
-      name: 'Typescript Part-Test3',
-      description: 'test part 3',
-    },
-  );
-  const partsListResponse = await devrevSDK.partsList({
-    name: ['Typescript Part-Test1'],
-    owned_by: ['DEVU-1'],
-  });
-  expect(partsListResponse.status).toBe(200);
-  await devrevSDK.partsDelete({ id: partsCreateResponse1.data.part.id });
-  await devrevSDK.partsDelete({ id: partsCreateResponse2.data.part.id });
-  await devrevSDK.partsDelete({ id: partsCreateResponse3.data.part.id });
-} catch(error) {
-  console.log(error);
-}
+    });
+    expect(partsListResponse.status).toBe(200);
+    await devrevSDK.partsDelete({ id: partsCreateResponse1.data.part.id });
+    await devrevSDK.partsDelete({ id: partsCreateResponse2.data.part.id });
+    await devrevSDK.partsDelete({ id: partsCreateResponse3.data.part.id });
+  } catch(error) {
+    console.log(error);
+  }
 }
