@@ -28,7 +28,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
           node-version: '18.x'
           scope: '@devrev'
-          token: ${{ secret.SVC_DEVREV_TOKEN }}
+          token: ${{ secrets.SVC_DEVREV_TOKEN }}
 
       - name: Git configuration
         run: |
