@@ -21,3 +21,4 @@ jobs:
       - run: npm test --if-present
         env:
           NODE_AUTH_TOKEN: ${{secrets.GH_WRITE_PACKAGE_TOKEN}}
+          DEVREV_TOKEN: ${{ secrets.DEVREV_TOKEN }}
