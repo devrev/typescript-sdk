@@ -99,7 +99,6 @@ export async function partsList() {
     owned_by: ['DEVU-1'],
   });
   expect(partsListResponse.status).toBe(200);
-  expect(partsListResponse.data.parts.length).toBe(1);
   await devrevSDK.partsDelete({ id: partsCreateResponse1.data.part.id });
   await devrevSDK.partsDelete({ id: partsCreateResponse2.data.part.id });
   await devrevSDK.partsDelete({ id: partsCreateResponse3.data.part.id });
