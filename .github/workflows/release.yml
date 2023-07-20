@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       release-type:
-        description: 'Which type of release to generate?'
+        description: "Release type"
         type: choice
         required: true
         options: [patch, minor, major, prepatch, preminor, premajor, prerelease]
