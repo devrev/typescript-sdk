@@ -2,12 +2,42 @@ import { client, betaSDK } from '../index';
 import { RevUser } from '../auto-generated/beta/beta-devrev-sdk';
 
 const devrevBetaSDK = client.setupBeta({ endpoint: 'https://api.devrev.ai', token: process.env.DEVREV_TOKEN });
+declare global {
+  var newRevUser1Id: string;
+  var newRevUser2Id: string;
+}
+export async function init() {
+  try {
+    var newRevUser1: betaSDK.RevUsersCreateRequest = {
+      email: "user1@example.com",
+      display_name: "TestUser1"
+    };
+    const revUsersCreateResponse1 = await devrevBetaSDK.revUsersCreate(
+      newRevUser1,
+    );
+    globalThis.newRevUser1Id = revUsersCreateResponse1.data.rev_user.id;
+    var newRevUser2: betaSDK.RevUsersCreateRequest = {
+      email: "user2@example.com",
+      display_name: "TestUser2"
+    };
+    const revUsersCreateResponse2 = await devrevBetaSDK.revUsersCreate(
+      newRevUser2,
+    );
+    globalThis.newRevUser2Id = revUsersCreateResponse2.data.rev_user.id;
+  } catch (error) {
+    console.log(error);
+  }
+}
+export async function cleanup() {
+  revUsersDeleteGet(globalThis.newRevUser1Id);
+  revUsersDeleteGet(globalThis.newRevUser2Id);
+}
 
 export async function revUsersCreateGet() {
   try {
     var newRevUser: betaSDK.RevUsersCreateRequest = {
       email: "user@example.com",
-      display_name: "TestUser"    
+      display_name: "TestUser"
     };
     const revUsersCreateResponse = await devrevBetaSDK.revUsersCreate(
       newRevUser,
@@ -44,33 +74,18 @@ export async function revUsersDeleteGet(id: string) {
     expect(revUsersDeleteResponse.status).toBe(200);
   } catch(error) {
     console.log(error);
-  } 
+  }
 }
 
 export async function RevUsersList() {
   try {
-    var newRevUser1: betaSDK.RevUsersCreateRequest = {
-      email: "user1@example.com",
-      display_name: "TestUser1"    
-    };
-    const revUsersCreateResponse1 = await devrevBetaSDK.revUsersCreate(
-      newRevUser1,
-    );
-    var newRevUser2: betaSDK.RevUsersCreateRequest = {
-      email: "user2@example.com",
-      display_name: "TestUser2"    
-    };
-    const revUsersCreateResponse2 = await devrevBetaSDK.revUsersCreate(
-      newRevUser2,
-    );
     const revUsersListResponse = await devrevBetaSDK.revUsersList({
       email: ["user1@example.com"],
     });
     expect(revUsersListResponse.status).toBe(200);
-    await devrevBetaSDK.revUsersDelete({ id: revUsersCreateResponse1.data.rev_user.id });
-    await devrevBetaSDK.revUsersDelete({ id: revUsersCreateResponse2.data.rev_user.id });
 } catch(error) {
     console.log(error);
+    cleanup();
 }
 }
 
