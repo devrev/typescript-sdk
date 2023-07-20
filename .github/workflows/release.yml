@@ -28,6 +28,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
           node-version: '18.x'
           scope: '@devrev'
+          token: ${{ secret.SVC_DEVREV_TOKEN }}
 
       - name: Git configuration
         run: |
@@ -70,7 +71,7 @@ jobs:
       # Push repository changes
       - name: Push changes to repository
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.SVC_DEVREV_TOKEN }}
         run: |
           git push origin && git push --tags
 
@@ -80,4 +81,4 @@ jobs:
           tag_name: ${{ env.NEW_VERSION }}
           prerelease: ${{ startsWith(github.event.inputs.release-type, 'pre') }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.SVC_DEVREV_TOKEN }}
