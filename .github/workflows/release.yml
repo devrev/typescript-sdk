@@ -1,6 +1,7 @@
 # Heavily borrowed from https://superface.ai/blog/npm-publish-gh-actions-changelog
 
 name: Release package
+run-name: "Release ${{ inputs.release-type }} by ${{ github.actor }}${{ inputs.dry-run && ' --dry-run'}}"
 
 on:
   workflow_dispatch:
