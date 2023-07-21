@@ -71,7 +71,7 @@ jobs:
 
       # Push repository changes
       - name: Push changes to repository
-        if: github.event.inputs.dry-run != false
+        if: ! github.event.inputs.dry-run
         env:
           GITHUB_TOKEN: ${{ secrets.SVC_DEVREV_TOKEN }}
         run: |
@@ -79,7 +79,7 @@ jobs:
 
       # Documentation on config options https://github.com/softprops/action-gh-release
       - name: Update GitHub release documentation
-        if: github.event.inputs.dry-run != false
+        if: ! github.event.inputs.dry-run
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ env.NEW_VERSION }}
