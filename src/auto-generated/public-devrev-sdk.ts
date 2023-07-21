@@ -179,8 +179,8 @@ export interface AuthConnectionOptionsSaml {
 export type AuthConnectionOptionsSocial = object;
 
 export enum AuthConnectionToggle {
-  Disable = "disable",
-  Enable = "enable",
+  Disable = 'disable',
+  Enable = 'enable',
 }
 
 /**
@@ -188,11 +188,11 @@ export enum AuthConnectionToggle {
  * for each authentication connection will depend on the type value.
  */
 export enum AuthConnectionType {
-  GoogleApps = "google_apps",
-  Oidc = "oidc",
-  Samlp = "samlp",
-  Social = "social",
-  Waad = "waad",
+  GoogleApps = 'google_apps',
+  Oidc = 'oidc',
+  Samlp = 'samlp',
+  Social = 'social',
+  Waad = 'waad',
 }
 
 /** auth-token */
@@ -226,44 +226,44 @@ export type AuthToken = AtomBase & {
 
 /** Specifies the process of obtaining a token. */
 export enum AuthTokenGrantType {
-  UrnDevrevParamsOauthGrantTypeTokenIssue = "urn:devrev:params:oauth:grant-type:token-issue",
-  UrnIetfParamsOauthGrantTypeTokenExchange = "urn:ietf:params:oauth:grant-type:token-exchange",
+  UrnDevrevParamsOauthGrantTypeTokenIssue = 'urn:devrev:params:oauth:grant-type:token-issue',
+  UrnIetfParamsOauthGrantTypeTokenExchange = 'urn:ietf:params:oauth:grant-type:token-exchange',
 }
 
 /** The type of the requested token. */
 export enum AuthTokenRequestedTokenType {
-  UrnDevrevParamsOauthTokenTypeAat = "urn:devrev:params:oauth:token-type:aat",
-  UrnDevrevParamsOauthTokenTypeAatPublic = "urn:devrev:params:oauth:token-type:aat:public",
-  UrnDevrevParamsOauthTokenTypeDev = "urn:devrev:params:oauth:token-type:dev",
-  UrnDevrevParamsOauthTokenTypePat = "urn:devrev:params:oauth:token-type:pat",
-  UrnDevrevParamsOauthTokenTypeRev = "urn:devrev:params:oauth:token-type:rev",
-  UrnDevrevParamsOauthTokenTypeSession = "urn:devrev:params:oauth:token-type:session",
-  UrnDevrevParamsOauthTokenTypeSessionDev0 = "urn:devrev:params:oauth:token-type:session:dev0",
-  UrnDevrevParamsOauthTokenTypeSys = "urn:devrev:params:oauth:token-type:sys",
-  UrnIetfParamsOauthTokenTypeJwt = "urn:ietf:params:oauth:token-type:jwt",
+  UrnDevrevParamsOauthTokenTypeAat = 'urn:devrev:params:oauth:token-type:aat',
+  UrnDevrevParamsOauthTokenTypeAatPublic = 'urn:devrev:params:oauth:token-type:aat:public',
+  UrnDevrevParamsOauthTokenTypeDev = 'urn:devrev:params:oauth:token-type:dev',
+  UrnDevrevParamsOauthTokenTypePat = 'urn:devrev:params:oauth:token-type:pat',
+  UrnDevrevParamsOauthTokenTypeRev = 'urn:devrev:params:oauth:token-type:rev',
+  UrnDevrevParamsOauthTokenTypeSession = 'urn:devrev:params:oauth:token-type:session',
+  UrnDevrevParamsOauthTokenTypeSessionDev0 = 'urn:devrev:params:oauth:token-type:session:dev0',
+  UrnDevrevParamsOauthTokenTypeSys = 'urn:devrev:params:oauth:token-type:sys',
+  UrnIetfParamsOauthTokenTypeJwt = 'urn:ietf:params:oauth:token-type:jwt',
 }
 
 /** The status of the token. */
 export enum AuthTokenStatus {
-  Active = "active",
-  Expired = "expired",
-  Revoked = "revoked",
+  Active = 'active',
+  Expired = 'expired',
+  Revoked = 'revoked',
 }
 
 /** The type of the subject token. */
 export enum AuthTokenSubjectTokenType {
-  UrnDevrevParamsOauthTokenTypeJwtAuth0 = "urn:devrev:params:oauth:token-type:jwt:auth0",
-  UrnDevrevParamsOauthTokenTypeJwtDev = "urn:devrev:params:oauth:token-type:jwt:dev",
-  UrnDevrevParamsOauthTokenTypeRevinfo = "urn:devrev:params:oauth:token-type:revinfo",
-  UrnDevrevParamsOauthTokenTypeSysu = "urn:devrev:params:oauth:token-type:sysu",
-  UrnDevrevParamsOauthTokenTypeUserinfo = "urn:devrev:params:oauth:token-type:userinfo",
-  UrnDevrevParamsOauthTokenTypeUserinfoProfile = "urn:devrev:params:oauth:token-type:userinfo:profile",
-  UrnIetfParamsOauthTokenTypeJwt = "urn:ietf:params:oauth:token-type:jwt",
+  UrnDevrevParamsOauthTokenTypeJwtAuth0 = 'urn:devrev:params:oauth:token-type:jwt:auth0',
+  UrnDevrevParamsOauthTokenTypeJwtDev = 'urn:devrev:params:oauth:token-type:jwt:dev',
+  UrnDevrevParamsOauthTokenTypeRevinfo = 'urn:devrev:params:oauth:token-type:revinfo',
+  UrnDevrevParamsOauthTokenTypeSysu = 'urn:devrev:params:oauth:token-type:sysu',
+  UrnDevrevParamsOauthTokenTypeUserinfo = 'urn:devrev:params:oauth:token-type:userinfo',
+  UrnDevrevParamsOauthTokenTypeUserinfoProfile = 'urn:devrev:params:oauth:token-type:userinfo:profile',
+  UrnIetfParamsOauthTokenTypeJwt = 'urn:ietf:params:oauth:token-type:jwt',
 }
 
 /** The type of the issued token. Bearer is the only supported token type. */
 export enum AuthTokenTokenType {
-  Bearer = "bearer",
+  Bearer = 'bearer',
 }
 
 /**
@@ -439,12 +439,16 @@ export interface AuthTokensUpdateResponse {
  * Carries Rev user info.
  */
 export interface AuthTokensUserTraits {
+  /** Application-defined custom fields. */
+  custom_fields?: object;
   /** The display name of the Rev user. */
   display_name?: string;
   /** The email address of the Rev user. */
   email?: string;
   /** The full name of the Rev user. */
   full_name?: string;
+  /** Phone numbers of the Rev user. */
+  phone_numbers?: string[];
 }
 
 /** capability */
@@ -482,10 +486,10 @@ export type DevOrgAuthConnectionsCreateRequest = (
  * authentication connections have different configuration parameters.
  */
 export enum DevOrgAuthConnectionsCreateRequestType {
-  GoogleApps = "google_apps",
-  Oidc = "oidc",
-  Samlp = "samlp",
-  Waad = "waad",
+  GoogleApps = 'google_apps',
+  Oidc = 'oidc',
+  Samlp = 'samlp',
+  Waad = 'waad',
 }
 
 /**
@@ -583,11 +587,11 @@ export type DevOrgAuthConnectionsUpdateRequest = (
  * that can be updated.
  */
 export enum DevOrgAuthConnectionsUpdateRequestType {
-  GoogleApps = "google_apps",
-  None = "none",
-  Oidc = "oidc",
-  Samlp = "samlp",
-  Waad = "waad",
+  GoogleApps = 'google_apps',
+  None = 'none',
+  Oidc = 'oidc',
+  Samlp = 'samlp',
+  Waad = 'waad',
 }
 
 /**
@@ -696,12 +700,12 @@ export interface ErrorBadRequestMissingRequiredField {
 export type ErrorBadRequestParseError = object;
 
 export enum ErrorBadRequestType {
-  BadRequest = "bad_request",
-  InvalidEnumValue = "invalid_enum_value",
-  InvalidField = "invalid_field",
-  MissingRequiredField = "missing_required_field",
-  ParseError = "parse_error",
-  ValueNotPermitted = "value_not_permitted",
+  BadRequest = 'bad_request',
+  InvalidEnumValue = 'invalid_enum_value',
+  InvalidField = 'invalid_field',
+  MissingRequiredField = 'missing_required_field',
+  ParseError = 'parse_error',
+  ValueNotPermitted = 'value_not_permitted',
 }
 
 /** error-bad-request-value-not-permitted */
@@ -730,7 +734,7 @@ export type ErrorForbidden = ErrorBase &
 export type ErrorForbiddenForbidden = object;
 
 export enum ErrorForbiddenType {
-  Forbidden = "forbidden",
+  Forbidden = 'forbidden',
 }
 
 /** error-internal-server-error */
@@ -748,7 +752,7 @@ export type ErrorInternalServerError = ErrorBase &
 export type ErrorInternalServerErrorInternalError = object;
 
 export enum ErrorInternalServerErrorType {
-  InternalError = "internal_error",
+  InternalError = 'internal_error',
 }
 
 /** error-not-found */
@@ -761,7 +765,7 @@ export type ErrorNotFound = ErrorBase &
 export type ErrorNotFoundNotFound = object;
 
 export enum ErrorNotFoundType {
-  NotFound = "not_found",
+  NotFound = 'not_found',
 }
 
 /** error-service-unavailable */
@@ -774,7 +778,7 @@ export type ErrorServiceUnavailable = ErrorBase &
 export type ErrorServiceUnavailableServiceUnavailable = object;
 
 export enum ErrorServiceUnavailableType {
-  ServiceUnavailable = "service_unavailable",
+  ServiceUnavailable = 'service_unavailable',
 }
 
 /** error-too-many-requests */
@@ -792,7 +796,7 @@ export type ErrorTooManyRequests = ErrorBase &
 export type ErrorTooManyRequestsTooManyRequests = object;
 
 export enum ErrorTooManyRequestsType {
-  TooManyRequests = "too_many_requests",
+  TooManyRequests = 'too_many_requests',
 }
 
 /** error-unauthorized */
@@ -802,7 +806,7 @@ export type ErrorUnauthorized = ErrorBase &
   };
 
 export enum ErrorUnauthorizedType {
-  Unauthenticated = "unauthenticated",
+  Unauthenticated = 'unauthenticated',
 }
 
 /** error-unauthorized-unauthenticated */
@@ -844,6 +848,22 @@ export interface EventRevOrgDeleted {
 /** event-rev-org-updated */
 export interface EventRevOrgUpdated {
   rev_org: RevOrg;
+}
+
+/** event-rev-user-created */
+export interface EventRevUserCreated {
+  rev_user: RevUser;
+}
+
+/** event-rev-user-deleted */
+export interface EventRevUserDeleted {
+  /** The ID of the Rev user that was deleted. */
+  id: string;
+}
+
+/** event-rev-user-updated */
+export interface EventRevUserUpdated {
+  rev_user: RevUser;
 }
 
 /** event-tag-created */
@@ -945,10 +965,10 @@ export type Issue = WorkBase & {
 
 /** Priority of the work based upon impact and criticality. */
 export enum IssuePriority {
-  P0 = "p0",
-  P1 = "p1",
-  P2 = "p2",
-  P3 = "p3",
+  P0 = 'p0',
+  P1 = 'p1',
+  P2 = 'p2',
+  P3 = 'p3',
 }
 
 /**
@@ -959,8 +979,8 @@ export enum IssuePriority {
  * always be returned in the specified sort-by order.
  */
 export enum ListMode {
-  After = "after",
-  Before = "before",
+  After = 'after',
+  Before = 'before',
 }
 
 /** org-base */
@@ -977,9 +997,9 @@ export type OrgBaseSummary = AtomBaseSummary & {
 
 /** The environment of the Org. Defaults to 'production' if not specified. */
 export enum OrgEnvironment {
-  Production = "production",
-  Staging = "staging",
-  Test = "test",
+  Production = 'production',
+  Staging = 'staging',
+  Test = 'test',
 }
 
 /** org-summary */
@@ -988,7 +1008,7 @@ export type OrgSummary = RevOrgSummary & {
 };
 
 export enum OrgType {
-  RevOrg = "rev_org",
+  RevOrg = 'rev_org',
 }
 
 /** part */
@@ -1027,10 +1047,10 @@ export type PartSummary = (
 };
 
 export enum PartType {
-  Capability = "capability",
-  Enhancement = "enhancement",
-  Feature = "feature",
-  Product = "product",
+  Capability = 'capability',
+  Enhancement = 'enhancement',
+  Feature = 'feature',
+  Product = 'product',
 }
 
 /** parts-create-request */
@@ -1318,6 +1338,21 @@ export interface RevOrgsUpdateResponse {
   rev_org: RevOrg;
 }
 
+/** rev-user */
+export type RevUser = UserBase & {
+  /** Description of the Rev user. */
+  description?: string;
+  /**
+   * External ref is a mutable unique identifier for a user within the
+   * Rev organization from your primary customer record. If none is
+   * available, a good alternative is the email address/phone number
+   * which could uniquely identify the user. If none is specified, a
+   * system-generated identifier will be assigned to the user.
+   */
+  external_ref?: string;
+  rev_org?: OrgSummary;
+};
+
 /** rev-user-summary */
 export type RevUserSummary = UserBaseSummary & {
   /**
@@ -1530,10 +1565,10 @@ export type Ticket = WorkBase & {
 
 /** Severity of the ticket. */
 export enum TicketSeverity {
-  Blocker = "blocker",
-  High = "high",
-  Low = "low",
-  Medium = "medium",
+  Blocker = 'blocker',
+  High = 'high',
+  Low = 'low',
+  Medium = 'medium',
 }
 
 /** timeline-comment */
@@ -1553,8 +1588,8 @@ export type TimelineComment = TimelineEntryBase & {
 
 /** The type of the body to use for the comment. */
 export enum TimelineCommentBodyType {
-  SnapKit = "snap_kit",
-  Text = "text",
+  SnapKit = 'snap_kit',
+  Text = 'text',
 }
 
 /**
@@ -1609,7 +1644,7 @@ export interface TimelineEntriesCreateRequestTimelineComment {
 }
 
 export enum TimelineEntriesCreateRequestType {
-  TimelineComment = "timeline_comment",
+  TimelineComment = 'timeline_comment',
 }
 
 /**
@@ -1619,6 +1654,24 @@ export enum TimelineEntriesCreateRequestType {
 export interface TimelineEntriesCreateResponse {
   timeline_entry: TimelineEntry;
 }
+
+/**
+ * timeline-entries-delete-request
+ * The request to delete a timeline entry from an object.
+ */
+export interface TimelineEntriesDeleteRequest {
+  /**
+   * The ID of the timeline entry to delete.
+   * @example "don:core:<partition>:devo/<dev-org-id>:ticket/123:timeline_event/<timeline-event-id>"
+   */
+  id: string;
+}
+
+/**
+ * timeline-entries-delete-response
+ * The response to deleting a timeline entry from an object.
+ */
+export type TimelineEntriesDeleteResponse = object;
 
 /**
  * timeline-entries-get-response
@@ -1695,7 +1748,7 @@ export interface TimelineEntriesUpdateRequestTimelineCommentArtifacts {
 }
 
 export enum TimelineEntriesUpdateRequestType {
-  TimelineComment = "timeline_comment",
+  TimelineComment = 'timeline_comment',
 }
 
 /**
@@ -1712,10 +1765,29 @@ export type TimelineEntry = TimelineComment & {
 };
 
 /** timeline-entry-base */
-export type TimelineEntryBase = AtomBase;
+export type TimelineEntryBase = AtomBase & {
+  /** The object that the Timeline entry belongs to. */
+  object: string;
+  /** The type of object that the Timeline entry belongs to. */
+  object_type?: TimelineEntryObjectType;
+};
+
+/** The type of object that the Timeline entry belongs to. */
+export enum TimelineEntryObjectType {
+  Capability = 'capability',
+  Conversation = 'conversation',
+  Enhancement = 'enhancement',
+  Feature = 'feature',
+  Issue = 'issue',
+  Product = 'product',
+  RevOrg = 'rev_org',
+  RevUser = 'rev_user',
+  Ticket = 'ticket',
+  TimelineComment = 'timeline_comment',
+}
 
 export enum TimelineEntryType {
-  TimelineComment = "timeline_comment",
+  TimelineComment = 'timeline_comment',
 }
 
 /**
@@ -1726,10 +1798,10 @@ export enum TimelineEntryType {
  * visibility is 'external'.
  */
 export enum TimelineEntryVisibility {
-  External = "external",
-  Internal = "internal",
-  Private = "private",
-  Public = "public",
+  External = 'external',
+  Internal = 'internal',
+  Private = 'private',
+  Public = 'public',
 }
 
 /**
@@ -1780,11 +1852,11 @@ export type UserBaseSummary = AtomBaseSummary & {
 
 /** State of the user. */
 export enum UserState {
-  Active = "active",
-  Deactivated = "deactivated",
-  Locked = "locked",
-  Shadow = "shadow",
-  Unassigned = "unassigned",
+  Active = 'active',
+  Deactivated = 'deactivated',
+  Locked = 'locked',
+  Shadow = 'shadow',
+  Unassigned = 'unassigned',
 }
 
 /** user-summary */
@@ -1793,9 +1865,9 @@ export type UserSummary = (DevUserSummary | RevUserSummary | SysUserSummary) & {
 };
 
 export enum UserType {
-  DevUser = "dev_user",
-  RevUser = "rev_user",
-  SysUser = "sys_user",
+  DevUser = 'dev_user',
+  RevUser = 'rev_user',
+  SysUser = 'sys_user',
 }
 
 /** webhook */
@@ -1823,6 +1895,9 @@ export interface WebhookEventRequest {
   rev_org_created?: EventRevOrgCreated;
   rev_org_deleted?: EventRevOrgDeleted;
   rev_org_updated?: EventRevOrgUpdated;
+  rev_user_created?: EventRevUserCreated;
+  rev_user_deleted?: EventRevUserDeleted;
+  rev_user_updated?: EventRevUserUpdated;
   tag_created?: EventTagCreated;
   tag_deleted?: EventTagDeleted;
   tag_updated?: EventTagUpdated;
@@ -1865,25 +1940,28 @@ export interface WebhookEventResponse {
 
 /** The event types that the webhook will receive. */
 export enum WebhookEventType {
-  PartCreated = "part_created",
-  PartDeleted = "part_deleted",
-  PartUpdated = "part_updated",
-  RevOrgCreated = "rev_org_created",
-  RevOrgDeleted = "rev_org_deleted",
-  RevOrgUpdated = "rev_org_updated",
-  TagCreated = "tag_created",
-  TagDeleted = "tag_deleted",
-  TagUpdated = "tag_updated",
-  TimelineEntryCreated = "timeline_entry_created",
-  TimelineEntryDeleted = "timeline_entry_deleted",
-  TimelineEntryUpdated = "timeline_entry_updated",
-  Verify = "verify",
-  WebhookCreated = "webhook_created",
-  WebhookDeleted = "webhook_deleted",
-  WebhookUpdated = "webhook_updated",
-  WorkCreated = "work_created",
-  WorkDeleted = "work_deleted",
-  WorkUpdated = "work_updated",
+  PartCreated = 'part_created',
+  PartDeleted = 'part_deleted',
+  PartUpdated = 'part_updated',
+  RevOrgCreated = 'rev_org_created',
+  RevOrgDeleted = 'rev_org_deleted',
+  RevOrgUpdated = 'rev_org_updated',
+  RevUserCreated = 'rev_user_created',
+  RevUserDeleted = 'rev_user_deleted',
+  RevUserUpdated = 'rev_user_updated',
+  TagCreated = 'tag_created',
+  TagDeleted = 'tag_deleted',
+  TagUpdated = 'tag_updated',
+  TimelineEntryCreated = 'timeline_entry_created',
+  TimelineEntryDeleted = 'timeline_entry_deleted',
+  TimelineEntryUpdated = 'timeline_entry_updated',
+  Verify = 'verify',
+  WebhookCreated = 'webhook_created',
+  WebhookDeleted = 'webhook_deleted',
+  WebhookUpdated = 'webhook_updated',
+  WorkCreated = 'work_created',
+  WorkDeleted = 'work_deleted',
+  WorkUpdated = 'work_updated',
 }
 
 /** webhook-event-verify */
@@ -1897,9 +1975,9 @@ export interface WebhookEventVerify {
 
 /** The status of the webhook. */
 export enum WebhookStatus {
-  Active = "active",
-  Inactive = "inactive",
-  Unverified = "unverified",
+  Active = 'active',
+  Inactive = 'inactive',
+  Unverified = 'unverified',
 }
 
 /**
@@ -1966,8 +2044,8 @@ export interface WebhooksListResponse {
 
 /** The action to update the webhook's status. */
 export enum WebhooksUpdateAction {
-  Activate = "activate",
-  Deactivate = "deactivate",
+  Activate = 'activate',
+  Deactivate = 'deactivate',
 }
 
 /**
@@ -2060,8 +2138,8 @@ export type WorkBase = AtomBase & {
 };
 
 export enum WorkType {
-  Issue = "issue",
-  Ticket = "ticket",
+  Issue = 'issue',
+  Ticket = 'ticket',
 }
 
 /** works-create-request */
@@ -2083,11 +2161,6 @@ export type WorksCreateRequest = (
   artifacts?: string[];
   /** Body of the work object. */
   body?: string;
-  /**
-   * The custom schema fragments to use.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>"]
-   */
-  custom_schema_fragments?: string[];
   /**
    * The users that own the work.
    * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
@@ -2195,11 +2268,6 @@ export type WorksUpdateRequest = (
   /** Updated body of the work object, or unchanged if not provided. */
   body?: string;
   /**
-   * The custom schema fragments to use.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>"]
-   */
-  custom_schema_fragments?: string[];
-  /**
    * The work's ID.
    * @example "don:core:<partition>:devo/<dev-org-id>:<work-type>/<work-id>"
    */
@@ -2287,12 +2355,12 @@ import axios, {
   AxiosResponse,
   HeadersDefaults,
   ResponseType,
-} from "axios";
+} from 'axios';
 
 export type QueryParamsType = Record<string | number, any>;
 
 export interface FullRequestParams
-  extends Omit<AxiosRequestConfig, "data" | "params" | "url" | "responseType"> {
+  extends Omit<AxiosRequestConfig, 'data' | 'params' | 'url' | 'responseType'> {
   /** set parameter to `true` for call `securityWorker` for this request */
   secure?: boolean;
   /** request path */
@@ -2309,11 +2377,11 @@ export interface FullRequestParams
 
 export type RequestParams = Omit<
   FullRequestParams,
-  "body" | "method" | "query" | "path"
+  'body' | 'method' | 'query' | 'path'
 >;
 
 export interface ApiConfig<SecurityDataType = unknown>
-  extends Omit<AxiosRequestConfig, "data" | "cancelToken"> {
+  extends Omit<AxiosRequestConfig, 'data' | 'cancelToken'> {
   securityWorker?: (
     securityData: SecurityDataType | null
   ) => Promise<AxiosRequestConfig | void> | AxiosRequestConfig | void;
@@ -2322,16 +2390,16 @@ export interface ApiConfig<SecurityDataType = unknown>
 }
 
 export enum ContentType {
-  Json = "application/json",
-  FormData = "multipart/form-data",
-  UrlEncoded = "application/x-www-form-urlencoded",
-  Text = "text/plain",
+  Json = 'application/json',
+  FormData = 'multipart/form-data',
+  UrlEncoded = 'application/x-www-form-urlencoded',
+  Text = 'text/plain',
 }
 
 export class HttpClient<SecurityDataType = unknown> {
   public instance: AxiosInstance;
   private securityData: SecurityDataType | null = null;
-  private securityWorker?: ApiConfig<SecurityDataType>["securityWorker"];
+  private securityWorker?: ApiConfig<SecurityDataType>['securityWorker'];
   private secure?: boolean;
   private format?: ResponseType;
 
@@ -2343,7 +2411,7 @@ export class HttpClient<SecurityDataType = unknown> {
   }: ApiConfig<SecurityDataType> = {}) {
     this.instance = axios.create({
       ...axiosConfig,
-      baseURL: axiosConfig.baseURL || "{protocol}://{hostname}",
+      baseURL: axiosConfig.baseURL || '{protocol}://{hostname}',
     });
     this.secure = secure;
     this.format = format;
@@ -2377,7 +2445,7 @@ export class HttpClient<SecurityDataType = unknown> {
   }
 
   protected stringifyFormItem(formItem: unknown) {
-    if (typeof formItem === "object" && formItem !== null) {
+    if (typeof formItem === 'object' && formItem !== null) {
       return JSON.stringify(formItem);
     } else {
       return `${formItem}`;
@@ -2412,7 +2480,7 @@ export class HttpClient<SecurityDataType = unknown> {
     ...params
   }: FullRequestParams): Promise<AxiosResponse<T>> => {
     const secureParams =
-      ((typeof secure === "boolean" ? secure : this.secure) &&
+      ((typeof secure === 'boolean' ? secure : this.secure) &&
         this.securityWorker &&
         (await this.securityWorker(this.securityData))) ||
       {};
@@ -2423,7 +2491,7 @@ export class HttpClient<SecurityDataType = unknown> {
       type === ContentType.FormData &&
       body &&
       body !== null &&
-      typeof body === "object"
+      typeof body === 'object'
     ) {
       body = this.createFormData(body as Record<string, unknown>);
     }
@@ -2432,7 +2500,7 @@ export class HttpClient<SecurityDataType = unknown> {
       type === ContentType.Text &&
       body &&
       body !== null &&
-      typeof body !== "string"
+      typeof body !== 'string'
     ) {
       body = JSON.stringify(body);
     }
@@ -2442,7 +2510,7 @@ export class HttpClient<SecurityDataType = unknown> {
       headers: {
         ...(requestParams.headers || {}),
         ...(type && type !== ContentType.FormData
-          ? { "Content-Type": type }
+          ? { 'Content-Type': type }
           : {}),
       },
       params: query,
@@ -2492,10 +2560,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/artifacts.locate`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -2521,11 +2589,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/artifacts.prepare`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -2551,11 +2619,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/auth-tokens.create`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -2582,7 +2650,7 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/auth-tokens.delete`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
@@ -2615,10 +2683,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/auth-tokens.get`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -2662,10 +2730,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/auth-tokens.list`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -2692,7 +2760,7 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/auth-tokens.self.delete`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
@@ -2722,11 +2790,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/auth-tokens.update`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -2752,11 +2820,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/dev-orgs.auth-connections.create`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -2783,7 +2851,7 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/dev-orgs.auth-connections.delete`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
@@ -2816,10 +2884,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/dev-orgs.auth-connections.get`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -2842,9 +2910,9 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/dev-orgs.auth-connections.list`,
-      method: "GET",
+      method: 'GET',
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -2871,7 +2939,7 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/dev-orgs.auth-connections.toggle`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
@@ -2901,11 +2969,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/dev-orgs.auth-connections.update`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -2953,10 +3021,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/dev-users.list`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -2979,9 +3047,9 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/dev-users.self`,
-      method: "GET",
+      method: 'GET',
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3004,11 +3072,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/parts.create`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3032,11 +3100,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/parts.delete`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3069,10 +3137,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/parts.get`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3128,10 +3196,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/parts.list`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3155,11 +3223,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/parts.update`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3182,11 +3250,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/rev-orgs.create`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3210,11 +3278,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/rev-orgs.delete`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3247,10 +3315,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/rev-orgs.get`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3270,13 +3338,13 @@ export class Api<
        * Filters for objects created after the provided timestamp (inclusive).
        * @format date-time
        */
-      "created_date.after"?: string;
+      'created_date.after'?: string;
       /**
        * Filters for objects created before the provided timestamp
        * (inclusive).
        * @format date-time
        */
-      "created_date.before"?: string;
+      'created_date.before'?: string;
       /**
        * The cursor to resume iteration from. If not provided, then iteration
        * starts from the beginning.
@@ -3298,13 +3366,13 @@ export class Api<
        * Filters for objects created after the provided timestamp (inclusive).
        * @format date-time
        */
-      "modified_date.after"?: string;
+      'modified_date.after'?: string;
       /**
        * Filters for objects created before the provided timestamp
        * (inclusive).
        * @format date-time
        */
-      "modified_date.before"?: string;
+      'modified_date.before'?: string;
       /**
        * Fields to sort the Rev organizations by and the direction to sort
        * them.
@@ -3324,10 +3392,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/rev-orgs.list`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3351,11 +3419,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/rev-orgs.update`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3378,11 +3446,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/tags.create`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3406,11 +3474,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/tags.delete`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3443,10 +3511,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/tags.get`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3488,10 +3556,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/tags.list`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3515,11 +3583,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/tags.update`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3545,11 +3613,41 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/timeline-entries.create`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Deletes an entry from an object's timeline.
+   *
+   * @tags timeline-entries
+   * @name TimelineEntriesDelete
+   * @request POST:/timeline-entries.delete
+   * @secure
+   */
+  timelineEntriesDelete = (
+    data: TimelineEntriesDeleteRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      TimelineEntriesDeleteResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/timeline-entries.delete`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
       ...params,
     });
 
@@ -3582,10 +3680,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/timeline-entries.get`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3640,10 +3738,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/timeline-entries.list`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3669,11 +3767,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/timeline-entries.update`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3696,11 +3794,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/webhooks.create`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3724,11 +3822,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/webhooks.delete`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3761,10 +3859,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/webhooks.get`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3787,9 +3885,9 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/webhooks.list`,
-      method: "GET",
+      method: 'GET',
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3813,11 +3911,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/webhooks.update`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3840,11 +3938,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/works.create`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3868,11 +3966,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/works.delete`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3903,35 +4001,35 @@ export class Api<
        */
       first?: number;
       /** Filters for issues with any of the provided priorities. */
-      "issue.priority"?: IssuePriority[];
+      'issue.priority'?: IssuePriority[];
       /**
        * Filters for issues with any of the provided Rev organizations.
        * @example ["don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"]
        */
-      "issue.rev_orgs"?: string[];
+      'issue.rev_orgs'?: string[];
       /**
        * Filters for work owned by any of these users.
        * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
        */
       owned_by?: string[];
       /** Filters for records in the provided stage(s). */
-      "stage.name"?: string[];
+      'stage.name'?: string[];
       /** Filters for tickets belonging to specific groups. */
-      "ticket.group"?: string[];
+      'ticket.group'?: string[];
       /** Filters for tickets that are spam. */
-      "ticket.is_spam"?: boolean;
+      'ticket.is_spam'?: boolean;
       /** Filters for tickets that need response. */
-      "ticket.needs_response"?: boolean;
+      'ticket.needs_response'?: boolean;
       /**
        * Filters for tickets that are associated with any of the provided Rev
        * organizations.
        * @example ["don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"]
        */
-      "ticket.rev_org"?: string[];
+      'ticket.rev_org'?: string[];
       /** Filters for tickets with any of the provided severities. */
-      "ticket.severity"?: TicketSeverity[];
+      'ticket.severity'?: TicketSeverity[];
       /** Filters for tickets with any of the provided source channels. */
-      "ticket.source_channel"?: string[];
+      'ticket.source_channel'?: string[];
       /** Filters for work of the provided types. */
       type?: WorkType[];
     },
@@ -3947,10 +4045,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/works.export`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3983,10 +4081,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/works.get`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -4016,12 +4114,12 @@ export class Api<
        */
       cursor?: string;
       /** Filters for issues with any of the provided priorities. */
-      "issue.priority"?: IssuePriority[];
+      'issue.priority'?: IssuePriority[];
       /**
        * Filters for issues with any of the provided Rev organizations.
        * @example ["don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"]
        */
-      "issue.rev_orgs"?: string[];
+      'issue.rev_orgs'?: string[];
       /**
        * The maximum number of works to return. The default is '50'.
        * @format int32
@@ -4038,23 +4136,23 @@ export class Api<
        */
       owned_by?: string[];
       /** Filters for records in the provided stage(s). */
-      "stage.name"?: string[];
+      'stage.name'?: string[];
       /** Filters for tickets belonging to specific groups. */
-      "ticket.group"?: string[];
+      'ticket.group'?: string[];
       /** Filters for tickets that are spam. */
-      "ticket.is_spam"?: boolean;
+      'ticket.is_spam'?: boolean;
       /** Filters for tickets that need response. */
-      "ticket.needs_response"?: boolean;
+      'ticket.needs_response'?: boolean;
       /**
        * Filters for tickets that are associated with any of the provided Rev
        * organizations.
        * @example ["don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"]
        */
-      "ticket.rev_org"?: string[];
+      'ticket.rev_org'?: string[];
       /** Filters for tickets with any of the provided severities. */
-      "ticket.severity"?: TicketSeverity[];
+      'ticket.severity'?: TicketSeverity[];
       /** Filters for tickets with any of the provided source channels. */
-      "ticket.source_channel"?: string[];
+      'ticket.source_channel'?: string[];
       /** Filters for work of the provided types. */
       type?: WorkType[];
     },
@@ -4070,10 +4168,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/works.list`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -4097,11 +4195,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/works.update`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 }

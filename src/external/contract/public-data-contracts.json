@@ -740,6 +740,10 @@
       "auth-tokens-user-traits": {
         "description": "Carries Rev user info.",
         "properties": {
+          "custom_fields": {
+            "description": "Application-defined custom fields.",
+            "type": "object"
+          },
           "display_name": {
             "description": "The display name of the Rev user.",
             "type": "string"
@@ -751,6 +755,13 @@
           "full_name": {
             "description": "The full name of the Rev user.",
             "type": "string"
+          },
+          "phone_numbers": {
+            "description": "Phone numbers of the Rev user.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
           }
         },
         "title": "auth-tokens-user-traits",
@@ -1543,6 +1554,43 @@
           "rev_org"
         ],
         "title": "event-rev-org-updated",
+        "type": "object"
+      },
+      "event-rev-user-created": {
+        "properties": {
+          "rev_user": {
+            "$ref": "#/components/schemas/rev-user"
+          }
+        },
+        "required": [
+          "rev_user"
+        ],
+        "title": "event-rev-user-created",
+        "type": "object"
+      },
+      "event-rev-user-deleted": {
+        "properties": {
+          "id": {
+            "description": "The ID of the Rev user that was deleted.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "event-rev-user-deleted",
+        "type": "object"
+      },
+      "event-rev-user-updated": {
+        "properties": {
+          "rev_user": {
+            "$ref": "#/components/schemas/rev-user"
+          }
+        },
+        "required": [
+          "rev_user"
+        ],
+        "title": "event-rev-user-updated",
         "type": "object"
       },
       "event-tag-created": {
@@ -2485,6 +2533,30 @@
         "type": "object",
         "x-go-name": "RevOrgsUpdateResponseBody"
       },
+      "rev-user": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/user-base"
+          },
+          {
+            "properties": {
+              "description": {
+                "description": "Description of the Rev user.",
+                "type": "string"
+              },
+              "external_ref": {
+                "description": "External ref is a mutable unique identifier for a user within the\nRev organization from your primary customer record. If none is\navailable, a good alternative is the email address/phone number\nwhich could uniquely identify the user. If none is specified, a\nsystem-generated identifier will be assigned to the user.\n",
+                "type": "string"
+              },
+              "rev_org": {
+                "$ref": "#/components/schemas/org-summary"
+              }
+            },
+            "type": "object"
+          }
+        ],
+        "title": "rev-user"
+      },
       "rev-user-summary": {
         "allOf": [
           {
@@ -2952,6 +3024,27 @@
         "type": "object",
         "x-go-name": "TimelineEntriesCreateResponseBody"
       },
+      "timeline-entries-delete-request": {
+        "description": "The request to delete a timeline entry from an object.",
+        "properties": {
+          "id": {
+            "description": "The ID of the timeline entry to delete.",
+            "example": "don:core:<partition>:devo/<dev-org-id>:ticket/123:timeline_event/<timeline-event-id>",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "timeline-entries-delete-request",
+        "type": "object"
+      },
+      "timeline-entries-delete-response": {
+        "description": "The response to deleting a timeline entry from an object.",
+        "title": "timeline-entries-delete-response",
+        "type": "object",
+        "x-go-name": "TimelineEntriesDeleteResponseBody"
+      },
       "timeline-entries-get-response": {
         "description": "The request to getting a timeline entry.",
         "properties": {
@@ -3124,9 +3217,40 @@
         "allOf": [
           {
             "$ref": "#/components/schemas/atom-base"
+          },
+          {
+            "properties": {
+              "object": {
+                "description": "The object that the Timeline entry belongs to.",
+                "type": "string"
+              },
+              "object_type": {
+                "$ref": "#/components/schemas/timeline-entry-object-type"
+              }
+            },
+            "required": [
+              "object"
+            ],
+            "type": "object"
           }
         ],
         "title": "timeline-entry-base"
+      },
+      "timeline-entry-object-type": {
+        "description": "The type of object that the Timeline entry belongs to.",
+        "enum": [
+          "capability",
+          "conversation",
+          "enhancement",
+          "feature",
+          "issue",
+          "product",
+          "rev_org",
+          "rev_user",
+          "ticket",
+          "timeline_comment"
+        ],
+        "type": "string"
       },
       "timeline-entry-type": {
         "enum": [
@@ -3343,6 +3467,15 @@
           "rev_org_updated": {
             "$ref": "#/components/schemas/event-rev-org-updated"
           },
+          "rev_user_created": {
+            "$ref": "#/components/schemas/event-rev-user-created"
+          },
+          "rev_user_deleted": {
+            "$ref": "#/components/schemas/event-rev-user-deleted"
+          },
+          "rev_user_updated": {
+            "$ref": "#/components/schemas/event-rev-user-updated"
+          },
           "tag_created": {
             "$ref": "#/components/schemas/event-tag-created"
           },
@@ -3424,6 +3557,9 @@
           "rev_org_created",
           "rev_org_deleted",
           "rev_org_updated",
+          "rev_user_created",
+          "rev_user_deleted",
+          "rev_user_updated",
           "tag_created",
           "tag_deleted",
           "tag_updated",
@@ -3769,16 +3905,6 @@
             "description": "Body of the work object.",
             "type": "string"
           },
-          "custom_schema_fragments": {
-            "description": "The custom schema fragments to use.",
-            "example": [
-              "don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>"
-            ],
-            "items": {
-              "type": "string"
-            },
-            "type": "array"
-          },
           "owned_by": {
             "description": "The users that own the work.",
             "example": [
@@ -3986,16 +4112,6 @@
           "body": {
             "description": "Updated body of the work object, or unchanged if not provided.\n",
             "type": "string"
-          },
-          "custom_schema_fragments": {
-            "description": "The custom schema fragments to use.",
-            "example": [
-              "don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>"
-            ],
-            "items": {
-              "type": "string"
-            },
-            "type": "array"
           },
           "id": {
             "description": "The work's ID.",
@@ -5994,6 +6110,54 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/timeline-entries-create-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "timeline-entries"
+        ]
+      }
+    },
+    "/timeline-entries.delete": {
+      "post": {
+        "description": "Deletes an entry from an object's timeline.",
+        "operationId": "timeline-entries-delete",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/timeline-entries-delete-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/timeline-entries-delete-response"
                 }
               }
             },

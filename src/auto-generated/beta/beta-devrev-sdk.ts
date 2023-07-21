@@ -11,6 +11,8 @@
 
 /** account */
 export type Account = OrgBase & {
+  /** Custom fields. */
+  custom_fields?: object;
   /**
    * Custom schema fragments.
    * @example ["don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>"]
@@ -36,6 +38,9 @@ export type Account = OrgBase & {
   tier?: string;
 };
 
+/** account-summary */
+export type AccountSummary = OrgBaseSummary;
+
 /**
  * accounts-create-request
  * Request object to create a new account in the Dev organization.
@@ -53,7 +58,6 @@ export interface AccountsCreateRequest {
    * External refs are unique identifiers from your customer system of
    * records, stored as a list. Currently the length of this field is
    * limited to 1.
-   * @maxItems 1
    */
   external_refs?: string[];
   /** List of Dev users owning this account. */
@@ -145,7 +149,6 @@ export interface AccountsUpdateRequest {
   /**
    * Updated External Refs of account. Currently the length of this
    * field is limited to 1.
-   * @maxItems 1
    */
   external_refs?: string[];
   /**
@@ -223,6 +226,8 @@ export type Conversation = AtomBase & {
   /** Description of the conversation object. */
   description?: string;
   group?: GroupSummary;
+  /** The users in the conversation. */
+  members: UserSummary[];
   /** The latest messages on the conversation. */
   messages?: TimelineEntry[];
   /** Metadata on conversation. */
@@ -302,7 +307,7 @@ export interface ConversationsCreateRequestMetadata {
 }
 
 export enum ConversationsCreateRequestTypeValue {
-  Support = "support",
+  Support = 'support',
 }
 
 /**
@@ -420,6 +425,48 @@ export interface ConversationsUpdateResponse {
   conversation: Conversation;
 }
 
+/** create-org-schedule-interval */
+export interface CreateOrgScheduleInterval {
+  /**
+   * Date (inclusive) on which the interval begins.
+   * @format date-time
+   */
+  from: string;
+  /**
+   * If true, no organization schedule is looked up for these days and
+   * they are marked as holidays.
+   */
+  is_excluded?: boolean;
+  /**
+   * The name of the period, for example the event or holiday it
+   * represents.
+   */
+  name: string;
+  /**
+   * Date (exclusive) on which the interval ends. If omitted, it is a
+   * single day interval.
+   * @format date-time
+   */
+  to?: string;
+}
+
+/** create-weekly-org-schedule-interval */
+export interface CreateWeeklyOrgScheduleInterval {
+  /**
+   * Duration in minutes of the week when the interval starts. 0 is
+   * Sunday midnight, when Sunday ends and Monday begins.
+   * @format int64
+   */
+  from: number;
+  /**
+   * Duration in minutes of the week when the interval ends (must be
+   * larger than 'from'). 0 is Sunday midnight, when Sunday ends and
+   * Monday begins.
+   * @format int64
+   */
+  to: number;
+}
+
 /** custom-schema-fragment */
 export interface CustomSchemaFragment {
   type: CustomSchemaFragmentType;
@@ -457,7 +504,9 @@ export type CustomSchemaFragmentsSetRequest = (
 ) & {
   /** List of conditions for this fragment. */
   conditions?: CustomSchemaFragmentCondition[];
-  /** True if this fragment has been deprecated. */
+  /** List of field names which are being dropped. */
+  deleted_fields?: string[];
+  /** Whether this fragment has been deprecated. */
   deprecated?: boolean;
   /** The description of the custom schema fragment. */
   description: string;
@@ -478,6 +527,8 @@ export interface CustomSchemaFragmentsSetRequestAppFragment {
 
 /** custom-schema-fragments-set-request-custom-type-fragment */
 export interface CustomSchemaFragmentsSetRequestCustomTypeFragment {
+  /** The ID of the associated custom stage diagram. */
+  stage_diagram?: string;
   /** List of stock field enum overrides. */
   stock_field_enum_overrides?: StockFieldEnumOverride[];
   /** The string used to populate the subtype in the leaf type. */
@@ -490,9 +541,9 @@ export interface CustomSchemaFragmentsSetRequestCustomTypeFragment {
 export type CustomSchemaFragmentsSetRequestTenantFragment = object;
 
 export enum CustomSchemaFragmentsSetRequestType {
-  AppFragment = "app_fragment",
-  CustomTypeFragment = "custom_type_fragment",
-  TenantFragment = "tenant_fragment",
+  AppFragment = 'app_fragment',
+  CustomTypeFragment = 'custom_type_fragment',
+  TenantFragment = 'tenant_fragment',
 }
 
 /** custom-schema-fragments-set-response */
@@ -513,6 +564,17 @@ export type Engagement = AtomBase & {
   description?: string;
 };
 
+/** Type of engagement. */
+export enum EngagementType {
+  Call = 'call',
+  Default = 'default',
+  Email = 'email',
+  LinkedIn = 'linked_in',
+  Meeting = 'meeting',
+  Offline = 'offline',
+  Survey = 'survey',
+}
+
 /** engagements-count-response */
 export interface EngagementsCountResponse {
   /**
@@ -524,10 +586,17 @@ export interface EngagementsCountResponse {
 
 /** engagements-create-request */
 export interface EngagementsCreateRequest {
+  /**
+   * The IDs of the artifacts to associate with the engagement.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   */
+  artifacts?: string[];
   /** The description of the engagement. */
   description?: string;
   /** The type of engagement. */
   engagement_type?: EngagementsCreateRequestEngagementType;
+  /** External Reference for the engagement. */
+  external_ref?: string;
   /** External URL for the engagement. */
   external_url?: string;
   /**
@@ -555,10 +624,11 @@ export interface EngagementsCreateRequest {
 
 /** The type of engagement. */
 export enum EngagementsCreateRequestEngagementType {
-  Call = "call",
-  Email = "email",
-  LinkedIn = "linked_in",
-  Offline = "offline",
+  Call = 'call',
+  Default = 'default',
+  Email = 'email',
+  LinkedIn = 'linked_in',
+  Offline = 'offline',
 }
 
 /** engagements-create-response */
@@ -598,8 +668,11 @@ export interface EngagementsListResponse {
 
 /** engagements-update-request */
 export interface EngagementsUpdateRequest {
+  artifacts?: EngagementsUpdateRequestArtifactIds;
   /** Updates the description of the engagement. */
   description?: string;
+  /** External Reference for the engagement. */
+  external_ref?: string;
   /** Updates the external URL for the engagement. */
   external_url?: string;
   /** The engagement ID. */
@@ -613,6 +686,15 @@ export interface EngagementsUpdateRequest {
   tags?: EngagementsUpdateRequestTags;
   /** Updates the title of the engagement. */
   title?: string;
+}
+
+/** engagements-update-request-artifact-ids */
+export interface EngagementsUpdateRequestArtifactIds {
+  /**
+   * Sets the IDs to the provided artifact IDs.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   */
+  set?: string[];
 }
 
 /** engagements-update-request-members */
@@ -695,12 +777,12 @@ export interface ErrorBadRequestMissingRequiredField {
 export type ErrorBadRequestParseError = object;
 
 export enum ErrorBadRequestType {
-  BadRequest = "bad_request",
-  InvalidEnumValue = "invalid_enum_value",
-  InvalidField = "invalid_field",
-  MissingRequiredField = "missing_required_field",
-  ParseError = "parse_error",
-  ValueNotPermitted = "value_not_permitted",
+  BadRequest = 'bad_request',
+  InvalidEnumValue = 'invalid_enum_value',
+  InvalidField = 'invalid_field',
+  MissingRequiredField = 'missing_required_field',
+  ParseError = 'parse_error',
+  ValueNotPermitted = 'value_not_permitted',
 }
 
 /** error-bad-request-value-not-permitted */
@@ -729,7 +811,7 @@ export type ErrorForbidden = ErrorBase &
 export type ErrorForbiddenForbidden = object;
 
 export enum ErrorForbiddenType {
-  Forbidden = "forbidden",
+  Forbidden = 'forbidden',
 }
 
 /** error-internal-server-error */
@@ -747,7 +829,7 @@ export type ErrorInternalServerError = ErrorBase &
 export type ErrorInternalServerErrorInternalError = object;
 
 export enum ErrorInternalServerErrorType {
-  InternalError = "internal_error",
+  InternalError = 'internal_error',
 }
 
 /** error-not-found */
@@ -760,7 +842,7 @@ export type ErrorNotFound = ErrorBase &
 export type ErrorNotFoundNotFound = object;
 
 export enum ErrorNotFoundType {
-  NotFound = "not_found",
+  NotFound = 'not_found',
 }
 
 /** error-service-unavailable */
@@ -773,7 +855,7 @@ export type ErrorServiceUnavailable = ErrorBase &
 export type ErrorServiceUnavailableServiceUnavailable = object;
 
 export enum ErrorServiceUnavailableType {
-  ServiceUnavailable = "service_unavailable",
+  ServiceUnavailable = 'service_unavailable',
 }
 
 /** error-too-many-requests */
@@ -791,7 +873,7 @@ export type ErrorTooManyRequests = ErrorBase &
 export type ErrorTooManyRequestsTooManyRequests = object;
 
 export enum ErrorTooManyRequestsType {
-  TooManyRequests = "too_many_requests",
+  TooManyRequests = 'too_many_requests',
 }
 
 /** error-unauthorized */
@@ -801,7 +883,7 @@ export type ErrorUnauthorized = ErrorBase &
   };
 
 export enum ErrorUnauthorizedType {
-  Unauthenticated = "unauthenticated",
+  Unauthenticated = 'unauthenticated',
 }
 
 /** error-unauthorized-unauthenticated */
@@ -870,10 +952,10 @@ export type Issue = WorkBase & {
 
 /** Priority of the work based upon impact and criticality. */
 export enum IssuePriority {
-  P0 = "p0",
-  P1 = "p1",
-  P2 = "p2",
-  P3 = "p3",
+  P0 = 'p0',
+  P1 = 'p1',
+  P2 = 'p2',
+  P3 = 'p3',
 }
 
 /** issue-summary */
@@ -899,20 +981,22 @@ export type LinkEndpointSummary = (
   | IssueSummary
   | OpportunitySummary
   | ProductSummary
+  | TaskSummary
   | TicketSummary
 ) & {
   type: LinkEndpointType;
 };
 
 export enum LinkEndpointType {
-  Capability = "capability",
-  Conversation = "conversation",
-  Enhancement = "enhancement",
-  Feature = "feature",
-  Issue = "issue",
-  Opportunity = "opportunity",
-  Product = "product",
-  Ticket = "ticket",
+  Capability = 'capability',
+  Conversation = 'conversation',
+  Enhancement = 'enhancement',
+  Feature = 'feature',
+  Issue = 'issue',
+  Opportunity = 'opportunity',
+  Product = 'product',
+  Task = 'task',
+  Ticket = 'ticket',
 }
 
 /**
@@ -939,14 +1023,14 @@ export interface LinkRevUserToRevOrgResponse {
 
 /** Type of link used to define the relationship. */
 export enum LinkType {
-  DevelopedWith = "developed_with",
-  Imports = "imports",
-  IsDependentOn = "is_dependent_on",
-  IsDuplicateOf = "is_duplicate_of",
-  IsParentOf = "is_parent_of",
-  IsPartOf = "is_part_of",
-  IsRelatedTo = "is_related_to",
-  Serves = "serves",
+  DevelopedWith = 'developed_with',
+  Imports = 'imports',
+  IsDependentOn = 'is_dependent_on',
+  IsDuplicateOf = 'is_duplicate_of',
+  IsParentOf = 'is_parent_of',
+  IsPartOf = 'is_part_of',
+  IsRelatedTo = 'is_related_to',
+  Serves = 'serves',
 }
 
 /**
@@ -991,8 +1075,8 @@ export type LinksDeleteResponse = object;
  * the target of the link.
  */
 export enum LinksDirection {
-  IsSource = "is_source",
-  IsTarget = "is_target",
+  IsSource = 'is_source',
+  IsTarget = 'is_target',
 }
 
 /**
@@ -1030,8 +1114,8 @@ export interface LinksListResponse {
  * always be returned in the specified sort-by order.
  */
 export enum ListMode {
-  After = "after",
-  Before = "before",
+  After = 'after',
+  Before = 'before',
 }
 
 /** metric-definition */
@@ -1039,10 +1123,10 @@ export type MetricDefinition = AtomBase;
 
 /** The list of item types on which the metric might be applied. */
 export enum MetricDefinitionAppliesTo {
-  Conversation = "conversation",
-  Issue = "issue",
-  Task = "task",
-  Ticket = "ticket",
+  Conversation = 'conversation',
+  Issue = 'issue',
+  Task = 'task',
+  Ticket = 'ticket',
 }
 
 /**
@@ -1052,8 +1136,8 @@ export enum MetricDefinitionAppliesTo {
  * 'increment', 'decrement'.
  */
 export enum MetricDefinitionMetricType {
-  Time = "time",
-  Value = "value",
+  Time = 'time',
+  Value = 'value',
 }
 
 /** metric-definitions-list-response */
@@ -1075,6 +1159,24 @@ export interface MetricDefinitionsListResponse {
 /** opportunity */
 export type Opportunity = WorkBase;
 
+/** Forecast category of the opportunity. */
+export enum OpportunityForecastCategory {
+  BestCase = 'best_case',
+  Commit = 'commit',
+  MostLikely = 'most_likely',
+  Omitted = 'omitted',
+  Pipeline = 'pipeline',
+  Won = 'won',
+}
+
+/** Priority of the opportunity. */
+export enum OpportunityPriority {
+  P0 = 'p0',
+  P1 = 'p1',
+  P2 = 'p2',
+  P3 = 'p3',
+}
+
 /** opportunity-summary */
 export type OpportunitySummary = WorkBaseSummary;
 
@@ -1092,18 +1194,308 @@ export type OrgBaseSummary = AtomBaseSummary & {
 
 /** The environment of the Org. Defaults to 'production' if not specified. */
 export enum OrgEnvironment {
-  Production = "production",
-  Staging = "staging",
-  Test = "test",
+  Production = 'production',
+  Staging = 'staging',
+  Test = 'test',
+}
+
+/** org-schedule */
+export type OrgSchedule = AtomBase & {
+  /** The schedule for each week. */
+  default_weekly_org_schedule?: WeeklyOrgSchedule;
+  /**
+   * The schedule must be valid and well-defined for at least this many
+   * days in the future, otherwise a warning notification is generated.
+   * Default is 0 if not specified.
+   * @format int32
+   */
+  min_valid_days?: number;
+  /** Human-readable name. */
+  name?: string;
+  /**
+   * The list of schedule fragments. It must be an ordered list of
+   * contiguous fragments (the next starting when the previous one
+   * ends), updates in a published schedule are only allowed to add new
+   * ones to the future.
+   */
+  org_schedule_fragments?: OrgScheduleFragmentOverview[];
+  /**
+   * Status determines how an item can be used. In 'draft' status an item
+   * can be edited but can't be used. When 'published' the item can longer
+   * be edited but can be used. 'Archived' is read-only.
+   */
+  status: OrgScheduleStatus;
+  /**
+   * Timezone in which this is defined. Only organization schedules in
+   * the same timezone can be directly combined.
+   */
+  timezone?: string;
+  /**
+   * Derived field indicating when a valid organization schedule will
+   * become invalid. If omitted, the schedule is already invalid. A
+   * schedule is valid if it has a weekly schedule for all named periods
+   * for all its schedule fragments, and if it has a schedule fragment
+   * for the time period in question.
+   * @format date-time
+   */
+  valid_until?: string;
+  /**
+   * If the organization schedule fragment specifies that the given day
+   * belongs to a named period, a weekly schedule from this list with
+   * the matching name will be selected.
+   */
+  weekly_org_schedules?: WeeklyOrgSchedule[];
+};
+
+/** org-schedule-fragment */
+export type OrgScheduleFragment = AtomBase & {
+  /**
+   * The date (inclusive) on which the organization schedule fragment
+   * begins.
+   * @format date-time
+   */
+  from?: string;
+  /**
+   * Periods during which the schedule is considered to be 'off' or to
+   * be in some specific named period.
+   */
+  intervals?: OrgScheduleInterval[];
+  /** Human-readable name, indicating the purpose of the schedule. */
+  name?: string;
+  /**
+   * CLDR region code of the countries/regions it is meant to be valid
+   * for. Does not drive logic, serves only for easier filtering and
+   * organization.
+   */
+  region_codes?: string[];
+  /**
+   * Status determines how an item can be used. In 'draft' status an item
+   * can be edited but can't be used. When 'published' the item can longer
+   * be edited but can be used. 'Archived' is read-only.
+   */
+  status: OrgScheduleFragmentStatus;
+  /**
+   * The date (exclusive) on which the organization schedule fragment's
+   * validity ends.
+   * @format date-time
+   */
+  to?: string;
+};
+
+/**
+ * org-schedule-fragment-overview
+ * The representation of the organization schedule fragment embedded
+ * inside a organization schedule, used to quickly look up the schedule
+ * fragment for the right period.
+ */
+export type OrgScheduleFragmentOverview = object;
+
+/**
+ * Status determines how an item can be used. In 'draft' status an item
+ * can be edited but can't be used. When 'published' the item can longer
+ * be edited but can be used. 'Archived' is read-only.
+ */
+export enum OrgScheduleFragmentStatus {
+  Archived = 'archived',
+  Draft = 'draft',
+  Published = 'published',
+}
+
+/** org-schedule-fragments-create-request */
+export interface OrgScheduleFragmentsCreateRequest {
+  /**
+   * Date (inclusive) on which the organization schedule fragment
+   * begins.
+   * @format date-time
+   */
+  from: string;
+  /** The intervals that comprise the schedule fragment. */
+  intervals: CreateOrgScheduleInterval[];
+  /** Name of the organization schedule fragment. */
+  name: string;
+  /**
+   * CLDR region code of the countries/regions it is meant to be valid
+   * for. Does not drive logic, serves only for easier filtering and
+   * organization.
+   */
+  region_codes?: string[];
+  /**
+   * Date (exclusive) on which the organization schedule fragment's
+   * validity ends.
+   * @format date-time
+   */
+  to: string;
+}
+
+/** org-schedule-fragments-create-response */
+export interface OrgScheduleFragmentsCreateResponse {
+  org_schedule_fragment: OrgScheduleFragment;
+}
+
+/** org-schedule-fragments-get-response */
+export interface OrgScheduleFragmentsGetResponse {
+  org_schedule_fragment: OrgScheduleFragment;
+}
+
+/** org-schedule-fragments-transition-request */
+export interface OrgScheduleFragmentsTransitionRequest {
+  /** Organization schedule Fragment ID. */
+  id: string;
+  /**
+   * Status determines how an item can be used. In 'draft' status an item
+   * can be edited but can't be used. When 'published' the item can longer
+   * be edited but can be used. 'Archived' is read-only.
+   */
+  status: OrgScheduleFragmentStatus;
+}
+
+/** org-schedule-fragments-transition-response */
+export interface OrgScheduleFragmentsTransitionResponse {
+  org_schedule_fragment: OrgScheduleFragment;
+}
+
+/**
+ * org-schedule-interval
+ * An optionally named period on day granularity.
+ */
+export type OrgScheduleInterval = object;
+
+/**
+ * Status determines how an item can be used. In 'draft' status an item
+ * can be edited but can't be used. When 'published' the item can longer
+ * be edited but can be used. 'Archived' is read-only.
+ */
+export enum OrgScheduleStatus {
+  Archived = 'archived',
+  Draft = 'draft',
+  Published = 'published',
+}
+
+/** org-schedules-create-request */
+export interface OrgSchedulesCreateRequest {
+  default_weekly_org_schedule?: SetWeeklyOrgSchedule;
+  /**
+   * Organization schedule must be valid for at least this many days in
+   * the future. Meaning organization schedule fragments must cover this
+   * period. 0 if omitted.
+   * @format int64
+   */
+  min_valid_days?: number;
+  /** Human-readable name. */
+  name: string;
+  /** List of organization schedule fragments with no overlaps or gaps. */
+  org_schedule_fragments?: SetOrgScheduleFragmentSummary[];
+  /**
+   * Timezone in which the organization schedule applies. Expected to be
+   * a valid IANA time zone name such as America/New_York.
+   */
+  timezone: string;
+  /**
+   * If this day belongs to a named period according to the currently
+   * active organization schedule fragment, a weekly organization
+   * schedule from this list with the corresponding name will apply.
+   */
+  weekly_org_schedules?: SetWeeklyOrgSchedule[];
+}
+
+/** org-schedules-create-response */
+export interface OrgSchedulesCreateResponse {
+  org_schedule: OrgSchedule;
+}
+
+/** org-schedules-get-response */
+export interface OrgSchedulesGetResponse {
+  org_schedule: OrgSchedule;
+}
+
+/** org-schedules-list-response */
+export interface OrgSchedulesListResponse {
+  /**
+   * The cursor used to iterate subsequent results in accordance to the
+   * sort order. If not set, then no later elements exist.
+   */
+  next_cursor?: string;
+  /** The list of organization schedules. */
+  org_schedules: OrgSchedule[];
+  /**
+   * The cursor used to iterate preceding results in accordance to the
+   * sort order. If not set, then no prior elements exist.
+   */
+  prev_cursor?: string;
+}
+
+/** org-schedules-set-future-request */
+export interface OrgSchedulesSetFutureRequest {
+  /** Organization schedule ID. */
+  id: string;
+  /** Organization schedule Fragment ID. */
+  org_schedule_fragment_id: string;
+}
+
+/** org-schedules-set-future-response */
+export interface OrgSchedulesSetFutureResponse {
+  org_schedule: OrgSchedule;
+}
+
+/** org-schedules-transition-request */
+export interface OrgSchedulesTransitionRequest {
+  /** Organization schedule ID. */
+  id: string;
+  /**
+   * Status determines how an item can be used. In 'draft' status an item
+   * can be edited but can't be used. When 'published' the item can longer
+   * be edited but can be used. 'Archived' is read-only.
+   */
+  status: OrgScheduleStatus;
+}
+
+/** org-schedules-transition-response */
+export interface OrgSchedulesTransitionResponse {
+  org_schedule: OrgSchedule;
+}
+
+/** org-schedules-update-request */
+export interface OrgSchedulesUpdateRequest {
+  default_weekly_org_schedule?: SetWeeklyOrgSchedule;
+  /** Organization schedule ID. */
+  id: string;
+  /**
+   * Organization schedule must be valid for at least this many days in
+   * the future. Meaning organization schedule fragments must cover this
+   * period. 0 if omitted.
+   * @format int64
+   */
+  min_valid_days?: number;
+  /** Human-readable name. */
+  name?: string;
+  /** List of organization schedule fragments with no overlaps or gaps. */
+  org_schedule_fragments?: SetOrgScheduleFragmentSummary[];
+  /**
+   * Timezone in which the organization schedule applies. Expected to be
+   * a valid IANA time zone name such as America/New_York.
+   */
+  timezone?: string;
+  /**
+   * If this day belongs to a named period according to the currently
+   * active organization schedule fragment, a weekly organization
+   * schedule from this list with the corresponding name will apply.
+   */
+  weekly_org_schedules?: SetWeeklyOrgSchedule[];
+}
+
+/** org-schedules-update-response */
+export interface OrgSchedulesUpdateResponse {
+  org_schedule: OrgSchedule;
 }
 
 /** org-summary */
-export type OrgSummary = RevOrgSummary & {
+export type OrgSummary = (AccountSummary | RevOrgSummary) & {
   type: OrgType;
 };
 
 export enum OrgType {
-  RevOrg = "rev_org",
+  Account = 'account',
+  RevOrg = 'rev_org',
 }
 
 /** part-base-summary */
@@ -1123,10 +1515,10 @@ export type PartSummary = (
 };
 
 export enum PartType {
-  Capability = "capability",
-  Enhancement = "enhancement",
-  Feature = "feature",
-  Product = "product",
+  Capability = 'capability',
+  Enhancement = 'enhancement',
+  Feature = 'feature',
+  Product = 'product',
 }
 
 /** product-summary */
@@ -1134,6 +1526,8 @@ export type ProductSummary = PartBaseSummary;
 
 /** rev-org */
 export type RevOrg = OrgBase & {
+  /** Custom fields. */
+  custom_fields?: object;
   /**
    * Custom schema fragments.
    * @example ["don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>"]
@@ -1269,6 +1663,8 @@ export interface RevOrgsUpdateResponse {
 
 /** rev-user */
 export type RevUser = UserBase & {
+  /** Custom fields. */
+  custom_fields?: object;
   /**
    * Custom schema fragments.
    * @example ["don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>"]
@@ -1451,6 +1847,18 @@ export type SchemaCompositeListFieldDescriptor = SchemaFieldDescriptorBase & {
   composite_type?: string;
 };
 
+/** schema-date-field-descriptor */
+export type SchemaDateFieldDescriptor = SchemaFieldDescriptorBase & {
+  /** Default value. */
+  default_value?: string;
+};
+
+/** schema-date-list-field-descriptor */
+export type SchemaDateListFieldDescriptor = SchemaFieldDescriptorBase & {
+  /** Default value. */
+  default_value?: string[];
+};
+
 /** schema-double-field-descriptor */
 export type SchemaDoubleFieldDescriptor = SchemaFieldDescriptorBase & {
   /**
@@ -1489,6 +1897,7 @@ export type SchemaEnumListFieldDescriptor = SchemaFieldDescriptorBase & {
 export type SchemaFieldDescriptor = (
   | SchemaBoolFieldDescriptor
   | SchemaCompositeFieldDescriptor
+  | SchemaDateFieldDescriptor
   | SchemaDoubleFieldDescriptor
   | SchemaEnumFieldDescriptor
   | SchemaFieldDescriptorArrayType
@@ -1506,6 +1915,7 @@ export type SchemaFieldDescriptor = (
 export type SchemaFieldDescriptorArrayType = (
   | SchemaBoolListFieldDescriptor
   | SchemaCompositeListFieldDescriptor
+  | SchemaDateListFieldDescriptor
   | SchemaDoubleListFieldDescriptor
   | SchemaEnumListFieldDescriptor
   | SchemaIdListFieldDescriptor
@@ -1529,16 +1939,17 @@ export type SchemaFieldDescriptorArrayType = (
 };
 
 export enum SchemaFieldDescriptorArrayTypeBaseType {
-  Bool = "bool",
-  Composite = "composite",
-  Double = "double",
-  Enum = "enum",
-  Id = "id",
-  Int = "int",
-  RichText = "rich_text",
-  Text = "text",
-  Timestamp = "timestamp",
-  Tokens = "tokens",
+  Bool = 'bool',
+  Composite = 'composite',
+  Date = 'date',
+  Double = 'double',
+  Enum = 'enum',
+  Id = 'id',
+  Int = 'int',
+  RichText = 'rich_text',
+  Text = 'text',
+  Timestamp = 'timestamp',
+  Tokens = 'tokens',
 }
 
 /** schema-field-descriptor-base */
@@ -1554,6 +1965,8 @@ export interface SchemaFieldDescriptorBase {
   is_pii?: boolean;
   /** Whether this field is required or not. */
   is_required?: boolean;
+  /** The schema of MFZ specific fields. */
+  mfz?: SchemaFieldMfzMetadata;
   /** Name of the field. */
   name: string;
   /** Type this field is from. */
@@ -1563,18 +1976,25 @@ export interface SchemaFieldDescriptorBase {
 }
 
 export enum SchemaFieldDescriptorFieldType {
-  Array = "array",
-  Bool = "bool",
-  Composite = "composite",
-  Double = "double",
-  Enum = "enum",
-  Id = "id",
-  Int = "int",
-  RichText = "rich_text",
-  Text = "text",
-  Timestamp = "timestamp",
-  Tokens = "tokens",
+  Array = 'array',
+  Bool = 'bool',
+  Composite = 'composite',
+  Date = 'date',
+  Double = 'double',
+  Enum = 'enum',
+  Id = 'id',
+  Int = 'int',
+  RichText = 'rich_text',
+  Text = 'text',
+  Timestamp = 'timestamp',
+  Tokens = 'tokens',
 }
+
+/**
+ * schema-field-mfz-metadata
+ * The schema of MFZ specific fields.
+ */
+export type SchemaFieldMfzMetadata = object;
 
 /**
  * schema-field-ui-metadata
@@ -1774,10 +2194,7 @@ export type SchemaTextListFieldDescriptor = SchemaFieldDescriptorBase & {
 
 /** schema-timestamp-field-descriptor */
 export type SchemaTimestampFieldDescriptor = SchemaFieldDescriptorBase & {
-  /**
-   * Default value.
-   * @format date-time
-   */
+  /** Default value. */
   default_value?: string;
 };
 
@@ -1845,6 +2262,12 @@ export type SchemaTokensListFieldDescriptor = SchemaFieldDescriptorBase & {
   suffix?: string;
 };
 
+/** set-org-schedule-fragment-summary */
+export interface SetOrgScheduleFragmentSummary {
+  /** Organization schedule fragment ID. */
+  id: string;
+}
+
 /** set-sla-policy */
 export interface SetSlaPolicy {
   /** Metrics to apply to the selected items. */
@@ -1897,7 +2320,7 @@ export interface SetSupportMetricTarget {
    * be breached, in order to avoid breaching the overall SLA policy.
    * @format double
    */
-  performance: number;
+  performance?: number;
   /**
    * The target value to be achieved, for example the time in which to
    * do something, or the maximum allowed number of message pairs. The
@@ -1926,6 +2349,17 @@ export interface SetTagWithValue {
    * the value must be one that's specified in the tag's allowed values.
    */
   value?: string;
+}
+
+/** set-weekly-org-schedule */
+export interface SetWeeklyOrgSchedule {
+  /** The 'on' intervals of the week. */
+  intervals: CreateWeeklyOrgScheduleInterval[];
+  /**
+   * The name of the period during which the organization schedule
+   * applies.
+   */
+  period_name: string;
 }
 
 /** sla */
@@ -1987,10 +2421,10 @@ export type SlaCompensation = object;
  * the customer.
  */
 export enum SlaEvaluationPeriod {
-  Monthly = "monthly",
-  Quarterly = "quarterly",
-  Weekly = "weekly",
-  Yearly = "yearly",
+  Monthly = 'monthly',
+  Quarterly = 'quarterly',
+  Weekly = 'weekly',
+  Yearly = 'yearly',
 }
 
 /**
@@ -2001,23 +2435,23 @@ export type SlaPolicy = object;
 
 /** The item type for which the SLA policy applies. */
 export enum SlaSelectorAppliesTo {
-  Conversation = "conversation",
-  Ticket = "ticket",
+  Conversation = 'conversation',
+  Ticket = 'ticket',
 }
 
 /** Th SLA policy applies to conversations with these priorities. */
 export enum SlaSelectorPriority {
-  P0 = "p0",
-  P1 = "p1",
-  P2 = "p2",
+  P0 = 'p0',
+  P1 = 'p1',
+  P2 = 'p2',
 }
 
 /** The SLA policy applies to tickets with these severities. */
 export enum SlaSelectorSeverity {
-  Blocker = "blocker",
-  High = "high",
-  Low = "low",
-  Medium = "medium",
+  Blocker = 'blocker',
+  High = 'high',
+  Low = 'low',
+  Medium = 'medium',
 }
 
 /**
@@ -2026,9 +2460,9 @@ export enum SlaSelectorSeverity {
  * be edited but can be used. 'Archived' is read-only.
  */
 export enum SlaStatus {
-  Archived = "archived",
-  Draft = "draft",
-  Published = "published",
+  Archived = 'archived',
+  Draft = 'draft',
+  Published = 'published',
 }
 
 /** slas-assign-request */
@@ -2266,13 +2700,19 @@ export interface TagWithValue {
   value?: string;
 }
 
+/** task */
+export type Task = WorkBase;
+
 /** Priority of the work based upon impact and criticality. */
 export enum TaskPriority {
-  P0 = "p0",
-  P1 = "p1",
-  P2 = "p2",
-  P3 = "p3",
+  P0 = 'p0',
+  P1 = 'p1',
+  P2 = 'p2',
+  P3 = 'p3',
 }
+
+/** task-summary */
+export type TaskSummary = WorkBaseSummary;
 
 /** ticket */
 export type Ticket = WorkBase & {
@@ -2284,10 +2724,10 @@ export type Ticket = WorkBase & {
 
 /** Severity of the ticket. */
 export enum TicketSeverity {
-  Blocker = "blocker",
-  High = "high",
-  Low = "low",
-  Medium = "medium",
+  Blocker = 'blocker',
+  High = 'high',
+  Low = 'low',
+  Medium = 'medium',
 }
 
 /** ticket-summary */
@@ -2314,14 +2754,14 @@ export type TimelineComment = TimelineEntryBase & {
 
 /** The type of the body to use for the comment. */
 export enum TimelineCommentBodyType {
-  SnapKit = "snap_kit",
-  Text = "text",
+  SnapKit = 'snap_kit',
+  Text = 'text',
 }
 
 /** Describes collections of timeline entries. */
 export enum TimelineEntriesCollection {
-  Discussions = "discussions",
-  Events = "events",
+  Discussions = 'discussions',
+  Events = 'events',
 }
 
 /**
@@ -2381,7 +2821,7 @@ export interface TimelineEntriesCreateRequestTimelineComment {
 }
 
 export enum TimelineEntriesCreateRequestType {
-  TimelineComment = "timeline_comment",
+  TimelineComment = 'timeline_comment',
 }
 
 /**
@@ -2417,10 +2857,32 @@ export type TimelineEntry = TimelineComment & {
 };
 
 /** timeline-entry-base */
-export type TimelineEntryBase = AtomBase;
+export type TimelineEntryBase = AtomBase & {
+  /** The object that the Timeline entry belongs to. */
+  object: string;
+  /** The type of object that the Timeline entry belongs to. */
+  object_type?: TimelineEntryObjectType;
+};
+
+/** The type of object that the Timeline entry belongs to. */
+export enum TimelineEntryObjectType {
+  Account = 'account',
+  Capability = 'capability',
+  Conversation = 'conversation',
+  Enhancement = 'enhancement',
+  Feature = 'feature',
+  Issue = 'issue',
+  Opportunity = 'opportunity',
+  Product = 'product',
+  RevOrg = 'rev_org',
+  RevUser = 'rev_user',
+  Task = 'task',
+  Ticket = 'ticket',
+  TimelineComment = 'timeline_comment',
+}
 
 export enum TimelineEntryType {
-  TimelineComment = "timeline_comment",
+  TimelineComment = 'timeline_comment',
 }
 
 /**
@@ -2431,10 +2893,10 @@ export enum TimelineEntryType {
  * visibility is 'external'.
  */
 export enum TimelineEntryVisibility {
-  External = "external",
-  Internal = "internal",
-  Private = "private",
-  Public = "public",
+  External = 'external',
+  Internal = 'internal',
+  Private = 'private',
+  Public = 'public',
 }
 
 /**
@@ -2507,11 +2969,11 @@ export type UserBaseSummary = AtomBaseSummary & {
 
 /** State of the user. */
 export enum UserState {
-  Active = "active",
-  Deactivated = "deactivated",
-  Locked = "locked",
-  Shadow = "shadow",
-  Unassigned = "unassigned",
+  Active = 'active',
+  Deactivated = 'deactivated',
+  Locked = 'locked',
+  Shadow = 'shadow',
+  Unassigned = 'unassigned',
 }
 
 /** user-summary */
@@ -2520,13 +2982,19 @@ export type UserSummary = (DevUserSummary | RevUserSummary | SysUserSummary) & {
 };
 
 export enum UserType {
-  DevUser = "dev_user",
-  RevUser = "rev_user",
-  SysUser = "sys_user",
+  DevUser = 'dev_user',
+  RevUser = 'rev_user',
+  SysUser = 'sys_user',
 }
 
+/**
+ * weekly-org-schedule
+ * The schedule for each week.
+ */
+export type WeeklyOrgSchedule = object;
+
 /** work */
-export type Work = (Issue | Opportunity | Ticket) & {
+export type Work = (Issue | Opportunity | Task | Ticket) & {
   type: WorkType;
 };
 
@@ -2537,6 +3005,8 @@ export type WorkBase = AtomBase & {
   artifacts?: ArtifactSummary[];
   /** Body of the work object. */
   body?: string;
+  /** Custom fields. */
+  custom_fields?: object;
   /**
    * Custom schema fragments.
    * @example ["don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>"]
@@ -2571,9 +3041,10 @@ export type WorkBaseSummary = AtomBaseSummary & {
 };
 
 export enum WorkType {
-  Issue = "issue",
-  Opportunity = "opportunity",
-  Ticket = "ticket",
+  Issue = 'issue',
+  Opportunity = 'opportunity',
+  Task = 'task',
+  Ticket = 'ticket',
 }
 
 /** works-create-request */
@@ -2597,6 +3068,8 @@ export type WorksCreateRequest = (
   artifacts?: string[];
   /** Body of the work object. */
   body?: string;
+  /** Custom fields. */
+  custom_fields?: object;
   /**
    * The custom schema fragments to use.
    * @example ["don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>"]
@@ -2653,6 +3126,10 @@ export interface WorksCreateRequestOpportunity {
    * @format double
    */
   customer_budget?: number;
+  /** Forecast category of the opportunity. */
+  forecast_category?: OpportunityForecastCategory;
+  /** Priority of the opportunity. */
+  priority?: OpportunityPriority;
   /**
    * The probability of winning the deal, lies between 0.0 and 1.0.
    * @format double
@@ -2749,6 +3226,8 @@ export type WorksUpdateRequest = (
   artifacts?: WorksUpdateRequestArtifactIds;
   /** Updated body of the work object, or unchanged if not provided. */
   body?: string;
+  /** Custom fields. */
+  custom_fields?: object;
   /**
    * The custom schema fragments to use.
    * @example ["don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>"]
@@ -2887,12 +3366,12 @@ import axios, {
   AxiosResponse,
   HeadersDefaults,
   ResponseType,
-} from "axios";
+} from 'axios';
 
 export type QueryParamsType = Record<string | number, any>;
 
 export interface FullRequestParams
-  extends Omit<AxiosRequestConfig, "data" | "params" | "url" | "responseType"> {
+  extends Omit<AxiosRequestConfig, 'data' | 'params' | 'url' | 'responseType'> {
   /** set parameter to `true` for call `securityWorker` for this request */
   secure?: boolean;
   /** request path */
@@ -2909,11 +3388,11 @@ export interface FullRequestParams
 
 export type RequestParams = Omit<
   FullRequestParams,
-  "body" | "method" | "query" | "path"
+  'body' | 'method' | 'query' | 'path'
 >;
 
 export interface ApiConfig<SecurityDataType = unknown>
-  extends Omit<AxiosRequestConfig, "data" | "cancelToken"> {
+  extends Omit<AxiosRequestConfig, 'data' | 'cancelToken'> {
   securityWorker?: (
     securityData: SecurityDataType | null
   ) => Promise<AxiosRequestConfig | void> | AxiosRequestConfig | void;
@@ -2922,16 +3401,16 @@ export interface ApiConfig<SecurityDataType = unknown>
 }
 
 export enum ContentType {
-  Json = "application/json",
-  FormData = "multipart/form-data",
-  UrlEncoded = "application/x-www-form-urlencoded",
-  Text = "text/plain",
+  Json = 'application/json',
+  FormData = 'multipart/form-data',
+  UrlEncoded = 'application/x-www-form-urlencoded',
+  Text = 'text/plain',
 }
 
 export class HttpClient<SecurityDataType = unknown> {
   public instance: AxiosInstance;
   private securityData: SecurityDataType | null = null;
-  private securityWorker?: ApiConfig<SecurityDataType>["securityWorker"];
+  private securityWorker?: ApiConfig<SecurityDataType>['securityWorker'];
   private secure?: boolean;
   private format?: ResponseType;
 
@@ -2943,7 +3422,7 @@ export class HttpClient<SecurityDataType = unknown> {
   }: ApiConfig<SecurityDataType> = {}) {
     this.instance = axios.create({
       ...axiosConfig,
-      baseURL: axiosConfig.baseURL || "{protocol}://{hostname}",
+      baseURL: axiosConfig.baseURL || '{protocol}://{hostname}',
     });
     this.secure = secure;
     this.format = format;
@@ -2977,7 +3456,7 @@ export class HttpClient<SecurityDataType = unknown> {
   }
 
   protected stringifyFormItem(formItem: unknown) {
-    if (typeof formItem === "object" && formItem !== null) {
+    if (typeof formItem === 'object' && formItem !== null) {
       return JSON.stringify(formItem);
     } else {
       return `${formItem}`;
@@ -3012,7 +3491,7 @@ export class HttpClient<SecurityDataType = unknown> {
     ...params
   }: FullRequestParams): Promise<AxiosResponse<T>> => {
     const secureParams =
-      ((typeof secure === "boolean" ? secure : this.secure) &&
+      ((typeof secure === 'boolean' ? secure : this.secure) &&
         this.securityWorker &&
         (await this.securityWorker(this.securityData))) ||
       {};
@@ -3023,7 +3502,7 @@ export class HttpClient<SecurityDataType = unknown> {
       type === ContentType.FormData &&
       body &&
       body !== null &&
-      typeof body === "object"
+      typeof body === 'object'
     ) {
       body = this.createFormData(body as Record<string, unknown>);
     }
@@ -3032,7 +3511,7 @@ export class HttpClient<SecurityDataType = unknown> {
       type === ContentType.Text &&
       body &&
       body !== null &&
-      typeof body !== "string"
+      typeof body !== 'string'
     ) {
       body = JSON.stringify(body);
     }
@@ -3042,7 +3521,7 @@ export class HttpClient<SecurityDataType = unknown> {
       headers: {
         ...(requestParams.headers || {}),
         ...(type && type !== ContentType.FormData
-          ? { "Content-Type": type }
+          ? { 'Content-Type': type }
           : {}),
       },
       params: query,
@@ -3082,11 +3561,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/accounts.create`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3110,11 +3589,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/accounts.delete`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3134,13 +3613,13 @@ export class Api<
        * Filters for objects created after the provided timestamp (inclusive).
        * @format date-time
        */
-      "created_date.after"?: string;
+      'created_date.after'?: string;
       /**
        * Filters for objects created before the provided timestamp
        * (inclusive).
        * @format date-time
        */
-      "created_date.before"?: string;
+      'created_date.before'?: string;
       /** Array of references of accounts to be filtered. */
       external_refs?: string[];
       /**
@@ -3154,13 +3633,13 @@ export class Api<
        * Filters for objects created after the provided timestamp (inclusive).
        * @format date-time
        */
-      "modified_date.after"?: string;
+      'modified_date.after'?: string;
       /**
        * Filters for objects created before the provided timestamp
        * (inclusive).
        * @format date-time
        */
-      "modified_date.before"?: string;
+      'modified_date.before'?: string;
       /** Fields to sort the accounts by and the direction to sort them in. */
       sort_by?: string[];
     },
@@ -3176,10 +3655,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/accounts.export`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3212,10 +3691,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/accounts.get`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3235,13 +3714,13 @@ export class Api<
        * Filters for objects created after the provided timestamp (inclusive).
        * @format date-time
        */
-      "created_date.after"?: string;
+      'created_date.after'?: string;
       /**
        * Filters for objects created before the provided timestamp
        * (inclusive).
        * @format date-time
        */
-      "created_date.before"?: string;
+      'created_date.before'?: string;
       /**
        * The cursor to resume iteration from. If not provided, then iteration
        * starts from the beginning.
@@ -3264,13 +3743,13 @@ export class Api<
        * Filters for objects created after the provided timestamp (inclusive).
        * @format date-time
        */
-      "modified_date.after"?: string;
+      'modified_date.after'?: string;
       /**
        * Filters for objects created before the provided timestamp
        * (inclusive).
        * @format date-time
        */
-      "modified_date.before"?: string;
+      'modified_date.before'?: string;
       /** Fields to sort the accounts by and the direction to sort them in. */
       sort_by?: string[];
     },
@@ -3287,10 +3766,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/accounts.list`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3314,11 +3793,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/accounts.update`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3344,11 +3823,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/conversations.create`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3375,11 +3854,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/conversations.delete`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3427,7 +3906,7 @@ export class Api<
       /** Filters for conversations with any of the provided source channels. */
       source_channels?: string[];
       /** Filters for records in the provided stage(s). */
-      "stage.name"?: string[];
+      'stage.name'?: string[];
       /**
        * Filters for conversations with any of the provided tags.
        * @example ["don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"]
@@ -3446,10 +3925,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/conversations.export`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3479,10 +3958,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/conversations.get`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3539,7 +4018,7 @@ export class Api<
       /** Filters for conversations with any of the provided source channels. */
       source_channels?: string[];
       /** Filters for records in the provided stage(s). */
-      "stage.name"?: string[];
+      'stage.name'?: string[];
       /**
        * Filters for conversations with any of the provided tags.
        * @example ["don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"]
@@ -3558,10 +4037,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/conversations.list`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3588,11 +4067,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/conversations.update`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3606,11 +4085,20 @@ export class Api<
    */
   engagementsCount = (
     query?: {
+      /** Filters for meetings with the provided external_refs. */
+      external_ref?: string[];
+      /**
+       * Filters for engagement of the provided members.
+       * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+       */
+      members?: string[];
       /**
        * Filters for engagements with the provided parent.
        * @example ["don:core:<partition>:devo/<dev-org-id>:account/<account-id>"]
        */
       parent?: string[];
+      /** Filters for engagement of the provided types. */
+      type?: EngagementType[];
     },
     params: RequestParams = {}
   ) =>
@@ -3624,10 +4112,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/engagements.count`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3653,11 +4141,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/engagements.create`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3684,11 +4172,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/engagements.delete`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3718,10 +4206,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/engagements.get`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3740,11 +4228,18 @@ export class Api<
        * starts from the beginning.
        */
       cursor?: string;
+      /** Filters for meetings with the provided external_refs. */
+      external_ref?: string[];
       /**
        * The maximum number of engagements to return.
        * @format int32
        */
       limit?: number;
+      /**
+       * Filters for engagement of the provided members.
+       * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+       */
+      members?: string[];
       /**
        * The iteration mode to use, otherwise if not set, then "after" is
        * used.
@@ -3757,6 +4252,8 @@ export class Api<
       parent?: string[];
       /** Fields to sort the engagements by and the direction to sort them. */
       sort_by?: string[];
+      /** Filters for engagement of the provided types. */
+      type?: EngagementType[];
     },
     params: RequestParams = {}
   ) =>
@@ -3770,10 +4267,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/engagements.list`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3800,11 +4297,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/engagements.update`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3831,11 +4328,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/event-sources.schedule`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3862,7 +4359,7 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/event-sources.unschedule`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
@@ -3888,11 +4385,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/links.create`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3916,11 +4413,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/links.delete`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -3950,10 +4447,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/links.get`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -4014,10 +4511,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/links.list`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -4063,10 +4560,305 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/metric-definitions.list`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Creates an organization schedule fragment.
+   *
+   * @tags schedules
+   * @name OrgScheduleFragmentsCreate
+   * @request POST:/org-schedule-fragments.create
+   * @secure
+   */
+  orgScheduleFragmentsCreate = (
+    data: OrgScheduleFragmentsCreateRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      OrgScheduleFragmentsCreateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/org-schedule-fragments.create`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets an organization schedule fragment.
+   *
+   * @tags schedules
+   * @name OrgScheduleFragmentsGet
+   * @request GET:/org-schedule-fragments.get
+   * @secure
+   */
+  orgScheduleFragmentsGet = (
+    query: {
+      /** Organization schedule Fragment ID. */
+      id: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      OrgScheduleFragmentsGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/org-schedule-fragments.get`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Changes stage of an organization schedule fragment.
+   *
+   * @tags schedules
+   * @name OrgScheduleFragmentsTransition
+   * @request POST:/org-schedule-fragments.transition
+   * @secure
+   */
+  orgScheduleFragmentsTransition = (
+    data: OrgScheduleFragmentsTransitionRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      OrgScheduleFragmentsTransitionResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/org-schedule-fragments.transition`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Creates an organization schedule with a default weekly organization schedule and a list of organization schedule fragments.
+   *
+   * @tags schedules
+   * @name OrgSchedulesCreate
+   * @request POST:/org-schedules.create
+   * @secure
+   */
+  orgSchedulesCreate = (
+    data: OrgSchedulesCreateRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      OrgSchedulesCreateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/org-schedules.create`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets an organization schedule.
+   *
+   * @tags schedules
+   * @name OrgSchedulesGet
+   * @request GET:/org-schedules.get
+   * @secure
+   */
+  orgSchedulesGet = (
+    query: {
+      /** Organization schedule ID. */
+      id: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      OrgSchedulesGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/org-schedules.get`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets list of organization schedules.
+   *
+   * @tags schedules
+   * @name OrgSchedulesList
+   * @request GET:/org-schedules.list
+   * @secure
+   */
+  orgSchedulesList = (
+    query?: {
+      /** Creator ID the filter matches. */
+      created_by_id?: string[];
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /**
+       * Max number of organization schedules returned in a page. Default is
+       * 50.
+       * @format int32
+       */
+      limit?: number;
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /** The organization schedule statuses the filter matches. */
+      status?: OrgScheduleStatus[];
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      OrgSchedulesListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/org-schedules.list`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Sets next organization schedule fragment which must begin the day the last existing fragment ends.
+   *
+   * @tags schedules
+   * @name OrgSchedulesSetFuture
+   * @request POST:/org-schedules.set-future
+   * @secure
+   */
+  orgSchedulesSetFuture = (
+    data: OrgSchedulesSetFutureRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      OrgSchedulesSetFutureResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/org-schedules.set-future`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Publishes or archives an organization schedule.
+   *
+   * @tags schedules
+   * @name OrgSchedulesTransition
+   * @request POST:/org-schedules.transition
+   * @secure
+   */
+  orgSchedulesTransition = (
+    data: OrgSchedulesTransitionRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      OrgSchedulesTransitionResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/org-schedules.transition`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Updates an organization schedule.
+   *
+   * @tags schedules
+   * @name OrgSchedulesUpdate
+   * @request POST:/org-schedules.update
+   * @secure
+   */
+  orgSchedulesUpdate = (
+    data: OrgSchedulesUpdateRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      OrgSchedulesUpdateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/org-schedules.update`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
       ...params,
     });
 
@@ -4089,11 +4881,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/rev-orgs.create`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -4126,10 +4918,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/rev-orgs.get`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -4149,13 +4941,13 @@ export class Api<
        * Filters for objects created after the provided timestamp (inclusive).
        * @format date-time
        */
-      "created_date.after"?: string;
+      'created_date.after'?: string;
       /**
        * Filters for objects created before the provided timestamp
        * (inclusive).
        * @format date-time
        */
-      "created_date.before"?: string;
+      'created_date.before'?: string;
       /**
        * The cursor to resume iteration from. If not provided, then iteration
        * starts from the beginning.
@@ -4182,13 +4974,13 @@ export class Api<
        * Filters for objects created after the provided timestamp (inclusive).
        * @format date-time
        */
-      "modified_date.after"?: string;
+      'modified_date.after'?: string;
       /**
        * Filters for objects created before the provided timestamp
        * (inclusive).
        * @format date-time
        */
-      "modified_date.before"?: string;
+      'modified_date.before'?: string;
       /**
        * Fields to sort the Rev organizations by and the direction to sort
        * them.
@@ -4208,10 +5000,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/rev-orgs.list`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -4235,11 +5027,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/rev-orgs.update`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -4262,11 +5054,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/rev-users.create`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -4290,11 +5082,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/rev-users.delete`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -4324,10 +5116,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/rev-users.get`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -4354,11 +5146,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/rev-users.link`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -4378,13 +5170,13 @@ export class Api<
        * Filters for objects created after the provided timestamp (inclusive).
        * @format date-time
        */
-      "created_date.after"?: string;
+      'created_date.after'?: string;
       /**
        * Filters for objects created before the provided timestamp
        * (inclusive).
        * @format date-time
        */
-      "created_date.before"?: string;
+      'created_date.before'?: string;
       /**
        * The cursor to resume iteration from. If not provided, then iteration
        * starts from the beginning.
@@ -4408,13 +5200,15 @@ export class Api<
        * Filters for objects created after the provided timestamp (inclusive).
        * @format date-time
        */
-      "modified_date.after"?: string;
+      'modified_date.after'?: string;
       /**
        * Filters for objects created before the provided timestamp
        * (inclusive).
        * @format date-time
        */
-      "modified_date.before"?: string;
+      'modified_date.before'?: string;
+      /** List of phone numbers to filter Rev users on. */
+      phone_numbers?: string[];
       /**
        * List of IDs of Rev organizations to be filtered.
        * @example ["don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"]
@@ -4436,10 +5230,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/rev-users.list`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -4466,11 +5260,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/rev-users.unlink`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -4494,11 +5288,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/rev-users.update`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -4530,10 +5324,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/schemas.aggregated.get`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -4563,10 +5357,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/schemas.custom.get`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -4613,10 +5407,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/schemas.custom.list`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -4642,11 +5436,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/schemas.custom.set`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -4680,10 +5474,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/schemas.subtypes.list`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -4707,11 +5501,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/slas.assign`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -4734,11 +5528,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/slas.create`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -4768,10 +5562,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/slas.get`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -4815,10 +5609,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/slas.list`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -4842,11 +5636,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/slas.transition`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -4870,11 +5664,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/slas.update`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -4919,10 +5713,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/sys-users.list`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -4946,11 +5740,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/sys-users.update`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -4976,11 +5770,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/timeline-entries.create`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -5040,10 +5834,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/timeline-entries.list`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -5066,11 +5860,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/works.create`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -5094,11 +5888,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/works.delete`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -5122,6 +5916,8 @@ export class Api<
        * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
        */
       created_by?: string[];
+      /** Filters for custom fields. */
+      custom_fields?: object;
       /**
        * The number of work items to return. The default is '50', the maximum
        * is '5000'.
@@ -5129,42 +5925,42 @@ export class Api<
        */
       first?: number;
       /** Filters for issues with any of the provided priorities. */
-      "issue.priority"?: IssuePriority[];
+      'issue.priority'?: IssuePriority[];
       /**
        * Filters for issues with any of the provided Rev organizations.
        * @example ["don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"]
        */
-      "issue.rev_orgs"?: string[];
+      'issue.rev_orgs'?: string[];
       /**
        * Filters for opportunities belonging to any of the provided accounts.
        * @example ["don:core:<partition>:devo/<dev-org-id>:account/<account-id>"]
        */
-      "opportunity.account"?: string[];
+      'opportunity.account'?: string[];
       /** Filters for opportunities with any of the provided contacts. */
-      "opportunity.contacts"?: string[];
+      'opportunity.contacts'?: string[];
       /**
        * Filters for work owned by any of these users.
        * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
        */
       owned_by?: string[];
       /** Filters for records in the provided stage(s). */
-      "stage.name"?: string[];
+      'stage.name'?: string[];
       /** Filters for tickets belonging to specific groups. */
-      "ticket.group"?: string[];
+      'ticket.group'?: string[];
       /** Filters for tickets that are spam. */
-      "ticket.is_spam"?: boolean;
+      'ticket.is_spam'?: boolean;
       /** Filters for tickets that need response. */
-      "ticket.needs_response"?: boolean;
+      'ticket.needs_response'?: boolean;
       /**
        * Filters for tickets that are associated with any of the provided Rev
        * organizations.
        * @example ["don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"]
        */
-      "ticket.rev_org"?: string[];
+      'ticket.rev_org'?: string[];
       /** Filters for tickets with any of the provided severities. */
-      "ticket.severity"?: TicketSeverity[];
+      'ticket.severity'?: TicketSeverity[];
       /** Filters for tickets with any of the provided source channels. */
-      "ticket.source_channel"?: string[];
+      'ticket.source_channel'?: string[];
       /** Filters for work of the provided types. */
       type?: WorkType[];
     },
@@ -5180,10 +5976,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/works.export`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -5216,10 +6012,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/works.get`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -5248,13 +6044,15 @@ export class Api<
        * starts from the beginning.
        */
       cursor?: string;
+      /** Filters for custom fields. */
+      custom_fields?: object;
       /** Filters for issues with any of the provided priorities. */
-      "issue.priority"?: IssuePriority[];
+      'issue.priority'?: IssuePriority[];
       /**
        * Filters for issues with any of the provided Rev organizations.
        * @example ["don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"]
        */
-      "issue.rev_orgs"?: string[];
+      'issue.rev_orgs'?: string[];
       /**
        * The maximum number of works to return. The default is '50'.
        * @format int32
@@ -5269,32 +6067,32 @@ export class Api<
        * Filters for opportunities belonging to any of the provided accounts.
        * @example ["don:core:<partition>:devo/<dev-org-id>:account/<account-id>"]
        */
-      "opportunity.account"?: string[];
+      'opportunity.account'?: string[];
       /** Filters for opportunities with any of the provided contacts. */
-      "opportunity.contacts"?: string[];
+      'opportunity.contacts'?: string[];
       /**
        * Filters for work owned by any of these users.
        * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
        */
       owned_by?: string[];
       /** Filters for records in the provided stage(s). */
-      "stage.name"?: string[];
+      'stage.name'?: string[];
       /** Filters for tickets belonging to specific groups. */
-      "ticket.group"?: string[];
+      'ticket.group'?: string[];
       /** Filters for tickets that are spam. */
-      "ticket.is_spam"?: boolean;
+      'ticket.is_spam'?: boolean;
       /** Filters for tickets that need response. */
-      "ticket.needs_response"?: boolean;
+      'ticket.needs_response'?: boolean;
       /**
        * Filters for tickets that are associated with any of the provided Rev
        * organizations.
        * @example ["don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"]
        */
-      "ticket.rev_org"?: string[];
+      'ticket.rev_org'?: string[];
       /** Filters for tickets with any of the provided severities. */
-      "ticket.severity"?: TicketSeverity[];
+      'ticket.severity'?: TicketSeverity[];
       /** Filters for tickets with any of the provided source channels. */
-      "ticket.source_channel"?: string[];
+      'ticket.source_channel'?: string[];
       /** Filters for work of the provided types. */
       type?: WorkType[];
     },
@@ -5310,10 +6108,10 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/works.list`,
-      method: "GET",
+      method: 'GET',
       query: query,
       secure: true,
-      format: "json",
+      format: 'json',
       ...params,
     });
 
@@ -5337,11 +6135,11 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/works.update`,
-      method: "POST",
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: "json",
+      format: 'json',
       ...params,
     });
 }
