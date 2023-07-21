@@ -12,7 +12,7 @@ on:
         required: true
         options: [patch, minor, prepatch, preminor, prerelease]
       dry-run:
-        description: "Skip actual commit and publish"
+        description: "Dry Run - skip commit and publish"
         type: boolean
 
 jobs:
@@ -92,7 +92,7 @@ jobs:
 
       # Publish version to public repository
       - name: Publish
-        run: npm publish --verbose --tag ${{ env.RELEASE_TAG }} ${{ env.DRY_RUN }}
+        run: npm publish --verbose --access public --tag ${{ env.RELEASE_TAG }} ${{ env.DRY_RUN }}
         env:
           #NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           DRY_RUN: ${{ github.event.inputs.dry-run && '--dry-run' || ' '}}
