@@ -95,5 +95,5 @@ jobs:
       - name: Publish
         run: npm publish --verbose --access public --tag ${{ env.RELEASE_TAG }} ${{ env.DRY_RUN }}
         env:
-          #NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           DRY_RUN: ${{ github.event.inputs.dry-run != 'false' && '--dry-run' || ' '}}
