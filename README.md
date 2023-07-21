@@ -15,7 +15,7 @@ Make sure that your project's **package.json** contains `"type":"module"` settin
 ```
 import {client, betaSDK} from "@devrev/typescript-sdk";
 
-const devrevInternalSDK = client.setupBeta({ endpoint: "https://api.devrev.ai",
+const devrevBetaSDK = client.setupBeta({ endpoint: "https://api.devrev.ai",
 token: process.env.DEVREV_TOKEN });
 
 async function test(){
