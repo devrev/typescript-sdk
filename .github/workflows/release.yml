@@ -9,7 +9,10 @@ on:
         description: "Release type"
         type: choice
         required: true
-        options: [patch, minor, major, prepatch, preminor, premajor, prerelease]
+        options: [patch, minor, prepatch, preminor, prerelease]
+      dry-run:
+        description: "Skip actual commit and publish"
+        type: boolean
 
 jobs:
   release:
@@ -68,21 +71,27 @@ jobs:
 
       # Push repository changes
       - name: Push changes to repository
+        if: github.event.inputs.dry-run != false
         env:
           GITHUB_TOKEN: ${{ secrets.SVC_DEVREV_TOKEN }}
         run: |
           git push origin && git push --tags
 
+      # Documentation on config options https://github.com/softprops/action-gh-release
       - name: Update GitHub release documentation
+        if: github.event.inputs.dry-run != false
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ env.NEW_VERSION }}
+          name: ${{ env.NEW_VERSION }}
+          generate_release_notes: true
           prerelease: ${{ startsWith(github.event.inputs.release-type, 'pre') }}
         env:
           GITHUB_TOKEN: ${{ secrets.SVC_DEVREV_TOKEN }}
 
       # Publish version to public repository
       - name: Publish
-        run: yarn publish --verbose  --tag ${{ env.RELEASE_TAG }}
+        run: npm publish --verbose --tag ${{ env.RELEASE_TAG }} ${{ env.DRY_RUN }}
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          #NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          DRY_RUN: ${{ github.event.inputs.dry-run && '--dry-run' || ' '}}
