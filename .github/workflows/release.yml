@@ -93,7 +93,10 @@ jobs:
 
       # Publish version to public repository
       - name: Publish
-        run: npm publish --verbose --access public --tag ${{ env.RELEASE_TAG }} ${{ env.DRY_RUN }}
+        run: |
+          npm ci \
+          && npm run build \
+          && npm publish --verbose --access public --tag ${{ env.RELEASE_TAG }} ${{ env.DRY_RUN }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           DRY_RUN: ${{ github.event.inputs.dry-run != 'false' && '--dry-run' || ' '}}
