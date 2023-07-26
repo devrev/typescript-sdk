@@ -2336,6 +2336,8 @@ components:
             type: string
           object_type:
             $ref: '#/components/schemas/timeline-entry-object-type'
+          visibility:
+            $ref: '#/components/schemas/timeline-entry-visibility'
         required:
         - object
         type: object
