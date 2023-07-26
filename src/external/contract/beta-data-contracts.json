@@ -246,6 +246,47 @@
         "type": "object",
         "x-go-name": "AccountsDeleteResponseBody"
       },
+      "accounts-export-request": {
+        "description": "The request to export a collection of accounts.",
+        "properties": {
+          "created_by": {
+            "description": "Filters for accounts created by the specified user(s).",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "created_date": {
+            "$ref": "#/components/schemas/date-time-filter"
+          },
+          "external_refs": {
+            "description": "Array of references of accounts to be filtered.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "first": {
+            "description": "The number of accounts to return. The default is '50'.",
+            "format": "int32",
+            "maximum": 500,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "modified_date": {
+            "$ref": "#/components/schemas/date-time-filter"
+          },
+          "sort_by": {
+            "description": "Fields to sort the accounts by and the direction to sort them in.\n",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "title": "accounts-export-request",
+        "type": "object"
+      },
       "accounts-export-response": {
         "description": "The response to exporting a collection of accounts.",
         "properties": {
@@ -264,6 +305,21 @@
         "type": "object",
         "x-go-name": "AccountsExportResponseBody"
       },
+      "accounts-get-request": {
+        "description": "Request object to get an account's information.",
+        "properties": {
+          "id": {
+            "description": "The ID of the account to be retrieved.",
+            "example": "don:core:<partition>:devo/<dev-org-id>:account/<account-id>",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "accounts-get-request",
+        "type": "object"
+      },
       "accounts-get-response": {
         "description": "The returned account.",
         "properties": {
@@ -277,6 +333,52 @@
         "title": "accounts-get-response",
         "type": "object",
         "x-go-name": "AccountsGetResponseBody"
+      },
+      "accounts-list-request": {
+        "description": "List the accounts.",
+        "properties": {
+          "created_by": {
+            "description": "Filters for accounts created by the specified user(s).",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "created_date": {
+            "$ref": "#/components/schemas/date-time-filter"
+          },
+          "cursor": {
+            "description": "The cursor to resume iteration from. If not provided, then\niteration starts from the beginning.\n",
+            "type": "string"
+          },
+          "external_refs": {
+            "description": "Array of references of accounts to be filtered.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "limit": {
+            "description": "The maximum number of accounts to return per page. The default is\n'50'.\n",
+            "format": "int32",
+            "type": "integer"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/list-mode"
+          },
+          "modified_date": {
+            "$ref": "#/components/schemas/date-time-filter"
+          },
+          "sort_by": {
+            "description": "Fields to sort the accounts by and the direction to sort them in.\n",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "title": "accounts-list-request",
+        "type": "object"
       },
       "accounts-list-response": {
         "description": "The response to listing all accounts matching the filter criteria.\n",
@@ -383,6 +485,33 @@
       "aggregated-schema": {
         "description": "List of custom fields from multiple source fragments.",
         "title": "aggregated-schema",
+        "type": "object"
+      },
+      "aggregated-schema-get-request": {
+        "properties": {
+          "custom_schema_fragment_ids": {
+            "description": "The list of custom schema fragment DONs which are to be aggregated.\n",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "per_object_schema": {
+            "description": "Per object schema, if associated with the leaf type.",
+            "items": {
+              "$ref": "#/components/schemas/field-descriptor"
+            },
+            "type": "array"
+          },
+          "stock_schema_fragment_id": {
+            "description": "The stock schema fragment which is to be aggregated.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "custom_schema_fragment_ids"
+        ],
+        "title": "aggregated-schema-get-request",
         "type": "object"
       },
       "aggregated-schema-get-response": {
@@ -685,6 +814,91 @@
         "type": "object",
         "x-go-name": "ConversationsDeleteResponseBody"
       },
+      "conversations-export-request": {
+        "properties": {
+          "applies_to_parts": {
+            "description": "Filters for conversations belonging to any of the provided parts.\n",
+            "example": [
+              "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "first": {
+            "description": "The number of conversation items to return. The default is '50',\nthe maximum is '5000'.\n",
+            "format": "int32",
+            "type": "integer"
+          },
+          "group": {
+            "description": "Filters for conversation that belong to the given groups.\n",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "is_spam": {
+            "description": "Filters for conversations that are spam.",
+            "type": "boolean"
+          },
+          "members": {
+            "description": "Filters for conversations where these users are participants.\n",
+            "example": [
+              "don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "owned_by": {
+            "description": "Filters for conversations owned by any of these users.",
+            "example": [
+              "don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "rev_org": {
+            "description": "Filters for conversations that are associated with any of the\nprovided Rev organizations.\n",
+            "example": [
+              "don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "sla_summary": {
+            "$ref": "#/components/schemas/sla-summary-filter"
+          },
+          "source_channels": {
+            "description": "Filters for conversations with any of the provided source channels.\n",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "stage": {
+            "$ref": "#/components/schemas/stage-filter"
+          },
+          "tags": {
+            "description": "Filters for conversations with any of the provided tags.",
+            "example": [
+              "don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "title": "conversations-export-request",
+        "type": "object"
+      },
       "conversations-export-response": {
         "properties": {
           "conversations": {
@@ -702,6 +916,20 @@
         "type": "object",
         "x-go-name": "ConversationsExportResponseBody"
       },
+      "conversations-get-request": {
+        "description": "The request to get a conversation's information.",
+        "properties": {
+          "id": {
+            "description": "The requested conversation's ID.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "conversations-get-request",
+        "type": "object"
+      },
       "conversations-get-response": {
         "description": "The response to getting a conversation's information.",
         "properties": {
@@ -715,6 +943,99 @@
         "title": "conversations-get-response",
         "type": "object",
         "x-go-name": "ConversationsGetResponseBody"
+      },
+      "conversations-list-request": {
+        "description": "The request to get information about a list of conversations.\n",
+        "properties": {
+          "applies_to_parts": {
+            "description": "Filters for conversations belonging to any of the provided parts.\n",
+            "example": [
+              "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "cursor": {
+            "description": "The cursor to resume iteration from. If not provided, then\niteration starts from the beginning.\n",
+            "type": "string"
+          },
+          "group": {
+            "description": "Filters for conversation that belong to the given groups.\n",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "is_spam": {
+            "description": "Filters for conversations that are spam.",
+            "type": "boolean"
+          },
+          "limit": {
+            "description": "The maximum number of conversations to return. The default is '50'.\n",
+            "format": "int32",
+            "type": "integer"
+          },
+          "members": {
+            "description": "Filters for conversations where these users are participants.\n",
+            "example": [
+              "don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/list-mode"
+          },
+          "owned_by": {
+            "description": "Filters for conversations owned by any of these users.",
+            "example": [
+              "don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "rev_org": {
+            "description": "Filters for conversations that are associated with any of the\nprovided Rev organizations.\n",
+            "example": [
+              "don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "sla_summary": {
+            "$ref": "#/components/schemas/sla-summary-filter"
+          },
+          "source_channels": {
+            "description": "Filters for conversations with any of the provided source channels.\n",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "stage": {
+            "$ref": "#/components/schemas/stage-filter"
+          },
+          "tags": {
+            "description": "Filters for conversations with any of the provided tags.",
+            "example": [
+              "don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "title": "conversations-list-request",
+        "type": "object"
       },
       "conversations-list-response": {
         "description": "The response to listing the conversations.",
@@ -927,6 +1248,19 @@
       "custom-schema-fragment-type": {
         "type": "string"
       },
+      "custom-schema-fragments-get-request": {
+        "properties": {
+          "id": {
+            "description": "The ID of the custom schema fragment.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "custom-schema-fragments-get-request",
+        "type": "object"
+      },
       "custom-schema-fragments-get-response": {
         "properties": {
           "fragment": {
@@ -939,6 +1273,56 @@
         "title": "custom-schema-fragments-get-response",
         "type": "object",
         "x-go-name": "CustomSchemaFragmentsGetResponseBody"
+      },
+      "custom-schema-fragments-list-request": {
+        "properties": {
+          "app": {
+            "description": "The list of app names.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "cursor": {
+            "description": "The cursor to resume iteration from, otherwise if not provided,\nthen iteration starts from the beginning.\n",
+            "type": "string"
+          },
+          "leaf_type": {
+            "description": "The list of leaf types.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "limit": {
+            "description": "The maximum number of items.",
+            "format": "int32",
+            "type": "integer"
+          },
+          "sort_by": {
+            "description": "The list of fields to sort the items by and how to sort them.\n",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "subtype": {
+            "description": "The list of subtypes.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "types": {
+            "description": "Filters for custom schema fragment of the provided types.\n",
+            "items": {
+              "$ref": "#/components/schemas/custom-schema-fragment-type"
+            },
+            "type": "array"
+          }
+        },
+        "title": "custom-schema-fragments-list-request",
+        "type": "object"
       },
       "custom-schema-fragments-list-response": {
         "properties": {
@@ -1099,6 +1483,124 @@
         "type": "object",
         "x-go-name": "CustomSchemaFragmentsSetResponseBody"
       },
+      "date-filter": {
+        "description": "Provides ways to specify date ranges on objects.",
+        "discriminator": {
+          "mapping": {
+            "preset": "#/components/schemas/date-time-preset",
+            "range": "#/components/schemas/date-time-filter"
+          },
+          "propertyName": "type"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/date-time-filter"
+          },
+          {
+            "$ref": "#/components/schemas/date-time-preset"
+          }
+        ],
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/date-filter-type"
+          }
+        },
+        "required": [
+          "type"
+        ],
+        "title": "date-filter",
+        "type": "object"
+      },
+      "date-filter-type": {
+        "description": "Type of date filter.",
+        "enum": [
+          "preset",
+          "range"
+        ],
+        "type": "string"
+      },
+      "date-time-filter": {
+        "properties": {
+          "after": {
+            "description": "Filters for objects created after the provided timestamp\n(inclusive).\n",
+            "format": "date-time",
+            "type": "string"
+          },
+          "before": {
+            "description": "Filters for objects created before the provided timestamp\n(inclusive).\n",
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "title": "date-time-filter",
+        "type": "object"
+      },
+      "date-time-preset": {
+        "description": "Provides preset types for date filter.",
+        "discriminator": {
+          "mapping": {
+            "last_n_days": "#/components/schemas/date-time-preset-last-n-days",
+            "next_n_days": "#/components/schemas/date-time-preset-next-n-days"
+          },
+          "propertyName": "preset_type"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/date-time-preset-last-n-days"
+          },
+          {
+            "$ref": "#/components/schemas/date-time-preset-next-n-days"
+          }
+        ],
+        "properties": {
+          "preset_type": {
+            "$ref": "#/components/schemas/date-time-preset-type"
+          }
+        },
+        "required": [
+          "preset_type"
+        ],
+        "title": "date-time-preset",
+        "type": "object"
+      },
+      "date-time-preset-last-n-days": {
+        "properties": {
+          "days": {
+            "description": "The range starts from the current timestamp and continues for the\npast n days.\n",
+            "maximum": 4294967295,
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "days"
+        ],
+        "title": "date-time-preset-last-n-days",
+        "type": "object"
+      },
+      "date-time-preset-next-n-days": {
+        "properties": {
+          "days": {
+            "description": "The range starts from the current timestamp and continues for the\nnext n days.\n",
+            "maximum": 4294967295,
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "days"
+        ],
+        "title": "date-time-preset-next-n-days",
+        "type": "object"
+      },
+      "date-time-preset-type": {
+        "description": "Type of date preset.",
+        "enum": [
+          "last_n_days",
+          "next_n_days"
+        ],
+        "type": "string"
+      },
       "dev-user-summary": {
         "allOf": [
           {
@@ -1140,6 +1642,46 @@
           "survey"
         ],
         "type": "string"
+      },
+      "engagements-count-request": {
+        "properties": {
+          "external_ref": {
+            "description": "Filters for meetings with the provided external_refs.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "members": {
+            "description": "Filters for engagement of the provided members.",
+            "example": [
+              "don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "parent": {
+            "description": "Filters for engagements with the provided parent.",
+            "example": [
+              "don:core:<partition>:devo/<dev-org-id>:account/<account-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "type": {
+            "description": "Filters for engagement of the provided types.",
+            "items": {
+              "$ref": "#/components/schemas/engagement-type"
+            },
+            "type": "array"
+          }
+        },
+        "title": "engagements-count-request",
+        "type": "object"
       },
       "engagements-count-response": {
         "properties": {
@@ -1265,6 +1807,19 @@
         "type": "object",
         "x-go-name": "EngagementsDeleteResponseBody"
       },
+      "engagements-get-request": {
+        "properties": {
+          "id": {
+            "description": "The engagement ID.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "engagements-get-request",
+        "type": "object"
+      },
       "engagements-get-response": {
         "properties": {
           "engagement": {
@@ -1277,6 +1832,65 @@
         "title": "engagements-get-response",
         "type": "object",
         "x-go-name": "EngagementsGetResponseBody"
+      },
+      "engagements-list-request": {
+        "properties": {
+          "cursor": {
+            "description": "The cursor to resume iteration from. If not provided, then\niteration starts from the beginning.\n",
+            "type": "string"
+          },
+          "external_ref": {
+            "description": "Filters for meetings with the provided external_refs.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "limit": {
+            "description": "The maximum number of engagements to return.",
+            "format": "int32",
+            "type": "integer"
+          },
+          "members": {
+            "description": "Filters for engagement of the provided members.",
+            "example": [
+              "don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/list-mode"
+          },
+          "parent": {
+            "description": "Filters for engagements with the provided parent.",
+            "example": [
+              "don:core:<partition>:devo/<dev-org-id>:account/<account-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "sort_by": {
+            "description": "Fields to sort the engagements by and the direction to sort them.\n",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "type": {
+            "description": "Filters for engagement of the provided types.",
+            "items": {
+              "$ref": "#/components/schemas/engagement-type"
+            },
+            "type": "array"
+          }
+        },
+        "title": "engagements-list-request",
+        "type": "object"
       },
       "engagements-list-response": {
         "properties": {
@@ -1912,6 +2526,11 @@
         ],
         "title": "feature-summary"
       },
+      "field-descriptor": {
+        "description": "Set of field attributes.",
+        "title": "field-descriptor",
+        "type": "object"
+      },
       "group-summary": {
         "allOf": [
           {
@@ -2171,6 +2790,20 @@
         ],
         "type": "string"
       },
+      "links-get-request": {
+        "description": "The request to get a link's information.",
+        "properties": {
+          "id": {
+            "description": "The requested link's ID.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "links-get-request",
+        "type": "object"
+      },
       "links-get-response": {
         "description": "The response to getting a link's information.",
         "properties": {
@@ -2184,6 +2817,50 @@
         "title": "links-get-response",
         "type": "object",
         "x-go-name": "LinksGetResponseBody"
+      },
+      "links-list-request": {
+        "description": "The request to get information about a list of links.",
+        "properties": {
+          "cursor": {
+            "description": "The cursor to resume iteration from. If not provided, then\niteration starts from the beginning.\n",
+            "type": "string"
+          },
+          "direction": {
+            "$ref": "#/components/schemas/links-direction"
+          },
+          "limit": {
+            "description": "The maximum number of links to return. If not set, then the default\nis '50'.\n",
+            "format": "int32",
+            "type": "integer"
+          },
+          "link_type": {
+            "description": "The link type(s) to filter for, otherwise if not present, all link\ntypes are included.\n",
+            "items": {
+              "$ref": "#/components/schemas/link-type"
+            },
+            "type": "array"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/list-mode"
+          },
+          "object": {
+            "description": "The ID of the object to list the links for.",
+            "type": "string"
+          },
+          "types": {
+            "deprecated": true,
+            "description": "The link types to filter for, otherwise if not present, all link\ntypes are included.\n",
+            "items": {
+              "$ref": "#/components/schemas/link-type"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "object"
+        ],
+        "title": "links-list-request",
+        "type": "object"
       },
       "links-list-response": {
         "description": "The response to listing the links.",
@@ -2244,6 +2921,38 @@
           "value"
         ],
         "type": "string"
+      },
+      "metric-definitions-list-request": {
+        "properties": {
+          "applies_to_type": {
+            "description": "The type of objects the metric definition applies to.",
+            "items": {
+              "$ref": "#/components/schemas/metric-definition-applies-to"
+            },
+            "type": "array"
+          },
+          "cursor": {
+            "description": "The cursor to resume iteration from. If not provided, then\niteration starts from the beginning.\n",
+            "type": "string"
+          },
+          "limit": {
+            "description": "The maximum number of records to return. The default is '50'.\n",
+            "format": "int32",
+            "type": "integer"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/list-mode"
+          },
+          "type": {
+            "description": "The type of metric definitions sought.",
+            "items": {
+              "$ref": "#/components/schemas/metric-definition-metric-type"
+            },
+            "type": "array"
+          }
+        },
+        "title": "metric-definitions-list-request",
+        "type": "object"
       },
       "metric-definitions-list-response": {
         "properties": {
@@ -2519,6 +3228,19 @@
         "type": "object",
         "x-go-name": "OrgScheduleFragmentsCreateResponseBody"
       },
+      "org-schedule-fragments-get-request": {
+        "properties": {
+          "id": {
+            "description": "Organization schedule Fragment ID.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "org-schedule-fragments-get-request",
+        "type": "object"
+      },
       "org-schedule-fragments-get-response": {
         "properties": {
           "org_schedule_fragment": {
@@ -2629,6 +3351,19 @@
         "type": "object",
         "x-go-name": "OrgSchedulesCreateResponseBody"
       },
+      "org-schedules-get-request": {
+        "properties": {
+          "id": {
+            "description": "Organization schedule ID.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "org-schedules-get-request",
+        "type": "object"
+      },
       "org-schedules-get-response": {
         "properties": {
           "org_schedule": {
@@ -2641,6 +3376,41 @@
         "title": "org-schedules-get-response",
         "type": "object",
         "x-go-name": "OrgSchedulesGetResponseBody"
+      },
+      "org-schedules-list-request": {
+        "properties": {
+          "created_by_id": {
+            "description": "Creator ID the filter matches.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "cursor": {
+            "description": "The cursor to resume iteration from. If not provided, then\niteration starts from the beginning.\n",
+            "type": "string"
+          },
+          "limit": {
+            "description": "Max number of organization schedules returned in a page. Default is\n50.\n",
+            "format": "int32",
+            "type": "integer"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/list-mode"
+          },
+          "status": {
+            "description": "The organization schedule statuses the filter matches.",
+            "items": {
+              "$ref": "#/components/schemas/org-schedule-status"
+            },
+            "type": "array"
+          },
+          "valid_until": {
+            "$ref": "#/components/schemas/date-filter"
+          }
+        },
+        "title": "org-schedules-list-request",
+        "type": "object"
       },
       "org-schedules-list-response": {
         "properties": {
@@ -3003,6 +3773,21 @@
         "type": "object",
         "x-go-name": "RevOrgsCreateResponseBody"
       },
+      "rev-orgs-get-request": {
+        "description": "Request object to get Rev organization's information.",
+        "properties": {
+          "id": {
+            "description": "The ID of the required Rev organization.",
+            "example": "don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "rev-orgs-get-request",
+        "type": "object"
+      },
       "rev-orgs-get-response": {
         "description": "The response to getting a Rev organization's information.",
         "properties": {
@@ -3016,6 +3801,59 @@
         "title": "rev-orgs-get-response",
         "type": "object",
         "x-go-name": "RevOrgsGetResponseBody"
+      },
+      "rev-orgs-list-request": {
+        "description": "A request to get the list of Rev organizations for the authenticated\nuser's Dev organization.\n",
+        "properties": {
+          "created_by": {
+            "description": "Filters by creator.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "created_date": {
+            "$ref": "#/components/schemas/date-time-filter"
+          },
+          "cursor": {
+            "description": "The cursor to resume iteration from. If not provided, then\niteration starts from the beginning.\n",
+            "type": "string"
+          },
+          "custom_field_filter": {
+            "description": "Filters on custom fields. Input will be of the format\n(custom_field_filter=field_name1:val1,val2,val3&custom_field_filter=field_name2:val1,val2).\n",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "external_ref": {
+            "description": "List of external refs to filter Rev organizations for.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "limit": {
+            "description": "The maximum number of Rev organizations to be retrieved per page.\n",
+            "format": "int32",
+            "type": "integer"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/list-mode"
+          },
+          "modified_date": {
+            "$ref": "#/components/schemas/date-time-filter"
+          },
+          "sort_by": {
+            "description": "Fields to sort the Rev organizations by and the direction to sort\nthem.\n",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "title": "rev-orgs-list-request",
+        "type": "object"
       },
       "rev-orgs-list-response": {
         "description": "The response to getting a list of Rev organizations' information.\n",
@@ -3251,6 +4089,20 @@
         "type": "object",
         "x-go-name": "RevUsersDeleteResponseBody"
       },
+      "rev-users-get-request": {
+        "description": "Request object to get a Rev user.",
+        "properties": {
+          "id": {
+            "description": "The ID of Rev user to be retrieved.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "rev-users-get-request",
+        "type": "object"
+      },
       "rev-users-get-response": {
         "description": "The returned Rev user.",
         "properties": {
@@ -3264,6 +4116,76 @@
         "title": "rev-users-get-response",
         "type": "object",
         "x-go-name": "RevUsersGetResponseBody"
+      },
+      "rev-users-list-request": {
+        "description": "Gets the list of Rev users belonging to the authenticated user's Dev\nOrganization which the user is also authorized to access.\n",
+        "properties": {
+          "created_by": {
+            "description": "Filters for Rev users that were created by the specified user(s).\n",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "created_date": {
+            "$ref": "#/components/schemas/date-time-filter"
+          },
+          "cursor": {
+            "description": "The cursor to resume iteration from. If not provided, then\niteration starts from the beginning.\n",
+            "type": "string"
+          },
+          "email": {
+            "description": "List of emails of Rev users to be filtered.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "external_ref": {
+            "description": "List of external refs to filter Rev users for.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "limit": {
+            "description": "The maximum number of Rev users to return. The default is '50'.\n",
+            "format": "int32",
+            "type": "integer"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/list-mode"
+          },
+          "modified_date": {
+            "$ref": "#/components/schemas/date-time-filter"
+          },
+          "phone_numbers": {
+            "description": "List of phone numbers to filter Rev users on.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "rev_org": {
+            "description": "List of IDs of Rev organizations to be filtered.",
+            "example": [
+              "don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "sort_by": {
+            "description": "Fields to sort the Rev users by and the direction to sort them.\n",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "title": "rev-users-list-request",
+        "type": "object"
       },
       "rev-users-list-response": {
         "description": "The response to listing all Rev users matching the filter criteria.\n",
@@ -4533,6 +5455,11 @@
         ],
         "type": "string"
       },
+      "sla-summary-filter": {
+        "description": "The filter for SLA summary.",
+        "title": "sla-summary-filter",
+        "type": "object"
+      },
       "slas-assign-request": {
         "properties": {
           "id": {
@@ -4613,6 +5540,19 @@
         "type": "object",
         "x-go-name": "SlasCreateResponseBody"
       },
+      "slas-get-request": {
+        "properties": {
+          "id": {
+            "description": "The ID of the SLA to get.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "slas-get-request",
+        "type": "object"
+      },
       "slas-get-response": {
         "properties": {
           "sla": {
@@ -4625,6 +5565,31 @@
         "title": "slas-get-response",
         "type": "object",
         "x-go-name": "SlasGetResponseBody"
+      },
+      "slas-list-request": {
+        "properties": {
+          "cursor": {
+            "description": "The cursor to resume iteration from. If not provided, then\niteration starts from the beginning.\n",
+            "type": "string"
+          },
+          "limit": {
+            "description": "The maximum number of SLAs to return. The default is '50'.\n",
+            "format": "int32",
+            "type": "integer"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/list-mode"
+          },
+          "status": {
+            "description": "The SLA statuses the filter matches.",
+            "items": {
+              "$ref": "#/components/schemas/sla-status"
+            },
+            "type": "array"
+          }
+        },
+        "title": "slas-list-request",
+        "type": "object"
       },
       "slas-list-response": {
         "properties": {
@@ -4739,6 +5704,20 @@
         "title": "stage",
         "type": "object"
       },
+      "stage-filter": {
+        "description": "The filter for stages.",
+        "properties": {
+          "name": {
+            "description": "Filters for records in the provided stage(s).",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "title": "stage-filter",
+        "type": "object"
+      },
       "stage-init": {
         "description": "Sets an object's initial stage.",
         "properties": {
@@ -4793,6 +5772,24 @@
         "title": "subtype",
         "type": "object"
       },
+      "subtypes-list-request": {
+        "properties": {
+          "leaf_type": {
+            "deprecated": true,
+            "description": "Leaf type for which subtypes are required.",
+            "type": "string"
+          },
+          "leaf_types": {
+            "description": "List of leaf types for which subtypes are required.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "title": "subtypes-list-request",
+        "type": "object"
+      },
       "subtypes-list-response": {
         "properties": {
           "subtypes": {
@@ -4810,6 +5807,11 @@
         "type": "object",
         "x-go-name": "SubtypesListResponseBody"
       },
+      "survey-aggregation-filter": {
+        "description": "The filter for survey aggregation.",
+        "title": "survey-aggregation-filter",
+        "type": "object"
+      },
       "sys-user": {
         "allOf": [
           {
@@ -4825,6 +5827,32 @@
           }
         ],
         "title": "sys-user-summary"
+      },
+      "sys-users-list-request": {
+        "description": "A request to get the list of system user's information.",
+        "properties": {
+          "cursor": {
+            "description": "The cursor to resume iteration from. If not provided, then\niteration starts from the beginning.\n",
+            "type": "string"
+          },
+          "limit": {
+            "description": "The maximum number of system users to return. Value can range from\n'1' to '100', with a default of '50'.\n",
+            "format": "int32",
+            "type": "integer"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/list-mode"
+          },
+          "sort_by": {
+            "description": "Fields to sort the system users by and the direction to sort them.\n",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "title": "sys-users-list-request",
+        "type": "object"
       },
       "sys-users-list-response": {
         "description": "The response to listing the system users.",
@@ -5154,6 +6182,47 @@
         "type": "object",
         "x-go-name": "TimelineEntriesCreateResponseBody"
       },
+      "timeline-entries-list-request": {
+        "description": "The request to list timeline entries for an object.",
+        "properties": {
+          "collections": {
+            "description": "The collection(s) to list entries from, otherwise if not provided,\nall entries are returned.\n",
+            "items": {
+              "$ref": "#/components/schemas/timeline-entries-collection"
+            },
+            "type": "array"
+          },
+          "cursor": {
+            "description": "The cursor to resume iteration from. If not provided, then\niteration starts from the beginning.\n",
+            "type": "string"
+          },
+          "limit": {
+            "description": "The maximum number of entries to return. If not set, then this\ndefaults to `50`.\n",
+            "format": "int32",
+            "type": "integer"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/list-mode"
+          },
+          "object": {
+            "description": "The ID of the object to list timeline entries for.",
+            "example": "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>",
+            "type": "string"
+          },
+          "visibility": {
+            "description": "The visibility of the timeline entries to filter for. Note this is\na strict filter, such that only entries with the exact visibilities\nspecified will be returned.\n",
+            "items": {
+              "$ref": "#/components/schemas/timeline-entry-visibility"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "object"
+        ],
+        "title": "timeline-entries-list-request",
+        "type": "object"
+      },
       "timeline-entries-list-response": {
         "description": "The response to listing timeline entries for an object.",
         "properties": {
@@ -5216,6 +6285,19 @@
               },
               "object_type": {
                 "$ref": "#/components/schemas/timeline-entry-object-type"
+              },
+              "reactions": {
+                "description": "The reactions to the entry.",
+                "items": {
+                  "$ref": "#/components/schemas/timeline-reaction"
+                },
+                "type": "array"
+              },
+              "thread": {
+                "$ref": "#/components/schemas/timeline-thread"
+              },
+              "visibility": {
+                "$ref": "#/components/schemas/timeline-entry-visibility"
               }
             },
             "required": [
@@ -5261,6 +6343,26 @@
         ],
         "type": "string"
       },
+      "timeline-reaction": {
+        "description": "Reaction.",
+        "properties": {
+          "emoji": {
+            "description": "The reaction emoji's unicode codepoint, e.g. \"1f44d\".",
+            "type": "string"
+          },
+          "reacted": {
+            "description": "Whether the requesting user reacted.",
+            "type": "boolean"
+          },
+          "total_users": {
+            "description": "The total number of users with this reaction.",
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "title": "timeline-reaction",
+        "type": "object"
+      },
       "timeline-snap-kit-body": {
         "description": "Snap Kit Body of the comment.",
         "properties": {
@@ -5278,6 +6380,18 @@
           }
         },
         "title": "timeline-snap-kit-body",
+        "type": "object"
+      },
+      "timeline-thread": {
+        "description": "Thread.",
+        "properties": {
+          "total_replies": {
+            "description": "The total number of replies in the thread.",
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "title": "timeline-thread",
         "type": "object"
       },
       "unlink-rev-user-from-rev-org-request": {
@@ -5826,6 +6940,89 @@
         "type": "object",
         "x-go-name": "WorksDeleteResponseBody"
       },
+      "works-export-request": {
+        "properties": {
+          "actual_close_date": {
+            "$ref": "#/components/schemas/date-filter"
+          },
+          "applies_to_part": {
+            "description": "Filters for work belonging to any of the provided parts.",
+            "example": [
+              "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "created_by": {
+            "description": "Filters for work created by any of these users.",
+            "example": [
+              "don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "created_date": {
+            "$ref": "#/components/schemas/date-filter"
+          },
+          "custom_fields": {
+            "description": "Filters for custom fields.",
+            "type": "object"
+          },
+          "first": {
+            "description": "The number of work items to return. The default is '50', the\nmaximum is '5000'.\n",
+            "format": "int32",
+            "type": "integer"
+          },
+          "issue": {
+            "$ref": "#/components/schemas/works-filter-issue"
+          },
+          "modified_date": {
+            "$ref": "#/components/schemas/date-filter"
+          },
+          "opportunity": {
+            "$ref": "#/components/schemas/works-filter-opportunity"
+          },
+          "owned_by": {
+            "description": "Filters for work owned by any of these users.",
+            "example": [
+              "don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "sort_by": {
+            "description": "Fields to sort the work items by and the direction to sort them.\n",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "stage": {
+            "$ref": "#/components/schemas/stage-filter"
+          },
+          "target_close_date": {
+            "$ref": "#/components/schemas/date-filter"
+          },
+          "ticket": {
+            "$ref": "#/components/schemas/works-filter-ticket"
+          },
+          "type": {
+            "description": "Filters for work of the provided types.",
+            "items": {
+              "$ref": "#/components/schemas/work-type"
+            },
+            "type": "array"
+          }
+        },
+        "title": "works-export-request",
+        "type": "object"
+      },
       "works-export-response": {
         "properties": {
           "works": {
@@ -5843,6 +7040,117 @@
         "type": "object",
         "x-go-name": "WorksExportResponseBody"
       },
+      "works-filter-issue": {
+        "properties": {
+          "priority": {
+            "description": "Filters for issues with any of the provided priorities.",
+            "items": {
+              "$ref": "#/components/schemas/issue-priority"
+            },
+            "type": "array"
+          },
+          "rev_orgs": {
+            "description": "Filters for issues with any of the provided Rev organizations.\n",
+            "example": [
+              "don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "title": "works-filter-issue",
+        "type": "object"
+      },
+      "works-filter-opportunity": {
+        "properties": {
+          "account": {
+            "description": "Filters for opportunities belonging to any of the provided\naccounts.\n",
+            "example": [
+              "don:core:<partition>:devo/<dev-org-id>:account/<account-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "contacts": {
+            "description": "Filters for opportunities with any of the provided contacts.\n",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "title": "works-filter-opportunity",
+        "type": "object"
+      },
+      "works-filter-ticket": {
+        "properties": {
+          "group": {
+            "description": "Filters for tickets belonging to specific groups.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "is_spam": {
+            "description": "Filters for tickets that are spam.",
+            "type": "boolean"
+          },
+          "needs_response": {
+            "description": "Filters for tickets that need response.",
+            "type": "boolean"
+          },
+          "rev_org": {
+            "description": "Filters for tickets that are associated with any of the provided\nRev organizations.\n",
+            "example": [
+              "don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "severity": {
+            "description": "Filters for tickets with any of the provided severities.",
+            "items": {
+              "$ref": "#/components/schemas/ticket-severity"
+            },
+            "type": "array"
+          },
+          "sla_summary": {
+            "$ref": "#/components/schemas/sla-summary-filter"
+          },
+          "source_channel": {
+            "description": "Filters for tickets with any of the provided source channels.\n",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "surveys": {
+            "$ref": "#/components/schemas/survey-aggregation-filter"
+          }
+        },
+        "title": "works-filter-ticket",
+        "type": "object"
+      },
+      "works-get-request": {
+        "properties": {
+          "id": {
+            "description": "The work's ID.",
+            "example": "don:core:<partition>:devo/<dev-org-id>:<work-type>/<work-id>",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "works-get-request",
+        "type": "object"
+      },
       "works-get-response": {
         "properties": {
           "work": {
@@ -5855,6 +7163,96 @@
         "title": "works-get-response",
         "type": "object",
         "x-go-name": "WorksGetResponseBody"
+      },
+      "works-list-request": {
+        "properties": {
+          "actual_close_date": {
+            "$ref": "#/components/schemas/date-filter"
+          },
+          "applies_to_part": {
+            "description": "Filters for work belonging to any of the provided parts.",
+            "example": [
+              "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "created_by": {
+            "description": "Filters for work created by any of these users.",
+            "example": [
+              "don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "created_date": {
+            "$ref": "#/components/schemas/date-filter"
+          },
+          "cursor": {
+            "description": "The cursor to resume iteration from. If not provided, then\niteration starts from the beginning.\n",
+            "type": "string"
+          },
+          "custom_fields": {
+            "description": "Filters for custom fields.",
+            "type": "object"
+          },
+          "issue": {
+            "$ref": "#/components/schemas/works-filter-issue"
+          },
+          "limit": {
+            "description": "The maximum number of works to return. The default is '50'.\n",
+            "format": "int32",
+            "type": "integer"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/list-mode"
+          },
+          "modified_date": {
+            "$ref": "#/components/schemas/date-filter"
+          },
+          "opportunity": {
+            "$ref": "#/components/schemas/works-filter-opportunity"
+          },
+          "owned_by": {
+            "description": "Filters for work owned by any of these users.",
+            "example": [
+              "don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "sort_by": {
+            "description": "Fields to sort the works by and the direction to sort them.\n",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "stage": {
+            "$ref": "#/components/schemas/stage-filter"
+          },
+          "target_close_date": {
+            "$ref": "#/components/schemas/date-filter"
+          },
+          "ticket": {
+            "$ref": "#/components/schemas/works-filter-ticket"
+          },
+          "type": {
+            "description": "Filters for work of the provided types.",
+            "items": {
+              "$ref": "#/components/schemas/work-type"
+            },
+            "type": "array"
+          }
+        },
+        "title": "works-list-request",
+        "type": "object"
       },
       "works-list-response": {
         "properties": {
@@ -6391,6 +7789,52 @@
           "accounts"
         ],
         "x-request-name": "AccountsExportQuery"
+      },
+      "post": {
+        "description": "Exports a collection of accounts.",
+        "operationId": "accounts-export-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/accounts-export-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/accounts-export-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "accounts"
+        ]
       }
     },
     "/accounts.get": {
@@ -6447,6 +7891,55 @@
           "accounts"
         ],
         "x-request-name": "AccountsGetQuery"
+      },
+      "post": {
+        "description": "Retrieves an account's information.",
+        "operationId": "accounts-get-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/accounts-get-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/accounts-get-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/not-found"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "accounts"
+        ]
       }
     },
     "/accounts.list": {
@@ -6596,6 +8089,55 @@
           "accounts"
         ],
         "x-request-name": "AccountsListQuery"
+      },
+      "post": {
+        "description": "Gets a list of accounts.",
+        "operationId": "accounts-list-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/accounts-list-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/accounts-list-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/not-found"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "accounts"
+        ]
       }
     },
     "/accounts.update": {
@@ -6918,6 +8460,52 @@
           "conversations"
         ],
         "x-request-name": "ConversationsExportQuery"
+      },
+      "post": {
+        "description": "Exports a collection of conversation items.",
+        "operationId": "conversations-export-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/conversations-export-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/conversations-export-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "conversations"
+        ]
       }
     },
     "/conversations.get": {
@@ -6973,6 +8561,55 @@
           "conversations"
         ],
         "x-request-name": "ConversationsGetQuery"
+      },
+      "post": {
+        "description": "Gets the requested conversation's information.",
+        "operationId": "conversations-get-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/conversations-get-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/conversations-get-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/not-found"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "conversations"
+        ]
       }
     },
     "/conversations.list": {
@@ -7163,6 +8800,52 @@
           "conversations"
         ],
         "x-request-name": "ConversationsListQuery"
+      },
+      "post": {
+        "description": "Lists the available conversations.",
+        "operationId": "conversations-list-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/conversations-list-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/conversations-list-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "conversations"
+        ]
       }
     },
     "/conversations.update": {
@@ -7310,6 +8993,52 @@
           "engagements"
         ],
         "x-request-name": "EngagementsCountQuery"
+      },
+      "post": {
+        "description": "Counts the engagement records.",
+        "operationId": "engagements-count-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/engagements-count-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/engagements-count-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "engagements"
+        ]
       }
     },
     "/engagements.create": {
@@ -7464,6 +9193,55 @@
           "engagements"
         ],
         "x-request-name": "EngagementsGetQuery"
+      },
+      "post": {
+        "description": "Gets the engagement record.",
+        "operationId": "engagements-get-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/engagements-get-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/engagements-get-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/not-found"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "engagements"
+        ]
       }
     },
     "/engagements.list": {
@@ -7600,6 +9378,52 @@
           "engagements"
         ],
         "x-request-name": "EngagementsListQuery"
+      },
+      "post": {
+        "description": "Lists the engagement records.",
+        "operationId": "engagements-list-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/engagements-list-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/engagements-list-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "engagements"
+        ]
       }
     },
     "/engagements.update": {
@@ -7900,6 +9724,55 @@
           "links"
         ],
         "x-request-name": "LinksGetQuery"
+      },
+      "post": {
+        "description": "Gets the requested link's information.",
+        "operationId": "links-get-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/links-get-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/links-get-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/not-found"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "links"
+        ]
       }
     },
     "/links.list": {
@@ -8014,6 +9887,52 @@
           "links"
         ],
         "x-request-name": "LinksListQuery"
+      },
+      "post": {
+        "description": "Lists the available links.",
+        "operationId": "links-list-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/links-list-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/links-list-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "links"
+        ]
       }
     },
     "/metric-definitions.list": {
@@ -8108,6 +10027,52 @@
           "slas"
         ],
         "x-request-name": "MetricDefinitionsListQuery"
+      },
+      "post": {
+        "description": "Lists metric definitions matching a filter.",
+        "operationId": "metric-definitions-list-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/metric-definitions-list-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/metric-definitions-list-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "slas"
+        ]
       }
     },
     "/org-schedule-fragments.create": {
@@ -8208,6 +10173,52 @@
           "schedules"
         ],
         "x-request-name": "OrgScheduleFragmentsGetQuery"
+      },
+      "post": {
+        "description": "Gets an organization schedule fragment.",
+        "operationId": "org-schedule-fragments-get-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/org-schedule-fragments-get-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/org-schedule-fragments-get-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "schedules"
+        ]
       }
     },
     "/org-schedule-fragments.transition": {
@@ -8356,6 +10367,52 @@
           "schedules"
         ],
         "x-request-name": "OrgSchedulesGetQuery"
+      },
+      "post": {
+        "description": "Gets an organization schedule.",
+        "operationId": "org-schedules-get-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/org-schedules-get-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/org-schedules-get-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "schedules"
+        ]
       }
     },
     "/org-schedules.list": {
@@ -8450,6 +10507,52 @@
           "schedules"
         ],
         "x-request-name": "OrgSchedulesListQuery"
+      },
+      "post": {
+        "description": "Gets list of organization schedules.",
+        "operationId": "org-schedules-list-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/org-schedules-list-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/org-schedules-list-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "schedules"
+        ]
       }
     },
     "/org-schedules.set-future": {
@@ -8701,6 +10804,55 @@
           "rev-orgs"
         ],
         "x-request-name": "RevOrgsGetQuery"
+      },
+      "post": {
+        "description": "Retrieves the Rev organization's information.",
+        "operationId": "rev-orgs-get-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/rev-orgs-get-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/rev-orgs-get-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/not-found"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "rev-orgs"
+        ]
       }
     },
     "/rev-orgs.list": {
@@ -8862,6 +11014,55 @@
           "rev-orgs"
         ],
         "x-request-name": "RevOrgsListQuery"
+      },
+      "post": {
+        "description": "Gets the list of Rev organizations' information belonging to the\nauthenticated user's Dev Organization which the user is also authorized\nto access.\n",
+        "operationId": "rev-orgs-list-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/rev-orgs-list-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/rev-orgs-list-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/not-found"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "rev-orgs"
+        ]
       }
     },
     "/rev-orgs.update": {
@@ -9067,6 +11268,55 @@
           "rev-users"
         ],
         "x-request-name": "RevUsersGetQuery"
+      },
+      "post": {
+        "description": "Returns the Rev user of a Rev organization by its ID.",
+        "operationId": "rev-users-get-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/rev-users-get-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/rev-users-get-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/not-found"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "rev-users"
+        ]
       }
     },
     "/rev-users.link": {
@@ -9306,6 +11556,55 @@
           "rev-users"
         ],
         "x-request-name": "RevUsersListQuery"
+      },
+      "post": {
+        "description": "Returns a list of all Rev Users belonging to the authenticated user's\nDev Organization.\n",
+        "operationId": "rev-users-list-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/rev-users-list-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/rev-users-list-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/not-found"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "rev-users"
+        ]
       }
     },
     "/rev-users.unlink": {
@@ -9475,6 +11774,55 @@
           "customization"
         ],
         "x-request-name": "AggregatedSchemaGetQuery"
+      },
+      "post": {
+        "description": "Gets the aggregated schema.",
+        "operationId": "aggregated-schema-get-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/aggregated-schema-get-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/aggregated-schema-get-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/not-found"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "customization"
+        ]
       }
     },
     "/schemas.custom.get": {
@@ -9530,6 +11878,55 @@
           "customization"
         ],
         "x-request-name": "CustomSchemaFragmentsGetQuery"
+      },
+      "post": {
+        "description": "Gets a custom schema fragment.",
+        "operationId": "custom-schema-fragments-get-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/custom-schema-fragments-get-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/custom-schema-fragments-get-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/not-found"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "customization"
+        ]
       }
     },
     "/schemas.custom.list": {
@@ -9651,6 +12048,52 @@
           "customization"
         ],
         "x-request-name": "CustomSchemaFragmentsListQuery"
+      },
+      "post": {
+        "description": "Lists custom schema fragments.",
+        "operationId": "custom-schema-fragments-list-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/custom-schema-fragments-list-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/custom-schema-fragments-list-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "customization"
+        ]
       }
     },
     "/schemas.custom.set": {
@@ -9763,6 +12206,52 @@
           "customization"
         ],
         "x-request-name": "SubtypesListQuery"
+      },
+      "post": {
+        "description": "Lists subtypes.",
+        "operationId": "subtypes-list-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/subtypes-list-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/subtypes-list-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "customization"
+        ]
       }
     },
     "/slas.assign": {
@@ -9917,6 +12406,55 @@
           "slas"
         ],
         "x-request-name": "SlasGetQuery"
+      },
+      "post": {
+        "description": "Gets an SLA.",
+        "operationId": "slas-get-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/slas-get-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/slas-get-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/not-found"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "slas"
+        ]
       }
     },
     "/slas.list": {
@@ -9999,6 +12537,52 @@
           "slas"
         ],
         "x-request-name": "SlasListQuery"
+      },
+      "post": {
+        "description": "Lists SLAs matching a filter.",
+        "operationId": "slas-list-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/slas-list-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/slas-list-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "slas"
+        ]
       }
     },
     "/slas.transition": {
@@ -10183,6 +12767,52 @@
           "sys-users"
         ],
         "x-request-name": "SysUsersListQuery"
+      },
+      "post": {
+        "description": "Lists system users within your organization.",
+        "operationId": "sys-users-list-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/sys-users-list-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sys-users-list-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "sys-users"
+        ]
       }
     },
     "/sys-users.update": {
@@ -10390,6 +13020,55 @@
           "timeline-entries"
         ],
         "x-request-name": "TimelineEntriesListQuery"
+      },
+      "post": {
+        "description": "Lists the timeline entries for an object.",
+        "operationId": "timeline-entries-list-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/timeline-entries-list-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/timeline-entries-list-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/not-found"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "timeline-entries"
+        ]
       }
     },
     "/works.create": {
@@ -10615,6 +13294,18 @@
             }
           },
           {
+            "description": "Fields to sort the work items by and the direction to sort them.\n",
+            "explode": false,
+            "in": "query",
+            "name": "sort_by",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
             "description": "Filters for records in the provided stage(s).",
             "explode": false,
             "in": "query",
@@ -10742,6 +13433,52 @@
           "works"
         ],
         "x-request-name": "WorksExportQuery"
+      },
+      "post": {
+        "description": "Exports a collection of work items.",
+        "operationId": "works-export-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/works-export-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/works-export-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "works"
+        ]
       }
     },
     "/works.get": {
@@ -10798,6 +13535,55 @@
           "works"
         ],
         "x-request-name": "WorksGetQuery"
+      },
+      "post": {
+        "description": "Gets a work item's information.",
+        "operationId": "works-get-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/works-get-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/works-get-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/not-found"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "works"
+        ]
       }
     },
     "/works.list": {
@@ -10942,6 +13728,18 @@
             }
           },
           {
+            "description": "Fields to sort the works by and the direction to sort them.\n",
+            "explode": false,
+            "in": "query",
+            "name": "sort_by",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
             "description": "Filters for records in the provided stage(s).",
             "explode": false,
             "in": "query",
@@ -11069,6 +13867,52 @@
           "works"
         ],
         "x-request-name": "WorksListQuery"
+      },
+      "post": {
+        "description": "Lists a collection of work items.",
+        "operationId": "works-list-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/works-list-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/works-list-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "works"
+        ]
       }
     },
     "/works.update": {

@@ -1770,6 +1770,14 @@ export type TimelineEntryBase = AtomBase & {
   object: string;
   /** The type of object that the Timeline entry belongs to. */
   object_type?: TimelineEntryObjectType;
+  /**
+   * The visibility of the entry. If 'private', then the entry is only
+   * visible to the creator, 'internal' is visible with the Dev
+   * organization, 'external' is visible to the Dev organzation and Rev
+   * users, and 'public' is visible to all. If not set, then the default
+   * visibility is 'external'.
+   */
+  visibility?: TimelineEntryVisibility;
 };
 
 /** The type of object that the Timeline entry belongs to. */
