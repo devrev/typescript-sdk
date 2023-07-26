@@ -98,6 +98,28 @@ export interface AccountsDeleteRequest {
 export type AccountsDeleteResponse = object;
 
 /**
+ * accounts-export-request
+ * The request to export a collection of accounts.
+ */
+export interface AccountsExportRequest {
+  /** Filters for accounts created by the specified user(s). */
+  created_by?: string[];
+  created_date?: DateTimeFilter;
+  /** Array of references of accounts to be filtered. */
+  external_refs?: string[];
+  /**
+   * The number of accounts to return. The default is '50'.
+   * @format int32
+   * @min 1
+   * @max 500
+   */
+  first?: number;
+  modified_date?: DateTimeFilter;
+  /** Fields to sort the accounts by and the direction to sort them in. */
+  sort_by?: string[];
+}
+
+/**
  * accounts-export-response
  * The response to exporting a collection of accounts.
  */
@@ -107,11 +129,57 @@ export interface AccountsExportResponse {
 }
 
 /**
+ * accounts-get-request
+ * Request object to get an account's information.
+ */
+export interface AccountsGetRequest {
+  /**
+   * The ID of the account to be retrieved.
+   * @example "don:core:<partition>:devo/<dev-org-id>:account/<account-id>"
+   */
+  id: string;
+}
+
+/**
  * accounts-get-response
  * The returned account.
  */
 export interface AccountsGetResponse {
   account: Account;
+}
+
+/**
+ * accounts-list-request
+ * List the accounts.
+ */
+export interface AccountsListRequest {
+  /** Filters for accounts created by the specified user(s). */
+  created_by?: string[];
+  created_date?: DateTimeFilter;
+  /**
+   * The cursor to resume iteration from. If not provided, then
+   * iteration starts from the beginning.
+   */
+  cursor?: string;
+  /** Array of references of accounts to be filtered. */
+  external_refs?: string[];
+  /**
+   * The maximum number of accounts to return per page. The default is
+   * '50'.
+   * @format int32
+   */
+  limit?: number;
+  /**
+   * The iteration mode to use. If "after", then entries after the provided
+   * cursor will be returned, or if no cursor is provided, then from the
+   * beginning. If "before", then entries before the provided cursor will be
+   * returned, or if no cursor is provided, then from the end. Entries will
+   * always be returned in the specified sort-by order.
+   */
+  mode?: ListMode;
+  modified_date?: DateTimeFilter;
+  /** Fields to sort the accounts by and the direction to sort them in. */
+  sort_by?: string[];
 }
 
 /**
@@ -180,6 +248,16 @@ export interface AccountsUpdateResponse {
  * List of custom fields from multiple source fragments.
  */
 export type AggregatedSchema = object;
+
+/** aggregated-schema-get-request */
+export interface AggregatedSchemaGetRequest {
+  /** The list of custom schema fragment DONs which are to be aggregated. */
+  custom_schema_fragment_ids: string[];
+  /** Per object schema, if associated with the leaf type. */
+  per_object_schema?: FieldDescriptor[];
+  /** The stock schema fragment which is to be aggregated. */
+  stock_schema_fragment_id?: string;
+}
 
 /** aggregated-schema-get-response */
 export interface AggregatedSchemaGetResponse {
@@ -333,10 +411,65 @@ export interface ConversationsDeleteRequest {
  */
 export type ConversationsDeleteResponse = object;
 
+/** conversations-export-request */
+export interface ConversationsExportRequest {
+  /**
+   * Filters for conversations belonging to any of the provided parts.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+   */
+  applies_to_parts?: string[];
+  /**
+   * The number of conversation items to return. The default is '50',
+   * the maximum is '5000'.
+   * @format int32
+   */
+  first?: number;
+  /** Filters for conversation that belong to the given groups. */
+  group?: string[];
+  /** Filters for conversations that are spam. */
+  is_spam?: boolean;
+  /**
+   * Filters for conversations where these users are participants.
+   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   */
+  members?: string[];
+  /**
+   * Filters for conversations owned by any of these users.
+   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   */
+  owned_by?: string[];
+  /**
+   * Filters for conversations that are associated with any of the
+   * provided Rev organizations.
+   * @example ["don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"]
+   */
+  rev_org?: string[];
+  /** The filter for SLA summary. */
+  sla_summary?: SlaSummaryFilter;
+  /** Filters for conversations with any of the provided source channels. */
+  source_channels?: string[];
+  /** The filter for stages. */
+  stage?: StageFilter;
+  /**
+   * Filters for conversations with any of the provided tags.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"]
+   */
+  tags?: string[];
+}
+
 /** conversations-export-response */
 export interface ConversationsExportResponse {
   /** The resulting collection of conversation items. */
   conversations: Conversation[];
+}
+
+/**
+ * conversations-get-request
+ * The request to get a conversation's information.
+ */
+export interface ConversationsGetRequest {
+  /** The requested conversation's ID. */
+  id: string;
 }
 
 /**
@@ -345,6 +478,67 @@ export interface ConversationsExportResponse {
  */
 export interface ConversationsGetResponse {
   conversation: Conversation;
+}
+
+/**
+ * conversations-list-request
+ * The request to get information about a list of conversations.
+ */
+export interface ConversationsListRequest {
+  /**
+   * Filters for conversations belonging to any of the provided parts.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+   */
+  applies_to_parts?: string[];
+  /**
+   * The cursor to resume iteration from. If not provided, then
+   * iteration starts from the beginning.
+   */
+  cursor?: string;
+  /** Filters for conversation that belong to the given groups. */
+  group?: string[];
+  /** Filters for conversations that are spam. */
+  is_spam?: boolean;
+  /**
+   * The maximum number of conversations to return. The default is '50'.
+   * @format int32
+   */
+  limit?: number;
+  /**
+   * Filters for conversations where these users are participants.
+   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   */
+  members?: string[];
+  /**
+   * The iteration mode to use. If "after", then entries after the provided
+   * cursor will be returned, or if no cursor is provided, then from the
+   * beginning. If "before", then entries before the provided cursor will be
+   * returned, or if no cursor is provided, then from the end. Entries will
+   * always be returned in the specified sort-by order.
+   */
+  mode?: ListMode;
+  /**
+   * Filters for conversations owned by any of these users.
+   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   */
+  owned_by?: string[];
+  /**
+   * Filters for conversations that are associated with any of the
+   * provided Rev organizations.
+   * @example ["don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"]
+   */
+  rev_org?: string[];
+  /** The filter for SLA summary. */
+  sla_summary?: SlaSummaryFilter;
+  /** Filters for conversations with any of the provided source channels. */
+  source_channels?: string[];
+  /** The filter for stages. */
+  stage?: StageFilter;
+  /**
+   * Filters for conversations with any of the provided tags.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"]
+   */
+  tags?: string[];
 }
 
 /**
@@ -480,9 +674,39 @@ export type CustomSchemaFragmentCondition = object;
 
 export type CustomSchemaFragmentType = string;
 
+/** custom-schema-fragments-get-request */
+export interface CustomSchemaFragmentsGetRequest {
+  /** The ID of the custom schema fragment. */
+  id: string;
+}
+
 /** custom-schema-fragments-get-response */
 export interface CustomSchemaFragmentsGetResponse {
   fragment: CustomSchemaFragment;
+}
+
+/** custom-schema-fragments-list-request */
+export interface CustomSchemaFragmentsListRequest {
+  /** The list of app names. */
+  app?: string[];
+  /**
+   * The cursor to resume iteration from, otherwise if not provided,
+   * then iteration starts from the beginning.
+   */
+  cursor?: string;
+  /** The list of leaf types. */
+  leaf_type?: string[];
+  /**
+   * The maximum number of items.
+   * @format int32
+   */
+  limit?: number;
+  /** The list of fields to sort the items by and how to sort them. */
+  sort_by?: string[];
+  /** The list of subtypes. */
+  subtype?: string[];
+  /** Filters for custom schema fragment of the provided types. */
+  types?: CustomSchemaFragmentType[];
 }
 
 /** custom-schema-fragments-list-response */
@@ -552,6 +776,77 @@ export interface CustomSchemaFragmentsSetResponse {
   id: string;
 }
 
+/**
+ * date-filter
+ * Provides ways to specify date ranges on objects.
+ */
+export type DateFilter = (DateTimeFilter | DateTimePreset) & {
+  /** Type of date filter. */
+  type: DateFilterType;
+};
+
+/** Type of date filter. */
+export enum DateFilterType {
+  Preset = 'preset',
+  Range = 'range',
+}
+
+/** date-time-filter */
+export interface DateTimeFilter {
+  /**
+   * Filters for objects created after the provided timestamp
+   * (inclusive).
+   * @format date-time
+   */
+  after?: string;
+  /**
+   * Filters for objects created before the provided timestamp
+   * (inclusive).
+   * @format date-time
+   */
+  before?: string;
+}
+
+/**
+ * date-time-preset
+ * Provides preset types for date filter.
+ */
+export type DateTimePreset = (
+  | DateTimePresetLastNDays
+  | DateTimePresetNextNDays
+) & {
+  /** Type of date preset. */
+  preset_type: DateTimePresetType;
+};
+
+/** date-time-preset-last-n-days */
+export interface DateTimePresetLastNDays {
+  /**
+   * The range starts from the current timestamp and continues for the
+   * past n days.
+   * @min 0
+   * @max 4294967295
+   */
+  days: number;
+}
+
+/** date-time-preset-next-n-days */
+export interface DateTimePresetNextNDays {
+  /**
+   * The range starts from the current timestamp and continues for the
+   * next n days.
+   * @min 0
+   * @max 4294967295
+   */
+  days: number;
+}
+
+/** Type of date preset. */
+export enum DateTimePresetType {
+  LastNDays = 'last_n_days',
+  NextNDays = 'next_n_days',
+}
+
 /** dev-user-summary */
 export type DevUserSummary = UserBaseSummary;
 
@@ -573,6 +868,24 @@ export enum EngagementType {
   Meeting = 'meeting',
   Offline = 'offline',
   Survey = 'survey',
+}
+
+/** engagements-count-request */
+export interface EngagementsCountRequest {
+  /** Filters for meetings with the provided external_refs. */
+  external_ref?: string[];
+  /**
+   * Filters for engagement of the provided members.
+   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   */
+  members?: string[];
+  /**
+   * Filters for engagements with the provided parent.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:account/<account-id>"]
+   */
+  parent?: string[];
+  /** Filters for engagement of the provided types. */
+  type?: EngagementType[];
 }
 
 /** engagements-count-response */
@@ -645,9 +958,53 @@ export interface EngagementsDeleteRequest {
 /** engagements-delete-response */
 export type EngagementsDeleteResponse = object;
 
+/** engagements-get-request */
+export interface EngagementsGetRequest {
+  /** The engagement ID. */
+  id: string;
+}
+
 /** engagements-get-response */
 export interface EngagementsGetResponse {
   engagement: Engagement;
+}
+
+/** engagements-list-request */
+export interface EngagementsListRequest {
+  /**
+   * The cursor to resume iteration from. If not provided, then
+   * iteration starts from the beginning.
+   */
+  cursor?: string;
+  /** Filters for meetings with the provided external_refs. */
+  external_ref?: string[];
+  /**
+   * The maximum number of engagements to return.
+   * @format int32
+   */
+  limit?: number;
+  /**
+   * Filters for engagement of the provided members.
+   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   */
+  members?: string[];
+  /**
+   * The iteration mode to use. If "after", then entries after the provided
+   * cursor will be returned, or if no cursor is provided, then from the
+   * beginning. If "before", then entries before the provided cursor will be
+   * returned, or if no cursor is provided, then from the end. Entries will
+   * always be returned in the specified sort-by order.
+   */
+  mode?: ListMode;
+  /**
+   * Filters for engagements with the provided parent.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:account/<account-id>"]
+   */
+  parent?: string[];
+  /** Fields to sort the engagements by and the direction to sort them. */
+  sort_by?: string[];
+  /** Filters for engagement of the provided types. */
+  type?: EngagementType[];
 }
 
 /** engagements-list-response */
@@ -941,6 +1298,12 @@ export interface EventSourcesScheduleEventResponse {
 /** feature-summary */
 export type FeatureSummary = PartBaseSummary;
 
+/**
+ * field-descriptor
+ * Set of field attributes.
+ */
+export type FieldDescriptor = object;
+
 /** group-summary */
 export type GroupSummary = AtomBaseSummary;
 
@@ -1080,11 +1443,65 @@ export enum LinksDirection {
 }
 
 /**
+ * links-get-request
+ * The request to get a link's information.
+ */
+export interface LinksGetRequest {
+  /** The requested link's ID. */
+  id: string;
+}
+
+/**
  * links-get-response
  * The response to getting a link's information.
  */
 export interface LinksGetResponse {
   link: Link;
+}
+
+/**
+ * links-list-request
+ * The request to get information about a list of links.
+ */
+export interface LinksListRequest {
+  /**
+   * The cursor to resume iteration from. If not provided, then
+   * iteration starts from the beginning.
+   */
+  cursor?: string;
+  /**
+   * The direction of link, which can either be outbound such that the
+   * object is the source of the link, otherwise inbound where the object is
+   * the target of the link.
+   */
+  direction?: LinksDirection;
+  /**
+   * The maximum number of links to return. If not set, then the default
+   * is '50'.
+   * @format int32
+   */
+  limit?: number;
+  /**
+   * The link type(s) to filter for, otherwise if not present, all link
+   * types are included.
+   */
+  link_type?: LinkType[];
+  /**
+   * The iteration mode to use. If "after", then entries after the provided
+   * cursor will be returned, or if no cursor is provided, then from the
+   * beginning. If "before", then entries before the provided cursor will be
+   * returned, or if no cursor is provided, then from the end. Entries will
+   * always be returned in the specified sort-by order.
+   */
+  mode?: ListMode;
+  /** The ID of the object to list the links for. */
+  object: string;
+  /**
+   * The link types to filter for, otherwise if not present, all link
+   * types are included.
+   * @deprecated
+   */
+  types?: LinkType[];
 }
 
 /**
@@ -1138,6 +1555,32 @@ export enum MetricDefinitionAppliesTo {
 export enum MetricDefinitionMetricType {
   Time = 'time',
   Value = 'value',
+}
+
+/** metric-definitions-list-request */
+export interface MetricDefinitionsListRequest {
+  /** The type of objects the metric definition applies to. */
+  applies_to_type?: MetricDefinitionAppliesTo[];
+  /**
+   * The cursor to resume iteration from. If not provided, then
+   * iteration starts from the beginning.
+   */
+  cursor?: string;
+  /**
+   * The maximum number of records to return. The default is '50'.
+   * @format int32
+   */
+  limit?: number;
+  /**
+   * The iteration mode to use. If "after", then entries after the provided
+   * cursor will be returned, or if no cursor is provided, then from the
+   * beginning. If "before", then entries before the provided cursor will be
+   * returned, or if no cursor is provided, then from the end. Entries will
+   * always be returned in the specified sort-by order.
+   */
+  mode?: ListMode;
+  /** The type of metric definitions sought. */
+  type?: MetricDefinitionMetricType[];
 }
 
 /** metric-definitions-list-response */
@@ -1332,6 +1775,12 @@ export interface OrgScheduleFragmentsCreateResponse {
   org_schedule_fragment: OrgScheduleFragment;
 }
 
+/** org-schedule-fragments-get-request */
+export interface OrgScheduleFragmentsGetRequest {
+  /** Organization schedule Fragment ID. */
+  id: string;
+}
+
 /** org-schedule-fragments-get-response */
 export interface OrgScheduleFragmentsGetResponse {
   org_schedule_fragment: OrgScheduleFragment;
@@ -1403,9 +1852,44 @@ export interface OrgSchedulesCreateResponse {
   org_schedule: OrgSchedule;
 }
 
+/** org-schedules-get-request */
+export interface OrgSchedulesGetRequest {
+  /** Organization schedule ID. */
+  id: string;
+}
+
 /** org-schedules-get-response */
 export interface OrgSchedulesGetResponse {
   org_schedule: OrgSchedule;
+}
+
+/** org-schedules-list-request */
+export interface OrgSchedulesListRequest {
+  /** Creator ID the filter matches. */
+  created_by_id?: string[];
+  /**
+   * The cursor to resume iteration from. If not provided, then
+   * iteration starts from the beginning.
+   */
+  cursor?: string;
+  /**
+   * Max number of organization schedules returned in a page. Default is
+   * 50.
+   * @format int32
+   */
+  limit?: number;
+  /**
+   * The iteration mode to use. If "after", then entries after the provided
+   * cursor will be returned, or if no cursor is provided, then from the
+   * beginning. If "before", then entries before the provided cursor will be
+   * returned, or if no cursor is provided, then from the end. Entries will
+   * always be returned in the specified sort-by order.
+   */
+  mode?: ListMode;
+  /** The organization schedule statuses the filter matches. */
+  status?: OrgScheduleStatus[];
+  /** Provides ways to specify date ranges on objects. */
+  valid_until?: DateFilter;
 }
 
 /** org-schedules-list-response */
@@ -1594,11 +2078,65 @@ export interface RevOrgsCreateResponse {
 }
 
 /**
+ * rev-orgs-get-request
+ * Request object to get Rev organization's information.
+ */
+export interface RevOrgsGetRequest {
+  /**
+   * The ID of the required Rev organization.
+   * @example "don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"
+   */
+  id: string;
+}
+
+/**
  * rev-orgs-get-response
  * The response to getting a Rev organization's information.
  */
 export interface RevOrgsGetResponse {
   rev_org: RevOrg;
+}
+
+/**
+ * rev-orgs-list-request
+ * A request to get the list of Rev organizations for the authenticated
+ * user's Dev organization.
+ */
+export interface RevOrgsListRequest {
+  /** Filters by creator. */
+  created_by?: string[];
+  created_date?: DateTimeFilter;
+  /**
+   * The cursor to resume iteration from. If not provided, then
+   * iteration starts from the beginning.
+   */
+  cursor?: string;
+  /**
+   * Filters on custom fields. Input will be of the format
+   * (custom_field_filter=field_name1:val1,val2,val3&custom_field_filter=field_name2:val1,val2).
+   */
+  custom_field_filter?: string[];
+  /** List of external refs to filter Rev organizations for. */
+  external_ref?: string[];
+  /**
+   * The maximum number of Rev organizations to be retrieved per page.
+   * @format int32
+   */
+  limit?: number;
+  /**
+   * The iteration mode to use. If "after", then entries after the provided
+   * cursor will be returned, or if no cursor is provided, then from the
+   * beginning. If "before", then entries before the provided cursor will be
+   * returned, or if no cursor is provided, then from the end. Entries will
+   * always be returned in the specified sort-by order.
+   */
+  mode?: ListMode;
+  modified_date?: DateTimeFilter;
+  /**
+   * Fields to sort the Rev organizations by and the direction to sort
+   * them.
+   */
+  sort_by?: string[];
 }
 
 /**
@@ -1760,11 +2298,63 @@ export interface RevUsersDeleteRequest {
 export type RevUsersDeleteResponse = object;
 
 /**
+ * rev-users-get-request
+ * Request object to get a Rev user.
+ */
+export interface RevUsersGetRequest {
+  /** The ID of Rev user to be retrieved. */
+  id: string;
+}
+
+/**
  * rev-users-get-response
  * The returned Rev user.
  */
 export interface RevUsersGetResponse {
   rev_user: RevUser;
+}
+
+/**
+ * rev-users-list-request
+ * Gets the list of Rev users belonging to the authenticated user's Dev
+ * Organization which the user is also authorized to access.
+ */
+export interface RevUsersListRequest {
+  /** Filters for Rev users that were created by the specified user(s). */
+  created_by?: string[];
+  created_date?: DateTimeFilter;
+  /**
+   * The cursor to resume iteration from. If not provided, then
+   * iteration starts from the beginning.
+   */
+  cursor?: string;
+  /** List of emails of Rev users to be filtered. */
+  email?: string[];
+  /** List of external refs to filter Rev users for. */
+  external_ref?: string[];
+  /**
+   * The maximum number of Rev users to return. The default is '50'.
+   * @format int32
+   */
+  limit?: number;
+  /**
+   * The iteration mode to use. If "after", then entries after the provided
+   * cursor will be returned, or if no cursor is provided, then from the
+   * beginning. If "before", then entries before the provided cursor will be
+   * returned, or if no cursor is provided, then from the end. Entries will
+   * always be returned in the specified sort-by order.
+   */
+  mode?: ListMode;
+  modified_date?: DateTimeFilter;
+  /** List of phone numbers to filter Rev users on. */
+  phone_numbers?: string[];
+  /**
+   * List of IDs of Rev organizations to be filtered.
+   * @example ["don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"]
+   */
+  rev_org?: string[];
+  /** Fields to sort the Rev users by and the direction to sort them. */
+  sort_by?: string[];
 }
 
 /**
@@ -2465,6 +3055,12 @@ export enum SlaStatus {
   Published = 'published',
 }
 
+/**
+ * sla-summary-filter
+ * The filter for SLA summary.
+ */
+export type SlaSummaryFilter = object;
+
 /** slas-assign-request */
 export interface SlasAssignRequest {
   /**
@@ -2513,9 +3109,39 @@ export interface SlasCreateResponse {
   sla: Sla;
 }
 
+/** slas-get-request */
+export interface SlasGetRequest {
+  /** The ID of the SLA to get. */
+  id: string;
+}
+
 /** slas-get-response */
 export interface SlasGetResponse {
   sla: Sla;
+}
+
+/** slas-list-request */
+export interface SlasListRequest {
+  /**
+   * The cursor to resume iteration from. If not provided, then
+   * iteration starts from the beginning.
+   */
+  cursor?: string;
+  /**
+   * The maximum number of SLAs to return. The default is '50'.
+   * @format int32
+   */
+  limit?: number;
+  /**
+   * The iteration mode to use. If "after", then entries after the provided
+   * cursor will be returned, or if no cursor is provided, then from the
+   * beginning. If "before", then entries before the provided cursor will be
+   * returned, or if no cursor is provided, then from the end. Entries will
+   * always be returned in the specified sort-by order.
+   */
+  mode?: ListMode;
+  /** The SLA statuses the filter matches. */
+  status?: SlaStatus[];
 }
 
 /** slas-list-response */
@@ -2591,6 +3217,15 @@ export interface Stage {
 }
 
 /**
+ * stage-filter
+ * The filter for stages.
+ */
+export interface StageFilter {
+  /** Filters for records in the provided stage(s). */
+  name?: string[];
+}
+
+/**
  * stage-init
  * Sets an object's initial stage.
  */
@@ -2626,17 +3261,62 @@ export interface Subtype {
   value: string;
 }
 
+/** subtypes-list-request */
+export interface SubtypesListRequest {
+  /**
+   * Leaf type for which subtypes are required.
+   * @deprecated
+   */
+  leaf_type?: string;
+  /** List of leaf types for which subtypes are required. */
+  leaf_types?: string[];
+}
+
 /** subtypes-list-response */
 export interface SubtypesListResponse {
   /** List of subtypes. */
   subtypes: Subtype[];
 }
 
+/**
+ * survey-aggregation-filter
+ * The filter for survey aggregation.
+ */
+export type SurveyAggregationFilter = object;
+
 /** sys-user */
 export type SysUser = UserBase;
 
 /** sys-user-summary */
 export type SysUserSummary = UserBaseSummary;
+
+/**
+ * sys-users-list-request
+ * A request to get the list of system user's information.
+ */
+export interface SysUsersListRequest {
+  /**
+   * The cursor to resume iteration from. If not provided, then
+   * iteration starts from the beginning.
+   */
+  cursor?: string;
+  /**
+   * The maximum number of system users to return. Value can range from
+   * '1' to '100', with a default of '50'.
+   * @format int32
+   */
+  limit?: number;
+  /**
+   * The iteration mode to use. If "after", then entries after the provided
+   * cursor will be returned, or if no cursor is provided, then from the
+   * beginning. If "before", then entries before the provided cursor will be
+   * returned, or if no cursor is provided, then from the end. Entries will
+   * always be returned in the specified sort-by order.
+   */
+  mode?: ListMode;
+  /** Fields to sort the system users by and the direction to sort them. */
+  sort_by?: string[];
+}
 
 /**
  * sys-users-list-response
@@ -2833,6 +3513,48 @@ export interface TimelineEntriesCreateResponse {
 }
 
 /**
+ * timeline-entries-list-request
+ * The request to list timeline entries for an object.
+ */
+export interface TimelineEntriesListRequest {
+  /**
+   * The collection(s) to list entries from, otherwise if not provided,
+   * all entries are returned.
+   */
+  collections?: TimelineEntriesCollection[];
+  /**
+   * The cursor to resume iteration from. If not provided, then
+   * iteration starts from the beginning.
+   */
+  cursor?: string;
+  /**
+   * The maximum number of entries to return. If not set, then this
+   * defaults to `50`.
+   * @format int32
+   */
+  limit?: number;
+  /**
+   * The iteration mode to use. If "after", then entries after the provided
+   * cursor will be returned, or if no cursor is provided, then from the
+   * beginning. If "before", then entries before the provided cursor will be
+   * returned, or if no cursor is provided, then from the end. Entries will
+   * always be returned in the specified sort-by order.
+   */
+  mode?: ListMode;
+  /**
+   * The ID of the object to list timeline entries for.
+   * @example "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+   */
+  object: string;
+  /**
+   * The visibility of the timeline entries to filter for. Note this is
+   * a strict filter, such that only entries with the exact visibilities
+   * specified will be returned.
+   */
+  visibility?: TimelineEntryVisibility[];
+}
+
+/**
  * timeline-entries-list-response
  * The response to listing timeline entries for an object.
  */
@@ -2862,6 +3584,18 @@ export type TimelineEntryBase = AtomBase & {
   object: string;
   /** The type of object that the Timeline entry belongs to. */
   object_type?: TimelineEntryObjectType;
+  /** The reactions to the entry. */
+  reactions?: TimelineReaction[];
+  /** Thread. */
+  thread?: TimelineThread;
+  /**
+   * The visibility of the entry. If 'private', then the entry is only
+   * visible to the creator, 'internal' is visible with the Dev
+   * organization, 'external' is visible to the Dev organzation and Rev
+   * users, and 'public' is visible to all. If not set, then the default
+   * visibility is 'external'.
+   */
+  visibility?: TimelineEntryVisibility;
 };
 
 /** The type of object that the Timeline entry belongs to. */
@@ -2900,6 +3634,22 @@ export enum TimelineEntryVisibility {
 }
 
 /**
+ * timeline-reaction
+ * Reaction.
+ */
+export interface TimelineReaction {
+  /** The reaction emoji's unicode codepoint, e.g. "1f44d". */
+  emoji?: string;
+  /** Whether the requesting user reacted. */
+  reacted?: boolean;
+  /**
+   * The total number of users with this reaction.
+   * @format int32
+   */
+  total_users?: number;
+}
+
+/**
  * timeline-snap-kit-body
  * Snap Kit Body of the comment.
  */
@@ -2915,6 +3665,18 @@ export interface TimelineSnapKitBody {
   snap_in_action_name?: string;
   /** ID of the snap-in which created the SnapKit. */
   snap_in_id?: string;
+}
+
+/**
+ * timeline-thread
+ * Thread.
+ */
+export interface TimelineThread {
+  /**
+   * The total number of replies in the thread.
+   * @format int32
+   */
+  total_replies?: number;
 }
 
 /**
@@ -3184,15 +3946,171 @@ export interface WorksDeleteRequest {
 /** works-delete-response */
 export type WorksDeleteResponse = object;
 
+/** works-export-request */
+export interface WorksExportRequest {
+  /** Provides ways to specify date ranges on objects. */
+  actual_close_date?: DateFilter;
+  /**
+   * Filters for work belonging to any of the provided parts.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+   */
+  applies_to_part?: string[];
+  /**
+   * Filters for work created by any of these users.
+   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   */
+  created_by?: string[];
+  /** Provides ways to specify date ranges on objects. */
+  created_date?: DateFilter;
+  /** Filters for custom fields. */
+  custom_fields?: object;
+  /**
+   * The number of work items to return. The default is '50', the
+   * maximum is '5000'.
+   * @format int32
+   */
+  first?: number;
+  issue?: WorksFilterIssue;
+  /** Provides ways to specify date ranges on objects. */
+  modified_date?: DateFilter;
+  opportunity?: WorksFilterOpportunity;
+  /**
+   * Filters for work owned by any of these users.
+   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   */
+  owned_by?: string[];
+  /** Fields to sort the work items by and the direction to sort them. */
+  sort_by?: string[];
+  /** The filter for stages. */
+  stage?: StageFilter;
+  /** Provides ways to specify date ranges on objects. */
+  target_close_date?: DateFilter;
+  ticket?: WorksFilterTicket;
+  /** Filters for work of the provided types. */
+  type?: WorkType[];
+}
+
 /** works-export-response */
 export interface WorksExportResponse {
   /** The resulting collection of work items. */
   works: Work[];
 }
 
+/** works-filter-issue */
+export interface WorksFilterIssue {
+  /** Filters for issues with any of the provided priorities. */
+  priority?: IssuePriority[];
+  /**
+   * Filters for issues with any of the provided Rev organizations.
+   * @example ["don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"]
+   */
+  rev_orgs?: string[];
+}
+
+/** works-filter-opportunity */
+export interface WorksFilterOpportunity {
+  /**
+   * Filters for opportunities belonging to any of the provided
+   * accounts.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:account/<account-id>"]
+   */
+  account?: string[];
+  /** Filters for opportunities with any of the provided contacts. */
+  contacts?: string[];
+}
+
+/** works-filter-ticket */
+export interface WorksFilterTicket {
+  /** Filters for tickets belonging to specific groups. */
+  group?: string[];
+  /** Filters for tickets that are spam. */
+  is_spam?: boolean;
+  /** Filters for tickets that need response. */
+  needs_response?: boolean;
+  /**
+   * Filters for tickets that are associated with any of the provided
+   * Rev organizations.
+   * @example ["don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"]
+   */
+  rev_org?: string[];
+  /** Filters for tickets with any of the provided severities. */
+  severity?: TicketSeverity[];
+  /** The filter for SLA summary. */
+  sla_summary?: SlaSummaryFilter;
+  /** Filters for tickets with any of the provided source channels. */
+  source_channel?: string[];
+  /** The filter for survey aggregation. */
+  surveys?: SurveyAggregationFilter;
+}
+
+/** works-get-request */
+export interface WorksGetRequest {
+  /**
+   * The work's ID.
+   * @example "don:core:<partition>:devo/<dev-org-id>:<work-type>/<work-id>"
+   */
+  id: string;
+}
+
 /** works-get-response */
 export interface WorksGetResponse {
   work: Work;
+}
+
+/** works-list-request */
+export interface WorksListRequest {
+  /** Provides ways to specify date ranges on objects. */
+  actual_close_date?: DateFilter;
+  /**
+   * Filters for work belonging to any of the provided parts.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+   */
+  applies_to_part?: string[];
+  /**
+   * Filters for work created by any of these users.
+   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   */
+  created_by?: string[];
+  /** Provides ways to specify date ranges on objects. */
+  created_date?: DateFilter;
+  /**
+   * The cursor to resume iteration from. If not provided, then
+   * iteration starts from the beginning.
+   */
+  cursor?: string;
+  /** Filters for custom fields. */
+  custom_fields?: object;
+  issue?: WorksFilterIssue;
+  /**
+   * The maximum number of works to return. The default is '50'.
+   * @format int32
+   */
+  limit?: number;
+  /**
+   * The iteration mode to use. If "after", then entries after the provided
+   * cursor will be returned, or if no cursor is provided, then from the
+   * beginning. If "before", then entries before the provided cursor will be
+   * returned, or if no cursor is provided, then from the end. Entries will
+   * always be returned in the specified sort-by order.
+   */
+  mode?: ListMode;
+  /** Provides ways to specify date ranges on objects. */
+  modified_date?: DateFilter;
+  opportunity?: WorksFilterOpportunity;
+  /**
+   * Filters for work owned by any of these users.
+   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   */
+  owned_by?: string[];
+  /** Fields to sort the works by and the direction to sort them. */
+  sort_by?: string[];
+  /** The filter for stages. */
+  stage?: StageFilter;
+  /** Provides ways to specify date ranges on objects. */
+  target_close_date?: DateFilter;
+  ticket?: WorksFilterTicket;
+  /** Filters for work of the provided types. */
+  type?: WorkType[];
 }
 
 /** works-list-response */
@@ -3663,6 +4581,36 @@ export class Api<
     });
 
   /**
+   * @description Exports a collection of accounts.
+   *
+   * @tags accounts
+   * @name AccountsExportPost
+   * @request POST:/accounts.export
+   * @secure
+   */
+  accountsExportPost = (
+    data: AccountsExportRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      AccountsExportResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/accounts.export`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
    * @description Retrieves an account's information.
    *
    * @tags accounts
@@ -3694,6 +4642,34 @@ export class Api<
       method: 'GET',
       query: query,
       secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Retrieves an account's information.
+   *
+   * @tags accounts
+   * @name AccountsGetPost
+   * @request POST:/accounts.get
+   * @secure
+   */
+  accountsGetPost = (data: AccountsGetRequest, params: RequestParams = {}) =>
+    this.request<
+      AccountsGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/accounts.get`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
       format: 'json',
       ...params,
     });
@@ -3769,6 +4745,34 @@ export class Api<
       method: 'GET',
       query: query,
       secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets a list of accounts.
+   *
+   * @tags accounts
+   * @name AccountsListPost
+   * @request POST:/accounts.list
+   * @secure
+   */
+  accountsListPost = (data: AccountsListRequest, params: RequestParams = {}) =>
+    this.request<
+      AccountsListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/accounts.list`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
       format: 'json',
       ...params,
     });
@@ -3933,6 +4937,36 @@ export class Api<
     });
 
   /**
+   * @description Exports a collection of conversation items.
+   *
+   * @tags conversations
+   * @name ConversationsExportPost
+   * @request POST:/conversations.export
+   * @secure
+   */
+  conversationsExportPost = (
+    data: ConversationsExportRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      ConversationsExportResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/conversations.export`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
    * @description Gets the requested conversation's information.
    *
    * @tags conversations
@@ -3961,6 +4995,37 @@ export class Api<
       method: 'GET',
       query: query,
       secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets the requested conversation's information.
+   *
+   * @tags conversations
+   * @name ConversationsGetPost
+   * @request POST:/conversations.get
+   * @secure
+   */
+  conversationsGetPost = (
+    data: ConversationsGetRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      ConversationsGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/conversations.get`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
       format: 'json',
       ...params,
     });
@@ -4045,6 +5110,36 @@ export class Api<
     });
 
   /**
+   * @description Lists the available conversations.
+   *
+   * @tags conversations
+   * @name ConversationsListPost
+   * @request POST:/conversations.list
+   * @secure
+   */
+  conversationsListPost = (
+    data: ConversationsListRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      ConversationsListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/conversations.list`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
    * @description Updates the requested conversation.
    *
    * @tags conversations
@@ -4115,6 +5210,36 @@ export class Api<
       method: 'GET',
       query: query,
       secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Counts the engagement records.
+   *
+   * @tags engagements
+   * @name EngagementsCountPost
+   * @request POST:/engagements.count
+   * @secure
+   */
+  engagementsCountPost = (
+    data: EngagementsCountRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      EngagementsCountResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/engagements.count`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
       format: 'json',
       ...params,
     });
@@ -4214,6 +5339,37 @@ export class Api<
     });
 
   /**
+   * @description Gets the engagement record.
+   *
+   * @tags engagements
+   * @name EngagementsGetPost
+   * @request POST:/engagements.get
+   * @secure
+   */
+  engagementsGetPost = (
+    data: EngagementsGetRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      EngagementsGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/engagements.get`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
    * @description Lists the engagement records.
    *
    * @tags engagements
@@ -4270,6 +5426,36 @@ export class Api<
       method: 'GET',
       query: query,
       secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Lists the engagement records.
+   *
+   * @tags engagements
+   * @name EngagementsListPost
+   * @request POST:/engagements.list
+   * @secure
+   */
+  engagementsListPost = (
+    data: EngagementsListRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      EngagementsListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/engagements.list`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
       format: 'json',
       ...params,
     });
@@ -4455,6 +5641,34 @@ export class Api<
     });
 
   /**
+   * @description Gets the requested link's information.
+   *
+   * @tags links
+   * @name LinksGetPost
+   * @request POST:/links.get
+   * @secure
+   */
+  linksGetPost = (data: LinksGetRequest, params: RequestParams = {}) =>
+    this.request<
+      LinksGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/links.get`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
    * @description Lists the available links.
    *
    * @tags links
@@ -4519,6 +5733,33 @@ export class Api<
     });
 
   /**
+   * @description Lists the available links.
+   *
+   * @tags links
+   * @name LinksListPost
+   * @request POST:/links.list
+   * @secure
+   */
+  linksListPost = (data: LinksListRequest, params: RequestParams = {}) =>
+    this.request<
+      LinksListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/links.list`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
    * @description Lists metric definitions matching a filter.
    *
    * @tags slas
@@ -4563,6 +5804,36 @@ export class Api<
       method: 'GET',
       query: query,
       secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Lists metric definitions matching a filter.
+   *
+   * @tags slas
+   * @name MetricDefinitionsListPost
+   * @request POST:/metric-definitions.list
+   * @secure
+   */
+  metricDefinitionsListPost = (
+    data: MetricDefinitionsListRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      MetricDefinitionsListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/metric-definitions.list`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
       format: 'json',
       ...params,
     });
@@ -4625,6 +5896,36 @@ export class Api<
       method: 'GET',
       query: query,
       secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets an organization schedule fragment.
+   *
+   * @tags schedules
+   * @name OrgScheduleFragmentsGetPost
+   * @request POST:/org-schedule-fragments.get
+   * @secure
+   */
+  orgScheduleFragmentsGetPost = (
+    data: OrgScheduleFragmentsGetRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      OrgScheduleFragmentsGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/org-schedule-fragments.get`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
       format: 'json',
       ...params,
     });
@@ -4722,6 +6023,36 @@ export class Api<
     });
 
   /**
+   * @description Gets an organization schedule.
+   *
+   * @tags schedules
+   * @name OrgSchedulesGetPost
+   * @request POST:/org-schedules.get
+   * @secure
+   */
+  orgSchedulesGetPost = (
+    data: OrgSchedulesGetRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      OrgSchedulesGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/org-schedules.get`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
    * @description Gets list of organization schedules.
    *
    * @tags schedules
@@ -4767,6 +6098,36 @@ export class Api<
       method: 'GET',
       query: query,
       secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets list of organization schedules.
+   *
+   * @tags schedules
+   * @name OrgSchedulesListPost
+   * @request POST:/org-schedules.list
+   * @secure
+   */
+  orgSchedulesListPost = (
+    data: OrgSchedulesListRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      OrgSchedulesListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/org-schedules.list`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
       format: 'json',
       ...params,
     });
@@ -4926,6 +6287,34 @@ export class Api<
     });
 
   /**
+   * @description Retrieves the Rev organization's information.
+   *
+   * @tags rev-orgs
+   * @name RevOrgsGetPost
+   * @request POST:/rev-orgs.get
+   * @secure
+   */
+  revOrgsGetPost = (data: RevOrgsGetRequest, params: RequestParams = {}) =>
+    this.request<
+      RevOrgsGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/rev-orgs.get`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
    * @description Gets the list of Rev organizations' information belonging to the authenticated user's Dev Organization which the user is also authorized to access.
    *
    * @tags rev-orgs
@@ -5003,6 +6392,34 @@ export class Api<
       method: 'GET',
       query: query,
       secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets the list of Rev organizations' information belonging to the authenticated user's Dev Organization which the user is also authorized to access.
+   *
+   * @tags rev-orgs
+   * @name RevOrgsListPost
+   * @request POST:/rev-orgs.list
+   * @secure
+   */
+  revOrgsListPost = (data: RevOrgsListRequest, params: RequestParams = {}) =>
+    this.request<
+      RevOrgsListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/rev-orgs.list`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
       format: 'json',
       ...params,
     });
@@ -5124,6 +6541,34 @@ export class Api<
     });
 
   /**
+   * @description Returns the Rev user of a Rev organization by its ID.
+   *
+   * @tags rev-users
+   * @name RevUsersGetPost
+   * @request POST:/rev-users.get
+   * @secure
+   */
+  revUsersGetPost = (data: RevUsersGetRequest, params: RequestParams = {}) =>
+    this.request<
+      RevUsersGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/rev-users.get`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
    * @description Links a rev user to a rev org.
    *
    * @tags rev-users
@@ -5238,6 +6683,34 @@ export class Api<
     });
 
   /**
+   * @description Returns a list of all Rev Users belonging to the authenticated user's Dev Organization.
+   *
+   * @tags rev-users
+   * @name RevUsersListPost
+   * @request POST:/rev-users.list
+   * @secure
+   */
+  revUsersListPost = (data: RevUsersListRequest, params: RequestParams = {}) =>
+    this.request<
+      RevUsersListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/rev-users.list`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
    * @description Unlinks a rev user from a rev org.
    *
    * @tags rev-users
@@ -5332,6 +6805,37 @@ export class Api<
     });
 
   /**
+   * @description Gets the aggregated schema.
+   *
+   * @tags customization
+   * @name AggregatedSchemaGetPost
+   * @request POST:/schemas.aggregated.get
+   * @secure
+   */
+  aggregatedSchemaGetPost = (
+    data: AggregatedSchemaGetRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      AggregatedSchemaGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/schemas.aggregated.get`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
    * @description Gets a custom schema fragment.
    *
    * @tags customization
@@ -5360,6 +6864,37 @@ export class Api<
       method: 'GET',
       query: query,
       secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets a custom schema fragment.
+   *
+   * @tags customization
+   * @name CustomSchemaFragmentsGetPost
+   * @request POST:/schemas.custom.get
+   * @secure
+   */
+  customSchemaFragmentsGetPost = (
+    data: CustomSchemaFragmentsGetRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      CustomSchemaFragmentsGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/schemas.custom.get`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
       format: 'json',
       ...params,
     });
@@ -5410,6 +6945,36 @@ export class Api<
       method: 'GET',
       query: query,
       secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Lists custom schema fragments.
+   *
+   * @tags customization
+   * @name CustomSchemaFragmentsListPost
+   * @request POST:/schemas.custom.list
+   * @secure
+   */
+  customSchemaFragmentsListPost = (
+    data: CustomSchemaFragmentsListRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      CustomSchemaFragmentsListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/schemas.custom.list`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
       format: 'json',
       ...params,
     });
@@ -5477,6 +7042,33 @@ export class Api<
       method: 'GET',
       query: query,
       secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Lists subtypes.
+   *
+   * @tags customization
+   * @name SubtypesListPost
+   * @request POST:/schemas.subtypes.list
+   * @secure
+   */
+  subtypesListPost = (data: SubtypesListRequest, params: RequestParams = {}) =>
+    this.request<
+      SubtypesListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/schemas.subtypes.list`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
       format: 'json',
       ...params,
     });
@@ -5570,6 +7162,34 @@ export class Api<
     });
 
   /**
+   * @description Gets an SLA.
+   *
+   * @tags slas
+   * @name SlasGetPost
+   * @request POST:/slas.get
+   * @secure
+   */
+  slasGetPost = (data: SlasGetRequest, params: RequestParams = {}) =>
+    this.request<
+      SlasGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/slas.get`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
    * @description Lists SLAs matching a filter.
    *
    * @tags slas
@@ -5612,6 +7232,33 @@ export class Api<
       method: 'GET',
       query: query,
       secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Lists SLAs matching a filter.
+   *
+   * @tags slas
+   * @name SlasListPost
+   * @request POST:/slas.list
+   * @secure
+   */
+  slasListPost = (data: SlasListRequest, params: RequestParams = {}) =>
+    this.request<
+      SlasListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/slas.list`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
       format: 'json',
       ...params,
     });
@@ -5716,6 +7363,33 @@ export class Api<
       method: 'GET',
       query: query,
       secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Lists system users within your organization.
+   *
+   * @tags sys-users
+   * @name SysUsersListPost
+   * @request POST:/sys-users.list
+   * @secure
+   */
+  sysUsersListPost = (data: SysUsersListRequest, params: RequestParams = {}) =>
+    this.request<
+      SysUsersListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/sys-users.list`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
       format: 'json',
       ...params,
     });
@@ -5842,6 +7516,37 @@ export class Api<
     });
 
   /**
+   * @description Lists the timeline entries for an object.
+   *
+   * @tags timeline-entries
+   * @name TimelineEntriesListPost
+   * @request POST:/timeline-entries.list
+   * @secure
+   */
+  timelineEntriesListPost = (
+    data: TimelineEntriesListRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      TimelineEntriesListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/timeline-entries.list`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
    * @description Creates new work ([issue](https://devrev.ai/docs/product/build), [ticket](https://devrev.ai/docs/product/support)) item. [task](https://docs.devrev.ai/product/tasks) and opportunity work types are supported in the beta version.
    *
    * @tags works
@@ -5943,6 +7648,8 @@ export class Api<
        * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
        */
       owned_by?: string[];
+      /** Fields to sort the work items by and the direction to sort them. */
+      sort_by?: string[];
       /** Filters for records in the provided stage(s). */
       'stage.name'?: string[];
       /** Filters for tickets belonging to specific groups. */
@@ -5984,6 +7691,33 @@ export class Api<
     });
 
   /**
+   * @description Exports a collection of work items.
+   *
+   * @tags works
+   * @name WorksExportPost
+   * @request POST:/works.export
+   * @secure
+   */
+  worksExportPost = (data: WorksExportRequest, params: RequestParams = {}) =>
+    this.request<
+      WorksExportResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/works.export`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
    * @description Gets a work item's information.
    *
    * @tags works
@@ -6015,6 +7749,34 @@ export class Api<
       method: 'GET',
       query: query,
       secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets a work item's information.
+   *
+   * @tags works
+   * @name WorksGetPost
+   * @request POST:/works.get
+   * @secure
+   */
+  worksGetPost = (data: WorksGetRequest, params: RequestParams = {}) =>
+    this.request<
+      WorksGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/works.get`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
       format: 'json',
       ...params,
     });
@@ -6075,6 +7837,8 @@ export class Api<
        * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
        */
       owned_by?: string[];
+      /** Fields to sort the works by and the direction to sort them. */
+      sort_by?: string[];
       /** Filters for records in the provided stage(s). */
       'stage.name'?: string[];
       /** Filters for tickets belonging to specific groups. */
@@ -6111,6 +7875,33 @@ export class Api<
       method: 'GET',
       query: query,
       secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Lists a collection of work items.
+   *
+   * @tags works
+   * @name WorksListPost
+   * @request POST:/works.list
+   * @secure
+   */
+  worksListPost = (data: WorksListRequest, params: RequestParams = {}) =>
+    this.request<
+      WorksListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/works.list`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
       format: 'json',
       ...params,
     });
