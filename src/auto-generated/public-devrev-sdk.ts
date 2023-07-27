@@ -617,6 +617,14 @@ export type DevUser = UserBase & {
 export type DevUserSummary = UserBaseSummary;
 
 /**
+ * dev-users-get-response
+ * The response to getting the information for the Dev user.
+ */
+export interface DevUsersGetResponse {
+  dev_user: DevUser;
+}
+
+/**
  * dev-users-list-response
  * The response to listing the Dev users.
  */
@@ -1770,6 +1778,14 @@ export type TimelineEntryBase = AtomBase & {
   object: string;
   /** The type of object that the Timeline entry belongs to. */
   object_type?: TimelineEntryObjectType;
+  /**
+   * The visibility of the entry. If 'private', then the entry is only
+   * visible to the creator, 'internal' is visible with the Dev
+   * organization, 'external' is visible to the Dev organzation and Rev
+   * users, and 'public' is visible to all. If not set, then the default
+   * visibility is 'external'.
+   */
+  visibility?: TimelineEntryVisibility;
 };
 
 /** The type of object that the Timeline entry belongs to. */
@@ -2973,6 +2989,39 @@ export class Api<
       body: data,
       secure: true,
       type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets the requested user's information.
+   *
+   * @tags dev-users
+   * @name DevUsersGet
+   * @request GET:/dev-users.get
+   * @secure
+   */
+  devUsersGet = (
+    query: {
+      /** User ID of the requested Dev user. */
+      id: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      DevUsersGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/dev-users.get`,
+      method: 'GET',
+      query: query,
+      secure: true,
       format: 'json',
       ...params,
     });
