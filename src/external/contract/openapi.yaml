@@ -785,6 +785,16 @@ components:
       allOf:
       - $ref: '#/components/schemas/user-base-summary'
       title: dev-user-summary
+    dev-users-get-response:
+      description: The response to getting the information for the Dev user.
+      properties:
+        dev_user:
+          $ref: '#/components/schemas/dev-user'
+      required:
+      - dev_user
+      title: dev-users-get-response
+      type: object
+      x-go-name: DevUsersGetResponseBody
     dev-users-list-response:
       description: The response to listing the Dev users.
       properties:
@@ -2336,6 +2346,8 @@ components:
             type: string
           object_type:
             $ref: '#/components/schemas/timeline-entry-object-type'
+          visibility:
+            $ref: '#/components/schemas/timeline-entry-visibility'
         required:
         - object
         type: object
@@ -3620,6 +3632,42 @@ paths:
       tags:
       - auth-connection
       - dev-orgs
+  /dev-users.get:
+    get:
+      description: Gets the requested user's information.
+      operationId: dev-users-get
+      parameters:
+      - description: User ID of the requested Dev user.
+        explode: false
+        in: query
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dev-users-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - dev-users
+      x-request-name: DevUsersGetQuery
   /dev-users.list:
     get:
       description: Lists users within your organization.
