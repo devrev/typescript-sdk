@@ -387,6 +387,10 @@ components:
       title: aggregated-schema-get-response
       type: object
       x-go-name: AggregatedSchemaGetResponseBody
+    app-fragment:
+      allOf:
+      - $ref: '#/components/schemas/custom-schema-fragment-base'
+      title: app-fragment
     artifact-summary:
       allOf:
       - $ref: '#/components/schemas/atom-base-summary'
@@ -914,7 +918,15 @@ components:
       type: object
     custom-schema-fragment:
       discriminator:
+        mapping:
+          app_fragment: '#/components/schemas/app-fragment'
+          custom_type_fragment: '#/components/schemas/custom-type-fragment'
+          tenant_fragment: '#/components/schemas/tenant-fragment'
         propertyName: type
+      oneOf:
+      - $ref: '#/components/schemas/app-fragment'
+      - $ref: '#/components/schemas/custom-type-fragment'
+      - $ref: '#/components/schemas/tenant-fragment'
       properties:
         type:
           $ref: '#/components/schemas/custom-schema-fragment-type'
@@ -922,11 +934,19 @@ components:
       - type
       title: custom-schema-fragment
       type: object
+    custom-schema-fragment-base:
+      allOf:
+      - $ref: '#/components/schemas/atom-base'
+      title: custom-schema-fragment-base
     custom-schema-fragment-condition:
       description: The condition associated with a field.
       title: custom-schema-fragment-condition
       type: object
     custom-schema-fragment-type:
+      enum:
+      - app_fragment
+      - custom_type_fragment
+      - tenant_fragment
       type: string
     custom-schema-fragments-get-request:
       properties:
@@ -1100,6 +1120,10 @@ components:
       title: custom-schema-fragments-set-response
       type: object
       x-go-name: CustomSchemaFragmentsSetResponseBody
+    custom-type-fragment:
+      allOf:
+      - $ref: '#/components/schemas/custom-schema-fragment-base'
+      title: custom-type-fragment
     date-filter:
       description: Provides ways to specify date ranges on objects.
       discriminator:
@@ -4440,6 +4464,10 @@ components:
       allOf:
       - $ref: '#/components/schemas/work-base-summary'
       title: task-summary
+    tenant-fragment:
+      allOf:
+      - $ref: '#/components/schemas/custom-schema-fragment-base'
+      title: tenant-fragment
     ticket:
       allOf:
       - $ref: '#/components/schemas/work-base'

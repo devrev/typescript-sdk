@@ -265,6 +265,9 @@ export interface AggregatedSchemaGetResponse {
   schema: AggregatedSchema;
 }
 
+/** app-fragment */
+export type AppFragment = CustomSchemaFragmentBase;
+
 /** artifact-summary */
 export type ArtifactSummary = AtomBaseSummary;
 
@@ -662,9 +665,16 @@ export interface CreateWeeklyOrgScheduleInterval {
 }
 
 /** custom-schema-fragment */
-export interface CustomSchemaFragment {
+export type CustomSchemaFragment = (
+  | AppFragment
+  | CustomTypeFragment
+  | TenantFragment
+) & {
   type: CustomSchemaFragmentType;
-}
+};
+
+/** custom-schema-fragment-base */
+export type CustomSchemaFragmentBase = AtomBase;
 
 /**
  * custom-schema-fragment-condition
@@ -672,7 +682,11 @@ export interface CustomSchemaFragment {
  */
 export type CustomSchemaFragmentCondition = object;
 
-export type CustomSchemaFragmentType = string;
+export enum CustomSchemaFragmentType {
+  AppFragment = 'app_fragment',
+  CustomTypeFragment = 'custom_type_fragment',
+  TenantFragment = 'tenant_fragment',
+}
 
 /** custom-schema-fragments-get-request */
 export interface CustomSchemaFragmentsGetRequest {
@@ -775,6 +789,9 @@ export interface CustomSchemaFragmentsSetResponse {
   /** The ID of the custom schema fragment. */
   id: string;
 }
+
+/** custom-type-fragment */
+export type CustomTypeFragment = CustomSchemaFragmentBase;
 
 /**
  * date-filter
@@ -3417,6 +3434,9 @@ export enum TaskPriority {
 
 /** task-summary */
 export type TaskSummary = WorkBaseSummary;
+
+/** tenant-fragment */
+export type TenantFragment = CustomSchemaFragmentBase;
 
 /** ticket */
 export type Ticket = WorkBase & {
