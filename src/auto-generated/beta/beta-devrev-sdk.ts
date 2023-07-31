@@ -4187,7 +4187,7 @@ export type WorksUpdateRequest = (
   | WorksUpdateRequestTicket
 ) & {
   /**
-   * Updates the part that the work applies to.
+   * Updates the part that the work item applies to.
    * @example "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
    */
   applies_to_part?: string;

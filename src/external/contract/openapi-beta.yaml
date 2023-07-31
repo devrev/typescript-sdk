@@ -5435,7 +5435,7 @@ components:
       - $ref: '#/components/schemas/works-update-request-ticket'
       properties:
         applies_to_part:
-          description: Updates the part that the work applies to.
+          description: Updates the part that the work item applies to.
           example: don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>
           type: string
         artifacts:
