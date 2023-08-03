@@ -1080,12 +1080,8 @@ components:
         app:
           description: The app this fragment applies to.
           type: string
-        app_fragment_name:
-          description: The name of the app fragment.
-          type: string
       required:
       - app
-      - app_fragment_name
       title: custom-schema-fragments-set-request-app-fragment
       type: object
     custom-schema-fragments-set-request-custom-type-fragment:

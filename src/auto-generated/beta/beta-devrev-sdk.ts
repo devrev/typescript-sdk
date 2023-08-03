@@ -763,8 +763,6 @@ export type CustomSchemaFragmentsSetRequest = (
 export interface CustomSchemaFragmentsSetRequestAppFragment {
   /** The app this fragment applies to. */
   app: string;
-  /** The name of the app fragment. */
-  app_fragment_name: string;
 }
 
 /** custom-schema-fragments-set-request-custom-type-fragment */
