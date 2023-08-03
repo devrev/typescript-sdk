@@ -611,6 +611,10 @@ components:
           items:
             type: string
           type: array
+        is_creator_verified:
+          description: |
+            Filters for conversations that are created by verified users.
+          type: boolean
         is_spam:
           description: Filters for conversations that are spam.
           type: boolean
@@ -712,6 +716,10 @@ components:
           items:
             type: string
           type: array
+        is_creator_verified:
+          description: |
+            Filters for conversations that are created by verified users.
+          type: boolean
         is_spam:
           description: Filters for conversations that are spam.
           type: boolean
@@ -6157,6 +6165,13 @@ paths:
           items:
             type: string
           type: array
+      - description: |
+          Filters for conversations that are created by verified users.
+        explode: false
+        in: query
+        name: is_creator_verified
+        schema:
+          type: boolean
       - description: Filters for conversations that are spam.
         explode: false
         in: query
@@ -6373,6 +6388,13 @@ paths:
           items:
             type: string
           type: array
+      - description: |
+          Filters for conversations that are created by verified users.
+        explode: false
+        in: query
+        name: is_creator_verified
+        schema:
+          type: boolean
       - description: Filters for conversations that are spam.
         explode: false
         in: query

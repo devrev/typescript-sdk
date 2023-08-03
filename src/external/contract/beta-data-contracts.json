@@ -846,6 +846,10 @@
             },
             "type": "array"
           },
+          "is_creator_verified": {
+            "description": "Filters for conversations that are created by verified users.\n",
+            "type": "boolean"
+          },
           "is_spam": {
             "description": "Filters for conversations that are spam.",
             "type": "boolean"
@@ -975,6 +979,10 @@
               "type": "string"
             },
             "type": "array"
+          },
+          "is_creator_verified": {
+            "description": "Filters for conversations that are created by verified users.\n",
+            "type": "boolean"
           },
           "is_spam": {
             "description": "Filters for conversations that are spam.",
@@ -8435,6 +8443,15 @@
             }
           },
           {
+            "description": "Filters for conversations that are created by verified users.\n",
+            "explode": false,
+            "in": "query",
+            "name": "is_creator_verified",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
             "description": "Filters for conversations that are spam.",
             "explode": false,
             "in": "query",
@@ -8753,6 +8770,15 @@
                 "type": "string"
               },
               "type": "array"
+            }
+          },
+          {
+            "description": "Filters for conversations that are created by verified users.\n",
+            "explode": false,
+            "in": "query",
+            "name": "is_creator_verified",
+            "schema": {
+              "type": "boolean"
             }
           },
           {

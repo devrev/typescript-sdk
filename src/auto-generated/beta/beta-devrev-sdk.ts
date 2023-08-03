@@ -429,6 +429,8 @@ export interface ConversationsExportRequest {
   first?: number;
   /** Filters for conversation that belong to the given groups. */
   group?: string[];
+  /** Filters for conversations that are created by verified users. */
+  is_creator_verified?: boolean;
   /** Filters for conversations that are spam. */
   is_spam?: boolean;
   /**
@@ -500,6 +502,8 @@ export interface ConversationsListRequest {
   cursor?: string;
   /** Filters for conversation that belong to the given groups. */
   group?: string[];
+  /** Filters for conversations that are created by verified users. */
+  is_creator_verified?: boolean;
   /** Filters for conversations that are spam. */
   is_spam?: boolean;
   /**
@@ -4939,6 +4943,8 @@ export class Api<
       first?: number;
       /** Filters for conversation that belong to the given groups. */
       group?: string[];
+      /** Filters for conversations that are created by verified users. */
+      is_creator_verified?: boolean;
       /** Filters for conversations that are spam. */
       is_spam?: boolean;
       /**
@@ -5102,6 +5108,8 @@ export class Api<
       cursor?: string;
       /** Filters for conversation that belong to the given groups. */
       group?: string[];
+      /** Filters for conversations that are created by verified users. */
+      is_creator_verified?: boolean;
       /** Filters for conversations that are spam. */
       is_spam?: boolean;
       /**
