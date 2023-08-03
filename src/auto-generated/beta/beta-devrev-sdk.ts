@@ -9,6 +9,14 @@
  * ---------------------------------------------------------------
  */
 
+export enum AccessLevel {
+  External = 'external',
+  Internal = 'internal',
+  Private = 'private',
+  Public = 'public',
+  Restricted = 'restricted',
+}
+
 /** account */
 export type Account = OrgBase & {
   /** Custom fields. */
@@ -267,6 +275,313 @@ export interface AggregatedSchemaGetResponse {
 
 /** app-fragment */
 export type AppFragment = CustomSchemaFragmentBase;
+
+/** article */
+export type Article = AtomBase & {
+  /** Description of the article. */
+  description?: string;
+  /** Artifacts containing the extracted content. */
+  extracted_content?: ArtifactSummary[];
+  /** Resource details. */
+  resource?: Resource;
+  /** Title of the article. */
+  title?: string;
+};
+
+/** Status of the article. */
+export enum ArticleStatus {
+  Archived = 'archived',
+  Draft = 'draft',
+  Published = 'published',
+  ReviewNeeded = 'review_needed',
+}
+
+/** articles-count-request */
+export interface ArticlesCountRequest {
+  /**
+   * Filters for articles belonging to any of the provided parts.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+   */
+  applies_to_parts?: string[];
+  /**
+   * Filters for articles authored by any of the provided users.
+   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   */
+  authored_by?: string[];
+  /**
+   * Filters for articles created by any of the provided users.
+   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   */
+  created_by?: string[];
+  /**
+   * Filters for articles owned by any of the provided users.
+   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   */
+  owned_by?: string[];
+}
+
+/** articles-count-response */
+export interface ArticlesCountResponse {
+  /**
+   * The total number of articles matching the filter.
+   * @format int32
+   */
+  count: number;
+}
+
+/**
+ * articles-create-request
+ * The request to create an article.
+ */
+export interface ArticlesCreateRequest {
+  access_level?: AccessLevel;
+  /**
+   * The parts that the article applies to.
+   * @minItems 1
+   * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+   */
+  applies_to_parts: string[];
+  /**
+   * The authors of the article.
+   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   */
+  authored_by?: string[];
+  /** Description for the article. */
+  description?: string;
+  /**
+   * ID of the extracted content artifact.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   */
+  extracted_content?: string[];
+  /** Language of the article. */
+  language?: string;
+  /**
+   * The users that own the article.
+   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   */
+  owned_by?: string[];
+  /**
+   * The published date of the article.
+   * @format date-time
+   */
+  published_at?: string;
+  resource: ArticlesCreateRequestResource;
+  /** Status of the article. */
+  status?: ArticleStatus;
+  /** Tags associated with the article. */
+  tags?: SetTagWithValue[];
+  /** Name of the article. */
+  title: string;
+}
+
+/** articles-create-request-resource */
+export interface ArticlesCreateRequestResource {
+  /**
+   * IDs of the artifacts.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   */
+  artifacts?: string[];
+  /** URL of the external article. */
+  url?: string;
+}
+
+/**
+ * articles-create-response
+ * Create article response.
+ */
+export interface ArticlesCreateResponse {
+  article: Article;
+}
+
+/**
+ * articles-delete-request
+ * The request to delete an article.
+ */
+export interface ArticlesDeleteRequest {
+  /**
+   * The ID of the article to delete.
+   * @example "don:core:<partition>:devo/<dev-org-id>:article/<article-id>"
+   */
+  id: string;
+}
+
+/**
+ * articles-get-request
+ * The request to get an article.
+ */
+export interface ArticlesGetRequest {
+  /**
+   * The ID of the required article.
+   * @example "don:core:<partition>:devo/<dev-org-id>:article/<article-id>"
+   */
+  id: string;
+}
+
+/**
+ * articles-get-response
+ * Get article response.
+ */
+export interface ArticlesGetResponse {
+  article: Article;
+}
+
+/**
+ * articles-list-request
+ * The request to list articles.
+ */
+export interface ArticlesListRequest {
+  /**
+   * Filters for articles belonging to any of the provided parts.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+   */
+  applies_to_parts?: string[];
+  /**
+   * Filters for articles authored by any of the provided users.
+   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   */
+  authored_by?: string[];
+  /**
+   * Filters for articles created by any of the provided users.
+   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   */
+  created_by?: string[];
+  /**
+   * The cursor to resume iteration from. If not provided, then
+   * iteration starts from the beginning.
+   */
+  cursor?: string;
+  /**
+   * The maximum number of articles to return. The default is '50'.
+   * @format int32
+   */
+  limit?: number;
+  /**
+   * The iteration mode to use. If "after", then entries after the provided
+   * cursor will be returned, or if no cursor is provided, then from the
+   * beginning. If "before", then entries before the provided cursor will be
+   * returned, or if no cursor is provided, then from the end. Entries will
+   * always be returned in the specified sort-by order.
+   */
+  mode?: ListMode;
+  /**
+   * Filters for articles owned by any of the provided users.
+   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   */
+  owned_by?: string[];
+}
+
+/**
+ * articles-list-response
+ * List articles response.
+ */
+export interface ArticlesListResponse {
+  /** The article entries matching the request. */
+  articles: Article[];
+  /**
+   * The cursor used to iterate subsequent results in accordance to the
+   * sort order. If not set, then no later elements exist.
+   */
+  next_cursor?: string;
+  /**
+   * The cursor used to iterate preceding results in accordance to the
+   * sort order. If not set, then no prior elements exist.
+   */
+  prev_cursor?: string;
+  /**
+   * Total number of article items for the request.
+   * @format int32
+   */
+  total: number;
+}
+
+/**
+ * articles-update-request
+ * The request to update an article.
+ */
+export interface ArticlesUpdateRequest {
+  access_level?: AccessLevel;
+  applies_to_parts?: ArticlesUpdateRequestAppliesToParts;
+  artifacts?: ArticlesUpdateRequestArtifacts;
+  authored_by?: ArticlesUpdateRequestAuthoredBy;
+  /**
+   * Updated description of the article object, or unchanged if not
+   * provided.
+   */
+  description?: string;
+  extracted_content?: ArticlesUpdateRequestExtractedContent;
+  /**
+   * The article's ID.
+   * @example "don:core:<partition>:devo/<dev-org-id>:article/<article-id>"
+   */
+  id: string;
+  /** Updates the language of the article. */
+  language?: string;
+  owned_by?: ArticlesUpdateRequestOwnedBy;
+  /** Status of the article. */
+  status?: ArticleStatus;
+  tags?: ArticlesUpdateRequestTags;
+  /** Updated title of the article object, or unchanged if not provided. */
+  title?: string;
+  /** Updates the URL of the external article. */
+  url?: string;
+}
+
+/** articles-update-request-applies-to-parts */
+export interface ArticlesUpdateRequestAppliesToParts {
+  /**
+   * Updates the parts that the article applies to.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+   */
+  set?: string[];
+}
+
+/** articles-update-request-artifacts */
+export interface ArticlesUpdateRequestArtifacts {
+  /**
+   * Updates IDs of the artifacts.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   */
+  set?: string[];
+}
+
+/** articles-update-request-authored-by */
+export interface ArticlesUpdateRequestAuthoredBy {
+  /**
+   * Sets the users that authored the article.
+   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   */
+  set?: string[];
+}
+
+/** articles-update-request-extracted-content */
+export interface ArticlesUpdateRequestExtractedContent {
+  /**
+   * Update the ID of the extracted content.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   */
+  set?: string[];
+}
+
+/** articles-update-request-owned-by */
+export interface ArticlesUpdateRequestOwnedBy {
+  /**
+   * Sets the owner IDs to the provided user IDs. This must not be
+   * empty.
+   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   */
+  set?: string[];
+}
+
+/** articles-update-request-tags */
+export interface ArticlesUpdateRequestTags {
+  /** Sets the provided tags on the article. */
+  set?: SetTagWithValue[];
+}
+
+/** articles-update-response */
+export interface ArticlesUpdateResponse {
+  article: Article;
+}
 
 /** artifact-summary */
 export type ArtifactSummary = AtomBaseSummary;
@@ -2026,6 +2341,17 @@ export enum PartType {
 
 /** product-summary */
 export type ProductSummary = PartBaseSummary;
+
+/**
+ * resource
+ * Resource details.
+ */
+export interface Resource {
+  /** Ids of the artifacts. */
+  artifacts?: ArtifactSummary[];
+  /** URL of the external article. */
+  url?: string;
+}
 
 /** rev-org */
 export type RevOrg = OrgBase & {
@@ -4849,6 +5175,324 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/accounts.update`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Get count of articles matching given filter.
+   *
+   * @tags articles
+   * @name ArticlesCount
+   * @request GET:/articles.count
+   * @secure
+   */
+  articlesCount = (
+    query?: {
+      /**
+       * Filters for articles belonging to any of the provided parts.
+       * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+       */
+      applies_to_parts?: string[];
+      /**
+       * Filters for articles authored by any of the provided users.
+       * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+       */
+      authored_by?: string[];
+      /**
+       * Filters for articles created by any of the provided users.
+       * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+       */
+      created_by?: string[];
+      /**
+       * Filters for articles owned by any of the provided users.
+       * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+       */
+      owned_by?: string[];
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      ArticlesCountResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/articles.count`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Get count of articles matching given filter.
+   *
+   * @tags articles
+   * @name ArticlesCountPost
+   * @request POST:/articles.count
+   * @secure
+   */
+  articlesCountPost = (
+    data: ArticlesCountRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      ArticlesCountResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/articles.count`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Article is an object which can contain a URL or artifacts in the resource. It also contains the data regarding the owner, author, status and published date of the object. This call creates an article.
+   *
+   * @tags articles
+   * @name CreateArticle
+   * @request POST:/articles.create
+   * @secure
+   */
+  createArticle = (data: ArticlesCreateRequest, params: RequestParams = {}) =>
+    this.request<
+      ArticlesCreateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/articles.create`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Deletes an article.
+   *
+   * @tags articles
+   * @name DeleteArticle
+   * @request POST:/articles.delete
+   * @secure
+   */
+  deleteArticle = (data: ArticlesDeleteRequest, params: RequestParams = {}) =>
+    this.request<
+      void,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/articles.delete`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      ...params,
+    });
+
+  /**
+   * @description Gets an article.
+   *
+   * @tags articles
+   * @name GetArticle
+   * @request GET:/articles.get
+   * @secure
+   */
+  getArticle = (
+    query: {
+      /**
+       * The ID of the required article.
+       * @example "don:core:<partition>:devo/<dev-org-id>:article/<article-id>"
+       */
+      id: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      ArticlesGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/articles.get`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets an article.
+   *
+   * @tags articles
+   * @name GetArticlePost
+   * @request POST:/articles.get
+   * @secure
+   */
+  getArticlePost = (data: ArticlesGetRequest, params: RequestParams = {}) =>
+    this.request<
+      ArticlesGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/articles.get`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Lists a collection of articles.
+   *
+   * @tags articles
+   * @name ListArticles
+   * @request GET:/articles.list
+   * @secure
+   */
+  listArticles = (
+    query?: {
+      /**
+       * Filters for articles belonging to any of the provided parts.
+       * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+       */
+      applies_to_parts?: string[];
+      /**
+       * Filters for articles authored by any of the provided users.
+       * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+       */
+      authored_by?: string[];
+      /**
+       * Filters for articles created by any of the provided users.
+       * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+       */
+      created_by?: string[];
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /**
+       * The maximum number of articles to return. The default is '50'.
+       * @format int32
+       */
+      limit?: number;
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /**
+       * Filters for articles owned by any of the provided users.
+       * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+       */
+      owned_by?: string[];
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      ArticlesListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/articles.list`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Lists a collection of articles.
+   *
+   * @tags articles
+   * @name ListArticlesPost
+   * @request POST:/articles.list
+   * @secure
+   */
+  listArticlesPost = (data: ArticlesListRequest, params: RequestParams = {}) =>
+    this.request<
+      ArticlesListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/articles.list`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Updates an article.
+   *
+   * @tags articles
+   * @name UpdateArticle
+   * @request POST:/articles.update
+   * @secure
+   */
+  updateArticle = (data: ArticlesUpdateRequest, params: RequestParams = {}) =>
+    this.request<
+      ArticlesUpdateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/articles.update`,
       method: 'POST',
       body: data,
       secure: true,

@@ -48,6 +48,14 @@ components:
             $ref: '#/components/schemas/error-unauthorized'
       description: 401 Unauthorized.
   schemas:
+    access-level:
+      enum:
+      - external
+      - internal
+      - private
+      - public
+      - restricted
+      type: string
     account:
       allOf:
       - $ref: '#/components/schemas/org-base'
@@ -391,6 +399,390 @@ components:
       allOf:
       - $ref: '#/components/schemas/custom-schema-fragment-base'
       title: app-fragment
+    article:
+      allOf:
+      - $ref: '#/components/schemas/atom-base'
+      - properties:
+          description:
+            description: Description of the article.
+            type: string
+          extracted_content:
+            description: Artifacts containing the extracted content.
+            items:
+              $ref: '#/components/schemas/artifact-summary'
+            type: array
+          resource:
+            $ref: '#/components/schemas/resource'
+          title:
+            description: Title of the article.
+            type: string
+        type: object
+      title: article
+    article-status:
+      description: Status of the article.
+      enum:
+      - archived
+      - draft
+      - published
+      - review_needed
+      type: string
+    articles-count-request:
+      properties:
+        applies_to_parts:
+          description: |
+            Filters for articles belonging to any of the provided parts.
+          example:
+          - don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>
+          items:
+            type: string
+          type: array
+        authored_by:
+          description: |
+            Filters for articles authored by any of the provided users.
+          example:
+          - don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>
+          items:
+            type: string
+          type: array
+        created_by:
+          description: |
+            Filters for articles created by any of the provided users.
+          example:
+          - don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>
+          items:
+            type: string
+          type: array
+        owned_by:
+          description: Filters for articles owned by any of the provided users.
+          example:
+          - don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>
+          items:
+            type: string
+          type: array
+      title: articles-count-request
+      type: object
+    articles-count-response:
+      properties:
+        count:
+          description: The total number of articles matching the filter.
+          format: int32
+          type: integer
+      required:
+      - count
+      title: articles-count-response
+      type: object
+      x-go-name: ArticlesCountResponseBody
+    articles-create-request:
+      description: The request to create an article.
+      properties:
+        access_level:
+          $ref: '#/components/schemas/access-level'
+        applies_to_parts:
+          description: The parts that the article applies to.
+          example:
+          - don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>
+          items:
+            type: string
+          minItems: 1
+          type: array
+        authored_by:
+          description: The authors of the article.
+          example:
+          - don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>
+          items:
+            type: string
+          type: array
+        description:
+          description: Description for the article.
+          type: string
+        extracted_content:
+          description: ID of the extracted content artifact.
+          example:
+          - don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>
+          items:
+            type: string
+          type: array
+        language:
+          description: Language of the article.
+          type: string
+        owned_by:
+          description: The users that own the article.
+          example:
+          - don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>
+          items:
+            type: string
+          type: array
+        published_at:
+          description: The published date of the article.
+          format: date-time
+          type: string
+        resource:
+          $ref: '#/components/schemas/articles-create-request-resource'
+        status:
+          $ref: '#/components/schemas/article-status'
+        tags:
+          description: Tags associated with the article.
+          items:
+            $ref: '#/components/schemas/set-tag-with-value'
+          type: array
+        title:
+          description: Name of the article.
+          type: string
+      required:
+      - applies_to_parts
+      - resource
+      - title
+      title: articles-create-request
+      type: object
+    articles-create-request-resource:
+      properties:
+        artifacts:
+          description: IDs of the artifacts.
+          example:
+          - don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>
+          items:
+            type: string
+          type: array
+        url:
+          description: URL of the external article.
+          type: string
+      title: articles-create-request-resource
+      type: object
+    articles-create-response:
+      description: Create article response.
+      properties:
+        article:
+          $ref: '#/components/schemas/article'
+      required:
+      - article
+      title: articles-create-response
+      type: object
+      x-go-name: ArticlesCreateResponseBody
+    articles-delete-request:
+      description: The request to delete an article.
+      properties:
+        id:
+          description: The ID of the article to delete.
+          example: don:core:<partition>:devo/<dev-org-id>:article/<article-id>
+          type: string
+      required:
+      - id
+      title: articles-delete-request
+      type: object
+    articles-get-request:
+      description: The request to get an article.
+      properties:
+        id:
+          description: The ID of the required article.
+          example: don:core:<partition>:devo/<dev-org-id>:article/<article-id>
+          type: string
+      required:
+      - id
+      title: articles-get-request
+      type: object
+    articles-get-response:
+      description: Get article response.
+      properties:
+        article:
+          $ref: '#/components/schemas/article'
+      required:
+      - article
+      title: articles-get-response
+      type: object
+      x-go-name: ArticlesGetResponseBody
+    articles-list-request:
+      description: The request to list articles.
+      properties:
+        applies_to_parts:
+          description: |
+            Filters for articles belonging to any of the provided parts.
+          example:
+          - don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>
+          items:
+            type: string
+          type: array
+        authored_by:
+          description: |
+            Filters for articles authored by any of the provided users.
+          example:
+          - don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>
+          items:
+            type: string
+          type: array
+        created_by:
+          description: |
+            Filters for articles created by any of the provided users.
+          example:
+          - don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>
+          items:
+            type: string
+          type: array
+        cursor:
+          description: |
+            The cursor to resume iteration from. If not provided, then
+            iteration starts from the beginning.
+          type: string
+        limit:
+          description: |
+            The maximum number of articles to return. The default is '50'.
+          format: int32
+          type: integer
+        mode:
+          $ref: '#/components/schemas/list-mode'
+        owned_by:
+          description: Filters for articles owned by any of the provided users.
+          example:
+          - don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>
+          items:
+            type: string
+          type: array
+      title: articles-list-request
+      type: object
+    articles-list-response:
+      description: List articles response.
+      properties:
+        articles:
+          description: The article entries matching the request.
+          items:
+            $ref: '#/components/schemas/article'
+          type: array
+        next_cursor:
+          description: |
+            The cursor used to iterate subsequent results in accordance to the
+            sort order. If not set, then no later elements exist.
+          type: string
+        prev_cursor:
+          description: |
+            The cursor used to iterate preceding results in accordance to the
+            sort order. If not set, then no prior elements exist.
+          type: string
+        total:
+          description: Total number of article items for the request.
+          format: int32
+          type: integer
+      required:
+      - articles
+      - total
+      title: articles-list-response
+      type: object
+      x-go-name: ArticlesListResponseBody
+    articles-update-request:
+      description: The request to update an article.
+      properties:
+        access_level:
+          $ref: '#/components/schemas/access-level'
+        applies_to_parts:
+          $ref: '#/components/schemas/articles-update-request-applies-to-parts'
+        artifacts:
+          $ref: '#/components/schemas/articles-update-request-artifacts'
+        authored_by:
+          $ref: '#/components/schemas/articles-update-request-authored-by'
+        description:
+          description: |
+            Updated description of the article object, or unchanged if not
+            provided.
+          type: string
+        extracted_content:
+          $ref: '#/components/schemas/articles-update-request-extracted-content'
+        id:
+          description: The article's ID.
+          example: don:core:<partition>:devo/<dev-org-id>:article/<article-id>
+          type: string
+        language:
+          description: Updates the language of the article.
+          type: string
+        owned_by:
+          $ref: '#/components/schemas/articles-update-request-owned-by'
+        status:
+          $ref: '#/components/schemas/article-status'
+        tags:
+          $ref: '#/components/schemas/articles-update-request-tags'
+        title:
+          description: |
+            Updated title of the article object, or unchanged if not provided.
+          type: string
+        url:
+          description: Updates the URL of the external article.
+          type: string
+      required:
+      - id
+      title: articles-update-request
+      type: object
+    articles-update-request-applies-to-parts:
+      properties:
+        set:
+          description: Updates the parts that the article applies to.
+          example:
+          - don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>
+          items:
+            type: string
+          type: array
+      title: articles-update-request-applies-to-parts
+      type: object
+    articles-update-request-artifacts:
+      properties:
+        set:
+          description: Updates IDs of the artifacts.
+          example:
+          - don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>
+          items:
+            type: string
+          type: array
+      title: articles-update-request-artifacts
+      type: object
+    articles-update-request-authored-by:
+      properties:
+        set:
+          description: Sets the users that authored the article.
+          example:
+          - don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>
+          items:
+            type: string
+          type: array
+      title: articles-update-request-authored-by
+      type: object
+    articles-update-request-extracted-content:
+      properties:
+        set:
+          description: Update the ID of the extracted content.
+          example:
+          - don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>
+          items:
+            type: string
+          type: array
+      title: articles-update-request-extracted-content
+      type: object
+    articles-update-request-owned-by:
+      properties:
+        set:
+          description: |
+            Sets the owner IDs to the provided user IDs. This must not be
+            empty.
+          example:
+          - don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>
+          items:
+            type: string
+          type: array
+      title: articles-update-request-owned-by
+      type: object
+    articles-update-request-tags:
+      properties:
+        set:
+          description: Sets the provided tags on the article.
+          items:
+            $ref: '#/components/schemas/set-tag-with-value'
+          type: array
+      title: articles-update-request-tags
+      type: object
+    articles-update-response:
+      properties:
+        article:
+          $ref: '#/components/schemas/article'
+      required:
+      - article
+      title: articles-update-response
+      type: object
+      x-go-name: ArticlesUpdateResponseBody
     artifact-summary:
       allOf:
       - $ref: '#/components/schemas/atom-base-summary'
@@ -2734,6 +3126,19 @@ components:
       allOf:
       - $ref: '#/components/schemas/part-base-summary'
       title: product-summary
+    resource:
+      description: Resource details.
+      properties:
+        artifacts:
+          description: Ids of the artifacts.
+          items:
+            $ref: '#/components/schemas/artifact-summary'
+          type: array
+        url:
+          description: URL of the external article.
+          type: string
+      title: resource
+      type: object
     rev-org:
       allOf:
       - $ref: '#/components/schemas/org-base'
@@ -6066,6 +6471,387 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
       - accounts
+  /articles.count:
+    get:
+      description: Get count of articles matching given filter.
+      operationId: articles-count
+      parameters:
+      - description: |
+          Filters for articles belonging to any of the provided parts.
+        explode: false
+        in: query
+        name: applies_to_parts
+        schema:
+          example:
+          - don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>
+          items:
+            type: string
+          type: array
+      - description: |
+          Filters for articles authored by any of the provided users.
+        explode: false
+        in: query
+        name: authored_by
+        schema:
+          example:
+          - don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>
+          items:
+            type: string
+          type: array
+      - description: Filters for articles created by any of the provided users.
+        explode: false
+        in: query
+        name: created_by
+        schema:
+          example:
+          - don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>
+          items:
+            type: string
+          type: array
+      - description: Filters for articles owned by any of the provided users.
+        explode: false
+        in: query
+        name: owned_by
+        schema:
+          example:
+          - don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>
+          items:
+            type: string
+          type: array
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/articles-count-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - articles
+      x-request-name: ArticlesCountQuery
+    post:
+      description: Get count of articles matching given filter.
+      operationId: articles-count-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/articles-count-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/articles-count-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - articles
+  /articles.create:
+    post:
+      description: |
+        Article is an object which can contain a URL or artifacts in the
+        resource. It also contains the data regarding the owner, author, status
+        and published date of the object. This call creates an article.
+      operationId: create-article
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/articles-create-request'
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/articles-create-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - articles
+  /articles.delete:
+    post:
+      description: Deletes an article.
+      operationId: delete-article
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/articles-delete-request'
+      responses:
+        "200":
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - articles
+  /articles.get:
+    get:
+      description: Gets an article.
+      operationId: get-article
+      parameters:
+      - description: The ID of the required article.
+        explode: false
+        in: query
+        name: id
+        required: true
+        schema:
+          example: don:core:<partition>:devo/<dev-org-id>:article/<article-id>
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/articles-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - articles
+      x-request-name: GetArticleQuery
+    post:
+      description: Gets an article.
+      operationId: get-article-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/articles-get-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/articles-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - articles
+  /articles.list:
+    get:
+      description: Lists a collection of articles.
+      operationId: list-articles
+      parameters:
+      - description: |
+          Filters for articles belonging to any of the provided parts.
+        explode: false
+        in: query
+        name: applies_to_parts
+        schema:
+          example:
+          - don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>
+          items:
+            type: string
+          type: array
+      - description: |
+          Filters for articles authored by any of the provided users.
+        explode: false
+        in: query
+        name: authored_by
+        schema:
+          example:
+          - don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>
+          items:
+            type: string
+          type: array
+      - description: Filters for articles created by any of the provided users.
+        explode: false
+        in: query
+        name: created_by
+        schema:
+          example:
+          - don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>
+          items:
+            type: string
+          type: array
+      - description: |
+          The cursor to resume iteration from. If not provided, then iteration
+          starts from the beginning.
+        explode: false
+        in: query
+        name: cursor
+        schema:
+          type: string
+      - description: |
+          The maximum number of articles to return. The default is '50'.
+        explode: false
+        in: query
+        name: limit
+        schema:
+          format: int32
+          type: integer
+      - description: |
+          The iteration mode to use, otherwise if not set, then "after" is
+          used.
+        explode: false
+        in: query
+        name: mode
+        schema:
+          $ref: '#/components/schemas/list-mode'
+      - description: Filters for articles owned by any of the provided users.
+        explode: false
+        in: query
+        name: owned_by
+        schema:
+          example:
+          - don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>
+          items:
+            type: string
+          type: array
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/articles-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - articles
+      x-request-name: ListArticlesQuery
+    post:
+      description: Lists a collection of articles.
+      operationId: list-articles-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/articles-list-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/articles-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - articles
+  /articles.update:
+    post:
+      description: Updates an article.
+      operationId: update-article
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/articles-update-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/articles-update-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - articles
   /conversations.create:
     post:
       description: Creates a conversation.
@@ -10032,6 +10818,8 @@ servers:
 tags:
 - description: Accounts management APIs
   name: accounts
+- description: Articles management APIs.
+  name: articles
 - description: DevRev conversation interaction.
   name: conversations
 - description: DevRev customization.
