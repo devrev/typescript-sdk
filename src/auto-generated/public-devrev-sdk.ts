@@ -1870,6 +1870,7 @@ export type UserBaseSummary = AtomBaseSummary & {
 export enum UserState {
   Active = 'active',
   Deactivated = 'deactivated',
+  Deleted = 'deleted',
   Locked = 'locked',
   Shadow = 'shadow',
   Unassigned = 'unassigned',

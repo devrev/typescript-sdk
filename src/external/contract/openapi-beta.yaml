@@ -5266,6 +5266,7 @@ components:
       enum:
       - active
       - deactivated
+      - deleted
       - locked
       - shadow
       - unassigned
