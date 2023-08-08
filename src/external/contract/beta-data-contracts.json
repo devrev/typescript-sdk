@@ -7156,6 +7156,13 @@
           },
           {
             "properties": {
+              "labels": {
+                "description": "Labels that are associated with the Timeline entry.",
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
               "object": {
                 "description": "The object that the Timeline entry belongs to.",
                 "type": "string"

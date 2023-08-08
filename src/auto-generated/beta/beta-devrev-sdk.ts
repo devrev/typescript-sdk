@@ -4093,6 +4093,8 @@ export type TimelineEntry = TimelineComment & {
 
 /** timeline-entry-base */
 export type TimelineEntryBase = AtomBase & {
+  /** Labels that are associated with the Timeline entry. */
+  labels?: string[];
   /** The object that the Timeline entry belongs to. */
   object: string;
   /** The type of object that the Timeline entry belongs to. */
