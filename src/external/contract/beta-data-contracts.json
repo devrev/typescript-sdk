@@ -6878,6 +6878,16 @@
           "body_type": {
             "$ref": "#/components/schemas/timeline-comment-body-type"
           },
+          "link_previews": {
+            "description": "The IDs of the previews of the links posted in the comment.\n",
+            "example": [
+              "don:core:<partition>:devo/<dev-org-id>:snap_widget/<snap-widget-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
           "snap_kit_body": {
             "$ref": "#/components/schemas/timeline-snap-kit-body"
           }
@@ -6971,6 +6981,150 @@
         "title": "timeline-entries-list-response",
         "type": "object",
         "x-go-name": "TimelineEntriesListResponseBody"
+      },
+      "timeline-entries-update-request": {
+        "description": "The request to update a timeline entry.",
+        "discriminator": {
+          "mapping": {
+            "timeline_comment": "#/components/schemas/timeline-entries-update-request-timeline-comment"
+          },
+          "propertyName": "type"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/timeline-entries-update-request-timeline-comment"
+          }
+        ],
+        "properties": {
+          "id": {
+            "description": "The ID of the timeline entry to update.",
+            "example": "don:core:<partition>:devo/<dev-org-id>:ticket/123:timeline_event/<timeline-event-id>",
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/timeline-entries-update-request-type"
+          }
+        },
+        "required": [
+          "id",
+          "type"
+        ],
+        "title": "timeline-entries-update-request",
+        "type": "object"
+      },
+      "timeline-entries-update-request-timeline-comment": {
+        "properties": {
+          "artifacts": {
+            "$ref": "#/components/schemas/timeline-entries-update-request-timeline-comment-artifacts"
+          },
+          "body": {
+            "description": "The updated comment's body.",
+            "type": "string"
+          },
+          "body_type": {
+            "$ref": "#/components/schemas/timeline-comment-body-type"
+          },
+          "link_previews": {
+            "$ref": "#/components/schemas/timeline-entries-update-request-timeline-comment-link-previews"
+          },
+          "snap_kit_body": {
+            "$ref": "#/components/schemas/timeline-snap-kit-body"
+          }
+        },
+        "title": "timeline-entries-update-request-timeline-comment",
+        "type": "object"
+      },
+      "timeline-entries-update-request-timeline-comment-artifacts": {
+        "properties": {
+          "add": {
+            "description": "Adds the provided artifacts to the comment. An artifact cannot be\nadded more than once, i.e. nothing is done if the artifact is\nalready attached. Mutually exclusive with `set`.\n",
+            "example": [
+              "don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "remove": {
+            "description": "Removes the provided artifacts from the comment. If an artifact is\nnot present, then it's ignored. Mututally exclusive with `set`.\n",
+            "example": [
+              "don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "set": {
+            "description": "Sets the field to the provided artifacts.",
+            "example": [
+              "don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "title": "timeline-entries-update-request-timeline-comment-artifacts",
+        "type": "object"
+      },
+      "timeline-entries-update-request-timeline-comment-link-previews": {
+        "properties": {
+          "add": {
+            "description": "Adds the provided link previews to the comment. A link preview\ncannot be added more than once, i.e. nothing is done if the link\npreview is already present. Mutually exclusive with `set`.\n",
+            "example": [
+              "don:core:<partition>:devo/<dev-org-id>:snap_widget/<snap-widget-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "remove": {
+            "description": "Removes the provided link previews from the comment. If a link\npreview is not present, then it's ignored. Mutually exclusive with\n`set`.\n",
+            "example": [
+              "don:core:<partition>:devo/<dev-org-id>:snap_widget/<snap-widget-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "set": {
+            "description": "Set the link previews to the provided IDs.",
+            "example": [
+              "don:core:<partition>:devo/<dev-org-id>:snap_widget/<snap-widget-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "title": "timeline-entries-update-request-timeline-comment-link-previews",
+        "type": "object"
+      },
+      "timeline-entries-update-request-type": {
+        "enum": [
+          "timeline_comment"
+        ],
+        "type": "string"
+      },
+      "timeline-entries-update-response": {
+        "description": "The response to updating a timeline entry.",
+        "properties": {
+          "timeline_entry": {
+            "$ref": "#/components/schemas/timeline-entry"
+          }
+        },
+        "required": [
+          "timeline_entry"
+        ],
+        "title": "timeline-entries-update-response",
+        "type": "object",
+        "x-go-name": "TimelineEntriesUpdateResponseBody"
       },
       "timeline-entry": {
         "discriminator": {
@@ -14582,6 +14736,54 @@
           },
           "404": {
             "$ref": "#/components/responses/not-found"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "timeline-entries"
+        ]
+      }
+    },
+    "/timeline-entries.update": {
+      "post": {
+        "description": "Updates an entry on an object's timeline.",
+        "operationId": "timeline-entries-update",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/timeline-entries-update-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/timeline-entries-update-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
           },
           "429": {
             "$ref": "#/components/responses/too-many-requests"

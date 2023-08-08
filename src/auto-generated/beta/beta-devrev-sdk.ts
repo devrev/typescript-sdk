@@ -3921,6 +3921,11 @@ export interface TimelineEntriesCreateRequestTimelineComment {
   body?: string;
   /** The type of the body to use for the comment. */
   body_type?: TimelineCommentBodyType;
+  /**
+   * The IDs of the previews of the links posted in the comment.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:snap_widget/<snap-widget-id>"]
+   */
+  link_previews?: string[];
   /** Snap Kit Body of the comment. */
   snap_kit_body?: TimelineSnapKitBody;
 }
@@ -3996,6 +4001,89 @@ export interface TimelineEntriesListResponse {
   prev_cursor?: string;
   /** The timeline entries for the object. */
   timeline_entries: TimelineEntry[];
+}
+
+/**
+ * timeline-entries-update-request
+ * The request to update a timeline entry.
+ */
+export type TimelineEntriesUpdateRequest =
+  TimelineEntriesUpdateRequestTimelineComment & {
+    /**
+     * The ID of the timeline entry to update.
+     * @example "don:core:<partition>:devo/<dev-org-id>:ticket/123:timeline_event/<timeline-event-id>"
+     */
+    id: string;
+    type: TimelineEntriesUpdateRequestType;
+  };
+
+/** timeline-entries-update-request-timeline-comment */
+export interface TimelineEntriesUpdateRequestTimelineComment {
+  artifacts?: TimelineEntriesUpdateRequestTimelineCommentArtifacts;
+  /** The updated comment's body. */
+  body?: string;
+  /** The type of the body to use for the comment. */
+  body_type?: TimelineCommentBodyType;
+  link_previews?: TimelineEntriesUpdateRequestTimelineCommentLinkPreviews;
+  /** Snap Kit Body of the comment. */
+  snap_kit_body?: TimelineSnapKitBody;
+}
+
+/** timeline-entries-update-request-timeline-comment-artifacts */
+export interface TimelineEntriesUpdateRequestTimelineCommentArtifacts {
+  /**
+   * Adds the provided artifacts to the comment. An artifact cannot be
+   * added more than once, i.e. nothing is done if the artifact is
+   * already attached. Mutually exclusive with `set`.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   */
+  add?: string[];
+  /**
+   * Removes the provided artifacts from the comment. If an artifact is
+   * not present, then it's ignored. Mututally exclusive with `set`.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   */
+  remove?: string[];
+  /**
+   * Sets the field to the provided artifacts.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   */
+  set?: string[];
+}
+
+/** timeline-entries-update-request-timeline-comment-link-previews */
+export interface TimelineEntriesUpdateRequestTimelineCommentLinkPreviews {
+  /**
+   * Adds the provided link previews to the comment. A link preview
+   * cannot be added more than once, i.e. nothing is done if the link
+   * preview is already present. Mutually exclusive with `set`.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:snap_widget/<snap-widget-id>"]
+   */
+  add?: string[];
+  /**
+   * Removes the provided link previews from the comment. If a link
+   * preview is not present, then it's ignored. Mutually exclusive with
+   * `set`.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:snap_widget/<snap-widget-id>"]
+   */
+  remove?: string[];
+  /**
+   * Set the link previews to the provided IDs.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:snap_widget/<snap-widget-id>"]
+   */
+  set?: string[];
+}
+
+export enum TimelineEntriesUpdateRequestType {
+  TimelineComment = 'timeline_comment',
+}
+
+/**
+ * timeline-entries-update-response
+ * The response to updating a timeline entry.
+ */
+export interface TimelineEntriesUpdateResponse {
+  timeline_entry: TimelineEntry;
 }
 
 /** timeline-entry */
@@ -8420,6 +8508,36 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/timeline-entries.list`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Updates an entry on an object's timeline.
+   *
+   * @tags timeline-entries
+   * @name TimelineEntriesUpdate
+   * @request POST:/timeline-entries.update
+   * @secure
+   */
+  timelineEntriesUpdate = (
+    data: TimelineEntriesUpdateRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      TimelineEntriesUpdateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/timeline-entries.update`,
       method: 'POST',
       body: data,
       secure: true,
