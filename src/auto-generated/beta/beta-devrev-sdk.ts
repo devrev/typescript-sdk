@@ -3890,6 +3890,13 @@ export type TimelineEntriesCreateRequest =
      */
     expires_at?: string;
     /**
+     * The labels to be associated with the entry.
+     * @minLength 1
+     * @maxLength 64
+     * @maxItems 16
+     */
+    labels?: string[];
+    /**
      * The ID of the object to create the timeline entry for.
      * @example "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
      */
@@ -3959,6 +3966,14 @@ export interface TimelineEntriesListRequest {
    * iteration starts from the beginning.
    */
   cursor?: string;
+  /**
+   * Filters for entries containing at least one of the provided labels,
+   * otherwise if no labels are provided, then no label filtering is
+   * done.
+   * @minLength 1
+   * @maxLength 64
+   */
+  labels?: string[];
   /**
    * The maximum number of entries to return. If not set, then this
    * defaults to `50`.
@@ -8451,6 +8466,13 @@ export class Api<
        * starts from the beginning.
        */
       cursor?: string;
+      /**
+       * Filters for entries containing at least one of the provided labels,
+       * otherwise if no labels are provided, then no label filtering is done.
+       * @minLength 1
+       * @maxLength 64
+       */
+      labels?: string[];
       /**
        * The maximum number of entries to return. If not set, then this
        * defaults to `50`.

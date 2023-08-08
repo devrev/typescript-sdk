@@ -6837,6 +6837,16 @@
             "format": "date-time",
             "type": "string"
           },
+          "labels": {
+            "description": "The labels to be associated with the entry.",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 16,
+            "maxLength": 64,
+            "minLength": 1,
+            "type": "array"
+          },
           "object": {
             "description": "The ID of the object to create the timeline entry for.",
             "example": "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>",
@@ -6935,6 +6945,15 @@
           "cursor": {
             "description": "The cursor to resume iteration from. If not provided, then\niteration starts from the beginning.\n",
             "type": "string"
+          },
+          "labels": {
+            "description": "Filters for entries containing at least one of the provided labels,\notherwise if no labels are provided, then no label filtering is\ndone.\n",
+            "items": {
+              "type": "string"
+            },
+            "maxLength": 64,
+            "minLength": 1,
+            "type": "array"
           },
           "limit": {
             "description": "The maximum number of entries to return. If not set, then this\ndefaults to `50`.\n",
@@ -14644,6 +14663,20 @@
             "name": "cursor",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "description": "Filters for entries containing at least one of the provided labels,\notherwise if no labels are provided, then no label filtering is done.\n",
+            "explode": false,
+            "in": "query",
+            "name": "labels",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "maxLength": 64,
+              "minLength": 1,
+              "type": "array"
             }
           },
           {
