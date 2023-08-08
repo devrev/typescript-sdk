@@ -75,6 +75,8 @@ export interface AccountsCreateRequest {
    * @example ["don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>"]
    */
   schema_fragment_ids?: string[];
+  /** Tags associated with the account. */
+  tags?: SetTagWithValue[];
   /** The tier of the account. */
   tier?: string;
 }

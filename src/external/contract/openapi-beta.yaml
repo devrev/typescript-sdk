@@ -144,6 +144,11 @@ components:
           items:
             type: string
           type: array
+        tags:
+          description: Tags associated with the account.
+          items:
+            $ref: '#/components/schemas/set-tag-with-value'
+          type: array
         tier:
           description: The tier of the account.
           type: string
