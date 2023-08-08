@@ -3028,6 +3028,83 @@
         "title": "error-unauthorized-unauthenticated",
         "type": "object"
       },
+      "event-source": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/atom-base"
+          },
+          {
+            "properties": {
+              "config": {
+                "description": "Configuration of the event source. Fields depend on the event\nsource type.\n",
+                "type": "object"
+              },
+              "name": {
+                "description": "Name of the event source.",
+                "type": "string"
+              },
+              "setup_instructions": {
+                "$ref": "#/components/schemas/event-source-setup-instructions"
+              },
+              "status": {
+                "$ref": "#/components/schemas/event-source-status"
+              },
+              "trigger_url": {
+                "description": "The URL to trigger the event source. Valid only for HTTP\nbased-event sources. This URL supports both GET and POST requests.\n",
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        ],
+        "title": "event-source"
+      },
+      "event-source-get-request": {
+        "properties": {
+          "id": {
+            "description": "The event source's ID.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "event-source-get-request",
+        "type": "object"
+      },
+      "event-source-get-response": {
+        "properties": {
+          "event_source": {
+            "$ref": "#/components/schemas/event-source"
+          }
+        },
+        "required": [
+          "event_source"
+        ],
+        "title": "event-source-get-response",
+        "type": "object",
+        "x-go-name": "EventSourceGetResponseBody"
+      },
+      "event-source-setup-instructions": {
+        "description": "Instructions for setting up the event source.",
+        "properties": {
+          "content": {
+            "description": "Content of the instructions.",
+            "type": "string"
+          }
+        },
+        "title": "event-source-setup-instructions",
+        "type": "object"
+      },
+      "event-source-status": {
+        "description": "Status of the event source. Note that paused/blocked event sources\nreturn NotFound error on triggering.\n",
+        "enum": [
+          "active",
+          "blocked",
+          "paused"
+        ],
+        "type": "string"
+      },
       "event-sources-delete-scheduled-event-request": {
         "properties": {
           "event_key": {
@@ -10716,6 +10793,110 @@
         },
         "tags": [
           "engagements"
+        ]
+      }
+    },
+    "/event-sources.get": {
+      "get": {
+        "description": "Gets an event source.",
+        "operationId": "event-sources-get",
+        "parameters": [
+          {
+            "description": "The event source's ID.",
+            "explode": false,
+            "in": "query",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/event-source-get-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/not-found"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "event-source"
+        ],
+        "x-request-name": "EventSourcesGetQuery"
+      },
+      "post": {
+        "description": "Gets an event source.",
+        "operationId": "event-sources-get-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/event-source-get-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/event-source-get-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/not-found"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "event-source"
         ]
       }
     },

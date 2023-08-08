@@ -1580,6 +1580,59 @@ export enum ErrorUnauthorizedType {
 /** error-unauthorized-unauthenticated */
 export type ErrorUnauthorizedUnauthenticated = object;
 
+/** event-source */
+export type EventSource = AtomBase & {
+  /**
+   * Configuration of the event source. Fields depend on the event
+   * source type.
+   */
+  config?: object;
+  /** Name of the event source. */
+  name?: string;
+  /** Instructions for setting up the event source. */
+  setup_instructions?: EventSourceSetupInstructions;
+  /**
+   * Status of the event source. Note that paused/blocked event sources
+   * return NotFound error on triggering.
+   */
+  status?: EventSourceStatus;
+  /**
+   * The URL to trigger the event source. Valid only for HTTP
+   * based-event sources. This URL supports both GET and POST requests.
+   */
+  trigger_url?: string;
+};
+
+/** event-source-get-request */
+export interface EventSourceGetRequest {
+  /** The event source's ID. */
+  id: string;
+}
+
+/** event-source-get-response */
+export interface EventSourceGetResponse {
+  event_source: EventSource;
+}
+
+/**
+ * event-source-setup-instructions
+ * Instructions for setting up the event source.
+ */
+export interface EventSourceSetupInstructions {
+  /** Content of the instructions. */
+  content?: string;
+}
+
+/**
+ * Status of the event source. Note that paused/blocked event sources
+ * return NotFound error on triggering.
+ */
+export enum EventSourceStatus {
+  Active = 'active',
+  Blocked = 'blocked',
+  Paused = 'paused',
+}
+
 /** event-sources-delete-scheduled-event-request */
 export interface EventSourcesDeleteScheduledEventRequest {
   /** The event key for the event which we want to delete. */
@@ -6184,6 +6237,70 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/engagements.update`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets an event source.
+   *
+   * @tags event-source
+   * @name EventSourcesGet
+   * @request GET:/event-sources.get
+   * @secure
+   */
+  eventSourcesGet = (
+    query: {
+      /** The event source's ID. */
+      id: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      EventSourceGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/event-sources.get`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets an event source.
+   *
+   * @tags event-source
+   * @name EventSourcesGetPost
+   * @request POST:/event-sources.get
+   * @secure
+   */
+  eventSourcesGetPost = (
+    data: EventSourceGetRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      EventSourceGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/event-sources.get`,
       method: 'POST',
       body: data,
       secure: true,
