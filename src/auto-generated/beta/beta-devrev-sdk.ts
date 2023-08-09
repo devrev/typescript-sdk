@@ -2410,6 +2410,7 @@ export interface Resource {
 
 /** rev-org */
 export type RevOrg = OrgBase & {
+  account?: AccountSummary;
   /** Custom fields. */
   custom_fields?: object;
   /**
@@ -2444,6 +2445,11 @@ export type RevOrgSummary = OrgBaseSummary;
  * organization.
  */
 export interface RevOrgsCreateRequest {
+  /**
+   * Account Id to associate with this Rev organization.
+   * @example "don:core:<partition>:devo/<dev-org-id>:account/<account-id>"
+   */
+  account?: string;
   /** Application-defined custom fields. */
   custom_fields?: object;
   /**
@@ -2503,6 +2509,11 @@ export interface RevOrgsGetResponse {
  * user's Dev organization.
  */
 export interface RevOrgsListRequest {
+  /**
+   * Filters by account.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:account/<account-id>"]
+   */
+  account?: string[];
   /** Filters by creator. */
   created_by?: string[];
   created_date?: DateTimeFilter;
@@ -2563,6 +2574,11 @@ export interface RevOrgsListResponse {
  * Request object to update information of the Rev organization.
  */
 export interface RevOrgsUpdateRequest {
+  /**
+   * New account ID to associate with this Rev organization.
+   * @example "don:core:<partition>:devo/<dev-org-id>:account/<account-id>"
+   */
+  account?: string;
   /**
    * Schema fragment IDs associated with this Rev organization.
    * @example ["don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>"]
@@ -7249,6 +7265,11 @@ export class Api<
    */
   revOrgsList = (
     query?: {
+      /**
+       * Filters by account.
+       * @example ["don:core:<partition>:devo/<dev-org-id>:account/<account-id>"]
+       */
+      account?: string[];
       /** Filters by creator. */
       created_by?: string[];
       /**

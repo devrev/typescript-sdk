@@ -4345,6 +4345,9 @@
           },
           {
             "properties": {
+              "account": {
+                "$ref": "#/components/schemas/account-summary"
+              },
               "custom_fields": {
                 "description": "Custom fields.",
                 "type": "object"
@@ -4393,6 +4396,11 @@
       "rev-orgs-create-request": {
         "description": "Request object to create a new Rev organization in the Dev\norganization.\n",
         "properties": {
+          "account": {
+            "description": "Account Id to associate with this Rev organization.",
+            "example": "don:core:<partition>:devo/<dev-org-id>:account/<account-id>",
+            "type": "string"
+          },
           "custom_fields": {
             "description": "Application-defined custom fields.",
             "type": "object"
@@ -4483,6 +4491,16 @@
       "rev-orgs-list-request": {
         "description": "A request to get the list of Rev organizations for the authenticated\nuser's Dev organization.\n",
         "properties": {
+          "account": {
+            "description": "Filters by account.",
+            "example": [
+              "don:core:<partition>:devo/<dev-org-id>:account/<account-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
           "created_by": {
             "description": "Filters by creator.",
             "items": {
@@ -4562,6 +4580,11 @@
       "rev-orgs-update-request": {
         "description": "Request object to update information of the Rev organization.\n",
         "properties": {
+          "account": {
+            "description": "New account ID to associate with this Rev organization.",
+            "example": "don:core:<partition>:devo/<dev-org-id>:account/<account-id>",
+            "type": "string"
+          },
           "custom_schema_fragments": {
             "description": "Schema fragment IDs associated with this Rev organization.\n",
             "example": [
@@ -12470,6 +12493,21 @@
         "description": "Gets the list of Rev organizations' information belonging to the\nauthenticated user's Dev Organization which the user is also authorized\nto access.\n",
         "operationId": "rev-orgs-list",
         "parameters": [
+          {
+            "description": "Filters by account.",
+            "explode": false,
+            "in": "query",
+            "name": "account",
+            "schema": {
+              "example": [
+                "don:core:<partition>:devo/<dev-org-id>:account/<account-id>"
+              ],
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
           {
             "description": "Filters by creator.",
             "explode": false,

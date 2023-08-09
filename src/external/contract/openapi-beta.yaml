@@ -3206,6 +3206,8 @@ components:
       allOf:
       - $ref: '#/components/schemas/org-base'
       - properties:
+          account:
+            $ref: '#/components/schemas/account-summary'
           custom_fields:
             description: Custom fields.
             type: object
@@ -3244,6 +3246,10 @@ components:
         Request object to create a new Rev organization in the Dev
         organization.
       properties:
+        account:
+          description: Account Id to associate with this Rev organization.
+          example: don:core:<partition>:devo/<dev-org-id>:account/<account-id>
+          type: string
         custom_fields:
           description: Application-defined custom fields.
           type: object
@@ -3316,6 +3322,13 @@ components:
         A request to get the list of Rev organizations for the authenticated
         user's Dev organization.
       properties:
+        account:
+          description: Filters by account.
+          example:
+          - don:core:<partition>:devo/<dev-org-id>:account/<account-id>
+          items:
+            type: string
+          type: array
         created_by:
           description: Filters by creator.
           items:
@@ -3386,6 +3399,10 @@ components:
       description: |
         Request object to update information of the Rev organization.
       properties:
+        account:
+          description: New account ID to associate with this Rev organization.
+          example: don:core:<partition>:devo/<dev-org-id>:account/<account-id>
+          type: string
         custom_schema_fragments:
           description: |
             Schema fragment IDs associated with this Rev organization.
@@ -8912,6 +8929,16 @@ paths:
         to access.
       operationId: rev-orgs-list
       parameters:
+      - description: Filters by account.
+        explode: false
+        in: query
+        name: account
+        schema:
+          example:
+          - don:core:<partition>:devo/<dev-org-id>:account/<account-id>
+          items:
+            type: string
+          type: array
       - description: Filters by creator.
         explode: false
         in: query
