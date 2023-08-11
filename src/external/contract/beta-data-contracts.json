@@ -299,6 +299,13 @@
               "type": "string"
             },
             "type": "array"
+          },
+          "stage": {
+            "description": "Filters for accounts on specified stages.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
           }
         },
         "title": "accounts-export-request",
@@ -388,6 +395,13 @@
           },
           "sort_by": {
             "description": "Fields to sort the accounts by and the direction to sort them in.\n",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "stage": {
+            "description": "Filters for accounts on specified stages.",
             "items": {
               "type": "string"
             },
@@ -8692,6 +8706,18 @@
               },
               "type": "array"
             }
+          },
+          {
+            "description": "Filters for accounts on specified stages.",
+            "explode": false,
+            "in": "query",
+            "name": "stage",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
           }
         ],
         "responses": {
@@ -8983,6 +9009,18 @@
             "explode": false,
             "in": "query",
             "name": "sort_by",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Filters for accounts on specified stages.",
+            "explode": false,
+            "in": "query",
+            "name": "stage",
             "schema": {
               "items": {
                 "type": "string"

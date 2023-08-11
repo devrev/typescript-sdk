@@ -127,6 +127,8 @@ export interface AccountsExportRequest {
   modified_date?: DateTimeFilter;
   /** Fields to sort the accounts by and the direction to sort them in. */
   sort_by?: string[];
+  /** Filters for accounts on specified stages. */
+  stage?: string[];
 }
 
 /**
@@ -190,6 +192,8 @@ export interface AccountsListRequest {
   modified_date?: DateTimeFilter;
   /** Fields to sort the accounts by and the direction to sort them in. */
   sort_by?: string[];
+  /** Filters for accounts on specified stages. */
+  stage?: string[];
 }
 
 /**
@@ -5115,6 +5119,8 @@ export class Api<
       'modified_date.before'?: string;
       /** Fields to sort the accounts by and the direction to sort them in. */
       sort_by?: string[];
+      /** Filters for accounts on specified stages. */
+      stage?: string[];
     },
     params: RequestParams = {}
   ) =>
@@ -5283,6 +5289,8 @@ export class Api<
       'modified_date.before'?: string;
       /** Fields to sort the accounts by and the direction to sort them in. */
       sort_by?: string[];
+      /** Filters for accounts on specified stages. */
+      stage?: string[];
     },
     params: RequestParams = {}
   ) =>
