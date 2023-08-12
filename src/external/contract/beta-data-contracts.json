@@ -803,6 +803,11 @@
         "title": "articles-delete-request",
         "type": "object"
       },
+      "articles-delete-response": {
+        "title": "articles-delete-response",
+        "type": "object",
+        "x-go-name": "ArticlesDeleteResponseBody"
+      },
       "articles-get-request": {
         "description": "The request to get an article.",
         "properties": {
@@ -9379,6 +9384,13 @@
         },
         "responses": {
           "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/articles-delete-response"
+                }
+              }
+            },
             "description": "Success."
           },
           "400": {

@@ -411,6 +411,9 @@ export interface ArticlesDeleteRequest {
   id: string;
 }
 
+/** articles-delete-response */
+export type ArticlesDeleteResponse = object;
+
 /**
  * articles-get-request
  * The request to get an article.
@@ -5485,7 +5488,7 @@ export class Api<
    */
   deleteArticle = (data: ArticlesDeleteRequest, params: RequestParams = {}) =>
     this.request<
-      void,
+      ArticlesDeleteResponse,
       | ErrorBadRequest
       | ErrorUnauthorized
       | ErrorForbidden
@@ -5499,6 +5502,7 @@ export class Api<
       body: data,
       secure: true,
       type: ContentType.Json,
+      format: 'json',
       ...params,
     });
 
