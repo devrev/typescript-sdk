@@ -42,6 +42,8 @@ export type Account = OrgBase & {
    * @example "don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>"
    */
   stock_schema_fragment?: string;
+  /** Tags associated with an object. */
+  tags?: TagWithValue[];
   /** The Tier of the corresponding Account. */
   tier?: string;
 };
@@ -115,6 +117,8 @@ export interface AccountsExportRequest {
   /** Filters for accounts created by the specified user(s). */
   created_by?: string[];
   created_date?: DateTimeFilter;
+  /** Domains for accounts to be filtered. */
+  domains?: string[];
   /** Array of references of accounts to be filtered. */
   external_refs?: string[];
   /**
@@ -125,10 +129,14 @@ export interface AccountsExportRequest {
    */
   first?: number;
   modified_date?: DateTimeFilter;
+  /** Filters for accounts owned by the specified user(s). */
+  owned_by?: string[];
   /** Fields to sort the accounts by and the direction to sort them in. */
   sort_by?: string[];
   /** Filters for accounts on specified stages. */
   stage?: string[];
+  /** List of tags to be filtered. */
+  tags?: string[];
 }
 
 /**
@@ -173,6 +181,8 @@ export interface AccountsListRequest {
    * iteration starts from the beginning.
    */
   cursor?: string;
+  /** Domains for accounts to be filtered. */
+  domains?: string[];
   /** Array of references of accounts to be filtered. */
   external_refs?: string[];
   /**
@@ -190,10 +200,14 @@ export interface AccountsListRequest {
    */
   mode?: ListMode;
   modified_date?: DateTimeFilter;
+  /** Filters for accounts owned by the specified user(s). */
+  owned_by?: string[];
   /** Fields to sort the accounts by and the direction to sort them in. */
   sort_by?: string[];
   /** Filters for accounts on specified stages. */
   stage?: string[];
+  /** List of tags to be filtered. */
+  tags?: string[];
 }
 
 /**
@@ -245,6 +259,8 @@ export interface AccountsUpdateRequest {
    * @example ["don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>"]
    */
   schema_fragment_ids?: string[];
+  /** Updated tags list associated with the account. */
+  tags?: SetTagWithValue[];
   /** Updated tier of the account. */
   tier?: string;
 }
@@ -5100,6 +5116,8 @@ export class Api<
        * @format date-time
        */
       'created_date.before'?: string;
+      /** Domains for accounts to be filtered. */
+      domains?: string[];
       /** Array of references of accounts to be filtered. */
       external_refs?: string[];
       /**
@@ -5120,10 +5138,14 @@ export class Api<
        * @format date-time
        */
       'modified_date.before'?: string;
+      /** Filters for accounts owned by the specified user(s). */
+      owned_by?: string[];
       /** Fields to sort the accounts by and the direction to sort them in. */
       sort_by?: string[];
       /** Filters for accounts on specified stages. */
       stage?: string[];
+      /** List of tags to be filtered. */
+      tags?: string[];
     },
     params: RequestParams = {}
   ) =>
@@ -5266,6 +5288,8 @@ export class Api<
        * starts from the beginning.
        */
       cursor?: string;
+      /** Domains for accounts to be filtered. */
+      domains?: string[];
       /** Array of references of accounts to be filtered. */
       external_refs?: string[];
       /**
@@ -5290,10 +5314,14 @@ export class Api<
        * @format date-time
        */
       'modified_date.before'?: string;
+      /** Filters for accounts owned by the specified user(s). */
+      owned_by?: string[];
       /** Fields to sort the accounts by and the direction to sort them in. */
       sort_by?: string[];
       /** Filters for accounts on specified stages. */
       stage?: string[];
+      /** List of tags to be filtered. */
+      tags?: string[];
     },
     params: RequestParams = {}
   ) =>

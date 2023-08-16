@@ -94,6 +94,11 @@ components:
             description: Stock schema fragment.
             example: don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>
             type: string
+          tags:
+            description: Tags associated with an object.
+            items:
+              $ref: '#/components/schemas/tag-with-value'
+            type: array
           tier:
             description: The Tier of the corresponding Account.
             type: string
@@ -192,6 +197,11 @@ components:
           type: array
         created_date:
           $ref: '#/components/schemas/date-time-filter'
+        domains:
+          description: Domains for accounts to be filtered.
+          items:
+            type: string
+          type: array
         external_refs:
           description: Array of references of accounts to be filtered.
           items:
@@ -205,6 +215,11 @@ components:
           type: integer
         modified_date:
           $ref: '#/components/schemas/date-time-filter'
+        owned_by:
+          description: Filters for accounts owned by the specified user(s).
+          items:
+            type: string
+          type: array
         sort_by:
           description: |
             Fields to sort the accounts by and the direction to sort them in.
@@ -213,6 +228,11 @@ components:
           type: array
         stage:
           description: Filters for accounts on specified stages.
+          items:
+            type: string
+          type: array
+        tags:
+          description: List of tags to be filtered.
           items:
             type: string
           type: array
@@ -267,6 +287,11 @@ components:
             The cursor to resume iteration from. If not provided, then
             iteration starts from the beginning.
           type: string
+        domains:
+          description: Domains for accounts to be filtered.
+          items:
+            type: string
+          type: array
         external_refs:
           description: Array of references of accounts to be filtered.
           items:
@@ -282,6 +307,11 @@ components:
           $ref: '#/components/schemas/list-mode'
         modified_date:
           $ref: '#/components/schemas/date-time-filter'
+        owned_by:
+          description: Filters for accounts owned by the specified user(s).
+          items:
+            type: string
+          type: array
         sort_by:
           description: |
             Fields to sort the accounts by and the direction to sort them in.
@@ -290,6 +320,11 @@ components:
           type: array
         stage:
           description: Filters for accounts on specified stages.
+          items:
+            type: string
+          type: array
+        tags:
+          description: List of tags to be filtered.
           items:
             type: string
           type: array
@@ -359,6 +394,11 @@ components:
           - don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>
           items:
             type: string
+          type: array
+        tags:
+          description: Updated tags list associated with the account.
+          items:
+            $ref: '#/components/schemas/set-tag-with-value'
           type: array
         tier:
           description: Updated tier of the account.
@@ -6369,6 +6409,14 @@ paths:
         schema:
           format: date-time
           type: string
+      - description: Domains for accounts to be filtered.
+        explode: false
+        in: query
+        name: domains
+        schema:
+          items:
+            type: string
+          type: array
       - description: Array of references of accounts to be filtered.
         explode: false
         in: query
@@ -6403,6 +6451,14 @@ paths:
         schema:
           format: date-time
           type: string
+      - description: Filters for accounts owned by the specified user(s).
+        explode: false
+        in: query
+        name: owned_by
+        schema:
+          items:
+            type: string
+          type: array
       - description: |
           Fields to sort the accounts by and the direction to sort them in.
         explode: false
@@ -6416,6 +6472,14 @@ paths:
         explode: false
         in: query
         name: stage
+        schema:
+          items:
+            type: string
+          type: array
+      - description: List of tags to be filtered.
+        explode: false
+        in: query
+        name: tags
         schema:
           items:
             type: string
@@ -6577,6 +6641,14 @@ paths:
         name: cursor
         schema:
           type: string
+      - description: Domains for accounts to be filtered.
+        explode: false
+        in: query
+        name: domains
+        schema:
+          items:
+            type: string
+          type: array
       - description: Array of references of accounts to be filtered.
         explode: false
         in: query
@@ -6619,6 +6691,14 @@ paths:
         schema:
           format: date-time
           type: string
+      - description: Filters for accounts owned by the specified user(s).
+        explode: false
+        in: query
+        name: owned_by
+        schema:
+          items:
+            type: string
+          type: array
       - description: |
           Fields to sort the accounts by and the direction to sort them in.
         explode: false
@@ -6632,6 +6712,14 @@ paths:
         explode: false
         in: query
         name: stage
+        schema:
+          items:
+            type: string
+          type: array
+      - description: List of tags to be filtered.
+        explode: false
+        in: query
+        name: tags
         schema:
           items:
             type: string

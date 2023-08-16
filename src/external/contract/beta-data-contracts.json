@@ -142,6 +142,13 @@
                 "example": "don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>",
                 "type": "string"
               },
+              "tags": {
+                "description": "Tags associated with an object.",
+                "items": {
+                  "$ref": "#/components/schemas/tag-with-value"
+                },
+                "type": "array"
+              },
               "tier": {
                 "description": "The Tier of the corresponding Account.",
                 "type": "string"
@@ -276,6 +283,13 @@
           "created_date": {
             "$ref": "#/components/schemas/date-time-filter"
           },
+          "domains": {
+            "description": "Domains for accounts to be filtered.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
           "external_refs": {
             "description": "Array of references of accounts to be filtered.",
             "items": {
@@ -293,6 +307,13 @@
           "modified_date": {
             "$ref": "#/components/schemas/date-time-filter"
           },
+          "owned_by": {
+            "description": "Filters for accounts owned by the specified user(s).",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
           "sort_by": {
             "description": "Fields to sort the accounts by and the direction to sort them in.\n",
             "items": {
@@ -302,6 +323,13 @@
           },
           "stage": {
             "description": "Filters for accounts on specified stages.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "tags": {
+            "description": "List of tags to be filtered.",
             "items": {
               "type": "string"
             },
@@ -375,6 +403,13 @@
             "description": "The cursor to resume iteration from. If not provided, then\niteration starts from the beginning.\n",
             "type": "string"
           },
+          "domains": {
+            "description": "Domains for accounts to be filtered.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
           "external_refs": {
             "description": "Array of references of accounts to be filtered.",
             "items": {
@@ -393,6 +428,13 @@
           "modified_date": {
             "$ref": "#/components/schemas/date-time-filter"
           },
+          "owned_by": {
+            "description": "Filters for accounts owned by the specified user(s).",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
           "sort_by": {
             "description": "Fields to sort the accounts by and the direction to sort them in.\n",
             "items": {
@@ -402,6 +444,13 @@
           },
           "stage": {
             "description": "Filters for accounts on specified stages.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "tags": {
+            "description": "List of tags to be filtered.",
             "items": {
               "type": "string"
             },
@@ -485,6 +534,13 @@
             ],
             "items": {
               "type": "string"
+            },
+            "type": "array"
+          },
+          "tags": {
+            "description": "Updated tags list associated with the account.",
+            "items": {
+              "$ref": "#/components/schemas/set-tag-with-value"
             },
             "type": "array"
           },
@@ -8657,6 +8713,18 @@
             }
           },
           {
+            "description": "Domains for accounts to be filtered.",
+            "explode": false,
+            "in": "query",
+            "name": "domains",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
             "description": "Array of references of accounts to be filtered.",
             "explode": false,
             "in": "query",
@@ -8701,6 +8769,18 @@
             }
           },
           {
+            "description": "Filters for accounts owned by the specified user(s).",
+            "explode": false,
+            "in": "query",
+            "name": "owned_by",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
             "description": "Fields to sort the accounts by and the direction to sort them in.\n",
             "explode": false,
             "in": "query",
@@ -8717,6 +8797,18 @@
             "explode": false,
             "in": "query",
             "name": "stage",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "List of tags to be filtered.",
+            "explode": false,
+            "in": "query",
+            "name": "tags",
             "schema": {
               "items": {
                 "type": "string"
@@ -8959,6 +9051,18 @@
             }
           },
           {
+            "description": "Domains for accounts to be filtered.",
+            "explode": false,
+            "in": "query",
+            "name": "domains",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
             "description": "Array of references of accounts to be filtered.",
             "explode": false,
             "in": "query",
@@ -9010,6 +9114,18 @@
             }
           },
           {
+            "description": "Filters for accounts owned by the specified user(s).",
+            "explode": false,
+            "in": "query",
+            "name": "owned_by",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
             "description": "Fields to sort the accounts by and the direction to sort them in.\n",
             "explode": false,
             "in": "query",
@@ -9026,6 +9142,18 @@
             "explode": false,
             "in": "query",
             "name": "stage",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "List of tags to be filtered.",
+            "explode": false,
+            "in": "query",
+            "name": "tags",
             "schema": {
               "items": {
                 "type": "string"
