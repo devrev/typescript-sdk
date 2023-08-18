@@ -5396,9 +5396,11 @@ components:
       - account
       - capability
       - conversation
+      - engagement
       - enhancement
       - feature
       - issue
+      - meeting
       - opportunity
       - product
       - rev_org
