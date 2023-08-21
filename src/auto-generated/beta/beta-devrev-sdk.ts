@@ -1716,6 +1716,27 @@ export type FeatureSummary = PartBaseSummary;
  */
 export type FieldDescriptor = object;
 
+/**
+ * get-accounts-default-rev-org-request
+ * Request object to get an account's default Rev organization.
+ */
+export interface GetAccountsDefaultRevOrgRequest {
+  /**
+   * The ID of Account for which default Rev organization is to be
+   * fetched.
+   * @example "don:core:<partition>:devo/<dev-org-id>:account/<account-id>"
+   */
+  id: string;
+}
+
+/**
+ * get-accounts-default-rev-org-response
+ * Response object for getting account's default Rev organization.
+ */
+export interface GetAccountsDefaultRevOrgResponse {
+  rev_org: RevOrg;
+}
+
 /** group-summary */
 export type GroupSummary = AtomBaseSummary;
 
@@ -5059,6 +5080,74 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/accounts.create`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Fetches account's default Rev organization.
+   *
+   * @tags accounts
+   * @name GetAccountsDefaultRevOrg
+   * @request GET:/accounts.default-rev-org.get
+   * @secure
+   */
+  getAccountsDefaultRevOrg = (
+    query: {
+      /**
+       * The ID of Account for which default Rev organization is to be
+       * fetched.
+       * @example "don:core:<partition>:devo/<dev-org-id>:account/<account-id>"
+       */
+      id: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      GetAccountsDefaultRevOrgResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/accounts.default-rev-org.get`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Fetches account's default Rev organization.
+   *
+   * @tags accounts
+   * @name GetAccountsDefaultRevOrgPost
+   * @request POST:/accounts.default-rev-org.get
+   * @secure
+   */
+  getAccountsDefaultRevOrgPost = (
+    data: GetAccountsDefaultRevOrgRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      GetAccountsDefaultRevOrgResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/accounts.default-rev-org.get`,
       method: 'POST',
       body: data,
       secure: true,

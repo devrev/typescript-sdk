@@ -2372,6 +2372,30 @@ components:
       description: Set of field attributes.
       title: field-descriptor
       type: object
+    get-accounts-default-rev-org-request:
+      description: Request object to get an account's default Rev organization.
+      properties:
+        id:
+          description: |
+            The ID of Account for which default Rev organization is to be
+            fetched.
+          example: don:core:<partition>:devo/<dev-org-id>:account/<account-id>
+          type: string
+      required:
+      - id
+      title: get-accounts-default-rev-org-request
+      type: object
+    get-accounts-default-rev-org-response:
+      description: |
+        Response object for getting account's default Rev organization.
+      properties:
+        rev_org:
+          $ref: '#/components/schemas/rev-org'
+      required:
+      - rev_org
+      title: get-accounts-default-rev-org-response
+      type: object
+      x-go-name: GetAccountsDefaultRevOrgResponseBody
     group-summary:
       allOf:
       - $ref: '#/components/schemas/atom-base-summary'
@@ -6341,6 +6365,76 @@ paths:
           $ref: '#/components/responses/unauthorized'
         "403":
           $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - accounts
+  /accounts.default-rev-org.get:
+    get:
+      description: Fetches account's default Rev organization.
+      operationId: get-accounts-default-rev-org
+      parameters:
+      - description: |
+          The ID of Account for which default Rev organization is to be
+          fetched.
+        explode: false
+        in: query
+        name: id
+        required: true
+        schema:
+          example: don:core:<partition>:devo/<dev-org-id>:account/<account-id>
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/get-accounts-default-rev-org-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - accounts
+      x-request-name: GetAccountsDefaultRevOrgQuery
+    post:
+      description: Fetches account's default Rev organization.
+      operationId: get-accounts-default-rev-org-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/get-accounts-default-rev-org-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/get-accounts-default-rev-org-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
         "429":
           $ref: '#/components/responses/too-many-requests'
         "500":
