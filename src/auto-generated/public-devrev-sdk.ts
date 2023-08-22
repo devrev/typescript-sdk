@@ -1068,6 +1068,11 @@ export type PartsCreateRequest = (
   | PartsCreateRequestFeature
   | PartsCreateRequestProduct
 ) & {
+  /**
+   * The IDs of the artifacts.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   */
+  artifacts?: string[];
   /** Description of the part. */
   description?: string;
   /** Name of the part. */
@@ -1163,6 +1168,7 @@ export type PartsUpdateRequest = (
   | PartsUpdateRequestFeature
   | PartsUpdateRequestProduct
 ) & {
+  artifacts?: PartsUpdateRequestArtifacts;
   /** The updated description of the part. */
   description?: string;
   /**
@@ -1175,6 +1181,15 @@ export type PartsUpdateRequest = (
   owned_by?: PartsUpdateRequestOwnedBy;
   type: PartType;
 };
+
+/** parts-update-request-artifacts */
+export interface PartsUpdateRequestArtifacts {
+  /**
+   * Sets the artifacts to the provided IDs.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   */
+  set?: string[];
+}
 
 /** parts-update-request-capability */
 export type PartsUpdateRequestCapability = object;

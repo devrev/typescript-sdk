@@ -2064,6 +2064,16 @@
           }
         ],
         "properties": {
+          "artifacts": {
+            "description": "The IDs of the artifacts.",
+            "example": [
+              "don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
           "description": {
             "description": "Description of the part.",
             "type": "string"
@@ -2259,6 +2269,9 @@
           }
         ],
         "properties": {
+          "artifacts": {
+            "$ref": "#/components/schemas/parts-update-request-artifacts"
+          },
           "description": {
             "description": "The updated description of the part.",
             "type": "string"
@@ -2284,6 +2297,22 @@
           "type"
         ],
         "title": "parts-update-request",
+        "type": "object"
+      },
+      "parts-update-request-artifacts": {
+        "properties": {
+          "set": {
+            "description": "Sets the artifacts to the provided IDs.",
+            "example": [
+              "don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "title": "parts-update-request-artifacts",
         "type": "object"
       },
       "parts-update-request-capability": {
