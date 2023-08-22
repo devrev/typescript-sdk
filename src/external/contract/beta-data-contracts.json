@@ -3295,13 +3295,231 @@
         "type": "object",
         "x-go-name": "GetAccountsDefaultRevOrgResponseBody"
       },
+      "group": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/atom-base"
+          },
+          {
+            "properties": {
+              "description": {
+                "description": "Description of the group.",
+                "type": "string"
+              },
+              "is_default": {
+                "description": "Whether it is a default group.",
+                "type": "boolean"
+              },
+              "member_type": {
+                "$ref": "#/components/schemas/group-member-type"
+              },
+              "name": {
+                "description": "Name of the group.",
+                "type": "string"
+              },
+              "owner": {
+                "$ref": "#/components/schemas/user-summary"
+              }
+            },
+            "required": [
+              "is_default"
+            ],
+            "type": "object"
+          }
+        ],
+        "title": "group"
+      },
+      "group-member-type": {
+        "description": "Type of the members in the group.",
+        "enum": [
+          "dev_user",
+          "rev_user"
+        ],
+        "type": "string"
+      },
       "group-summary": {
         "allOf": [
           {
             "$ref": "#/components/schemas/atom-base-summary"
+          },
+          {
+            "properties": {
+              "name": {
+                "description": "Name of the group.",
+                "type": "string"
+              }
+            },
+            "type": "object"
           }
         ],
         "title": "group-summary"
+      },
+      "groups-create-request": {
+        "description": "A request to create a new group.",
+        "properties": {
+          "description": {
+            "description": "Description of the group.",
+            "type": "string"
+          },
+          "member_type": {
+            "$ref": "#/components/schemas/group-member-type"
+          },
+          "name": {
+            "description": "Unique name of the group.",
+            "type": "string"
+          },
+          "owner": {
+            "description": "Owner of the group.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "description",
+          "name"
+        ],
+        "title": "groups-create-request",
+        "type": "object"
+      },
+      "groups-create-response": {
+        "description": "The response to group creation.",
+        "properties": {
+          "group": {
+            "$ref": "#/components/schemas/group"
+          }
+        },
+        "required": [
+          "group"
+        ],
+        "title": "groups-create-response",
+        "type": "object",
+        "x-go-name": "GroupsCreateResponseBody"
+      },
+      "groups-get-request": {
+        "description": "A request to get information about a group.",
+        "properties": {
+          "id": {
+            "description": "The ID of the group to get.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "groups-get-request",
+        "type": "object"
+      },
+      "groups-get-response": {
+        "description": "The response to getting the group.",
+        "properties": {
+          "group": {
+            "$ref": "#/components/schemas/group"
+          }
+        },
+        "required": [
+          "group"
+        ],
+        "title": "groups-get-response",
+        "type": "object",
+        "x-go-name": "GroupsGetResponseBody"
+      },
+      "groups-list-request": {
+        "description": "A request to get information about a list of groups.",
+        "properties": {
+          "cursor": {
+            "description": "The cursor to resume iteration from. If not provided, then\niteration starts from the beginning.\n",
+            "type": "string"
+          },
+          "limit": {
+            "description": "The maximum number of groups to return. The default is '50'.\n",
+            "format": "int32",
+            "type": "integer"
+          },
+          "member_type": {
+            "description": "Filters the groups on basis of member type.",
+            "items": {
+              "$ref": "#/components/schemas/group-member-type"
+            },
+            "type": "array"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/list-mode"
+          },
+          "sort_by": {
+            "description": "Comma-separated fields to sort the groups by.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "title": "groups-list-request",
+        "type": "object"
+      },
+      "groups-list-response": {
+        "description": "The response to listing the groups.",
+        "properties": {
+          "groups": {
+            "description": "The list of groups.",
+            "items": {
+              "$ref": "#/components/schemas/group"
+            },
+            "type": "array"
+          },
+          "next_cursor": {
+            "description": "The cursor used to iterate subsequent results in accordance to the\nsort order. If not set, then no later elements exist.\n",
+            "type": "string"
+          },
+          "prev_cursor": {
+            "description": "The cursor used to iterate preceding results in accordance to the\nsort order. If not set, then no prior elements exist.\n",
+            "type": "string"
+          }
+        },
+        "required": [
+          "groups"
+        ],
+        "title": "groups-list-response",
+        "type": "object",
+        "x-go-name": "GroupsListResponseBody"
+      },
+      "groups-update-request": {
+        "description": "A request to update a group.",
+        "properties": {
+          "description": {
+            "description": "The updated group's description.",
+            "type": "string"
+          },
+          "id": {
+            "description": "The ID of the group to update.",
+            "type": "string"
+          },
+          "name": {
+            "description": "The updated group's name.",
+            "type": "string"
+          },
+          "owner": {
+            "description": "The updated group's owner.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "groups-update-request",
+        "type": "object"
+      },
+      "groups-update-response": {
+        "description": "The response to group update.",
+        "properties": {
+          "group": {
+            "$ref": "#/components/schemas/group"
+          }
+        },
+        "required": [
+          "group"
+        ],
+        "title": "groups-update-response",
+        "type": "object",
+        "x-go-name": "GroupsUpdateResponseBody"
       },
       "issue": {
         "allOf": [
@@ -11519,6 +11737,349 @@
         ]
       }
     },
+    "/groups.create": {
+      "post": {
+        "description": "Creates a new group. A group is a collection of users.",
+        "operationId": "groups-create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/groups-create-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/groups-create-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "groups"
+        ]
+      }
+    },
+    "/groups.get": {
+      "get": {
+        "description": "Gets the requested group.",
+        "operationId": "groups-get",
+        "parameters": [
+          {
+            "description": "The ID of the group to get.",
+            "explode": false,
+            "in": "query",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/groups-get-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/not-found"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "groups"
+        ],
+        "x-request-name": "GroupsGetQuery"
+      },
+      "post": {
+        "description": "Gets the requested group.",
+        "operationId": "groups-get-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/groups-get-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/groups-get-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/not-found"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "groups"
+        ]
+      }
+    },
+    "/groups.list": {
+      "get": {
+        "description": "Lists the available groups.",
+        "operationId": "groups-list",
+        "parameters": [
+          {
+            "description": "The cursor to resume iteration from. If not provided, then iteration\nstarts from the beginning.\n",
+            "explode": false,
+            "in": "query",
+            "name": "cursor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The maximum number of groups to return. The default is '50'.\n",
+            "explode": false,
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Filters the groups on basis of member type.",
+            "explode": false,
+            "in": "query",
+            "name": "member_type",
+            "schema": {
+              "items": {
+                "$ref": "#/components/schemas/group-member-type"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "The iteration mode to use, otherwise if not set, then \"after\" is\nused.\n",
+            "explode": false,
+            "in": "query",
+            "name": "mode",
+            "schema": {
+              "$ref": "#/components/schemas/list-mode"
+            }
+          },
+          {
+            "description": "Comma-separated fields to sort the groups by.",
+            "explode": false,
+            "in": "query",
+            "name": "sort_by",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/groups-list-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "groups"
+        ],
+        "x-request-name": "GroupsListQuery"
+      },
+      "post": {
+        "description": "Lists the available groups.",
+        "operationId": "groups-list-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/groups-list-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/groups-list-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "groups"
+        ]
+      }
+    },
+    "/groups.update": {
+      "post": {
+        "description": "Updates the requested group.",
+        "operationId": "groups-update",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/groups-update-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/groups-update-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/not-found"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "groups"
+        ]
+      }
+    },
     "/links.create": {
       "post": {
         "description": "Creates a link between two objects to indicate a relationship.\n",
@@ -16140,6 +16701,10 @@
     {
       "description": "Event source interactions.",
       "name": "event-source"
+    },
+    {
+      "description": "Manages groups in a Dev organization.",
+      "name": "groups"
     },
     {
       "description": "DevRev link interactions.",

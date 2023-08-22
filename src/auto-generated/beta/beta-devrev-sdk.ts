@@ -1737,8 +1737,141 @@ export interface GetAccountsDefaultRevOrgResponse {
   rev_org: RevOrg;
 }
 
+/** group */
+export type Group = AtomBase & {
+  /** Description of the group. */
+  description?: string;
+  /** Whether it is a default group. */
+  is_default: boolean;
+  /** Type of the members in the group. */
+  member_type?: GroupMemberType;
+  /** Name of the group. */
+  name?: string;
+  owner?: UserSummary;
+};
+
+/** Type of the members in the group. */
+export enum GroupMemberType {
+  DevUser = 'dev_user',
+  RevUser = 'rev_user',
+}
+
 /** group-summary */
-export type GroupSummary = AtomBaseSummary;
+export type GroupSummary = AtomBaseSummary & {
+  /** Name of the group. */
+  name?: string;
+};
+
+/**
+ * groups-create-request
+ * A request to create a new group.
+ */
+export interface GroupsCreateRequest {
+  /** Description of the group. */
+  description: string;
+  /** Type of the members in the group. */
+  member_type?: GroupMemberType;
+  /** Unique name of the group. */
+  name: string;
+  /** Owner of the group. */
+  owner?: string;
+}
+
+/**
+ * groups-create-response
+ * The response to group creation.
+ */
+export interface GroupsCreateResponse {
+  group: Group;
+}
+
+/**
+ * groups-get-request
+ * A request to get information about a group.
+ */
+export interface GroupsGetRequest {
+  /** The ID of the group to get. */
+  id: string;
+}
+
+/**
+ * groups-get-response
+ * The response to getting the group.
+ */
+export interface GroupsGetResponse {
+  group: Group;
+}
+
+/**
+ * groups-list-request
+ * A request to get information about a list of groups.
+ */
+export interface GroupsListRequest {
+  /**
+   * The cursor to resume iteration from. If not provided, then
+   * iteration starts from the beginning.
+   */
+  cursor?: string;
+  /**
+   * The maximum number of groups to return. The default is '50'.
+   * @format int32
+   */
+  limit?: number;
+  /** Filters the groups on basis of member type. */
+  member_type?: GroupMemberType[];
+  /**
+   * The iteration mode to use. If "after", then entries after the provided
+   * cursor will be returned, or if no cursor is provided, then from the
+   * beginning. If "before", then entries before the provided cursor will be
+   * returned, or if no cursor is provided, then from the end. Entries will
+   * always be returned in the specified sort-by order.
+   */
+  mode?: ListMode;
+  /** Comma-separated fields to sort the groups by. */
+  sort_by?: string[];
+}
+
+/**
+ * groups-list-response
+ * The response to listing the groups.
+ */
+export interface GroupsListResponse {
+  /** The list of groups. */
+  groups: Group[];
+  /**
+   * The cursor used to iterate subsequent results in accordance to the
+   * sort order. If not set, then no later elements exist.
+   */
+  next_cursor?: string;
+  /**
+   * The cursor used to iterate preceding results in accordance to the
+   * sort order. If not set, then no prior elements exist.
+   */
+  prev_cursor?: string;
+}
+
+/**
+ * groups-update-request
+ * A request to update a group.
+ */
+export interface GroupsUpdateRequest {
+  /** The updated group's description. */
+  description?: string;
+  /** The ID of the group to update. */
+  id: string;
+  /** The updated group's name. */
+  name?: string;
+  /** The updated group's owner. */
+  owner?: string;
+}
+
+/**
+ * groups-update-response
+ * The response to group update.
+ */
+export interface GroupsUpdateResponse {
+  group: Group;
+}
 
 /** issue */
 export type Issue = WorkBase & {
@@ -6621,6 +6754,198 @@ export class Api<
       body: data,
       secure: true,
       type: ContentType.Json,
+      ...params,
+    });
+
+  /**
+   * @description Creates a new group. A group is a collection of users.
+   *
+   * @tags groups
+   * @name GroupsCreate
+   * @request POST:/groups.create
+   * @secure
+   */
+  groupsCreate = (data: GroupsCreateRequest, params: RequestParams = {}) =>
+    this.request<
+      GroupsCreateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/groups.create`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets the requested group.
+   *
+   * @tags groups
+   * @name GroupsGet
+   * @request GET:/groups.get
+   * @secure
+   */
+  groupsGet = (
+    query: {
+      /** The ID of the group to get. */
+      id: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      GroupsGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/groups.get`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets the requested group.
+   *
+   * @tags groups
+   * @name GroupsGetPost
+   * @request POST:/groups.get
+   * @secure
+   */
+  groupsGetPost = (data: GroupsGetRequest, params: RequestParams = {}) =>
+    this.request<
+      GroupsGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/groups.get`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Lists the available groups.
+   *
+   * @tags groups
+   * @name GroupsList
+   * @request GET:/groups.list
+   * @secure
+   */
+  groupsList = (
+    query?: {
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /**
+       * The maximum number of groups to return. The default is '50'.
+       * @format int32
+       */
+      limit?: number;
+      /** Filters the groups on basis of member type. */
+      member_type?: GroupMemberType[];
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /** Comma-separated fields to sort the groups by. */
+      sort_by?: string[];
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      GroupsListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/groups.list`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Lists the available groups.
+   *
+   * @tags groups
+   * @name GroupsListPost
+   * @request POST:/groups.list
+   * @secure
+   */
+  groupsListPost = (data: GroupsListRequest, params: RequestParams = {}) =>
+    this.request<
+      GroupsListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/groups.list`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Updates the requested group.
+   *
+   * @tags groups
+   * @name GroupsUpdate
+   * @request POST:/groups.update
+   * @secure
+   */
+  groupsUpdate = (data: GroupsUpdateRequest, params: RequestParams = {}) =>
+    this.request<
+      GroupsUpdateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/groups.update`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
       ...params,
     });
 
