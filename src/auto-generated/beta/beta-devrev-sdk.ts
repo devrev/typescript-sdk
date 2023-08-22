@@ -3838,8 +3838,10 @@ export interface Stage {
  * The filter for stages.
  */
 export interface StageFilter {
-  /** Filters for records in the provided stage(s). */
+  /** Filters for records in the provided stage(s) by name. */
   name?: string[];
+  /** Filters for records in the provided stage(s) by ordinal. */
+  ordinal?: number[];
 }
 
 /**
@@ -6048,8 +6050,10 @@ export class Api<
       rev_org?: string[];
       /** Filters for conversations with any of the provided source channels. */
       source_channels?: string[];
-      /** Filters for records in the provided stage(s). */
+      /** Filters for records in the provided stage(s) by name. */
       'stage.name'?: string[];
+      /** Filters for records in the provided stage(s) by ordinal. */
+      'stage.ordinal'?: number[];
       /**
        * Filters for conversations with any of the provided tags.
        * @example ["don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"]
@@ -6223,8 +6227,10 @@ export class Api<
       rev_org?: string[];
       /** Filters for conversations with any of the provided source channels. */
       source_channels?: string[];
-      /** Filters for records in the provided stage(s). */
+      /** Filters for records in the provided stage(s) by name. */
       'stage.name'?: string[];
+      /** Filters for records in the provided stage(s) by ordinal. */
+      'stage.ordinal'?: number[];
       /**
        * Filters for conversations with any of the provided tags.
        * @example ["don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"]
@@ -9153,8 +9159,10 @@ export class Api<
       owned_by?: string[];
       /** Fields to sort the work items by and the direction to sort them. */
       sort_by?: string[];
-      /** Filters for records in the provided stage(s). */
+      /** Filters for records in the provided stage(s) by name. */
       'stage.name'?: string[];
+      /** Filters for records in the provided stage(s) by ordinal. */
+      'stage.ordinal'?: number[];
       /** Filters for tickets belonging to specific groups. */
       'ticket.group'?: string[];
       /** Filters for tickets that are spam. */
@@ -9342,8 +9350,10 @@ export class Api<
       owned_by?: string[];
       /** Fields to sort the works by and the direction to sort them. */
       sort_by?: string[];
-      /** Filters for records in the provided stage(s). */
+      /** Filters for records in the provided stage(s) by name. */
       'stage.name'?: string[];
+      /** Filters for records in the provided stage(s) by ordinal. */
+      'stage.ordinal'?: number[];
       /** Filters for tickets belonging to specific groups. */
       'ticket.group'?: string[];
       /** Filters for tickets that are spam. */

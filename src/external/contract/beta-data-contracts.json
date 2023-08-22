@@ -6775,9 +6775,17 @@
         "description": "The filter for stages.",
         "properties": {
           "name": {
-            "description": "Filters for records in the provided stage(s).",
+            "description": "Filters for records in the provided stage(s) by name.",
             "items": {
               "type": "string"
+            },
+            "type": "array"
+          },
+          "ordinal": {
+            "description": "Filters for records in the provided stage(s) by ordinal.",
+            "items": {
+              "format": "int64",
+              "type": "integer"
             },
             "type": "array"
           }
@@ -10451,13 +10459,26 @@
             }
           },
           {
-            "description": "Filters for records in the provided stage(s).",
+            "description": "Filters for records in the provided stage(s) by name.",
             "explode": false,
             "in": "query",
             "name": "stage.name",
             "schema": {
               "items": {
                 "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Filters for records in the provided stage(s) by ordinal.",
+            "explode": false,
+            "in": "query",
+            "name": "stage.ordinal",
+            "schema": {
+              "items": {
+                "format": "int64",
+                "type": "integer"
               },
               "type": "array"
             }
@@ -10800,13 +10821,26 @@
             }
           },
           {
-            "description": "Filters for records in the provided stage(s).",
+            "description": "Filters for records in the provided stage(s) by name.",
             "explode": false,
             "in": "query",
             "name": "stage.name",
             "schema": {
               "items": {
                 "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Filters for records in the provided stage(s) by ordinal.",
+            "explode": false,
+            "in": "query",
+            "name": "stage.ordinal",
+            "schema": {
+              "items": {
+                "format": "int64",
+                "type": "integer"
               },
               "type": "array"
             }
@@ -15995,13 +16029,26 @@
             }
           },
           {
-            "description": "Filters for records in the provided stage(s).",
+            "description": "Filters for records in the provided stage(s) by name.",
             "explode": false,
             "in": "query",
             "name": "stage.name",
             "schema": {
               "items": {
                 "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Filters for records in the provided stage(s) by ordinal.",
+            "explode": false,
+            "in": "query",
+            "name": "stage.ordinal",
+            "schema": {
+              "items": {
+                "format": "int64",
+                "type": "integer"
               },
               "type": "array"
             }
@@ -16429,13 +16476,26 @@
             }
           },
           {
-            "description": "Filters for records in the provided stage(s).",
+            "description": "Filters for records in the provided stage(s) by name.",
             "explode": false,
             "in": "query",
             "name": "stage.name",
             "schema": {
               "items": {
                 "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Filters for records in the provided stage(s) by ordinal.",
+            "explode": false,
+            "in": "query",
+            "name": "stage.ordinal",
+            "schema": {
+              "items": {
+                "format": "int64",
+                "type": "integer"
               },
               "type": "array"
             }

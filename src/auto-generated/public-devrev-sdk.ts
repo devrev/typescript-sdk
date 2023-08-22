@@ -4077,8 +4077,10 @@ export class Api<
        * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
        */
       owned_by?: string[];
-      /** Filters for records in the provided stage(s). */
+      /** Filters for records in the provided stage(s) by name. */
       'stage.name'?: string[];
+      /** Filters for records in the provided stage(s) by ordinal. */
+      'stage.ordinal'?: number[];
       /** Filters for tickets belonging to specific groups. */
       'ticket.group'?: string[];
       /** Filters for tickets that are spam. */
@@ -4200,8 +4202,10 @@ export class Api<
        * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
        */
       owned_by?: string[];
-      /** Filters for records in the provided stage(s). */
+      /** Filters for records in the provided stage(s) by name. */
       'stage.name'?: string[];
+      /** Filters for records in the provided stage(s) by ordinal. */
+      'stage.ordinal'?: number[];
       /** Filters for tickets belonging to specific groups. */
       'ticket.group'?: string[];
       /** Filters for tickets that are spam. */
