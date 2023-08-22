@@ -300,6 +300,8 @@ export type AppFragment = CustomSchemaFragmentBase;
 
 /** article */
 export type Article = AtomBase & {
+  /** Details of the parts relevant to the article. */
+  applies_to_parts: PartSummary[];
   /** Description of the article. */
   description?: string;
   /** Artifacts containing the extracted content. */

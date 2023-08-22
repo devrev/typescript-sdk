@@ -629,6 +629,13 @@
           },
           {
             "properties": {
+              "applies_to_parts": {
+                "description": "Details of the parts relevant to the article.",
+                "items": {
+                  "$ref": "#/components/schemas/part-summary"
+                },
+                "type": "array"
+              },
               "description": {
                 "description": "Description of the article.",
                 "type": "string"
@@ -648,6 +655,9 @@
                 "type": "string"
               }
             },
+            "required": [
+              "applies_to_parts"
+            ],
             "type": "object"
           }
         ],
