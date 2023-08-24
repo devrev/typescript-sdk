@@ -19,6 +19,8 @@ export enum AccessLevel {
 
 /** account */
 export type Account = OrgBase & {
+  /** The artifacts attached to the Account. */
+  artifacts?: ArtifactSummary[];
   /** Custom fields. */
   custom_fields?: object;
   /**
@@ -56,6 +58,11 @@ export type AccountSummary = OrgBaseSummary;
  * Request object to create a new account in the Dev organization.
  */
 export interface AccountsCreateRequest {
+  /**
+   * The IDs of the artifacts to associate with the account.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   */
+  artifacts?: string[];
   /** Application-defined custom fields. */
   custom_fields?: object;
   /** Description of the account. */
@@ -234,6 +241,7 @@ export interface AccountsListResponse {
  * Request to update details of the account.
  */
 export interface AccountsUpdateRequest {
+  artifacts?: AccountsUpdateRequestArtifacts;
   /** Application-defined custom fields. */
   custom_fields?: object;
   /** Updated description of the account. */
@@ -263,6 +271,15 @@ export interface AccountsUpdateRequest {
   tags?: SetTagWithValue[];
   /** Updated tier of the account. */
   tier?: string;
+}
+
+/** accounts-update-request-artifacts */
+export interface AccountsUpdateRequestArtifacts {
+  /**
+   * Sets the IDs to the provided artifact IDs.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   */
+  set?: string[];
 }
 
 /**
@@ -2590,6 +2607,8 @@ export interface Resource {
 /** rev-org */
 export type RevOrg = OrgBase & {
   account?: AccountSummary;
+  /** The artifacts attached to the Rev organization. */
+  artifacts?: ArtifactSummary[];
   /** Custom fields. */
   custom_fields?: object;
   /**
@@ -2629,6 +2648,11 @@ export interface RevOrgsCreateRequest {
    * @example "don:core:<partition>:devo/<dev-org-id>:account/<account-id>"
    */
   account?: string;
+  /**
+   * The IDs of the artifacts to associate with the Rev organization.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   */
+  artifacts?: string[];
   /** Application-defined custom fields. */
   custom_fields?: object;
   /**
@@ -2758,6 +2782,7 @@ export interface RevOrgsUpdateRequest {
    * @example "don:core:<partition>:devo/<dev-org-id>:account/<account-id>"
    */
   account?: string;
+  artifacts?: RevOrgsUpdateRequestArtifacts;
   /**
    * Schema fragment IDs associated with this Rev organization.
    * @example ["don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>"]
@@ -2786,6 +2811,15 @@ export interface RevOrgsUpdateRequest {
   tier?: string;
 }
 
+/** rev-orgs-update-request-artifacts */
+export interface RevOrgsUpdateRequestArtifacts {
+  /**
+   * Sets the IDs to the provided artifact IDs.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   */
+  set?: string[];
+}
+
 /**
  * rev-orgs-update-response
  * Response object to updating Rev organization's information.
@@ -2796,6 +2830,8 @@ export interface RevOrgsUpdateResponse {
 
 /** rev-user */
 export type RevUser = UserBase & {
+  /** The artifacts attached to the Rev user. */
+  artifacts?: ArtifactSummary[];
   /** Custom fields. */
   custom_fields?: object;
   /**
@@ -2813,6 +2849,8 @@ export type RevUser = UserBase & {
    * system-generated identifier will be assigned to the user.
    */
   external_ref?: string;
+  /** Whether the Rev user is verified or not. */
+  is_verified?: boolean;
   rev_org?: OrgSummary;
   /**
    * Stock schema fragment.
@@ -2839,6 +2877,11 @@ export type RevUserSummary = UserBaseSummary & {
  * Request object to create a new Rev user for a Rev organization.
  */
 export interface RevUsersCreateRequest {
+  /**
+   * The IDs of the artifacts to associate with the Rev user.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   */
+  artifacts?: string[];
   /** Application-defined custom fields. */
   custom_fields?: object;
   /**
@@ -2976,6 +3019,7 @@ export interface RevUsersListResponse {
  * Request to update details of a Rev user.
  */
 export interface RevUsersUpdateRequest {
+  artifacts?: RevUsersUpdateRequestArtifacts;
   /** Application-defined custom fields. */
   custom_fields?: object;
   custom_schema_fragments?: RevUsersUpdateRequestCustomSchemaFragments;
@@ -2989,6 +3033,15 @@ export interface RevUsersUpdateRequest {
   external_ref?: string;
   /** The ID of Rev user to update. */
   id: string;
+}
+
+/** rev-users-update-request-artifacts */
+export interface RevUsersUpdateRequestArtifacts {
+  /**
+   * Sets the IDs to the provided artifact IDs.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   */
+  set?: string[];
 }
 
 /** rev-users-update-request-custom-schema-fragments */

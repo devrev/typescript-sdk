@@ -98,6 +98,13 @@
           },
           {
             "properties": {
+              "artifacts": {
+                "description": "The artifacts attached to the Account.",
+                "items": {
+                  "$ref": "#/components/schemas/artifact-summary"
+                },
+                "type": "array"
+              },
               "custom_fields": {
                 "description": "Custom fields.",
                 "type": "object"
@@ -174,6 +181,16 @@
       "accounts-create-request": {
         "description": "Request object to create a new account in the Dev organization.\n",
         "properties": {
+          "artifacts": {
+            "description": "The IDs of the artifacts to associate with the account.",
+            "example": [
+              "don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
           "custom_fields": {
             "description": "Application-defined custom fields.",
             "type": "object"
@@ -489,6 +506,9 @@
       "accounts-update-request": {
         "description": "Request to update details of the account.",
         "properties": {
+          "artifacts": {
+            "$ref": "#/components/schemas/accounts-update-request-artifacts"
+          },
           "custom_fields": {
             "description": "Application-defined custom fields.",
             "type": "object"
@@ -553,6 +573,22 @@
           "id"
         ],
         "title": "accounts-update-request",
+        "type": "object"
+      },
+      "accounts-update-request-artifacts": {
+        "properties": {
+          "set": {
+            "description": "Sets the IDs to the provided artifact IDs.",
+            "example": [
+              "don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "title": "accounts-update-request-artifacts",
         "type": "object"
       },
       "accounts-update-response": {
@@ -4680,6 +4716,13 @@
               "account": {
                 "$ref": "#/components/schemas/account-summary"
               },
+              "artifacts": {
+                "description": "The artifacts attached to the Rev organization.",
+                "items": {
+                  "$ref": "#/components/schemas/artifact-summary"
+                },
+                "type": "array"
+              },
               "custom_fields": {
                 "description": "Custom fields.",
                 "type": "object"
@@ -4732,6 +4775,16 @@
             "description": "Account Id to associate with this Rev organization.",
             "example": "don:core:<partition>:devo/<dev-org-id>:account/<account-id>",
             "type": "string"
+          },
+          "artifacts": {
+            "description": "The IDs of the artifacts to associate with the Rev organization.\n",
+            "example": [
+              "don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
           },
           "custom_fields": {
             "description": "Application-defined custom fields.",
@@ -4917,6 +4970,9 @@
             "example": "don:core:<partition>:devo/<dev-org-id>:account/<account-id>",
             "type": "string"
           },
+          "artifacts": {
+            "$ref": "#/components/schemas/rev-orgs-update-request-artifacts"
+          },
           "custom_schema_fragments": {
             "description": "Schema fragment IDs associated with this Rev organization.\n",
             "example": [
@@ -4962,6 +5018,22 @@
         "title": "rev-orgs-update-request",
         "type": "object"
       },
+      "rev-orgs-update-request-artifacts": {
+        "properties": {
+          "set": {
+            "description": "Sets the IDs to the provided artifact IDs.",
+            "example": [
+              "don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "title": "rev-orgs-update-request-artifacts",
+        "type": "object"
+      },
       "rev-orgs-update-response": {
         "description": "Response object to updating Rev organization's information.",
         "properties": {
@@ -4983,6 +5055,13 @@
           },
           {
             "properties": {
+              "artifacts": {
+                "description": "The artifacts attached to the Rev user.",
+                "items": {
+                  "$ref": "#/components/schemas/artifact-summary"
+                },
+                "type": "array"
+              },
               "custom_fields": {
                 "description": "Custom fields.",
                 "type": "object"
@@ -5004,6 +5083,10 @@
               "external_ref": {
                 "description": "External ref is a mutable unique identifier for a user within the\nRev organization from your primary customer record. If none is\navailable, a good alternative is the email address/phone number\nwhich could uniquely identify the user. If none is specified, a\nsystem-generated identifier will be assigned to the user.\n",
                 "type": "string"
+              },
+              "is_verified": {
+                "description": "Whether the Rev user is verified or not.",
+                "type": "boolean"
               },
               "rev_org": {
                 "$ref": "#/components/schemas/org-summary"
@@ -5042,6 +5125,16 @@
       "rev-users-create-request": {
         "description": "Request object to create a new Rev user for a Rev organization.\n",
         "properties": {
+          "artifacts": {
+            "description": "The IDs of the artifacts to associate with the Rev user.",
+            "example": [
+              "don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
           "custom_fields": {
             "description": "Application-defined custom fields.",
             "type": "object"
@@ -5249,6 +5342,9 @@
       "rev-users-update-request": {
         "description": "Request to update details of a Rev user.",
         "properties": {
+          "artifacts": {
+            "$ref": "#/components/schemas/rev-users-update-request-artifacts"
+          },
           "custom_fields": {
             "description": "Application-defined custom fields.",
             "type": "object"
@@ -5281,6 +5377,22 @@
           "id"
         ],
         "title": "rev-users-update-request",
+        "type": "object"
+      },
+      "rev-users-update-request-artifacts": {
+        "properties": {
+          "set": {
+            "description": "Sets the IDs to the provided artifact IDs.",
+            "example": [
+              "don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "title": "rev-users-update-request-artifacts",
         "type": "object"
       },
       "rev-users-update-request-custom-schema-fragments": {
