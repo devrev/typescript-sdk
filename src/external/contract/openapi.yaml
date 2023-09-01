@@ -4938,15 +4938,6 @@ paths:
           items:
             type: string
           type: array
-      - description: Filters for records in the provided stage(s) by ordinal.
-        explode: false
-        in: query
-        name: stage.ordinal
-        schema:
-          items:
-            format: int64
-            type: integer
-          type: array
       - description: Filters for tickets belonging to specific groups.
         explode: false
         in: query
@@ -5148,15 +5139,6 @@ paths:
         schema:
           items:
             type: string
-          type: array
-      - description: Filters for records in the provided stage(s) by ordinal.
-        explode: false
-        in: query
-        name: stage.ordinal
-        schema:
-          items:
-            format: int64
-            type: integer
           type: array
       - description: Filters for tickets belonging to specific groups.
         explode: false

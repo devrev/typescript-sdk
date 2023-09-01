@@ -3895,8 +3895,6 @@ export interface Stage {
 export interface StageFilter {
   /** Filters for records in the provided stage(s) by name. */
   name?: string[];
-  /** Filters for records in the provided stage(s) by ordinal. */
-  ordinal?: number[];
 }
 
 /**
@@ -6107,8 +6105,6 @@ export class Api<
       source_channels?: string[];
       /** Filters for records in the provided stage(s) by name. */
       'stage.name'?: string[];
-      /** Filters for records in the provided stage(s) by ordinal. */
-      'stage.ordinal'?: number[];
       /**
        * Filters for conversations with any of the provided tags.
        * @example ["don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"]
@@ -6284,8 +6280,6 @@ export class Api<
       source_channels?: string[];
       /** Filters for records in the provided stage(s) by name. */
       'stage.name'?: string[];
-      /** Filters for records in the provided stage(s) by ordinal. */
-      'stage.ordinal'?: number[];
       /**
        * Filters for conversations with any of the provided tags.
        * @example ["don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"]
@@ -9216,8 +9210,6 @@ export class Api<
       sort_by?: string[];
       /** Filters for records in the provided stage(s) by name. */
       'stage.name'?: string[];
-      /** Filters for records in the provided stage(s) by ordinal. */
-      'stage.ordinal'?: number[];
       /** Filters for tickets belonging to specific groups. */
       'ticket.group'?: string[];
       /** Filters for tickets that are spam. */
@@ -9407,8 +9399,6 @@ export class Api<
       sort_by?: string[];
       /** Filters for records in the provided stage(s) by name. */
       'stage.name'?: string[];
-      /** Filters for records in the provided stage(s) by ordinal. */
-      'stage.ordinal'?: number[];
       /** Filters for tickets belonging to specific groups. */
       'ticket.group'?: string[];
       /** Filters for tickets that are spam. */
