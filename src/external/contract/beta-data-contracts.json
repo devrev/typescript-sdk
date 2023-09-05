@@ -1199,6 +1199,71 @@
         ],
         "title": "artifact-summary"
       },
+      "artifacts-prepare-request": {
+        "description": "The request to prepare a URL to upload a file.",
+        "properties": {
+          "file_name": {
+            "description": "The name of the file that's being uploaded.",
+            "type": "string"
+          },
+          "file_type": {
+            "description": "The type of file that's being uploaded.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "file_name"
+        ],
+        "title": "artifacts-prepare-request",
+        "type": "object"
+      },
+      "artifacts-prepare-response": {
+        "description": "The response to preparing a URL to upload a file.",
+        "properties": {
+          "form_data": {
+            "description": "The POST policy form data.",
+            "items": {
+              "$ref": "#/components/schemas/artifacts-prepare-response-form-data"
+            },
+            "type": "array"
+          },
+          "id": {
+            "description": "The generated artifact's ID.",
+            "example": "don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>",
+            "type": "string"
+          },
+          "url": {
+            "description": "The URL that the file's data should be uploaded to.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "form_data",
+          "id",
+          "url"
+        ],
+        "title": "artifacts-prepare-response",
+        "type": "object",
+        "x-go-name": "ArtifactsPrepareResponseBody"
+      },
+      "artifacts-prepare-response-form-data": {
+        "properties": {
+          "key": {
+            "description": "Key of the form field.",
+            "type": "string"
+          },
+          "value": {
+            "description": "Value corresponding to the key.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "value"
+        ],
+        "title": "artifacts-prepare-response-form-data",
+        "type": "object"
+      },
       "atom-base": {
         "properties": {
           "created_by": {
@@ -10253,6 +10318,54 @@
         ]
       }
     },
+    "/artifacts.prepare": {
+      "post": {
+        "description": "Creates an artifact and generates an upload URL for its data.\n",
+        "operationId": "artifacts-prepare",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/artifacts-prepare-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/artifacts-prepare-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "artifacts"
+        ]
+      }
+    },
     "/conversations.create": {
       "post": {
         "description": "Creates a conversation.",
@@ -16744,6 +16857,10 @@
     {
       "description": "Articles management APIs.",
       "name": "articles"
+    },
+    {
+      "description": "Artifact (file) management APIs.",
+      "name": "artifacts"
     },
     {
       "description": "DevRev conversation interaction.",

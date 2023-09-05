@@ -630,6 +630,41 @@ export interface ArticlesUpdateResponse {
 /** artifact-summary */
 export type ArtifactSummary = AtomBaseSummary;
 
+/**
+ * artifacts-prepare-request
+ * The request to prepare a URL to upload a file.
+ */
+export interface ArtifactsPrepareRequest {
+  /** The name of the file that's being uploaded. */
+  file_name: string;
+  /** The type of file that's being uploaded. */
+  file_type?: string;
+}
+
+/**
+ * artifacts-prepare-response
+ * The response to preparing a URL to upload a file.
+ */
+export interface ArtifactsPrepareResponse {
+  /** The POST policy form data. */
+  form_data: ArtifactsPrepareResponseFormData[];
+  /**
+   * The generated artifact's ID.
+   * @example "don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"
+   */
+  id: string;
+  /** The URL that the file's data should be uploaded to. */
+  url: string;
+}
+
+/** artifacts-prepare-response-form-data */
+export interface ArtifactsPrepareResponseFormData {
+  /** Key of the form field. */
+  key: string;
+  /** Value corresponding to the key. */
+  value: string;
+}
+
 /** atom-base */
 export interface AtomBase {
   created_by?: UserSummary;
@@ -5920,6 +5955,36 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/articles.update`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Creates an artifact and generates an upload URL for its data.
+   *
+   * @tags artifacts
+   * @name ArtifactsPrepare
+   * @request POST:/artifacts.prepare
+   * @secure
+   */
+  artifactsPrepare = (
+    data: ArtifactsPrepareRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      ArtifactsPrepareResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/artifacts.prepare`,
       method: 'POST',
       body: data,
       secure: true,
