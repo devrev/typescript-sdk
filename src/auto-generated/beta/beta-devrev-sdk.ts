@@ -816,9 +816,12 @@ export interface ConversationsExportRequest {
   stage?: StageFilter;
   /**
    * Filters for conversations with any of the provided tags.
+   * @deprecated
    * @example ["don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"]
    */
   tags?: string[];
+  /** Filters for conversations with any of the provided tags with value. */
+  tags_v2?: TagWithValueFilter[];
 }
 
 /** conversations-export-response */
@@ -902,9 +905,12 @@ export interface ConversationsListRequest {
   stage?: StageFilter;
   /**
    * Filters for conversations with any of the provided tags.
+   * @deprecated
    * @example ["don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"]
    */
   tags?: string[];
+  /** Filters for conversations with any of the provided tags with value. */
+  tags_v2?: TagWithValueFilter[];
 }
 
 /**
@@ -4052,6 +4058,20 @@ export interface TagWithValue {
   value?: string;
 }
 
+/** tag-with-value-filter */
+export interface TagWithValueFilter {
+  /**
+   * The ID of the tag.
+   * @example "don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"
+   */
+  id?: string;
+  /**
+   * The value for the object's association with the tag. If specified,
+   * the value must be one that's specified in the tag's allowed values.
+   */
+  value?: string;
+}
+
 /** task */
 export type Task = WorkBase;
 
@@ -6107,9 +6127,20 @@ export class Api<
       'stage.name'?: string[];
       /**
        * Filters for conversations with any of the provided tags.
+       * @deprecated
        * @example ["don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"]
        */
       tags?: string[];
+      /**
+       * The ID of the tag.
+       * @example "don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"
+       */
+      'tags_v2.id'?: string;
+      /**
+       * The value for the object's association with the tag. If specified,
+       * the value must be one that's specified in the tag's allowed values.
+       */
+      'tags_v2.value'?: string;
     },
     params: RequestParams = {}
   ) =>
@@ -6282,9 +6313,20 @@ export class Api<
       'stage.name'?: string[];
       /**
        * Filters for conversations with any of the provided tags.
+       * @deprecated
        * @example ["don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"]
        */
       tags?: string[];
+      /**
+       * The ID of the tag.
+       * @example "don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"
+       */
+      'tags_v2.id'?: string;
+      /**
+       * The value for the object's association with the tag. If specified,
+       * the value must be one that's specified in the tag's allowed values.
+       */
+      'tags_v2.value'?: string;
     },
     params: RequestParams = {}
   ) =>

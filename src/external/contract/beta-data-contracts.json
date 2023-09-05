@@ -1554,12 +1554,20 @@
             "$ref": "#/components/schemas/stage-filter"
           },
           "tags": {
+            "deprecated": true,
             "description": "Filters for conversations with any of the provided tags.",
             "example": [
               "don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"
             ],
             "items": {
               "type": "string"
+            },
+            "type": "array"
+          },
+          "tags_v2": {
+            "description": "Filters for conversations with any of the provided tags with value.\n",
+            "items": {
+              "$ref": "#/components/schemas/tag-with-value-filter"
             },
             "type": "array"
           }
@@ -1696,12 +1704,20 @@
             "$ref": "#/components/schemas/stage-filter"
           },
           "tags": {
+            "deprecated": true,
             "description": "Filters for conversations with any of the provided tags.",
             "example": [
               "don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"
             ],
             "items": {
               "type": "string"
+            },
+            "type": "array"
+          },
+          "tags_v2": {
+            "description": "Filters for conversations with any of the provided tags with value.\n",
+            "items": {
+              "$ref": "#/components/schemas/tag-with-value-filter"
             },
             "type": "array"
           }
@@ -7147,6 +7163,21 @@
         "title": "tag-with-value",
         "type": "object"
       },
+      "tag-with-value-filter": {
+        "properties": {
+          "id": {
+            "description": "The ID of the tag.",
+            "example": "don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>",
+            "type": "string"
+          },
+          "value": {
+            "description": "The value for the object's association with the tag. If specified,\nthe value must be one that's specified in the tag's allowed values.\n",
+            "type": "string"
+          }
+        },
+        "title": "tag-with-value-filter",
+        "type": "object"
+      },
       "task": {
         "allOf": [
           {
@@ -10590,6 +10621,7 @@
             "in": "query",
             "name": "tags",
             "schema": {
+              "deprecated": true,
               "example": [
                 "don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"
               ],
@@ -10597,6 +10629,25 @@
                 "type": "string"
               },
               "type": "array"
+            }
+          },
+          {
+            "description": "The ID of the tag.",
+            "explode": false,
+            "in": "query",
+            "name": "tags_v2.id",
+            "schema": {
+              "example": "don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>",
+              "type": "string"
+            }
+          },
+          {
+            "description": "The value for the object's association with the tag. If specified,\nthe value must be one that's specified in the tag's allowed values.\n",
+            "explode": false,
+            "in": "query",
+            "name": "tags_v2.value",
+            "schema": {
+              "type": "string"
             }
           }
         ],
@@ -10939,6 +10990,7 @@
             "in": "query",
             "name": "tags",
             "schema": {
+              "deprecated": true,
               "example": [
                 "don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"
               ],
@@ -10946,6 +10998,25 @@
                 "type": "string"
               },
               "type": "array"
+            }
+          },
+          {
+            "description": "The ID of the tag.",
+            "explode": false,
+            "in": "query",
+            "name": "tags_v2.id",
+            "schema": {
+              "example": "don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>",
+              "type": "string"
+            }
+          },
+          {
+            "description": "The value for the object's association with the tag. If specified,\nthe value must be one that's specified in the tag's allowed values.\n",
+            "explode": false,
+            "in": "query",
+            "name": "tags_v2.value",
+            "schema": {
+              "type": "string"
             }
           }
         ],
