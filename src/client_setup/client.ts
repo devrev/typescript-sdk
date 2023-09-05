@@ -14,6 +14,7 @@ export class client {
             baseURL: setup_options.endpoint,
             headers: {
                 Authorization: setup_options.token,
+                'X-DevRev-Client-Platform': 'Typescript-SDK'
             },
         };
         const devrevSDK = new publicSDK.Api({
@@ -41,7 +42,8 @@ export class client {
             baseURL: setup_options.endpoint,
             headers: {
                 Authorization: setup_options.token,
-                'X-Devrev-Scope': 'beta',
+                'X-Devrev-Scope':  'beta',
+                'X-DevRev-Client-Platform': 'Typescript-SDK'
             },
         };
         const devrevSDK = new betaSDK.Api({
