@@ -441,6 +441,7 @@
           "urn:devrev:params:oauth:token-type:rev",
           "urn:devrev:params:oauth:token-type:session",
           "urn:devrev:params:oauth:token-type:session:dev0",
+          "urn:devrev:params:oauth:token-type:session:onetime",
           "urn:devrev:params:oauth:token-type:sys",
           "urn:ietf:params:oauth:token-type:jwt"
         ],
@@ -466,6 +467,9 @@
           },
           "urn:devrev:params:oauth:token-type:session:dev0": {
             "name": "urn-devrev-params-oauth-token-type-session-dev0"
+          },
+          "urn:devrev:params:oauth:token-type:session:onetime": {
+            "name": "urn-devrev-params-oauth-token-type-session-onetime"
           },
           "urn:devrev:params:oauth:token-type:sys": {
             "name": "urn-devrev-params-oauth-token-type-sys"
