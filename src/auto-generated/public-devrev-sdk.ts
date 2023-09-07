@@ -564,6 +564,7 @@ export type DevOrgAuthConnectionsUpdateRequest = (
   | AuthConnectionOptionsGoogleApps
   | AuthConnectionOptionsOidc
   | AuthConnectionOptionsSaml
+  | Empty
 ) & {
   /**
    * New display name of the authentication connection. This name will
@@ -579,7 +580,7 @@ export type DevOrgAuthConnectionsUpdateRequest = (
    * of authentication connections have different configuration parameters
    * that can be updated.
    */
-  type: DevOrgAuthConnectionsUpdateRequestType;
+  type?: DevOrgAuthConnectionsUpdateRequestType;
 };
 
 /**
@@ -1164,6 +1165,7 @@ export interface PartsListResponse {
 
 /** parts-update-request */
 export type PartsUpdateRequest = (
+  | Empty
   | PartsUpdateRequestCapability
   | PartsUpdateRequestEnhancement
   | PartsUpdateRequestFeature
@@ -1180,7 +1182,7 @@ export type PartsUpdateRequest = (
   /** The updated name of the part. */
   name?: string;
   owned_by?: PartsUpdateRequestOwnedBy;
-  type: PartType;
+  type?: PartType;
 };
 
 /** parts-update-request-artifacts */
@@ -2289,6 +2291,7 @@ export interface WorksListResponse {
 
 /** works-update-request */
 export type WorksUpdateRequest = (
+  | Empty
   | WorksUpdateRequestIssue
   | WorksUpdateRequestTicket
 ) & {
@@ -2317,7 +2320,7 @@ export type WorksUpdateRequest = (
   target_close_date?: string;
   /** Updated title of the work object, or unchanged if not provided. */
   title?: string;
-  type: WorkType;
+  type?: WorkType;
 };
 
 /** works-update-request-artifact-ids */

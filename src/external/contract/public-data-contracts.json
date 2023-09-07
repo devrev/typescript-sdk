@@ -938,6 +938,9 @@
           },
           {
             "$ref": "#/components/schemas/auth-connection-options-saml"
+          },
+          {
+            "$ref": "#/components/schemas/empty"
           }
         ],
         "properties": {
@@ -954,8 +957,7 @@
           }
         },
         "required": [
-          "id",
-          "type"
+          "id"
         ],
         "title": "dev-org-auth-connections-update-request",
         "type": "object"
@@ -2260,6 +2262,9 @@
         },
         "oneOf": [
           {
+            "$ref": "#/components/schemas/empty"
+          },
+          {
             "$ref": "#/components/schemas/parts-update-request-capability"
           },
           {
@@ -2297,8 +2302,7 @@
           }
         },
         "required": [
-          "id",
-          "type"
+          "id"
         ],
         "title": "parts-update-request",
         "type": "object"
@@ -4145,6 +4149,9 @@
         },
         "oneOf": [
           {
+            "$ref": "#/components/schemas/empty"
+          },
+          {
             "$ref": "#/components/schemas/works-update-request-issue"
           },
           {
@@ -4195,8 +4202,7 @@
           }
         },
         "required": [
-          "id",
-          "type"
+          "id"
         ],
         "title": "works-update-request",
         "type": "object"

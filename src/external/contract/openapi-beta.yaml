@@ -6437,6 +6437,7 @@ components:
           ticket: '#/components/schemas/works-update-request-ticket'
         propertyName: type
       oneOf:
+      - $ref: '#/components/schemas/empty'
       - $ref: '#/components/schemas/works-update-request-issue'
       - $ref: '#/components/schemas/works-update-request-opportunity'
       - $ref: '#/components/schemas/works-update-request-task'
@@ -6487,7 +6488,6 @@ components:
           $ref: '#/components/schemas/work-type'
       required:
       - id
-      - type
       title: works-update-request
       type: object
     works-update-request-artifact-ids:

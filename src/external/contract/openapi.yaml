@@ -730,6 +730,7 @@ components:
       - $ref: '#/components/schemas/auth-connection-options-google-apps'
       - $ref: '#/components/schemas/auth-connection-options-oidc'
       - $ref: '#/components/schemas/auth-connection-options-saml'
+      - $ref: '#/components/schemas/empty'
       properties:
         display_name:
           description: |
@@ -746,7 +747,6 @@ components:
           $ref: '#/components/schemas/dev-org-auth-connections-update-request-type'
       required:
       - id
-      - type
       title: dev-org-auth-connections-update-request
       type: object
     dev-org-auth-connections-update-request-type:
@@ -1610,6 +1610,7 @@ components:
           product: '#/components/schemas/parts-update-request-product'
         propertyName: type
       oneOf:
+      - $ref: '#/components/schemas/empty'
       - $ref: '#/components/schemas/parts-update-request-capability'
       - $ref: '#/components/schemas/parts-update-request-enhancement'
       - $ref: '#/components/schemas/parts-update-request-feature'
@@ -1633,7 +1634,6 @@ components:
           $ref: '#/components/schemas/part-type'
       required:
       - id
-      - type
       title: parts-update-request
       type: object
     parts-update-request-artifacts:
@@ -3026,6 +3026,7 @@ components:
           ticket: '#/components/schemas/works-update-request-ticket'
         propertyName: type
       oneOf:
+      - $ref: '#/components/schemas/empty'
       - $ref: '#/components/schemas/works-update-request-issue'
       - $ref: '#/components/schemas/works-update-request-ticket'
       properties:
@@ -3064,7 +3065,6 @@ components:
           $ref: '#/components/schemas/work-type'
       required:
       - id
-      - type
       title: works-update-request
       type: object
     works-update-request-artifact-ids:

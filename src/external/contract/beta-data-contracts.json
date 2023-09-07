@@ -8744,6 +8744,9 @@
         },
         "oneOf": [
           {
+            "$ref": "#/components/schemas/empty"
+          },
+          {
             "$ref": "#/components/schemas/works-update-request-issue"
           },
           {
@@ -8814,8 +8817,7 @@
           }
         },
         "required": [
-          "id",
-          "type"
+          "id"
         ],
         "title": "works-update-request",
         "type": "object"

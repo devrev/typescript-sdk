@@ -4954,6 +4954,7 @@ export interface WorksListResponse {
 
 /** works-update-request */
 export type WorksUpdateRequest = (
+  | Empty
   | WorksUpdateRequestIssue
   | WorksUpdateRequestOpportunity
   | WorksUpdateRequestTask
@@ -4991,7 +4992,7 @@ export type WorksUpdateRequest = (
   target_close_date?: string;
   /** Updated title of the work object, or unchanged if not provided. */
   title?: string;
-  type: WorkType;
+  type?: WorkType;
 };
 
 /** works-update-request-artifact-ids */
