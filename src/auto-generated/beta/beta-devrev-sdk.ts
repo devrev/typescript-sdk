@@ -2712,10 +2712,16 @@ export interface RevOrgsCreateResponse {
  */
 export interface RevOrgsGetRequest {
   /**
+   * The ID of account for which default Rev organization is to be
+   * fetched.
+   * @example "don:core:<partition>:devo/<dev-org-id>:account/<account-id>"
+   */
+  account?: string;
+  /**
    * The ID of the required Rev organization.
    * @example "don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"
    */
-  id: string;
+  id?: string;
 }
 
 /**
@@ -7730,12 +7736,18 @@ export class Api<
    * @secure
    */
   revOrgsGet = (
-    query: {
+    query?: {
+      /**
+       * The ID of account for which default Rev organization is to be
+       * fetched.
+       * @example "don:core:<partition>:devo/<dev-org-id>:account/<account-id>"
+       */
+      account?: string;
       /**
        * The ID of the required Rev organization.
        * @example "don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"
        */
-      id: string;
+      id?: string;
     },
     params: RequestParams = {}
   ) =>

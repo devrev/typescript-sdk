@@ -4084,11 +4084,19 @@ paths:
       description: Retrieves the Rev organization's information.
       operationId: rev-orgs-get
       parameters:
+      - description: |
+          The ID of account for which default Rev organization is to be
+          fetched.
+        explode: false
+        in: query
+        name: account
+        schema:
+          example: don:core:<partition>:devo/<dev-org-id>:account/<account-id>
+          type: string
       - description: The ID of the required Rev organization.
         explode: false
         in: query
         name: id
-        required: true
         schema:
           example: don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>
           type: string
