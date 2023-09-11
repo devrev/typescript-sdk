@@ -4070,11 +4070,11 @@
       "opportunity-forecast-category": {
         "description": "Forecast category of the opportunity.",
         "enum": [
-          "best_case",
           "commit",
-          "most_likely",
           "omitted",
           "pipeline",
+          "strong_upside",
+          "upside",
           "won"
         ],
         "type": "string"

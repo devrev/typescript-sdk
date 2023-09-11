@@ -2209,11 +2209,11 @@ export type Opportunity = WorkBase;
 
 /** Forecast category of the opportunity. */
 export enum OpportunityForecastCategory {
-  BestCase = 'best_case',
   Commit = 'commit',
-  MostLikely = 'most_likely',
   Omitted = 'omitted',
   Pipeline = 'pipeline',
+  StrongUpside = 'strong_upside',
+  Upside = 'upside',
   Won = 'won',
 }
 
