@@ -962,6 +962,10 @@ components:
       - id
       title: atom-base-summary
       type: object
+    capability:
+      allOf:
+      - $ref: '#/components/schemas/part-base'
+      title: capability
     capability-summary:
       allOf:
       - $ref: '#/components/schemas/part-base-summary'
@@ -2071,6 +2075,16 @@ components:
       title: engagements-update-response
       type: object
       x-go-name: EngagementsUpdateResponseBody
+    enhancement:
+      allOf:
+      - $ref: '#/components/schemas/part-base'
+      - properties:
+          target_close_date:
+            description: Timestamp when the enhancement is expected to be closed.
+            format: date-time
+            type: string
+        type: object
+      title: enhancement
     enhancement-summary:
       allOf:
       - $ref: '#/components/schemas/part-base-summary'
@@ -2340,6 +2354,108 @@ components:
     error-unauthorized-unauthenticated:
       title: error-unauthorized-unauthenticated
       type: object
+    event-conversation-created:
+      properties:
+        conversation:
+          $ref: '#/components/schemas/conversation'
+      required:
+      - conversation
+      title: event-conversation-created
+      type: object
+    event-conversation-deleted:
+      properties:
+        id:
+          description: The ID of the conversation that was deleted.
+          type: string
+      required:
+      - id
+      title: event-conversation-deleted
+      type: object
+    event-conversation-updated:
+      properties:
+        conversation:
+          $ref: '#/components/schemas/conversation'
+      required:
+      - conversation
+      title: event-conversation-updated
+      type: object
+    event-part-created:
+      properties:
+        part:
+          $ref: '#/components/schemas/part'
+      required:
+      - part
+      title: event-part-created
+      type: object
+    event-part-deleted:
+      properties:
+        id:
+          description: The ID of the part that was deleted.
+          example: don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>
+          type: string
+      required:
+      - id
+      title: event-part-deleted
+      type: object
+    event-part-updated:
+      properties:
+        part:
+          $ref: '#/components/schemas/part'
+      required:
+      - part
+      title: event-part-updated
+      type: object
+    event-rev-org-created:
+      properties:
+        rev_org:
+          $ref: '#/components/schemas/rev-org'
+      required:
+      - rev_org
+      title: event-rev-org-created
+      type: object
+    event-rev-org-deleted:
+      properties:
+        id:
+          description: The ID of the Rev organization that was deleted.
+          example: don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>
+          type: string
+      required:
+      - id
+      title: event-rev-org-deleted
+      type: object
+    event-rev-org-updated:
+      properties:
+        rev_org:
+          $ref: '#/components/schemas/rev-org'
+      required:
+      - rev_org
+      title: event-rev-org-updated
+      type: object
+    event-rev-user-created:
+      properties:
+        rev_user:
+          $ref: '#/components/schemas/rev-user'
+      required:
+      - rev_user
+      title: event-rev-user-created
+      type: object
+    event-rev-user-deleted:
+      properties:
+        id:
+          description: The ID of the Rev user that was deleted.
+          type: string
+      required:
+      - id
+      title: event-rev-user-deleted
+      type: object
+    event-rev-user-updated:
+      properties:
+        rev_user:
+          $ref: '#/components/schemas/rev-user'
+      required:
+      - rev_user
+      title: event-rev-user-updated
+      type: object
     event-source:
       allOf:
       - $ref: '#/components/schemas/atom-base'
@@ -2458,6 +2574,114 @@ components:
       title: event-sources-schedule-event-response
       type: object
       x-go-name: EventSourcesScheduleEventResponseBody
+    event-tag-created:
+      properties:
+        tag:
+          $ref: '#/components/schemas/tag'
+      required:
+      - tag
+      title: event-tag-created
+      type: object
+    event-tag-deleted:
+      properties:
+        id:
+          description: The ID of the tag that was deleted.
+          example: don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>
+          type: string
+      required:
+      - id
+      title: event-tag-deleted
+      type: object
+    event-tag-updated:
+      properties:
+        tag:
+          $ref: '#/components/schemas/tag'
+      required:
+      - tag
+      title: event-tag-updated
+      type: object
+    event-timeline-entry-created:
+      properties:
+        entry:
+          $ref: '#/components/schemas/timeline-entry'
+      required:
+      - entry
+      title: event-timeline-entry-created
+      type: object
+    event-timeline-entry-deleted:
+      properties:
+        id:
+          description: The ID of the timeline entry that was deleted.
+          example: don:core:<partition>:devo/<dev-org-id>:ticket/123:timeline_event/<timeline-event-id>
+          type: string
+      required:
+      - id
+      title: event-timeline-entry-deleted
+      type: object
+    event-timeline-entry-updated:
+      properties:
+        entry:
+          $ref: '#/components/schemas/timeline-entry'
+      required:
+      - entry
+      title: event-timeline-entry-updated
+      type: object
+    event-webhook-created:
+      properties:
+        webhook:
+          $ref: '#/components/schemas/webhook'
+      required:
+      - webhook
+      title: event-webhook-created
+      type: object
+    event-webhook-deleted:
+      properties:
+        id:
+          description: The ID of the webhook that was deleted.
+          example: don:integration:<partition>:devo/<dev-org-id>:webhook/<webhook-id>
+          type: string
+      required:
+      - id
+      title: event-webhook-deleted
+      type: object
+    event-webhook-updated:
+      properties:
+        webhook:
+          $ref: '#/components/schemas/webhook'
+      required:
+      - webhook
+      title: event-webhook-updated
+      type: object
+    event-work-created:
+      properties:
+        work:
+          $ref: '#/components/schemas/work'
+      required:
+      - work
+      title: event-work-created
+      type: object
+    event-work-deleted:
+      properties:
+        id:
+          description: The ID of the work that was deleted.
+          example: don:core:<partition>:devo/<dev-org-id>:<work-type>/<work-id>
+          type: string
+      required:
+      - id
+      title: event-work-deleted
+      type: object
+    event-work-updated:
+      properties:
+        work:
+          $ref: '#/components/schemas/work'
+      required:
+      - work
+      title: event-work-updated
+      type: object
+    feature:
+      allOf:
+      - $ref: '#/components/schemas/part-base'
+      title: feature
     feature-summary:
       allOf:
       - $ref: '#/components/schemas/part-base-summary'
@@ -3455,6 +3679,70 @@ components:
       - account
       - rev_org
       type: string
+    part:
+      discriminator:
+        mapping:
+          capability: '#/components/schemas/capability'
+          enhancement: '#/components/schemas/enhancement'
+          feature: '#/components/schemas/feature'
+          product: '#/components/schemas/product'
+        propertyName: type
+      oneOf:
+      - $ref: '#/components/schemas/capability'
+      - $ref: '#/components/schemas/enhancement'
+      - $ref: '#/components/schemas/feature'
+      - $ref: '#/components/schemas/product'
+      properties:
+        type:
+          $ref: '#/components/schemas/part-type'
+      required:
+      - type
+      title: part
+      type: object
+    part-base:
+      allOf:
+      - $ref: '#/components/schemas/atom-base'
+      - properties:
+          artifacts:
+            description: The attached artifacts.
+            items:
+              $ref: '#/components/schemas/artifact-summary'
+            type: array
+          custom_fields:
+            description: Custom fields.
+            type: object
+          custom_schema_fragments:
+            description: Custom schema fragments.
+            example:
+            - don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>
+            items:
+              type: string
+            type: array
+          description:
+            description: Description of the part.
+            type: string
+          name:
+            description: Name of the part.
+            type: string
+          owned_by:
+            description: The users that own the part.
+            items:
+              $ref: '#/components/schemas/user-summary'
+            type: array
+          stock_schema_fragment:
+            description: Stock schema fragment.
+            example: don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>
+            type: string
+          tags:
+            description: Tags associated with the object.
+            items:
+              $ref: '#/components/schemas/tag-with-value'
+            type: array
+        required:
+        - name
+        - owned_by
+        type: object
+      title: part-base
     part-base-summary:
       allOf:
       - $ref: '#/components/schemas/atom-base-summary'
@@ -3493,6 +3781,10 @@ components:
       - feature
       - product
       type: string
+    product:
+      allOf:
+      - $ref: '#/components/schemas/part-base'
+      title: product
     product-summary:
       allOf:
       - $ref: '#/components/schemas/part-base-summary'
@@ -5278,6 +5570,33 @@ components:
       title: sys-users-update-response
       type: object
       x-go-name: SysUsersUpdateResponseBody
+    tag:
+      allOf:
+      - $ref: '#/components/schemas/atom-base'
+      - properties:
+          allowed_values:
+            description: |
+              The allowed values for the tag, where a value is provided when a
+              tag is associated with an object. If empty, then no value should be
+              provided when the association is made.
+            items:
+              type: string
+            type: array
+          description:
+            description: |
+              An informative description for the tag that should provide context
+              on the tag's purpose and usage.
+            type: string
+          name:
+            description: |
+              The name of the tag, which denotes the logical concept by which all
+              tagged objects will be associated. The name is guaranteed to be
+              unique.
+            type: string
+        required:
+        - name
+        type: object
+      title: tag
     tag-summary:
       allOf:
       - $ref: '#/components/schemas/atom-base-summary'
@@ -5899,6 +6218,158 @@ components:
       - rev_user
       - service_account
       - sys_user
+      type: string
+    webhook:
+      allOf:
+      - $ref: '#/components/schemas/atom-base'
+      - properties:
+          event_types:
+            description: The event types that the webhook will receive.
+            items:
+              $ref: '#/components/schemas/webhook-event-type'
+            type: array
+          secret:
+            description: The secret to use for verifying webhook events.
+            format: byte
+            type: string
+          status:
+            $ref: '#/components/schemas/webhook-status'
+          url:
+            description: The URL of the webhook endpoint.
+            type: string
+        required:
+        - secret
+        - status
+        - url
+        type: object
+      title: webhook
+    webhook-event-request:
+      properties:
+        conversation_created:
+          $ref: '#/components/schemas/event-conversation-created'
+        conversation_deleted:
+          $ref: '#/components/schemas/event-conversation-deleted'
+        conversation_updated:
+          $ref: '#/components/schemas/event-conversation-updated'
+        id:
+          description: The event's ID.
+          type: string
+        part_created:
+          $ref: '#/components/schemas/event-part-created'
+        part_deleted:
+          $ref: '#/components/schemas/event-part-deleted'
+        part_updated:
+          $ref: '#/components/schemas/event-part-updated'
+        rev_org_created:
+          $ref: '#/components/schemas/event-rev-org-created'
+        rev_org_deleted:
+          $ref: '#/components/schemas/event-rev-org-deleted'
+        rev_org_updated:
+          $ref: '#/components/schemas/event-rev-org-updated'
+        rev_user_created:
+          $ref: '#/components/schemas/event-rev-user-created'
+        rev_user_deleted:
+          $ref: '#/components/schemas/event-rev-user-deleted'
+        rev_user_updated:
+          $ref: '#/components/schemas/event-rev-user-updated'
+        tag_created:
+          $ref: '#/components/schemas/event-tag-created'
+        tag_deleted:
+          $ref: '#/components/schemas/event-tag-deleted'
+        tag_updated:
+          $ref: '#/components/schemas/event-tag-updated'
+        timeline_entry_created:
+          $ref: '#/components/schemas/event-timeline-entry-created'
+        timeline_entry_deleted:
+          $ref: '#/components/schemas/event-timeline-entry-deleted'
+        timeline_entry_updated:
+          $ref: '#/components/schemas/event-timeline-entry-updated'
+        timestamp:
+          description: |
+            Timestamp of the webhook's invocation for the event. Note this
+            should be used to protect against replay attacks, where the event
+            should only be processed if the timestamp isn't stale by several
+            seconds.
+          format: date-time
+          type: string
+        type:
+          $ref: '#/components/schemas/webhook-event-type'
+        verify:
+          $ref: '#/components/schemas/webhook-event-verify'
+        webhook_created:
+          $ref: '#/components/schemas/event-webhook-created'
+        webhook_deleted:
+          $ref: '#/components/schemas/event-webhook-deleted'
+        webhook_id:
+          description: ID of the webhook for the event.
+          example: don:integration:<partition>:devo/<dev-org-id>:webhook/<webhook-id>
+          type: string
+        webhook_updated:
+          $ref: '#/components/schemas/event-webhook-updated'
+        work_created:
+          $ref: '#/components/schemas/event-work-created'
+        work_deleted:
+          $ref: '#/components/schemas/event-work-deleted'
+        work_updated:
+          $ref: '#/components/schemas/event-work-updated'
+      required:
+      - id
+      - webhook_id
+      title: webhook-event-request
+      type: object
+    webhook-event-response:
+      properties:
+        challenge:
+          description: |
+            The challenge from the "verify" request, otherwise this should not
+            be set for other request types.
+          format: byte
+          type: string
+      title: webhook-event-response
+      type: object
+      x-go-name: WebhookEventResponseBody
+    webhook-event-type:
+      description: The event types that the webhook will receive.
+      enum:
+      - part_created
+      - part_deleted
+      - part_updated
+      - rev_org_created
+      - rev_org_deleted
+      - rev_org_updated
+      - rev_user_created
+      - rev_user_deleted
+      - rev_user_updated
+      - tag_created
+      - tag_deleted
+      - tag_updated
+      - timeline_entry_created
+      - timeline_entry_deleted
+      - timeline_entry_updated
+      - verify
+      - webhook_created
+      - webhook_deleted
+      - webhook_updated
+      - work_created
+      - work_deleted
+      - work_updated
+      type: string
+    webhook-event-verify:
+      properties:
+        challenge:
+          description: The challenge that must be echoed in the response.
+          format: byte
+          type: string
+      required:
+      - challenge
+      title: webhook-event-verify
+      type: object
+    webhook-status:
+      description: The status of the webhook.
+      enum:
+      - active
+      - inactive
+      - unverified
       type: string
     weekly-org-schedule:
       description: The schedule for each week.

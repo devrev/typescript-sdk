@@ -693,6 +693,9 @@ export interface AtomBaseSummary {
   id: string;
 }
 
+/** capability */
+export type Capability = PartBase;
+
 /** capability-summary */
 export type CapabilitySummary = PartBaseSummary;
 
@@ -1495,6 +1498,15 @@ export interface EngagementsUpdateResponse {
   engagement: Engagement;
 }
 
+/** enhancement */
+export type Enhancement = PartBase & {
+  /**
+   * Timestamp when the enhancement is expected to be closed.
+   * @format date-time
+   */
+  target_close_date?: string;
+};
+
 /** enhancement-summary */
 export type EnhancementSummary = PartBaseSummary;
 
@@ -1665,6 +1677,76 @@ export enum ErrorUnauthorizedType {
 /** error-unauthorized-unauthenticated */
 export type ErrorUnauthorizedUnauthenticated = object;
 
+/** event-conversation-created */
+export interface EventConversationCreated {
+  conversation: Conversation;
+}
+
+/** event-conversation-deleted */
+export interface EventConversationDeleted {
+  /** The ID of the conversation that was deleted. */
+  id: string;
+}
+
+/** event-conversation-updated */
+export interface EventConversationUpdated {
+  conversation: Conversation;
+}
+
+/** event-part-created */
+export interface EventPartCreated {
+  part: Part;
+}
+
+/** event-part-deleted */
+export interface EventPartDeleted {
+  /**
+   * The ID of the part that was deleted.
+   * @example "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+   */
+  id: string;
+}
+
+/** event-part-updated */
+export interface EventPartUpdated {
+  part: Part;
+}
+
+/** event-rev-org-created */
+export interface EventRevOrgCreated {
+  rev_org: RevOrg;
+}
+
+/** event-rev-org-deleted */
+export interface EventRevOrgDeleted {
+  /**
+   * The ID of the Rev organization that was deleted.
+   * @example "don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"
+   */
+  id: string;
+}
+
+/** event-rev-org-updated */
+export interface EventRevOrgUpdated {
+  rev_org: RevOrg;
+}
+
+/** event-rev-user-created */
+export interface EventRevUserCreated {
+  rev_user: RevUser;
+}
+
+/** event-rev-user-deleted */
+export interface EventRevUserDeleted {
+  /** The ID of the Rev user that was deleted. */
+  id: string;
+}
+
+/** event-rev-user-updated */
+export interface EventRevUserUpdated {
+  rev_user: RevUser;
+}
+
 /** event-source */
 export type EventSource = AtomBase & {
   /**
@@ -1766,6 +1848,85 @@ export interface EventSourcesScheduleEventResponse {
    */
   event_key?: string;
 }
+
+/** event-tag-created */
+export interface EventTagCreated {
+  tag: Tag;
+}
+
+/** event-tag-deleted */
+export interface EventTagDeleted {
+  /**
+   * The ID of the tag that was deleted.
+   * @example "don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"
+   */
+  id: string;
+}
+
+/** event-tag-updated */
+export interface EventTagUpdated {
+  tag: Tag;
+}
+
+/** event-timeline-entry-created */
+export interface EventTimelineEntryCreated {
+  entry: TimelineEntry;
+}
+
+/** event-timeline-entry-deleted */
+export interface EventTimelineEntryDeleted {
+  /**
+   * The ID of the timeline entry that was deleted.
+   * @example "don:core:<partition>:devo/<dev-org-id>:ticket/123:timeline_event/<timeline-event-id>"
+   */
+  id: string;
+}
+
+/** event-timeline-entry-updated */
+export interface EventTimelineEntryUpdated {
+  entry: TimelineEntry;
+}
+
+/** event-webhook-created */
+export interface EventWebhookCreated {
+  webhook: Webhook;
+}
+
+/** event-webhook-deleted */
+export interface EventWebhookDeleted {
+  /**
+   * The ID of the webhook that was deleted.
+   * @example "don:integration:<partition>:devo/<dev-org-id>:webhook/<webhook-id>"
+   */
+  id: string;
+}
+
+/** event-webhook-updated */
+export interface EventWebhookUpdated {
+  webhook: Webhook;
+}
+
+/** event-work-created */
+export interface EventWorkCreated {
+  work: Work;
+}
+
+/** event-work-deleted */
+export interface EventWorkDeleted {
+  /**
+   * The ID of the work that was deleted.
+   * @example "don:core:<partition>:devo/<dev-org-id>:<work-type>/<work-id>"
+   */
+  id: string;
+}
+
+/** event-work-updated */
+export interface EventWorkUpdated {
+  work: Work;
+}
+
+/** feature */
+export type Feature = PartBase;
 
 /** feature-summary */
 export type FeatureSummary = PartBaseSummary;
@@ -2587,6 +2748,37 @@ export enum OrgType {
   RevOrg = 'rev_org',
 }
 
+/** part */
+export type Part = (Capability | Enhancement | Feature | Product) & {
+  type: PartType;
+};
+
+/** part-base */
+export type PartBase = AtomBase & {
+  /** The attached artifacts. */
+  artifacts?: ArtifactSummary[];
+  /** Custom fields. */
+  custom_fields?: object;
+  /**
+   * Custom schema fragments.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>"]
+   */
+  custom_schema_fragments?: string[];
+  /** Description of the part. */
+  description?: string;
+  /** Name of the part. */
+  name: string;
+  /** The users that own the part. */
+  owned_by: UserSummary[];
+  /**
+   * Stock schema fragment.
+   * @example "don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>"
+   */
+  stock_schema_fragment?: string;
+  /** Tags associated with the object. */
+  tags?: TagWithValue[];
+};
+
 /** part-base-summary */
 export type PartBaseSummary = AtomBaseSummary & {
   /** Name of the part. */
@@ -2609,6 +2801,9 @@ export enum PartType {
   Feature = 'feature',
   Product = 'product',
 }
+
+/** product */
+export type Product = PartBase;
 
 /** product-summary */
 export type ProductSummary = PartBaseSummary;
@@ -4061,6 +4256,27 @@ export interface SysUsersUpdateResponse {
   sys_user: SysUser;
 }
 
+/** tag */
+export type Tag = AtomBase & {
+  /**
+   * The allowed values for the tag, where a value is provided when a
+   * tag is associated with an object. If empty, then no value should be
+   * provided when the association is made.
+   */
+  allowed_values?: string[];
+  /**
+   * An informative description for the tag that should provide context
+   * on the tag's purpose and usage.
+   */
+  description?: string;
+  /**
+   * The name of the tag, which denotes the logical concept by which all
+   * tagged objects will be associated. The name is guaranteed to be
+   * unique.
+   */
+  name: string;
+};
+
 /** tag-summary */
 export type TagSummary = AtomBaseSummary & {
   /**
@@ -4576,6 +4792,119 @@ export enum UserType {
   RevUser = 'rev_user',
   ServiceAccount = 'service_account',
   SysUser = 'sys_user',
+}
+
+/** webhook */
+export type Webhook = AtomBase & {
+  /** The event types that the webhook will receive. */
+  event_types?: WebhookEventType[];
+  /**
+   * The secret to use for verifying webhook events.
+   * @format byte
+   */
+  secret: string;
+  /** The status of the webhook. */
+  status: WebhookStatus;
+  /** The URL of the webhook endpoint. */
+  url: string;
+};
+
+/** webhook-event-request */
+export interface WebhookEventRequest {
+  conversation_created?: EventConversationCreated;
+  conversation_deleted?: EventConversationDeleted;
+  conversation_updated?: EventConversationUpdated;
+  /** The event's ID. */
+  id: string;
+  part_created?: EventPartCreated;
+  part_deleted?: EventPartDeleted;
+  part_updated?: EventPartUpdated;
+  rev_org_created?: EventRevOrgCreated;
+  rev_org_deleted?: EventRevOrgDeleted;
+  rev_org_updated?: EventRevOrgUpdated;
+  rev_user_created?: EventRevUserCreated;
+  rev_user_deleted?: EventRevUserDeleted;
+  rev_user_updated?: EventRevUserUpdated;
+  tag_created?: EventTagCreated;
+  tag_deleted?: EventTagDeleted;
+  tag_updated?: EventTagUpdated;
+  timeline_entry_created?: EventTimelineEntryCreated;
+  timeline_entry_deleted?: EventTimelineEntryDeleted;
+  timeline_entry_updated?: EventTimelineEntryUpdated;
+  /**
+   * Timestamp of the webhook's invocation for the event. Note this
+   * should be used to protect against replay attacks, where the event
+   * should only be processed if the timestamp isn't stale by several
+   * seconds.
+   * @format date-time
+   */
+  timestamp?: string;
+  /** The event types that the webhook will receive. */
+  type?: WebhookEventType;
+  verify?: WebhookEventVerify;
+  webhook_created?: EventWebhookCreated;
+  webhook_deleted?: EventWebhookDeleted;
+  /**
+   * ID of the webhook for the event.
+   * @example "don:integration:<partition>:devo/<dev-org-id>:webhook/<webhook-id>"
+   */
+  webhook_id: string;
+  webhook_updated?: EventWebhookUpdated;
+  work_created?: EventWorkCreated;
+  work_deleted?: EventWorkDeleted;
+  work_updated?: EventWorkUpdated;
+}
+
+/** webhook-event-response */
+export interface WebhookEventResponse {
+  /**
+   * The challenge from the "verify" request, otherwise this should not
+   * be set for other request types.
+   * @format byte
+   */
+  challenge?: string;
+}
+
+/** The event types that the webhook will receive. */
+export enum WebhookEventType {
+  PartCreated = 'part_created',
+  PartDeleted = 'part_deleted',
+  PartUpdated = 'part_updated',
+  RevOrgCreated = 'rev_org_created',
+  RevOrgDeleted = 'rev_org_deleted',
+  RevOrgUpdated = 'rev_org_updated',
+  RevUserCreated = 'rev_user_created',
+  RevUserDeleted = 'rev_user_deleted',
+  RevUserUpdated = 'rev_user_updated',
+  TagCreated = 'tag_created',
+  TagDeleted = 'tag_deleted',
+  TagUpdated = 'tag_updated',
+  TimelineEntryCreated = 'timeline_entry_created',
+  TimelineEntryDeleted = 'timeline_entry_deleted',
+  TimelineEntryUpdated = 'timeline_entry_updated',
+  Verify = 'verify',
+  WebhookCreated = 'webhook_created',
+  WebhookDeleted = 'webhook_deleted',
+  WebhookUpdated = 'webhook_updated',
+  WorkCreated = 'work_created',
+  WorkDeleted = 'work_deleted',
+  WorkUpdated = 'work_updated',
+}
+
+/** webhook-event-verify */
+export interface WebhookEventVerify {
+  /**
+   * The challenge that must be echoed in the response.
+   * @format byte
+   */
+  challenge: string;
+}
+
+/** The status of the webhook. */
+export enum WebhookStatus {
+  Active = 'active',
+  Inactive = 'inactive',
+  Unverified = 'unverified',
 }
 
 /**
