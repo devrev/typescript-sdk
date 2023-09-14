@@ -366,6 +366,7 @@ components:
       - urn:devrev:params:oauth:token-type:jwt:auth0
       - urn:devrev:params:oauth:token-type:jwt:dev
       - urn:devrev:params:oauth:token-type:revinfo
+      - urn:devrev:params:oauth:token-type:session
       - urn:devrev:params:oauth:token-type:sysu
       - urn:devrev:params:oauth:token-type:userinfo
       - urn:devrev:params:oauth:token-type:userinfo:profile
@@ -378,6 +379,8 @@ components:
           name: urn-devrev-params-oauth-token-type-jwt-dev
         urn:devrev:params:oauth:token-type:revinfo:
           name: urn-devrev-params-oauth-token-type-revinfo
+        urn:devrev:params:oauth:token-type:session:
+          name: urn-devrev-params-oauth-token-type-session
         urn:devrev:params:oauth:token-type:sysu:
           name: urn-devrev-params-oauth-token-type-sysu
         urn:devrev:params:oauth:token-type:userinfo:
