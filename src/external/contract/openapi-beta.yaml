@@ -4261,6 +4261,9 @@ components:
           items:
             type: string
           type: array
+        is_verified:
+          description: Value of is_verified field to filter the Rev users.
+          type: boolean
         limit:
           description: |
             The maximum number of Rev users to return. The default is '50'.
@@ -10559,6 +10562,12 @@ paths:
           items:
             type: string
           type: array
+      - description: Value of is_verified field to filter the Rev users.
+        explode: false
+        in: query
+        name: is_verified
+        schema:
+          type: boolean
       - description: |
           The maximum number of Rev users to return. The default is '50'.
         explode: false

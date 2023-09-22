@@ -3191,6 +3191,8 @@ export interface RevUsersListRequest {
   email?: string[];
   /** List of external refs to filter Rev users for. */
   external_ref?: string[];
+  /** Value of is_verified field to filter the Rev users. */
+  is_verified?: boolean;
   /**
    * The maximum number of Rev users to return. The default is '50'.
    * @format int32
@@ -8448,6 +8450,8 @@ export class Api<
       email?: string[];
       /** List of external refs to filter Rev users for. */
       external_ref?: string[];
+      /** Value of is_verified field to filter the Rev users. */
+      is_verified?: boolean;
       /**
        * The maximum number of Rev users to return. The default is '50'.
        * @format int32
