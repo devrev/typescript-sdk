@@ -2216,6 +2216,13 @@
       },
       "custom-schema-fragments-set-request-custom-type-fragment": {
         "properties": {
+          "path": {
+            "description": "Path components used to display available custom types in tree\nform.\n",
+            "items": {
+              "$ref": "#/components/schemas/custom-type-path-component"
+            },
+            "type": "array"
+          },
           "stage_diagram": {
             "description": "The ID of the associated custom stage diagram.",
             "type": "string"
@@ -2275,6 +2282,11 @@
           }
         ],
         "title": "custom-type-fragment"
+      },
+      "custom-type-path-component": {
+        "description": "Path component for rendering custom type lists in tree form.",
+        "title": "custom-type-path-component",
+        "type": "object"
       },
       "date-filter": {
         "description": "Provides ways to specify date ranges on objects.",

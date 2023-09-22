@@ -1170,6 +1170,11 @@ export interface CustomSchemaFragmentsSetRequestAppFragment {
 
 /** custom-schema-fragments-set-request-custom-type-fragment */
 export interface CustomSchemaFragmentsSetRequestCustomTypeFragment {
+  /**
+   * Path components used to display available custom types in tree
+   * form.
+   */
+  path?: CustomTypePathComponent[];
   /** The ID of the associated custom stage diagram. */
   stage_diagram?: string;
   /** List of stock field enum overrides. */
@@ -1197,6 +1202,12 @@ export interface CustomSchemaFragmentsSetResponse {
 
 /** custom-type-fragment */
 export type CustomTypeFragment = CustomSchemaFragmentBase;
+
+/**
+ * custom-type-path-component
+ * Path component for rendering custom type lists in tree form.
+ */
+export type CustomTypePathComponent = object;
 
 /**
  * date-filter
