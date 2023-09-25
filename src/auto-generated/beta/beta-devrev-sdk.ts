@@ -1178,7 +1178,7 @@ export interface CustomSchemaFragmentsSetRequestCustomTypeFragment {
   /** The ID of the associated custom stage diagram. */
   stage_diagram?: string;
   /** List of stock field enum overrides. */
-  stock_field_enum_overrides?: StockFieldEnumOverride[];
+  stock_field_uenum_overrides?: StockFieldUenumOverride[];
   /** The string used to populate the subtype in the leaf type. */
   subtype: string;
   /** The display name of the subtype. */
@@ -4150,10 +4150,10 @@ export interface StageUpdate {
 }
 
 /**
- * stock-field-enum-override
+ * stock-field-uenum-override
  * Override for the allowed values of a stock field enum.
  */
-export type StockFieldEnumOverride = object;
+export type StockFieldUenumOverride = object;
 
 /** subtype */
 export interface Subtype {

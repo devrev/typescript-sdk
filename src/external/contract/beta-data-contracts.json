@@ -2227,10 +2227,10 @@
             "description": "The ID of the associated custom stage diagram.",
             "type": "string"
           },
-          "stock_field_enum_overrides": {
+          "stock_field_uenum_overrides": {
             "description": "List of stock field enum overrides.",
             "items": {
-              "$ref": "#/components/schemas/stock-field-enum-override"
+              "$ref": "#/components/schemas/stock-field-uenum-override"
             },
             "type": "array"
           },
@@ -7443,9 +7443,9 @@
         "title": "stage-update",
         "type": "object"
       },
-      "stock-field-enum-override": {
+      "stock-field-uenum-override": {
         "description": "Override for the allowed values of a stock field enum.",
-        "title": "stock-field-enum-override",
+        "title": "stock-field-uenum-override",
         "type": "object"
       },
       "subtype": {
