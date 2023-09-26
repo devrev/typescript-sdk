@@ -6710,6 +6710,13 @@ components:
           type: array
         stage:
           $ref: '#/components/schemas/stage-filter'
+        tags:
+          description: Filters for work with any of the provided tags.
+          example:
+          - don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>
+          items:
+            type: string
+          type: array
         target_close_date:
           $ref: '#/components/schemas/date-filter'
         ticket:
@@ -6883,6 +6890,13 @@ components:
           type: array
         stage:
           $ref: '#/components/schemas/stage-filter'
+        tags:
+          description: Filters for work with any of the provided tags.
+          example:
+          - don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>
+          items:
+            type: string
+          type: array
         target_close_date:
           $ref: '#/components/schemas/date-filter'
         ticket:
@@ -11943,6 +11957,16 @@ paths:
           items:
             type: string
           type: array
+      - description: Filters for work with any of the provided tags.
+        explode: false
+        in: query
+        name: tags
+        schema:
+          example:
+          - don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>
+          items:
+            type: string
+          type: array
       - description: Filters for tickets belonging to specific groups.
         explode: false
         in: query
@@ -12237,6 +12261,16 @@ paths:
         in: query
         name: stage.name
         schema:
+          items:
+            type: string
+          type: array
+      - description: Filters for work with any of the provided tags.
+        explode: false
+        in: query
+        name: tags
+        schema:
+          example:
+          - don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>
           items:
             type: string
           type: array

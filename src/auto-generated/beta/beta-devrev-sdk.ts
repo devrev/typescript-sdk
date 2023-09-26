@@ -5154,6 +5154,11 @@ export interface WorksExportRequest {
   sort_by?: string[];
   /** The filter for stages. */
   stage?: StageFilter;
+  /**
+   * Filters for work with any of the provided tags.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"]
+   */
+  tags?: string[];
   /** Provides ways to specify date ranges on objects. */
   target_close_date?: DateFilter;
   ticket?: WorksFilterTicket;
@@ -5277,6 +5282,11 @@ export interface WorksListRequest {
   sort_by?: string[];
   /** The filter for stages. */
   stage?: StageFilter;
+  /**
+   * Filters for work with any of the provided tags.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"]
+   */
+  tags?: string[];
   /** Provides ways to specify date ranges on objects. */
   target_close_date?: DateFilter;
   ticket?: WorksFilterTicket;
@@ -9585,6 +9595,11 @@ export class Api<
       sort_by?: string[];
       /** Filters for records in the provided stage(s) by name. */
       'stage.name'?: string[];
+      /**
+       * Filters for work with any of the provided tags.
+       * @example ["don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"]
+       */
+      tags?: string[];
       /** Filters for tickets belonging to specific groups. */
       'ticket.group'?: string[];
       /** Filters for tickets that are spam. */
@@ -9774,6 +9789,11 @@ export class Api<
       sort_by?: string[];
       /** Filters for records in the provided stage(s) by name. */
       'stage.name'?: string[];
+      /**
+       * Filters for work with any of the provided tags.
+       * @example ["don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"]
+       */
+      tags?: string[];
       /** Filters for tickets belonging to specific groups. */
       'ticket.group'?: string[];
       /** Filters for tickets that are spam. */
