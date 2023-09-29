@@ -2312,6 +2312,44 @@ export enum ListMode {
   Before = 'before',
 }
 
+/** metric-data-point */
+export interface MetricDataPoint {
+  /**
+   * Key-value pairs for specifying additional attributes.
+   * @maxItems 10
+   */
+  dimensions?: MetricDataPointDimension[];
+  /**
+   * Timestamp when metric value is captured.
+   * @format date-time
+   */
+  timestamp: string;
+  /**
+   * The value corresponding to the metric. For simply recording
+   * occurrence of an event, this value should be 1.0.
+   * @format double
+   */
+  value: number;
+}
+
+/** metric-data-point-dimension */
+export interface MetricDataPointDimension {
+  /**
+   * The key for the dimension. The keys must be unique and it is not
+   * allowed to have more than one value with the same key. Key must be
+   * at least one character long and cannot be longer than 64
+   * characters.Key can only contain alphanumeric characters (A-Z, a-z,
+   * and 0-9) and underscores (_). Key cannot start with a number and is
+   * case-insensitive.
+   */
+  key: string;
+  /**
+   * The value for the dimension. Value could be any string and cannot
+   * be longer than 256 characters.
+   */
+  value: string;
+}
+
 /** metric-definition */
 export type MetricDefinition = AtomBase;
 
@@ -2374,6 +2412,43 @@ export interface MetricDefinitionsListResponse {
    * sort order. If not set, then no prior elements exist.
    */
   prev_cursor?: string;
+}
+
+/** metrics-data */
+export interface MetricsData {
+  /**
+   * One or more data points collected for a given metric such as object
+   * usage, object state etc.
+   * @minItems 1
+   */
+  data_points: MetricDataPoint[];
+  /**
+   * Name of the metric which is being measured. For example,
+   * num_api_calls, num_active_users, etc.
+   */
+  name: string;
+  /**
+   * Rev Org ID or external_ref for which metric is being published.Rev
+   * Org ID is DevRev DON ID. For example,
+   * don:identity:dvrv-us-1:devo/0:revo/156. External_ref is the
+   * identification of DevRev customer's customers and maintained by
+   * DevRev's customers. Devrev will internally resolve external_ref to
+   * Rev Org ID and use it for further processing. For example,
+   * external_ref=org_customer_1 may resolve to
+   * don:identity:dvrv-us-1:devo/0:revo/155.
+   */
+  org_ref?: string;
+  /** Rev User ID or user ref for which metric is being published. */
+  user_ref?: string;
+}
+
+/** metrics-data-ingest-request */
+export interface MetricsDataIngestRequest {
+  /**
+   * Metrics data received from Dev orgs.
+   * @minItems 1
+   */
+  metrics: MetricsData[];
 }
 
 /** opportunity */
@@ -7664,6 +7739,35 @@ export class Api<
       secure: true,
       type: ContentType.Json,
       format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Ingest endpoint for DevRev metrics data from clients.
+   *
+   * @tags telemetry
+   * @name MetricsDevrevIngest
+   * @request POST:/metrics.devrev.ingest
+   * @secure
+   */
+  metricsDevrevIngest = (
+    data: MetricsDataIngestRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      void,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/metrics.devrev.ingest`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
       ...params,
     });
 

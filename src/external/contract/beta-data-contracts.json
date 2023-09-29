@@ -4324,6 +4324,52 @@
         ],
         "type": "string"
       },
+      "metric-data-point": {
+        "properties": {
+          "dimensions": {
+            "description": "Key-value pairs for specifying additional attributes.",
+            "items": {
+              "$ref": "#/components/schemas/metric-data-point-dimension"
+            },
+            "maxItems": 10,
+            "type": "array"
+          },
+          "timestamp": {
+            "description": "Timestamp when metric value is captured.",
+            "format": "date-time",
+            "type": "string"
+          },
+          "value": {
+            "description": "The value corresponding to the metric. For simply recording\noccurrence of an event, this value should be 1.0.\n",
+            "format": "double",
+            "type": "number"
+          }
+        },
+        "required": [
+          "timestamp",
+          "value"
+        ],
+        "title": "metric-data-point",
+        "type": "object"
+      },
+      "metric-data-point-dimension": {
+        "properties": {
+          "key": {
+            "description": "The key for the dimension. The keys must be unique and it is not\nallowed to have more than one value with the same key. Key must be\nat least one character long and cannot be longer than 64\ncharacters.Key can only contain alphanumeric characters (A-Z, a-z,\nand 0-9) and underscores (_). Key cannot start with a number and is\ncase-insensitive.\n",
+            "type": "string"
+          },
+          "value": {
+            "description": "The value for the dimension. Value could be any string and cannot\nbe longer than 256 characters.\n",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "value"
+        ],
+        "title": "metric-data-point-dimension",
+        "type": "object"
+      },
       "metric-definition": {
         "allOf": [
           {
@@ -4406,6 +4452,53 @@
         "title": "metric-definitions-list-response",
         "type": "object",
         "x-go-name": "MetricDefinitionsListResponseBody"
+      },
+      "metrics-data": {
+        "properties": {
+          "data_points": {
+            "description": "One or more data points collected for a given metric such as object\nusage, object state etc.\n",
+            "items": {
+              "$ref": "#/components/schemas/metric-data-point"
+            },
+            "minItems": 1,
+            "type": "array"
+          },
+          "name": {
+            "description": "Name of the metric which is being measured. For example,\nnum_api_calls, num_active_users, etc.\n",
+            "type": "string"
+          },
+          "org_ref": {
+            "description": "Rev Org ID or external_ref for which metric is being published.Rev\nOrg ID is DevRev DON ID. For example,\ndon:identity:dvrv-us-1:devo/0:revo/156. External_ref is the\nidentification of DevRev customer's customers and maintained by\nDevRev's customers. Devrev will internally resolve external_ref to\nRev Org ID and use it for further processing. For example,\nexternal_ref=org_customer_1 may resolve to\ndon:identity:dvrv-us-1:devo/0:revo/155.\n",
+            "type": "string"
+          },
+          "user_ref": {
+            "description": "Rev User ID or user ref for which metric is being published.\n",
+            "type": "string"
+          }
+        },
+        "required": [
+          "data_points",
+          "name"
+        ],
+        "title": "metrics-data",
+        "type": "object"
+      },
+      "metrics-data-ingest-request": {
+        "properties": {
+          "metrics": {
+            "description": "Metrics data received from Dev orgs.",
+            "items": {
+              "$ref": "#/components/schemas/metrics-data"
+            },
+            "minItems": 1,
+            "type": "array"
+          }
+        },
+        "required": [
+          "metrics"
+        ],
+        "title": "metrics-data-ingest-request",
+        "type": "object"
       },
       "opportunity": {
         "allOf": [
@@ -13472,6 +13565,47 @@
         ]
       }
     },
+    "/metrics.devrev.ingest": {
+      "post": {
+        "description": "Ingest endpoint for DevRev metrics data from clients.",
+        "operationId": "metrics-devrev-ingest",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/metrics-data-ingest-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "telemetry"
+        ]
+      }
+    },
     "/org-schedule-fragments.create": {
       "post": {
         "description": "Creates an organization schedule fragment.",
@@ -17674,6 +17808,10 @@
     {
       "description": "System user interactions",
       "name": "sys-users"
+    },
+    {
+      "description": "DevRev Telemetry interactions",
+      "name": "telemetry"
     },
     {
       "description": "APIs to manage timeline entries for objects.",
