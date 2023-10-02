@@ -2583,6 +2583,11 @@ export class Api<
        * @example "don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"
        */
       id: string;
+      /**
+       * The version of the artifact that needs to be fetched.
+       * @format date-time
+       */
+      timestamp?: string;
     },
     params: RequestParams = {}
   ) =>

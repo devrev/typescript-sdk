@@ -665,6 +665,37 @@ export interface ArtifactsPrepareResponseFormData {
   value: string;
 }
 
+/**
+ * artifacts-versions-prepare-request
+ * The request to prepare a new version of an artifact.
+ */
+export interface ArtifactsVersionsPrepareRequest {
+  /**
+   * The ID of the artifact to prepare a new version for.
+   * @example "don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"
+   */
+  id: string;
+}
+
+/**
+ * artifacts-versions-prepare-response
+ * The response to preparing a new artifact version.
+ */
+export interface ArtifactsVersionsPrepareResponse {
+  /** The POST policy form data. */
+  form_data: ArtifactsVersionsPrepareResponseFormData[];
+  /** The URL that the file's data should be uploaded to. */
+  url: string;
+}
+
+/** artifacts-versions-prepare-response-form-data */
+export interface ArtifactsVersionsPrepareResponseFormData {
+  /** Key of the form field. */
+  key: string;
+  /** Value corresponding to the key. */
+  value: string;
+}
+
 /** atom-base */
 export interface AtomBase {
   created_by?: UserSummary;
@@ -6419,6 +6450,36 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/artifacts.prepare`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Prepares a new version for an artifact, returning the URL and form data to upload the updated file.
+   *
+   * @tags artifacts
+   * @name ArtifactsVersionsPrepare
+   * @request POST:/artifacts.versions.prepare
+   * @secure
+   */
+  artifactsVersionsPrepare = (
+    data: ArtifactsVersionsPrepareRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      ArtifactsVersionsPrepareResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/artifacts.versions.prepare`,
       method: 'POST',
       body: data,
       secure: true,

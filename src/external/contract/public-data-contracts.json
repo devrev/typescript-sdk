@@ -4354,6 +4354,16 @@
               "example": "don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>",
               "type": "string"
             }
+          },
+          {
+            "description": "The version of the artifact that needs to be fetched.",
+            "explode": false,
+            "in": "query",
+            "name": "timestamp",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
           }
         ],
         "responses": {
