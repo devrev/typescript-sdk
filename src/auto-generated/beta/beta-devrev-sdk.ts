@@ -2919,6 +2919,229 @@ export enum PartType {
   Product = 'product',
 }
 
+/** parts-create-request */
+export type PartsCreateRequest = (
+  | PartsCreateRequestCapability
+  | PartsCreateRequestEnhancement
+  | PartsCreateRequestFeature
+  | PartsCreateRequestProduct
+) & {
+  /**
+   * The IDs of the artifacts.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   */
+  artifacts?: string[];
+  /** Custom fields. */
+  custom_fields?: object;
+  /**
+   * The custom schema fragments to use.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>"]
+   */
+  custom_schema_fragments?: string[];
+  /** Description of the part. */
+  description?: string;
+  /** Name of the part. */
+  name: string;
+  /**
+   * The users that own the part.
+   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   */
+  owned_by: string[];
+  type: PartType;
+};
+
+/** parts-create-request-capability */
+export interface PartsCreateRequestCapability {
+  /**
+   * ID of the parent product for the capability.
+   * @maxItems 1
+   * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+   */
+  parent_part: string[];
+}
+
+/** parts-create-request-enhancement */
+export interface PartsCreateRequestEnhancement {
+  /**
+   * ID of the parent part on which the enhancement is to be created.
+   * @maxItems 1
+   * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+   */
+  parent_part: string[];
+  /**
+   * Target close date by which enhancement is expected to be closed.
+   * @format date-time
+   */
+  target_close_date?: string;
+}
+
+/** parts-create-request-feature */
+export interface PartsCreateRequestFeature {
+  /**
+   * ID of the parent capability/feature for the feature.
+   * @maxItems 1
+   * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+   */
+  parent_part: string[];
+}
+
+/** parts-create-request-product */
+export type PartsCreateRequestProduct = object;
+
+/** parts-create-response */
+export interface PartsCreateResponse {
+  part: Part;
+}
+
+/** parts-delete-request */
+export interface PartsDeleteRequest {
+  /**
+   * The ID of the part to delete.
+   * @example "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+   */
+  id: string;
+}
+
+/** parts-delete-response */
+export type PartsDeleteResponse = object;
+
+/** parts-get-request */
+export interface PartsGetRequest {
+  /**
+   * The ID of the part to retrieve.
+   * @example "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+   */
+  id: string;
+}
+
+/** parts-get-response */
+export interface PartsGetResponse {
+  part: Part;
+}
+
+/** parts-list-request */
+export interface PartsListRequest {
+  /**
+   * Filters for parts created by any of these users.
+   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   */
+  created_by?: string[];
+  /**
+   * The cursor to resume iteration from. If not provided, then
+   * iteration starts from the beginning.
+   */
+  cursor?: string;
+  /**
+   * The maximum number of parts to return. The default is '50'.
+   * @format int32
+   */
+  limit?: number;
+  /**
+   * The iteration mode to use. If "after", then entries after the provided
+   * cursor will be returned, or if no cursor is provided, then from the
+   * beginning. If "before", then entries before the provided cursor will be
+   * returned, or if no cursor is provided, then from the end. Entries will
+   * always be returned in the specified sort-by order.
+   */
+  mode?: ListMode;
+  /** Filters for parts of the provided name(s). */
+  name?: string[];
+  /**
+   * Filters for parts owned by any of these users.
+   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   */
+  owned_by?: string[];
+  /** Filters for parts of the provided type(s). */
+  type?: PartType[];
+}
+
+/** parts-list-response */
+export interface PartsListResponse {
+  /**
+   * The cursor used to iterate subsequent results in accordance to the
+   * sort order. If not set, then no later elements exist.
+   */
+  next_cursor?: string;
+  /** The list of parts. */
+  parts: Part[];
+  /**
+   * The cursor used to iterate preceding results in accordance to the
+   * sort order. If not set, then no prior elements exist.
+   */
+  prev_cursor?: string;
+}
+
+/** parts-update-request */
+export type PartsUpdateRequest = (
+  | Empty
+  | PartsUpdateRequestCapability
+  | PartsUpdateRequestEnhancement
+  | PartsUpdateRequestFeature
+  | PartsUpdateRequestProduct
+) & {
+  artifacts?: PartsUpdateRequestArtifacts;
+  /** Custom fields. */
+  custom_fields?: object;
+  /**
+   * The custom schema fragments to use.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>"]
+   */
+  custom_schema_fragments?: string[];
+  /** The updated description of the part. */
+  description?: string;
+  /**
+   * The ID of the part to update.
+   * @example "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+   */
+  id: string;
+  /** The updated name of the part. */
+  name?: string;
+  owned_by?: PartsUpdateRequestOwnedBy;
+  type?: PartType;
+};
+
+/** parts-update-request-artifacts */
+export interface PartsUpdateRequestArtifacts {
+  /**
+   * Sets the artifacts to the provided IDs.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   */
+  set?: string[];
+}
+
+/** parts-update-request-capability */
+export type PartsUpdateRequestCapability = object;
+
+/** parts-update-request-enhancement */
+export interface PartsUpdateRequestEnhancement {
+  /**
+   * Updates the target close date of the enhancement.
+   * @format date-time
+   */
+  target_close_date?: string;
+}
+
+/** parts-update-request-feature */
+export type PartsUpdateRequestFeature = object;
+
+/** parts-update-request-owned-by */
+export interface PartsUpdateRequestOwnedBy {
+  /**
+   * Sets the owner IDs to the provided user IDs. This must not be
+   * empty.
+   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   */
+  set?: string[];
+}
+
+/** parts-update-request-product */
+export type PartsUpdateRequestProduct = object;
+
+/** parts-update-response */
+export interface PartsUpdateResponse {
+  part: Part;
+}
+
 /** product */
 export type Product = PartBase;
 
@@ -8209,6 +8432,239 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/org-schedules.update`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Creates new [part](https://devrev.ai/docs/product/parts).
+   *
+   * @tags parts
+   * @name PartsCreate
+   * @request POST:/parts.create
+   * @secure
+   */
+  partsCreate = (data: PartsCreateRequest, params: RequestParams = {}) =>
+    this.request<
+      PartsCreateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/parts.create`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Deletes a [part](https://devrev.ai/docs/product/parts).
+   *
+   * @tags parts
+   * @name PartsDelete
+   * @request POST:/parts.delete
+   * @secure
+   */
+  partsDelete = (data: PartsDeleteRequest, params: RequestParams = {}) =>
+    this.request<
+      PartsDeleteResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/parts.delete`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets a [part's](https://devrev.ai/docs/product/parts) information.
+   *
+   * @tags parts
+   * @name PartsGet
+   * @request GET:/parts.get
+   * @secure
+   */
+  partsGet = (
+    query: {
+      /**
+       * The ID of the part to retrieve.
+       * @example "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+       */
+      id: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      PartsGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/parts.get`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets a [part's](https://devrev.ai/docs/product/parts) information.
+   *
+   * @tags parts
+   * @name PartsGetPost
+   * @request POST:/parts.get
+   * @secure
+   */
+  partsGetPost = (data: PartsGetRequest, params: RequestParams = {}) =>
+    this.request<
+      PartsGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/parts.get`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Lists a collection of [parts](https://devrev.ai/docs/product/parts).
+   *
+   * @tags parts
+   * @name PartsList
+   * @request GET:/parts.list
+   * @secure
+   */
+  partsList = (
+    query?: {
+      /**
+       * Filters for parts created by any of these users.
+       * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+       */
+      created_by?: string[];
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /**
+       * The maximum number of parts to return. The default is '50'.
+       * @format int32
+       */
+      limit?: number;
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /** Filters for parts of the provided name(s). */
+      name?: string[];
+      /**
+       * Filters for parts owned by any of these users.
+       * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+       */
+      owned_by?: string[];
+      /** Filters for parts of the provided type(s). */
+      type?: PartType[];
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      PartsListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/parts.list`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Lists a collection of [parts](https://devrev.ai/docs/product/parts).
+   *
+   * @tags parts
+   * @name PartsListPost
+   * @request POST:/parts.list
+   * @secure
+   */
+  partsListPost = (data: PartsListRequest, params: RequestParams = {}) =>
+    this.request<
+      PartsListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/parts.list`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Updates a [part's](https://devrev.ai/docs/product/parts) information.
+   *
+   * @tags parts
+   * @name PartsUpdate
+   * @request POST:/parts.update
+   * @secure
+   */
+  partsUpdate = (data: PartsUpdateRequest, params: RequestParams = {}) =>
+    this.request<
+      PartsUpdateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/parts.update`,
       method: 'POST',
       body: data,
       secure: true,
