@@ -6137,6 +6137,30 @@
             "schema": {
               "$ref": "#/components/schemas/list-mode"
             }
+          },
+          {
+            "description": "Filters for tags with the provided names.",
+            "explode": false,
+            "in": "query",
+            "name": "name",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Fields to sort tags by and the direction to sort them.",
+            "explode": false,
+            "in": "query",
+            "name": "sort_by",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
           }
         ],
         "responses": {

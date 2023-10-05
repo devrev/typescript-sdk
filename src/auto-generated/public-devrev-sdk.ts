@@ -3624,6 +3624,10 @@ export class Api<
        * used.
        */
       mode?: ListMode;
+      /** Filters for tags with the provided names. */
+      name?: string[];
+      /** Fields to sort tags by and the direction to sort them. */
+      sort_by?: string[];
     },
     params: RequestParams = {}
   ) =>
