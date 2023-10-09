@@ -2318,7 +2318,7 @@ export type WorksUpdateRequest = (
    * Updates the timestamp for when the work is expected to be complete.
    * @format date-time
    */
-  target_close_date?: string;
+  target_close_date?: string | null;
   /** Updated title of the work object, or unchanged if not provided. */
   title?: string;
   type?: WorkType;

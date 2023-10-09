@@ -4195,6 +4195,7 @@
           "target_close_date": {
             "description": "Updates the timestamp for when the work is expected to be complete.\n",
             "format": "date-time",
+            "nullable": true,
             "type": "string"
           },
           "title": {

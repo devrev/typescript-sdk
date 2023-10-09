@@ -7417,6 +7417,7 @@ components:
           description: |
             Updates the timestamp for when the work is expected to be complete.
           format: date-time
+          nullable: true
           type: string
         title:
           description: |
