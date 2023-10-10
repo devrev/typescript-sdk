@@ -4390,6 +4390,10 @@
             "maxItems": 10,
             "type": "array"
           },
+          "id": {
+            "description": "An ID that uniquely identifies the metric data point. This ID will\nbe used for deduplication. Clients can generate its own ID and send\nit in the request. If not provided, DevRev will perform\ncontent-based deduplication.\n",
+            "type": "string"
+          },
           "timestamp": {
             "description": "Timestamp when metric value is captured.",
             "format": "date-time",

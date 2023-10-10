@@ -2351,6 +2351,13 @@ export interface MetricDataPoint {
    */
   dimensions?: MetricDataPointDimension[];
   /**
+   * An ID that uniquely identifies the metric data point. This ID will
+   * be used for deduplication. Clients can generate its own ID and send
+   * it in the request. If not provided, DevRev will perform
+   * content-based deduplication.
+   */
+  id?: string;
+  /**
    * Timestamp when metric value is captured.
    * @format date-time
    */
