@@ -3183,7 +3183,7 @@ paths:
       - description: The version of the artifact that needs to be fetched.
         explode: false
         in: query
-        name: timestamp
+        name: version
         schema:
           format: date-time
           type: string

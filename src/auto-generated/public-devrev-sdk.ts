@@ -2587,7 +2587,7 @@ export class Api<
        * The version of the artifact that needs to be fetched.
        * @format date-time
        */
-      timestamp?: string;
+      version?: string;
     },
     params: RequestParams = {}
   ) =>
