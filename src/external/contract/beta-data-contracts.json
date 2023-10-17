@@ -2941,6 +2941,7 @@
                 "bad_request": "#/components/schemas/error-bad-request-bad-request",
                 "invalid_enum_value": "#/components/schemas/error-bad-request-invalid-enum-value",
                 "invalid_field": "#/components/schemas/error-bad-request-invalid-field",
+                "missing_dependency": "#/components/schemas/error-bad-request-missing-dependency",
                 "missing_required_field": "#/components/schemas/error-bad-request-missing-required-field",
                 "parse_error": "#/components/schemas/error-bad-request-parse-error",
                 "value_not_permitted": "#/components/schemas/error-bad-request-value-not-permitted"
@@ -2956,6 +2957,9 @@
               },
               {
                 "$ref": "#/components/schemas/error-bad-request-invalid-field"
+              },
+              {
+                "$ref": "#/components/schemas/error-bad-request-missing-dependency"
               },
               {
                 "$ref": "#/components/schemas/error-bad-request-missing-required-field"
@@ -3023,6 +3027,28 @@
         "title": "error-bad-request-invalid-field",
         "type": "object"
       },
+      "error-bad-request-missing-dependency": {
+        "properties": {
+          "dependent_field_name": {
+            "description": "The field on which the value depends.",
+            "type": "string"
+          },
+          "dependent_field_value": {
+            "description": "The value which needs to be set of the dependent field.",
+            "type": "string"
+          },
+          "provided_field_name": {
+            "description": "The field whose value was received.",
+            "type": "string"
+          },
+          "provided_field_value": {
+            "description": "The value that was received.",
+            "type": "string"
+          }
+        },
+        "title": "error-bad-request-missing-dependency",
+        "type": "object"
+      },
       "error-bad-request-missing-required-field": {
         "properties": {
           "field_name": {
@@ -3045,6 +3071,7 @@
           "bad_request",
           "invalid_enum_value",
           "invalid_field",
+          "missing_dependency",
           "missing_required_field",
           "parse_error",
           "value_not_permitted"

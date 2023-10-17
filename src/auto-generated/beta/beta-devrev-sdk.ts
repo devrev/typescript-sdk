@@ -1571,6 +1571,7 @@ export type ErrorBadRequest = ErrorBase &
     | ErrorBadRequestBadRequest
     | ErrorBadRequestInvalidEnumValue
     | ErrorBadRequestInvalidField
+    | ErrorBadRequestMissingDependency
     | ErrorBadRequestMissingRequiredField
     | ErrorBadRequestParseError
     | ErrorBadRequestValueNotPermitted
@@ -1597,6 +1598,18 @@ export interface ErrorBadRequestInvalidField {
   field_name: string;
 }
 
+/** error-bad-request-missing-dependency */
+export interface ErrorBadRequestMissingDependency {
+  /** The field on which the value depends. */
+  dependent_field_name?: string;
+  /** The value which needs to be set of the dependent field. */
+  dependent_field_value?: string;
+  /** The field whose value was received. */
+  provided_field_name?: string;
+  /** The value that was received. */
+  provided_field_value?: string;
+}
+
 /** error-bad-request-missing-required-field */
 export interface ErrorBadRequestMissingRequiredField {
   /** The missing field's name. */
@@ -1610,6 +1623,7 @@ export enum ErrorBadRequestType {
   BadRequest = 'bad_request',
   InvalidEnumValue = 'invalid_enum_value',
   InvalidField = 'invalid_field',
+  MissingDependency = 'missing_dependency',
   MissingRequiredField = 'missing_required_field',
   ParseError = 'parse_error',
   ValueNotPermitted = 'value_not_permitted',
