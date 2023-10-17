@@ -1064,6 +1064,11 @@
           "owned_by": {
             "$ref": "#/components/schemas/articles-update-request-owned-by"
           },
+          "published_version": {
+            "description": "Updates the timestamp of the latest published version of the\narticle.\n",
+            "format": "date-time",
+            "type": "string"
+          },
           "status": {
             "$ref": "#/components/schemas/article-status"
           },

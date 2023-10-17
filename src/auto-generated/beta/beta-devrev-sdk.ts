@@ -561,6 +561,12 @@ export interface ArticlesUpdateRequest {
   /** Updates the language of the article. */
   language?: string;
   owned_by?: ArticlesUpdateRequestOwnedBy;
+  /**
+   * Updates the timestamp of the latest published version of the
+   * article.
+   * @format date-time
+   */
+  published_version?: string;
   /** Status of the article. */
   status?: ArticleStatus;
   tags?: ArticlesUpdateRequestTags;
