@@ -841,12 +841,6 @@ components:
     enhancement:
       allOf:
       - $ref: '#/components/schemas/part-base'
-      - properties:
-          target_close_date:
-            description: Timestamp when the enhancement is expected to be closed.
-            format: date-time
-            type: string
-        type: object
       title: enhancement
     enhancement-summary:
       allOf:
@@ -1547,6 +1541,12 @@ components:
             Target close date by which enhancement is expected to be closed.
           format: date-time
           type: string
+        target_start_date:
+          description: |
+            Target start date by which enhancement is expected to be started.
+            Example Date Format: 2000-11-01T01:01:01Z
+          format: date-time
+          type: string
       required:
       - parent_part
       title: parts-create-request-enhancement
@@ -1676,6 +1676,12 @@ components:
       properties:
         target_close_date:
           description: Updates the target close date of the enhancement.
+          format: date-time
+          type: string
+        target_start_date:
+          description: |
+            Updates the target start date of the enhancement. Example Date
+            Format: 2000-11-01T01:01:01Z
           format: date-time
           type: string
       title: parts-update-request-enhancement

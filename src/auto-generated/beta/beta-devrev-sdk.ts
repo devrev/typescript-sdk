@@ -1547,13 +1547,7 @@ export interface EngagementsUpdateResponse {
 }
 
 /** enhancement */
-export type Enhancement = PartBase & {
-  /**
-   * Timestamp when the enhancement is expected to be closed.
-   * @format date-time
-   */
-  target_close_date?: string;
-};
+export type Enhancement = PartBase;
 
 /** enhancement-summary */
 export type EnhancementSummary = PartBaseSummary;
@@ -3000,6 +2994,12 @@ export interface PartsCreateRequestEnhancement {
    * @format date-time
    */
   target_close_date?: string;
+  /**
+   * Target start date by which enhancement is expected to be started.
+   * Example Date Format: 2000-11-01T01:01:01Z
+   * @format date-time
+   */
+  target_start_date?: string;
 }
 
 /** parts-create-request-feature */
@@ -3146,6 +3146,12 @@ export interface PartsUpdateRequestEnhancement {
    * @format date-time
    */
   target_close_date?: string;
+  /**
+   * Updates the target start date of the enhancement. Example Date
+   * Format: 2000-11-01T01:01:01Z
+   * @format date-time
+   */
+  target_start_date?: string;
 }
 
 /** parts-update-request-feature */
