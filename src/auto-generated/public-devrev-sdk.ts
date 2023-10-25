@@ -3276,6 +3276,19 @@ export class Api<
        * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
        */
       owned_by?: string[];
+      /**
+       * Number of levels to fetch the part hierarchy up to.
+       * @format int32
+       * @min 1
+       */
+      'parent_part.level'?: number;
+      /**
+       * Part IDs to fetch the hierarchy for. Required if any parent_part.*
+       * fields are provided.
+       * @minItems 1
+       * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+       */
+      'parent_part.parts'?: string[];
       /** Filters for parts of the provided type(s). */
       type?: PartType[];
     },

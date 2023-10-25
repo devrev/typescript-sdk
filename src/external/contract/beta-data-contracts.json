@@ -5191,6 +5191,33 @@
         ],
         "type": "string"
       },
+      "parent-part-filter": {
+        "description": "The filter for specifying parent part.",
+        "properties": {
+          "level": {
+            "description": "Number of levels to fetch the part hierarchy up to.",
+            "format": "int32",
+            "minimum": 1,
+            "type": "integer"
+          },
+          "parts": {
+            "description": "Part IDs to fetch the hierarchy for.",
+            "example": [
+              "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "type": "array"
+          }
+        },
+        "required": [
+          "parts"
+        ],
+        "title": "parent-part-filter",
+        "type": "object"
+      },
       "part": {
         "discriminator": {
           "mapping": {
@@ -5607,6 +5634,9 @@
               "type": "string"
             },
             "type": "array"
+          },
+          "parent_part": {
+            "$ref": "#/components/schemas/parent-part-filter"
           },
           "type": {
             "description": "Filters for parts of the provided type(s).",
@@ -15074,6 +15104,33 @@
               "items": {
                 "type": "string"
               },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Number of levels to fetch the part hierarchy up to.",
+            "explode": false,
+            "in": "query",
+            "name": "parent_part.level",
+            "schema": {
+              "format": "int32",
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Part IDs to fetch the hierarchy for. Required if any parent_part.*\nfields are provided.\n",
+            "explode": false,
+            "in": "query",
+            "name": "parent_part.parts",
+            "schema": {
+              "example": [
+                "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+              ],
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1,
               "type": "array"
             }
           },
