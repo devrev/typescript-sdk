@@ -60,7 +60,7 @@ export type AccountSummary = OrgBaseSummary;
 export interface AccountsCreateRequest {
   /**
    * The IDs of the artifacts to associate with the account.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   * @example ["ARTIFACT-12345"]
    */
   artifacts?: string[];
   /** Application-defined custom fields. */
@@ -105,7 +105,7 @@ export interface AccountsCreateResponse {
 export interface AccountsDeleteRequest {
   /**
    * The ID of account to delete.
-   * @example "don:core:<partition>:devo/<dev-org-id>:account/<account-id>"
+   * @example "ACC-12345"
    */
   id: string;
 }
@@ -162,7 +162,7 @@ export interface AccountsExportResponse {
 export interface AccountsGetRequest {
   /**
    * The ID of the account to be retrieved.
-   * @example "don:core:<partition>:devo/<dev-org-id>:account/<account-id>"
+   * @example "ACC-12345"
    */
   id: string;
 }
@@ -257,7 +257,7 @@ export interface AccountsUpdateRequest {
   external_refs?: string[];
   /**
    * The ID of account to update.
-   * @example "don:core:<partition>:devo/<dev-org-id>:account/<account-id>"
+   * @example "ACC-12345"
    */
   id: string;
   /** Updated list of the users owning this account. */
@@ -277,7 +277,7 @@ export interface AccountsUpdateRequest {
 export interface AccountsUpdateRequestArtifacts {
   /**
    * Sets the IDs to the provided artifact IDs.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   * @example ["ARTIFACT-12345"]
    */
   set?: string[];
 }
@@ -341,22 +341,22 @@ export enum ArticleStatus {
 export interface ArticlesCountRequest {
   /**
    * Filters for articles belonging to any of the provided parts.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+   * @example ["PROD-12345"]
    */
   applies_to_parts?: string[];
   /**
    * Filters for articles authored by any of the provided users.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   authored_by?: string[];
   /**
    * Filters for articles created by any of the provided users.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   created_by?: string[];
   /**
    * Filters for articles owned by any of the provided users.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   owned_by?: string[];
 }
@@ -379,31 +379,32 @@ export interface ArticlesCreateRequest {
   /**
    * The parts that the article applies to.
    * @minItems 1
-   * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+   * @example ["PROD-12345"]
    */
   applies_to_parts: string[];
   /**
    * The authors of the article.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   authored_by?: string[];
   /** Description for the article. */
   description?: string;
   /**
    * ID of the extracted content artifact.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   * @example ["ARTIFACT-12345"]
    */
   extracted_content?: string[];
   /** Language of the article. */
   language?: string;
   /**
    * The users that own the article.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   owned_by?: string[];
   /**
    * The published date of the article.
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   published_at?: string;
   resource: ArticlesCreateRequestResource;
@@ -419,7 +420,7 @@ export interface ArticlesCreateRequest {
 export interface ArticlesCreateRequestResource {
   /**
    * IDs of the artifacts.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   * @example ["ARTIFACT-12345"]
    */
   artifacts?: string[];
   /** URL of the external article. */
@@ -441,7 +442,7 @@ export interface ArticlesCreateResponse {
 export interface ArticlesDeleteRequest {
   /**
    * The ID of the article to delete.
-   * @example "don:core:<partition>:devo/<dev-org-id>:article/<article-id>"
+   * @example "ARTICLE-12345"
    */
   id: string;
 }
@@ -456,7 +457,7 @@ export type ArticlesDeleteResponse = object;
 export interface ArticlesGetRequest {
   /**
    * The ID of the required article.
-   * @example "don:core:<partition>:devo/<dev-org-id>:article/<article-id>"
+   * @example "ARTICLE-12345"
    */
   id: string;
 }
@@ -476,17 +477,17 @@ export interface ArticlesGetResponse {
 export interface ArticlesListRequest {
   /**
    * Filters for articles belonging to any of the provided parts.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+   * @example ["PROD-12345"]
    */
   applies_to_parts?: string[];
   /**
    * Filters for articles authored by any of the provided users.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   authored_by?: string[];
   /**
    * Filters for articles created by any of the provided users.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   created_by?: string[];
   /**
@@ -509,7 +510,7 @@ export interface ArticlesListRequest {
   mode?: ListMode;
   /**
    * Filters for articles owned by any of the provided users.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   owned_by?: string[];
 }
@@ -555,7 +556,7 @@ export interface ArticlesUpdateRequest {
   extracted_content?: ArticlesUpdateRequestExtractedContent;
   /**
    * The article's ID.
-   * @example "don:core:<partition>:devo/<dev-org-id>:article/<article-id>"
+   * @example "ARTICLE-12345"
    */
   id: string;
   /** Updates the language of the article. */
@@ -565,6 +566,7 @@ export interface ArticlesUpdateRequest {
    * Updates the timestamp of the latest published version of the
    * article.
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   published_version?: string;
   /** Status of the article. */
@@ -580,7 +582,7 @@ export interface ArticlesUpdateRequest {
 export interface ArticlesUpdateRequestAppliesToParts {
   /**
    * Updates the parts that the article applies to.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+   * @example ["PROD-12345"]
    */
   set?: string[];
 }
@@ -589,7 +591,7 @@ export interface ArticlesUpdateRequestAppliesToParts {
 export interface ArticlesUpdateRequestArtifacts {
   /**
    * Updates IDs of the artifacts.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   * @example ["ARTIFACT-12345"]
    */
   set?: string[];
 }
@@ -598,7 +600,7 @@ export interface ArticlesUpdateRequestArtifacts {
 export interface ArticlesUpdateRequestAuthoredBy {
   /**
    * Sets the users that authored the article.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   set?: string[];
 }
@@ -607,7 +609,7 @@ export interface ArticlesUpdateRequestAuthoredBy {
 export interface ArticlesUpdateRequestExtractedContent {
   /**
    * Update the ID of the extracted content.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   * @example ["ARTIFACT-12345"]
    */
   set?: string[];
 }
@@ -617,7 +619,7 @@ export interface ArticlesUpdateRequestOwnedBy {
   /**
    * Sets the owner IDs to the provided user IDs. This must not be
    * empty.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   set?: string[];
 }
@@ -656,7 +658,7 @@ export interface ArtifactsPrepareResponse {
   form_data: ArtifactsPrepareResponseFormData[];
   /**
    * The generated artifact's ID.
-   * @example "don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"
+   * @example "ARTIFACT-12345"
    */
   id: string;
   /** The URL that the file's data should be uploaded to. */
@@ -678,7 +680,7 @@ export interface ArtifactsPrepareResponseFormData {
 export interface ArtifactsVersionsPrepareRequest {
   /**
    * The ID of the artifact to prepare a new version for.
-   * @example "don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"
+   * @example "ARTIFACT-12345"
    */
   id: string;
 }
@@ -708,6 +710,7 @@ export interface AtomBase {
   /**
    * Timestamp when the object was created.
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   created_date?: string;
   /** Human-readable object ID unique to the Dev organization. */
@@ -718,6 +721,7 @@ export interface AtomBase {
   /**
    * Timestamp when the object was last modified.
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   modified_date?: string;
 }
@@ -786,7 +790,7 @@ export interface ConversationsCreateRequest {
   is_spam?: boolean;
   /**
    * The users in the conversation.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   members?: string[];
   /** Initial messages on the conversation. */
@@ -809,7 +813,7 @@ export interface ConversationsCreateRequest {
 export interface ConversationsCreateRequestMessage {
   /**
    * The IDs of the artifacts to the message.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   * @example ["ARTIFACT-12345"]
    */
   artifacts?: string[];
   /** The message's body. */
@@ -852,7 +856,7 @@ export type ConversationsDeleteResponse = object;
 export interface ConversationsExportRequest {
   /**
    * Filters for conversations belonging to any of the provided parts.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+   * @example ["PROD-12345"]
    */
   applies_to_parts?: string[];
   /**
@@ -869,18 +873,18 @@ export interface ConversationsExportRequest {
   is_spam?: boolean;
   /**
    * Filters for conversations where these users are participants.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   members?: string[];
   /**
    * Filters for conversations owned by any of these users.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   owned_by?: string[];
   /**
    * Filters for conversations that are associated with any of the
    * provided Rev organizations.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"]
+   * @example ["REV-AbCdEfGh"]
    */
   rev_org?: string[];
   /** The filter for SLA summary. */
@@ -892,7 +896,7 @@ export interface ConversationsExportRequest {
   /**
    * Filters for conversations with any of the provided tags.
    * @deprecated
-   * @example ["don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"]
+   * @example ["TAG-12345"]
    */
   tags?: string[];
   /** Filters for conversations with any of the provided tags with value. */
@@ -929,7 +933,7 @@ export interface ConversationsGetResponse {
 export interface ConversationsListRequest {
   /**
    * Filters for conversations belonging to any of the provided parts.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+   * @example ["PROD-12345"]
    */
   applies_to_parts?: string[];
   /**
@@ -950,7 +954,7 @@ export interface ConversationsListRequest {
   limit?: number;
   /**
    * Filters for conversations where these users are participants.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   members?: string[];
   /**
@@ -963,13 +967,13 @@ export interface ConversationsListRequest {
   mode?: ListMode;
   /**
    * Filters for conversations owned by any of these users.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   owned_by?: string[];
   /**
    * Filters for conversations that are associated with any of the
    * provided Rev organizations.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"]
+   * @example ["REV-AbCdEfGh"]
    */
   rev_org?: string[];
   /** The filter for SLA summary. */
@@ -981,7 +985,7 @@ export interface ConversationsListRequest {
   /**
    * Filters for conversations with any of the provided tags.
    * @deprecated
-   * @example ["don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"]
+   * @example ["TAG-12345"]
    */
   tags?: string[];
   /** Filters for conversations with any of the provided tags with value. */
@@ -1036,7 +1040,7 @@ export interface ConversationsUpdateRequest {
 export interface ConversationsUpdateRequestAppliesToParts {
   /**
    * Updates the parts that the conversation applies to.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+   * @example ["PROD-12345"]
    */
   set?: string[];
 }
@@ -1071,6 +1075,7 @@ export interface CreateOrgScheduleInterval {
   /**
    * Date (inclusive) on which the interval begins.
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   from: string;
   /**
@@ -1087,6 +1092,7 @@ export interface CreateOrgScheduleInterval {
    * Date (exclusive) on which the interval ends. If omitted, it is a
    * single day interval.
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   to?: string;
 }
@@ -1267,12 +1273,14 @@ export interface DateTimeFilter {
    * Filters for objects created after the provided timestamp
    * (inclusive).
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   after?: string;
   /**
    * Filters for objects created before the provided timestamp
    * (inclusive).
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   before?: string;
 }
@@ -1346,12 +1354,12 @@ export interface EngagementsCountRequest {
   external_ref?: string[];
   /**
    * Filters for engagement of the provided members.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   members?: string[];
   /**
    * Filters for engagements with the provided parent.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:account/<account-id>"]
+   * @example ["ACC-12345"]
    */
   parent?: string[];
   /** Filters for engagement of the provided types. */
@@ -1371,7 +1379,7 @@ export interface EngagementsCountResponse {
 export interface EngagementsCreateRequest {
   /**
    * The IDs of the artifacts to associate with the engagement.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   * @example ["ARTIFACT-12345"]
    */
   artifacts?: string[];
   /** The description of the engagement. */
@@ -1385,18 +1393,19 @@ export interface EngagementsCreateRequest {
   /**
    * IDs of the users that were part of the engagement.
    * @maxItems 50
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   members?: string[];
   /**
    * The parent object ID in which the engagement was created.
    * Currently, only accounts and opportunities are supported.
-   * @example "don:core:<partition>:devo/<dev-org-id>:account/<account-id>"
+   * @example "ACC-12345"
    */
   parent: string;
   /**
    * The date and time when the engagement was scheduled.
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   scheduled_date?: string;
   /** Tags associated with the engagement. */
@@ -1455,7 +1464,7 @@ export interface EngagementsListRequest {
   limit?: number;
   /**
    * Filters for engagement of the provided members.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   members?: string[];
   /**
@@ -1468,7 +1477,7 @@ export interface EngagementsListRequest {
   mode?: ListMode;
   /**
    * Filters for engagements with the provided parent.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:account/<account-id>"]
+   * @example ["ACC-12345"]
    */
   parent?: string[];
   /** Fields to sort the engagements by and the direction to sort them. */
@@ -1508,6 +1517,7 @@ export interface EngagementsUpdateRequest {
   /**
    * Updates the date and time when the engagement was scheduled.
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   scheduled_date?: string | null;
   tags?: EngagementsUpdateRequestTags;
@@ -1519,7 +1529,7 @@ export interface EngagementsUpdateRequest {
 export interface EngagementsUpdateRequestArtifactIds {
   /**
    * Sets the IDs to the provided artifact IDs.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   * @example ["ARTIFACT-12345"]
    */
   set?: string[];
 }
@@ -1530,7 +1540,7 @@ export interface EngagementsUpdateRequestMembers {
    * Sets the members to the provided user IDs. If specified, this must
    * not be empty.
    * @maxItems 50
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   set?: string[];
 }
@@ -1758,7 +1768,7 @@ export interface EventPartCreated {
 export interface EventPartDeleted {
   /**
    * The ID of the part that was deleted.
-   * @example "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+   * @example "PROD-12345"
    */
   id: string;
 }
@@ -1777,7 +1787,7 @@ export interface EventRevOrgCreated {
 export interface EventRevOrgDeleted {
   /**
    * The ID of the Rev organization that was deleted.
-   * @example "don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"
+   * @example "REV-AbCdEfGh"
    */
   id: string;
 }
@@ -1885,6 +1895,7 @@ export interface EventSourcesScheduleEventRequest {
    * guaranteed to be published after this. If omitted, the event is
    * published immediately.
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   publish_at?: string;
   /**
@@ -1914,7 +1925,7 @@ export interface EventTagCreated {
 export interface EventTagDeleted {
   /**
    * The ID of the tag that was deleted.
-   * @example "don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"
+   * @example "TAG-12345"
    */
   id: string;
 }
@@ -1971,7 +1982,7 @@ export interface EventWorkCreated {
 export interface EventWorkDeleted {
   /**
    * The ID of the work that was deleted.
-   * @example "don:core:<partition>:devo/<dev-org-id>:<work-type>/<work-id>"
+   * @example "ISS-12345"
    */
   id: string;
 }
@@ -2191,7 +2202,7 @@ export enum LinkEndpointType {
 export interface LinkRevUserToRevOrgRequest {
   /**
    * The don of the rev org to link the rev user to.
-   * @example "don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"
+   * @example "REV-AbCdEfGh"
    */
   rev_org_don: string;
   /** The don of the rev user to link. */
@@ -2374,6 +2385,7 @@ export interface MetricDataPoint {
   /**
    * Timestamp when metric value is captured.
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   timestamp: string;
   /**
@@ -2584,6 +2596,7 @@ export type OrgSchedule = AtomBase & {
    * for all its schedule fragments, and if it has a schedule fragment
    * for the time period in question.
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   valid_until?: string;
   /**
@@ -2600,6 +2613,7 @@ export type OrgScheduleFragment = AtomBase & {
    * The date (inclusive) on which the organization schedule fragment
    * begins.
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   from?: string;
   /**
@@ -2625,6 +2639,7 @@ export type OrgScheduleFragment = AtomBase & {
    * The date (exclusive) on which the organization schedule fragment's
    * validity ends.
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   to?: string;
 };
@@ -2654,6 +2669,7 @@ export interface OrgScheduleFragmentsCreateRequest {
    * Date (inclusive) on which the organization schedule fragment
    * begins.
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   from: string;
   /** The intervals that comprise the schedule fragment. */
@@ -2670,6 +2686,7 @@ export interface OrgScheduleFragmentsCreateRequest {
    * Date (exclusive) on which the organization schedule fragment's
    * validity ends.
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   to: string;
 }
@@ -2900,7 +2917,7 @@ export interface ParentPartFilter {
   /**
    * Part IDs to fetch the hierarchy for.
    * @minItems 1
-   * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+   * @example ["PROD-12345"]
    */
   parts: string[];
 }
@@ -2968,7 +2985,7 @@ export type PartsCreateRequest = (
 ) & {
   /**
    * The IDs of the artifacts.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   * @example ["ARTIFACT-12345"]
    */
   artifacts?: string[];
   /** Custom fields. */
@@ -2984,7 +3001,7 @@ export type PartsCreateRequest = (
   name: string;
   /**
    * The users that own the part.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   owned_by: string[];
   type: PartType;
@@ -2995,7 +3012,7 @@ export interface PartsCreateRequestCapability {
   /**
    * ID of the parent product for the capability.
    * @maxItems 1
-   * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+   * @example ["PROD-12345"]
    */
   parent_part: string[];
 }
@@ -3005,18 +3022,20 @@ export interface PartsCreateRequestEnhancement {
   /**
    * ID of the parent part on which the enhancement is to be created.
    * @maxItems 1
-   * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+   * @example ["PROD-12345"]
    */
   parent_part: string[];
   /**
    * Target close date by which enhancement is expected to be closed.
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   target_close_date?: string;
   /**
    * Target start date by which enhancement is expected to be started.
    * Example Date Format: 2000-11-01T01:01:01Z
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   target_start_date?: string;
 }
@@ -3026,7 +3045,7 @@ export interface PartsCreateRequestFeature {
   /**
    * ID of the parent capability/feature for the feature.
    * @maxItems 1
-   * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+   * @example ["PROD-12345"]
    */
   parent_part: string[];
 }
@@ -3043,7 +3062,7 @@ export interface PartsCreateResponse {
 export interface PartsDeleteRequest {
   /**
    * The ID of the part to delete.
-   * @example "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+   * @example "PROD-12345"
    */
   id: string;
 }
@@ -3055,7 +3074,7 @@ export type PartsDeleteResponse = object;
 export interface PartsGetRequest {
   /**
    * The ID of the part to retrieve.
-   * @example "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+   * @example "PROD-12345"
    */
   id: string;
 }
@@ -3069,7 +3088,7 @@ export interface PartsGetResponse {
 export interface PartsListRequest {
   /**
    * Filters for parts created by any of these users.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   created_by?: string[];
   /**
@@ -3094,7 +3113,7 @@ export interface PartsListRequest {
   name?: string[];
   /**
    * Filters for parts owned by any of these users.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   owned_by?: string[];
   /** The filter for specifying parent part. */
@@ -3139,7 +3158,7 @@ export type PartsUpdateRequest = (
   description?: string;
   /**
    * The ID of the part to update.
-   * @example "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+   * @example "PROD-12345"
    */
   id: string;
   /** The updated name of the part. */
@@ -3152,7 +3171,7 @@ export type PartsUpdateRequest = (
 export interface PartsUpdateRequestArtifacts {
   /**
    * Sets the artifacts to the provided IDs.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   * @example ["ARTIFACT-12345"]
    */
   set?: string[];
 }
@@ -3165,12 +3184,14 @@ export interface PartsUpdateRequestEnhancement {
   /**
    * Updates the target close date of the enhancement.
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   target_close_date?: string;
   /**
    * Updates the target start date of the enhancement. Example Date
    * Format: 2000-11-01T01:01:01Z
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   target_start_date?: string;
 }
@@ -3183,7 +3204,7 @@ export interface PartsUpdateRequestOwnedBy {
   /**
    * Sets the owner IDs to the provided user IDs. This must not be
    * empty.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   set?: string[];
 }
@@ -3254,12 +3275,12 @@ export type RevOrgSummary = OrgBaseSummary;
 export interface RevOrgsCreateRequest {
   /**
    * Account Id to associate with this Rev organization.
-   * @example "don:core:<partition>:devo/<dev-org-id>:account/<account-id>"
+   * @example "ACC-12345"
    */
   account?: string;
   /**
    * The IDs of the artifacts to associate with the Rev organization.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   * @example ["ARTIFACT-12345"]
    */
   artifacts?: string[];
   /** Application-defined custom fields. */
@@ -3303,12 +3324,12 @@ export interface RevOrgsGetRequest {
   /**
    * The ID of account for which default Rev organization is to be
    * fetched.
-   * @example "don:core:<partition>:devo/<dev-org-id>:account/<account-id>"
+   * @example "ACC-12345"
    */
   account?: string;
   /**
    * The ID of the required Rev organization.
-   * @example "don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"
+   * @example "REV-AbCdEfGh"
    */
   id?: string;
 }
@@ -3329,7 +3350,7 @@ export interface RevOrgsGetResponse {
 export interface RevOrgsListRequest {
   /**
    * Filters by account.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:account/<account-id>"]
+   * @example ["ACC-12345"]
    */
   account?: string[];
   /** Filters by creator. */
@@ -3394,7 +3415,7 @@ export interface RevOrgsListResponse {
 export interface RevOrgsUpdateRequest {
   /**
    * New account ID to associate with this Rev organization.
-   * @example "don:core:<partition>:devo/<dev-org-id>:account/<account-id>"
+   * @example "ACC-12345"
    */
   account?: string;
   artifacts?: RevOrgsUpdateRequestArtifacts;
@@ -3419,7 +3440,7 @@ export interface RevOrgsUpdateRequest {
   external_ref?: string;
   /**
    * The ID of Rev organization to update.
-   * @example "don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"
+   * @example "REV-AbCdEfGh"
    */
   id: string;
   /** The tier of the RevOrg. */
@@ -3430,7 +3451,7 @@ export interface RevOrgsUpdateRequest {
 export interface RevOrgsUpdateRequestArtifacts {
   /**
    * Sets the IDs to the provided artifact IDs.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   * @example ["ARTIFACT-12345"]
    */
   set?: string[];
 }
@@ -3494,7 +3515,7 @@ export type RevUserSummary = UserBaseSummary & {
 export interface RevUsersCreateRequest {
   /**
    * The IDs of the artifacts to associate with the Rev user.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   * @example ["ARTIFACT-12345"]
    */
   artifacts?: string[];
   /** Application-defined custom fields. */
@@ -3522,7 +3543,7 @@ export interface RevUsersCreateRequest {
   phone_numbers?: string[];
   /**
    * The ID of Rev organization for which a Rev user is to be created.
-   * @example "don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"
+   * @example "REV-AbCdEfGh"
    */
   rev_org?: string;
 }
@@ -3605,7 +3626,7 @@ export interface RevUsersListRequest {
   phone_numbers?: string[];
   /**
    * List of IDs of Rev organizations to be filtered.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"]
+   * @example ["REV-AbCdEfGh"]
    */
   rev_org?: string[];
   /** Fields to sort the Rev users by and the direction to sort them. */
@@ -3656,7 +3677,7 @@ export interface RevUsersUpdateRequest {
 export interface RevUsersUpdateRequestArtifacts {
   /**
    * Sets the IDs to the provided artifact IDs.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   * @example ["ARTIFACT-12345"]
    */
   set?: string[];
 }
@@ -4169,7 +4190,7 @@ export interface SetSlaSelector {
   custom_fields?: object;
   /**
    * The SLA policy applies to the tickets of these parts.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+   * @example ["PROD-12345"]
    */
   parts?: string[];
   /** The SLA policy applies to conversations with these priorities. */
@@ -4180,7 +4201,7 @@ export interface SetSlaSelector {
   source_channel?: string[];
   /**
    * The SLA policy applies to items with these tags.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"]
+   * @example ["TAG-12345"]
    */
   tags?: string[];
 }
@@ -4220,7 +4241,7 @@ export interface SetSupportMetricTarget {
 export interface SetTagWithValue {
   /**
    * The ID of the tag.
-   * @example "don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"
+   * @example "TAG-12345"
    */
   id: string;
   /**
@@ -4360,7 +4381,7 @@ export interface SlasAssignRequest {
   id?: string;
   /**
    * The Rev organizations to apply the SLA to.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"]
+   * @example ["REV-AbCdEfGh"]
    */
   rev_orgs: string[];
 }
@@ -4635,7 +4656,7 @@ export interface SysUsersUpdateRequest {
   display_name?: string;
   /**
    * Artifact ID of the system user's new display picture.
-   * @example "don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"
+   * @example "ARTIFACT-12345"
    */
   display_picture?: string | null;
   /** Updated full name for the system user. */
@@ -4694,7 +4715,7 @@ export interface TagWithValue {
 export interface TagWithValueFilter {
   /**
    * The ID of the tag.
-   * @example "don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"
+   * @example "TAG-12345"
    */
   id?: string;
   /**
@@ -4787,6 +4808,7 @@ export type TimelineEntriesCreateRequest =
      * provided time. The minimum value should be at least a minute more
      * than the current timestamp.
      * @format date-time
+     * @example "2023-01-01T12:00:00.000Z"
      */
     expires_at?: string;
     /**
@@ -4798,14 +4820,14 @@ export type TimelineEntriesCreateRequest =
     labels?: string[];
     /**
      * The ID of the object to create the timeline entry for.
-     * @example "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+     * @example "PROD-12345"
      */
     object: string;
     /**
      * If the visibility of the entry is private, this specifies the users
      * that the entry is private to. Note the creator is always implicitly
      * included in this list.
-     * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+     * @example ["DEVU-12345"]
      */
     private_to?: string[];
     type: TimelineEntriesCreateRequestType;
@@ -4823,7 +4845,7 @@ export type TimelineEntriesCreateRequest =
 export interface TimelineEntriesCreateRequestTimelineComment {
   /**
    * The IDs of the artifacts attached to the comment.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   * @example ["ARTIFACT-12345"]
    */
   artifacts?: string[];
   /** The comment's body. */
@@ -4890,7 +4912,7 @@ export interface TimelineEntriesListRequest {
   mode?: ListMode;
   /**
    * The ID of the object to list timeline entries for.
-   * @example "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+   * @example "PROD-12345"
    */
   object: string;
   /**
@@ -4952,18 +4974,18 @@ export interface TimelineEntriesUpdateRequestTimelineCommentArtifacts {
    * Adds the provided artifacts to the comment. An artifact cannot be
    * added more than once, i.e. nothing is done if the artifact is
    * already attached. Mutually exclusive with `set`.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   * @example ["ARTIFACT-12345"]
    */
   add?: string[];
   /**
    * Removes the provided artifacts from the comment. If an artifact is
    * not present, then it's ignored. Mututally exclusive with `set`.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   * @example ["ARTIFACT-12345"]
    */
   remove?: string[];
   /**
    * Sets the field to the provided artifacts.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   * @example ["ARTIFACT-12345"]
    */
   set?: string[];
 }
@@ -5120,7 +5142,7 @@ export interface TimelineThread {
 export interface UnlinkRevUserFromRevOrgRequest {
   /**
    * The don of the rev org to unlink the rev user from.
-   * @example "don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"
+   * @example "REV-AbCdEfGh"
    */
   rev_org_don: string;
   /** The don of the rev user to unlink. */
@@ -5233,6 +5255,7 @@ export interface WebhookEventRequest {
    * should only be processed if the timestamp isn't stale by several
    * seconds.
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   timestamp?: string;
   /** The event types that the webhook will receive. */
@@ -5344,6 +5367,7 @@ export type WorkBase = AtomBase & {
   /**
    * Timestamp when the work is expected to be complete.
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   target_close_date?: string;
   /** Title of the work object. */
@@ -5374,12 +5398,12 @@ export type WorksCreateRequest = (
    * The [part](https://devrev.ai/docs/product/parts) that the work
    * applies to. Specifying a part is required when creating tickets and
    * issues.
-   * @example "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+   * @example "PROD-12345"
    */
   applies_to_part: string;
   /**
    * The IDs of the artifacts to associate with the work item.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   * @example ["ARTIFACT-12345"]
    */
   artifacts?: string[];
   /** Body of the work object. */
@@ -5393,12 +5417,12 @@ export type WorksCreateRequest = (
   custom_schema_fragments?: string[];
   /**
    * The users that own the work.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   owned_by: string[];
   /**
    * The users that reported the work.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   reported_by?: string[];
   /** Sets an object's initial stage. */
@@ -5408,6 +5432,7 @@ export type WorksCreateRequest = (
   /**
    * Timestamp for when the work is expected to be complete.
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   target_close_date?: string;
   /** Title of the work object. */
@@ -5427,7 +5452,7 @@ export interface WorksCreateRequestIssue {
 export interface WorksCreateRequestOpportunity {
   /**
    * The ID of the account that the opportunity is associated with.
-   * @example "don:core:<partition>:devo/<dev-org-id>:account/<account-id>"
+   * @example "ACC-12345"
    */
   account: string;
   /**
@@ -5462,6 +5487,7 @@ export interface WorksCreateRequestTask {
   /**
    * Timestamp when the task was started.
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   start_date?: string;
 }
@@ -5474,7 +5500,7 @@ export interface WorksCreateRequestTicket {
   is_spam?: boolean;
   /**
    * The Rev organization that the ticket is associated with.
-   * @example "don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"
+   * @example "REV-AbCdEfGh"
    */
   rev_org?: string;
   /** Severity of the ticket. */
@@ -5492,7 +5518,7 @@ export interface WorksCreateResponse {
 export interface WorksDeleteRequest {
   /**
    * The work's ID.
-   * @example "don:core:<partition>:devo/<dev-org-id>:<work-type>/<work-id>"
+   * @example "ISS-12345"
    */
   id: string;
 }
@@ -5506,12 +5532,12 @@ export interface WorksExportRequest {
   actual_close_date?: DateFilter;
   /**
    * Filters for work belonging to any of the provided parts.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+   * @example ["PROD-12345"]
    */
   applies_to_part?: string[];
   /**
    * Filters for work created by any of these users.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   created_by?: string[];
   /** Provides ways to specify date ranges on objects. */
@@ -5530,7 +5556,7 @@ export interface WorksExportRequest {
   opportunity?: WorksFilterOpportunity;
   /**
    * Filters for work owned by any of these users.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   owned_by?: string[];
   /** Fields to sort the work items by and the direction to sort them. */
@@ -5539,7 +5565,7 @@ export interface WorksExportRequest {
   stage?: StageFilter;
   /**
    * Filters for work with any of the provided tags.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"]
+   * @example ["TAG-12345"]
    */
   tags?: string[];
   /** Provides ways to specify date ranges on objects. */
@@ -5561,7 +5587,7 @@ export interface WorksFilterIssue {
   priority?: IssuePriority[];
   /**
    * Filters for issues with any of the provided Rev organizations.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"]
+   * @example ["REV-AbCdEfGh"]
    */
   rev_orgs?: string[];
 }
@@ -5571,7 +5597,7 @@ export interface WorksFilterOpportunity {
   /**
    * Filters for opportunities belonging to any of the provided
    * accounts.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:account/<account-id>"]
+   * @example ["ACC-12345"]
    */
   account?: string[];
   /** Filters for opportunities with any of the provided contacts. */
@@ -5589,7 +5615,7 @@ export interface WorksFilterTicket {
   /**
    * Filters for tickets that are associated with any of the provided
    * Rev organizations.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"]
+   * @example ["REV-AbCdEfGh"]
    */
   rev_org?: string[];
   /** Filters for tickets with any of the provided severities. */
@@ -5606,7 +5632,7 @@ export interface WorksFilterTicket {
 export interface WorksGetRequest {
   /**
    * The work's ID.
-   * @example "don:core:<partition>:devo/<dev-org-id>:<work-type>/<work-id>"
+   * @example "ISS-12345"
    */
   id: string;
 }
@@ -5622,12 +5648,12 @@ export interface WorksListRequest {
   actual_close_date?: DateFilter;
   /**
    * Filters for work belonging to any of the provided parts.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+   * @example ["PROD-12345"]
    */
   applies_to_part?: string[];
   /**
    * Filters for work created by any of these users.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   created_by?: string[];
   /** Provides ways to specify date ranges on objects. */
@@ -5658,7 +5684,7 @@ export interface WorksListRequest {
   opportunity?: WorksFilterOpportunity;
   /**
    * Filters for work owned by any of these users.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   owned_by?: string[];
   /** Fields to sort the works by and the direction to sort them. */
@@ -5667,7 +5693,7 @@ export interface WorksListRequest {
   stage?: StageFilter;
   /**
    * Filters for work with any of the provided tags.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"]
+   * @example ["TAG-12345"]
    */
   tags?: string[];
   /** Provides ways to specify date ranges on objects. */
@@ -5703,7 +5729,7 @@ export type WorksUpdateRequest = (
 ) & {
   /**
    * Updates the part that the work item applies to.
-   * @example "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+   * @example "PROD-12345"
    */
   applies_to_part?: string;
   artifacts?: WorksUpdateRequestArtifactIds;
@@ -5718,7 +5744,7 @@ export type WorksUpdateRequest = (
   custom_schema_fragments?: string[];
   /**
    * The work's ID.
-   * @example "don:core:<partition>:devo/<dev-org-id>:<work-type>/<work-id>"
+   * @example "ISS-12345"
    */
   id: string;
   owned_by?: WorksUpdateRequestOwnedBy;
@@ -5729,6 +5755,7 @@ export type WorksUpdateRequest = (
   /**
    * Updates the timestamp for when the work is expected to be complete.
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   target_close_date?: string | null;
   /** Updated title of the work object, or unchanged if not provided. */
@@ -5740,7 +5767,7 @@ export type WorksUpdateRequest = (
 export interface WorksUpdateRequestArtifactIds {
   /**
    * Sets the IDs to the provided artifact IDs.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   * @example ["ARTIFACT-12345"]
    */
   set?: string[];
 }
@@ -5757,7 +5784,7 @@ export interface WorksUpdateRequestIssue {
 export interface WorksUpdateRequestOpportunity {
   /**
    * Updates the account that the opportunity is associated with.
-   * @example "don:core:<partition>:devo/<dev-org-id>:account/<account-id>"
+   * @example "ACC-12345"
    */
   account?: string;
   /**
@@ -5790,7 +5817,7 @@ export interface WorksUpdateRequestOwnedBy {
   /**
    * Sets the owner IDs to the provided user IDs. This must not be
    * empty.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   set?: string[];
 }
@@ -5799,7 +5826,7 @@ export interface WorksUpdateRequestOwnedBy {
 export interface WorksUpdateRequestReportedBy {
   /**
    * Sets the users that reported the work to the provided user IDs.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   set?: string[];
 }
@@ -5819,6 +5846,7 @@ export interface WorksUpdateRequestTask {
   /**
    * Timestamp when the task was started.
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   start_date?: string;
 }
@@ -5831,7 +5859,7 @@ export interface WorksUpdateRequestTicket {
   is_spam?: boolean;
   /**
    * Updates the Rev organization that the ticket is associated with.
-   * @example "don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"
+   * @example "REV-AbCdEfGh"
    */
   rev_org?: string | null;
   /** Severity of the ticket. */
@@ -6095,12 +6123,14 @@ export class Api<
       /**
        * Filters for objects created after the provided timestamp (inclusive).
        * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
        */
       'created_date.after'?: string;
       /**
        * Filters for objects created before the provided timestamp
        * (inclusive).
        * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
        */
       'created_date.before'?: string;
       /** Domains for accounts to be filtered. */
@@ -6117,12 +6147,14 @@ export class Api<
       /**
        * Filters for objects created after the provided timestamp (inclusive).
        * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
        */
       'modified_date.after'?: string;
       /**
        * Filters for objects created before the provided timestamp
        * (inclusive).
        * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
        */
       'modified_date.before'?: string;
       /** Filters for accounts owned by the specified user(s). */
@@ -6195,7 +6227,7 @@ export class Api<
     query: {
       /**
        * The ID of the account to be retrieved.
-       * @example "don:core:<partition>:devo/<dev-org-id>:account/<account-id>"
+       * @example "ACC-12345"
        */
       id: string;
     },
@@ -6262,12 +6294,14 @@ export class Api<
       /**
        * Filters for objects created after the provided timestamp (inclusive).
        * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
        */
       'created_date.after'?: string;
       /**
        * Filters for objects created before the provided timestamp
        * (inclusive).
        * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
        */
       'created_date.before'?: string;
       /**
@@ -6293,12 +6327,14 @@ export class Api<
       /**
        * Filters for objects created after the provided timestamp (inclusive).
        * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
        */
       'modified_date.after'?: string;
       /**
        * Filters for objects created before the provided timestamp
        * (inclusive).
        * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
        */
       'modified_date.before'?: string;
       /** Filters for accounts owned by the specified user(s). */
@@ -6398,22 +6434,22 @@ export class Api<
     query?: {
       /**
        * Filters for articles belonging to any of the provided parts.
-       * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+       * @example ["PROD-12345"]
        */
       applies_to_parts?: string[];
       /**
        * Filters for articles authored by any of the provided users.
-       * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+       * @example ["DEVU-12345"]
        */
       authored_by?: string[];
       /**
        * Filters for articles created by any of the provided users.
-       * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+       * @example ["DEVU-12345"]
        */
       created_by?: string[];
       /**
        * Filters for articles owned by any of the provided users.
-       * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+       * @example ["DEVU-12345"]
        */
       owned_by?: string[];
     },
@@ -6533,7 +6569,7 @@ export class Api<
     query: {
       /**
        * The ID of the required article.
-       * @example "don:core:<partition>:devo/<dev-org-id>:article/<article-id>"
+       * @example "ARTICLE-12345"
        */
       id: string;
     },
@@ -6597,17 +6633,17 @@ export class Api<
     query?: {
       /**
        * Filters for articles belonging to any of the provided parts.
-       * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+       * @example ["PROD-12345"]
        */
       applies_to_parts?: string[];
       /**
        * Filters for articles authored by any of the provided users.
-       * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+       * @example ["DEVU-12345"]
        */
       authored_by?: string[];
       /**
        * Filters for articles created by any of the provided users.
-       * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+       * @example ["DEVU-12345"]
        */
       created_by?: string[];
       /**
@@ -6627,7 +6663,7 @@ export class Api<
       mode?: ListMode;
       /**
        * Filters for articles owned by any of the provided users.
-       * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+       * @example ["DEVU-12345"]
        */
       owned_by?: string[];
     },
@@ -6838,7 +6874,7 @@ export class Api<
     query?: {
       /**
        * Filters for conversations belonging to any of the provided parts.
-       * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+       * @example ["PROD-12345"]
        */
       applies_to_parts?: string[];
       /**
@@ -6855,18 +6891,18 @@ export class Api<
       is_spam?: boolean;
       /**
        * Filters for conversations where these users are participants.
-       * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+       * @example ["DEVU-12345"]
        */
       members?: string[];
       /**
        * Filters for conversations owned by any of these users.
-       * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+       * @example ["DEVU-12345"]
        */
       owned_by?: string[];
       /**
        * Filters for conversations that are associated with any of the
        * provided Rev organizations.
-       * @example ["don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"]
+       * @example ["REV-AbCdEfGh"]
        */
       rev_org?: string[];
       /** Filters for conversations with any of the provided source channels. */
@@ -6876,12 +6912,12 @@ export class Api<
       /**
        * Filters for conversations with any of the provided tags.
        * @deprecated
-       * @example ["don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"]
+       * @example ["TAG-12345"]
        */
       tags?: string[];
       /**
        * The ID of the tag.
-       * @example "don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"
+       * @example "TAG-12345"
        */
       'tags_v2.id'?: string;
       /**
@@ -7015,7 +7051,7 @@ export class Api<
     query?: {
       /**
        * Filters for conversations belonging to any of the provided parts.
-       * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+       * @example ["PROD-12345"]
        */
       applies_to_parts?: string[];
       /**
@@ -7036,7 +7072,7 @@ export class Api<
       limit?: number;
       /**
        * Filters for conversations where these users are participants.
-       * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+       * @example ["DEVU-12345"]
        */
       members?: string[];
       /**
@@ -7046,13 +7082,13 @@ export class Api<
       mode?: ListMode;
       /**
        * Filters for conversations owned by any of these users.
-       * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+       * @example ["DEVU-12345"]
        */
       owned_by?: string[];
       /**
        * Filters for conversations that are associated with any of the
        * provided Rev organizations.
-       * @example ["don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"]
+       * @example ["REV-AbCdEfGh"]
        */
       rev_org?: string[];
       /** Filters for conversations with any of the provided source channels. */
@@ -7062,12 +7098,12 @@ export class Api<
       /**
        * Filters for conversations with any of the provided tags.
        * @deprecated
-       * @example ["don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"]
+       * @example ["TAG-12345"]
        */
       tags?: string[];
       /**
        * The ID of the tag.
-       * @example "don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"
+       * @example "TAG-12345"
        */
       'tags_v2.id'?: string;
       /**
@@ -7170,12 +7206,12 @@ export class Api<
       external_ref?: string[];
       /**
        * Filters for engagement of the provided members.
-       * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+       * @example ["DEVU-12345"]
        */
       members?: string[];
       /**
        * Filters for engagements with the provided parent.
-       * @example ["don:core:<partition>:devo/<dev-org-id>:account/<account-id>"]
+       * @example ["ACC-12345"]
        */
       parent?: string[];
       /** Filters for engagement of the provided types. */
@@ -7379,7 +7415,7 @@ export class Api<
       limit?: number;
       /**
        * Filters for engagement of the provided members.
-       * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+       * @example ["DEVU-12345"]
        */
       members?: string[];
       /**
@@ -7389,7 +7425,7 @@ export class Api<
       mode?: ListMode;
       /**
        * Filters for engagements with the provided parent.
-       * @example ["don:core:<partition>:devo/<dev-org-id>:account/<account-id>"]
+       * @example ["ACC-12345"]
        */
       parent?: string[];
       /** Fields to sort the engagements by and the direction to sort them. */
@@ -8561,7 +8597,7 @@ export class Api<
     query: {
       /**
        * The ID of the part to retrieve.
-       * @example "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+       * @example "PROD-12345"
        */
       id: string;
     },
@@ -8625,7 +8661,7 @@ export class Api<
     query?: {
       /**
        * Filters for parts created by any of these users.
-       * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+       * @example ["DEVU-12345"]
        */
       created_by?: string[];
       /**
@@ -8647,7 +8683,7 @@ export class Api<
       name?: string[];
       /**
        * Filters for parts owned by any of these users.
-       * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+       * @example ["DEVU-12345"]
        */
       owned_by?: string[];
       /**
@@ -8660,7 +8696,7 @@ export class Api<
        * Part IDs to fetch the hierarchy for. Required if any parent_part.*
        * fields are provided.
        * @minItems 1
-       * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+       * @example ["PROD-12345"]
        */
       'parent_part.parts'?: string[];
       /** Filters for parts of the provided type(s). */
@@ -8780,12 +8816,12 @@ export class Api<
       /**
        * The ID of account for which default Rev organization is to be
        * fetched.
-       * @example "don:core:<partition>:devo/<dev-org-id>:account/<account-id>"
+       * @example "ACC-12345"
        */
       account?: string;
       /**
        * The ID of the required Rev organization.
-       * @example "don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"
+       * @example "REV-AbCdEfGh"
        */
       id?: string;
     },
@@ -8849,7 +8885,7 @@ export class Api<
     query?: {
       /**
        * Filters by account.
-       * @example ["don:core:<partition>:devo/<dev-org-id>:account/<account-id>"]
+       * @example ["ACC-12345"]
        */
       account?: string[];
       /** Filters by creator. */
@@ -8857,12 +8893,14 @@ export class Api<
       /**
        * Filters for objects created after the provided timestamp (inclusive).
        * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
        */
       'created_date.after'?: string;
       /**
        * Filters for objects created before the provided timestamp
        * (inclusive).
        * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
        */
       'created_date.before'?: string;
       /**
@@ -8890,12 +8928,14 @@ export class Api<
       /**
        * Filters for objects created after the provided timestamp (inclusive).
        * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
        */
       'modified_date.after'?: string;
       /**
        * Filters for objects created before the provided timestamp
        * (inclusive).
        * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
        */
       'modified_date.before'?: string;
       /**
@@ -9142,12 +9182,14 @@ export class Api<
       /**
        * Filters for objects created after the provided timestamp (inclusive).
        * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
        */
       'created_date.after'?: string;
       /**
        * Filters for objects created before the provided timestamp
        * (inclusive).
        * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
        */
       'created_date.before'?: string;
       /**
@@ -9174,19 +9216,21 @@ export class Api<
       /**
        * Filters for objects created after the provided timestamp (inclusive).
        * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
        */
       'modified_date.after'?: string;
       /**
        * Filters for objects created before the provided timestamp
        * (inclusive).
        * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
        */
       'modified_date.before'?: string;
       /** List of phone numbers to filter Rev users on. */
       phone_numbers?: string[];
       /**
        * List of IDs of Rev organizations to be filtered.
-       * @example ["don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"]
+       * @example ["REV-AbCdEfGh"]
        */
       rev_org?: string[];
       /** Fields to sort the Rev users by and the direction to sort them. */
@@ -10058,7 +10102,7 @@ export class Api<
     query: {
       /**
        * The ID of the object to list timeline entries for.
-       * @example "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+       * @example "PROD-12345"
        */
       object: string;
       /**
@@ -10244,12 +10288,12 @@ export class Api<
     query?: {
       /**
        * Filters for work belonging to any of the provided parts.
-       * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+       * @example ["PROD-12345"]
        */
       applies_to_part?: string[];
       /**
        * Filters for work created by any of these users.
-       * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+       * @example ["DEVU-12345"]
        */
       created_by?: string[];
       /** Filters for custom fields. */
@@ -10264,19 +10308,19 @@ export class Api<
       'issue.priority'?: IssuePriority[];
       /**
        * Filters for issues with any of the provided Rev organizations.
-       * @example ["don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"]
+       * @example ["REV-AbCdEfGh"]
        */
       'issue.rev_orgs'?: string[];
       /**
        * Filters for opportunities belonging to any of the provided accounts.
-       * @example ["don:core:<partition>:devo/<dev-org-id>:account/<account-id>"]
+       * @example ["ACC-12345"]
        */
       'opportunity.account'?: string[];
       /** Filters for opportunities with any of the provided contacts. */
       'opportunity.contacts'?: string[];
       /**
        * Filters for work owned by any of these users.
-       * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+       * @example ["DEVU-12345"]
        */
       owned_by?: string[];
       /** Fields to sort the work items by and the direction to sort them. */
@@ -10285,7 +10329,7 @@ export class Api<
       'stage.name'?: string[];
       /**
        * Filters for work with any of the provided tags.
-       * @example ["don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"]
+       * @example ["TAG-12345"]
        */
       tags?: string[];
       /** Filters for tickets belonging to specific groups. */
@@ -10297,7 +10341,7 @@ export class Api<
       /**
        * Filters for tickets that are associated with any of the provided Rev
        * organizations.
-       * @example ["don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"]
+       * @example ["REV-AbCdEfGh"]
        */
       'ticket.rev_org'?: string[];
       /** Filters for tickets with any of the provided severities. */
@@ -10365,7 +10409,7 @@ export class Api<
     query: {
       /**
        * The work's ID.
-       * @example "don:core:<partition>:devo/<dev-org-id>:<work-type>/<work-id>"
+       * @example "ISS-12345"
        */
       id: string;
     },
@@ -10429,12 +10473,12 @@ export class Api<
     query?: {
       /**
        * Filters for work belonging to any of the provided parts.
-       * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+       * @example ["PROD-12345"]
        */
       applies_to_part?: string[];
       /**
        * Filters for work created by any of these users.
-       * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+       * @example ["DEVU-12345"]
        */
       created_by?: string[];
       /**
@@ -10448,7 +10492,7 @@ export class Api<
       'issue.priority'?: IssuePriority[];
       /**
        * Filters for issues with any of the provided Rev organizations.
-       * @example ["don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"]
+       * @example ["REV-AbCdEfGh"]
        */
       'issue.rev_orgs'?: string[];
       /**
@@ -10463,14 +10507,14 @@ export class Api<
       mode?: ListMode;
       /**
        * Filters for opportunities belonging to any of the provided accounts.
-       * @example ["don:core:<partition>:devo/<dev-org-id>:account/<account-id>"]
+       * @example ["ACC-12345"]
        */
       'opportunity.account'?: string[];
       /** Filters for opportunities with any of the provided contacts. */
       'opportunity.contacts'?: string[];
       /**
        * Filters for work owned by any of these users.
-       * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+       * @example ["DEVU-12345"]
        */
       owned_by?: string[];
       /** Fields to sort the works by and the direction to sort them. */
@@ -10479,7 +10523,7 @@ export class Api<
       'stage.name'?: string[];
       /**
        * Filters for work with any of the provided tags.
-       * @example ["don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"]
+       * @example ["TAG-12345"]
        */
       tags?: string[];
       /** Filters for tickets belonging to specific groups. */
@@ -10491,7 +10535,7 @@ export class Api<
       /**
        * Filters for tickets that are associated with any of the provided Rev
        * organizations.
-       * @example ["don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"]
+       * @example ["REV-AbCdEfGh"]
        */
       'ticket.rev_org'?: string[];
       /** Filters for tickets with any of the provided severities. */

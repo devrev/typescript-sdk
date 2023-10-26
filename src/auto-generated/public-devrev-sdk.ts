@@ -20,6 +20,7 @@ export interface ArtifactsLocateResponse {
   /**
    * The expiration timestamp of the URL.
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   expires_at?: string;
   /** The artifact's download URL. */
@@ -44,7 +45,7 @@ export interface ArtifactsPrepareResponse {
   form_data: ArtifactsPrepareResponseFormData[];
   /**
    * The generated artifact's ID.
-   * @example "don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"
+   * @example "ARTIFACT-12345"
    */
   id: string;
   /** The URL that the file's data should be uploaded to. */
@@ -65,6 +66,7 @@ export interface AtomBase {
   /**
    * Timestamp when the object was created.
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   created_date?: string;
   /** Human-readable object ID unique to the Dev organization. */
@@ -75,6 +77,7 @@ export interface AtomBase {
   /**
    * Timestamp when the object was last modified.
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   modified_date?: string;
 }
@@ -205,11 +208,13 @@ export type AuthToken = AtomBase & {
   /**
    * The time at which the token expires.
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   expires_at?: string;
   /**
    * The time at which the token was issued.
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   issued_at?: string;
   /** The type of the requested token. */
@@ -840,7 +845,7 @@ export interface EventPartCreated {
 export interface EventPartDeleted {
   /**
    * The ID of the part that was deleted.
-   * @example "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+   * @example "PROD-12345"
    */
   id: string;
 }
@@ -859,7 +864,7 @@ export interface EventRevOrgCreated {
 export interface EventRevOrgDeleted {
   /**
    * The ID of the Rev organization that was deleted.
-   * @example "don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"
+   * @example "REV-AbCdEfGh"
    */
   id: string;
 }
@@ -894,7 +899,7 @@ export interface EventTagCreated {
 export interface EventTagDeleted {
   /**
    * The ID of the tag that was deleted.
-   * @example "don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"
+   * @example "TAG-12345"
    */
   id: string;
 }
@@ -951,7 +956,7 @@ export interface EventWorkCreated {
 export interface EventWorkDeleted {
   /**
    * The ID of the work that was deleted.
-   * @example "don:core:<partition>:devo/<dev-org-id>:<work-type>/<work-id>"
+   * @example "ISS-12345"
    */
   id: string;
 }
@@ -1081,7 +1086,7 @@ export type PartsCreateRequest = (
 ) & {
   /**
    * The IDs of the artifacts.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   * @example ["ARTIFACT-12345"]
    */
   artifacts?: string[];
   /** Description of the part. */
@@ -1090,7 +1095,7 @@ export type PartsCreateRequest = (
   name: string;
   /**
    * The users that own the part.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   owned_by: string[];
   type: PartType;
@@ -1101,7 +1106,7 @@ export interface PartsCreateRequestCapability {
   /**
    * ID of the parent product for the capability.
    * @maxItems 1
-   * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+   * @example ["PROD-12345"]
    */
   parent_part: string[];
 }
@@ -1111,18 +1116,20 @@ export interface PartsCreateRequestEnhancement {
   /**
    * ID of the parent part on which the enhancement is to be created.
    * @maxItems 1
-   * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+   * @example ["PROD-12345"]
    */
   parent_part: string[];
   /**
    * Target close date by which enhancement is expected to be closed.
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   target_close_date?: string;
   /**
    * Target start date by which enhancement is expected to be started.
    * Example Date Format: 2000-11-01T01:01:01Z
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   target_start_date?: string;
 }
@@ -1132,7 +1139,7 @@ export interface PartsCreateRequestFeature {
   /**
    * ID of the parent capability/feature for the feature.
    * @maxItems 1
-   * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+   * @example ["PROD-12345"]
    */
   parent_part: string[];
 }
@@ -1149,7 +1156,7 @@ export interface PartsCreateResponse {
 export interface PartsDeleteRequest {
   /**
    * The ID of the part to delete.
-   * @example "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+   * @example "PROD-12345"
    */
   id: string;
 }
@@ -1191,7 +1198,7 @@ export type PartsUpdateRequest = (
   description?: string;
   /**
    * The ID of the part to update.
-   * @example "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+   * @example "PROD-12345"
    */
   id: string;
   /** The updated name of the part. */
@@ -1204,7 +1211,7 @@ export type PartsUpdateRequest = (
 export interface PartsUpdateRequestArtifacts {
   /**
    * Sets the artifacts to the provided IDs.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   * @example ["ARTIFACT-12345"]
    */
   set?: string[];
 }
@@ -1217,12 +1224,14 @@ export interface PartsUpdateRequestEnhancement {
   /**
    * Updates the target close date of the enhancement.
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   target_close_date?: string;
   /**
    * Updates the target start date of the enhancement. Example Date
    * Format: 2000-11-01T01:01:01Z
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   target_start_date?: string;
 }
@@ -1235,7 +1244,7 @@ export interface PartsUpdateRequestOwnedBy {
   /**
    * Sets the owner IDs to the provided user IDs. This must not be
    * empty.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   set?: string[];
 }
@@ -1311,7 +1320,7 @@ export interface RevOrgsCreateResponse {
 export interface RevOrgsDeleteRequest {
   /**
    * The ID of Rev organization to delete.
-   * @example "don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"
+   * @example "REV-AbCdEfGh"
    */
   id: string;
 }
@@ -1370,7 +1379,7 @@ export interface RevOrgsUpdateRequest {
   external_ref?: string;
   /**
    * The ID of Rev organization to update.
-   * @example "don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"
+   * @example "REV-AbCdEfGh"
    */
   id: string;
   /** The tier of the RevOrg. */
@@ -1417,7 +1426,7 @@ export type RevUserSummary = UserBaseSummary & {
 export interface SetTagWithValue {
   /**
    * The ID of the tag.
-   * @example "don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"
+   * @example "TAG-12345"
    */
   id: string;
   /**
@@ -1526,7 +1535,7 @@ export interface TagsCreateResponse {
 export interface TagsDeleteRequest {
   /**
    * The ID of the tag to delete.
-   * @example "don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"
+   * @example "TAG-12345"
    */
   id: string;
 }
@@ -1584,7 +1593,7 @@ export interface TagsUpdateRequest {
   description?: string;
   /**
    * The ID of the tag to update.
-   * @example "don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"
+   * @example "TAG-12345"
    */
   id: string;
   /**
@@ -1650,18 +1659,19 @@ export type TimelineEntriesCreateRequest =
      * provided time. The minimum value should be at least a minute more
      * than the current timestamp.
      * @format date-time
+     * @example "2023-01-01T12:00:00.000Z"
      */
     expires_at?: string;
     /**
      * The ID of the object to create the timeline entry for.
-     * @example "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+     * @example "PROD-12345"
      */
     object: string;
     /**
      * If the visibility of the entry is private, this specifies the users
      * that the entry is private to. Note the creator is always implicitly
      * included in this list.
-     * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+     * @example ["DEVU-12345"]
      */
     private_to?: string[];
     type: TimelineEntriesCreateRequestType;
@@ -1679,7 +1689,7 @@ export type TimelineEntriesCreateRequest =
 export interface TimelineEntriesCreateRequestTimelineComment {
   /**
    * The IDs of the artifacts attached to the comment.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   * @example ["ARTIFACT-12345"]
    */
   artifacts?: string[];
   /** The comment's body. */
@@ -1778,18 +1788,18 @@ export interface TimelineEntriesUpdateRequestTimelineCommentArtifacts {
    * Adds the provided artifacts to the comment. An artifact cannot be
    * added more than once, i.e. nothing is done if the artifact is
    * already attached. Mutually exclusive with `set`.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   * @example ["ARTIFACT-12345"]
    */
   add?: string[];
   /**
    * Removes the provided artifacts from the comment. If an artifact is
    * not present, then it's ignored. Mututally exclusive with `set`.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   * @example ["ARTIFACT-12345"]
    */
   remove?: string[];
   /**
    * Sets the field to the provided artifacts.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   * @example ["ARTIFACT-12345"]
    */
   set?: string[];
 }
@@ -1966,6 +1976,7 @@ export interface WebhookEventRequest {
    * should only be processed if the timestamp isn't stale by several
    * seconds.
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   timestamp?: string;
   /** The event types that the webhook will receive. */
@@ -2187,6 +2198,7 @@ export type WorkBase = AtomBase & {
   /**
    * Timestamp when the work is expected to be complete.
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   target_close_date?: string;
   /** Title of the work object. */
@@ -2207,24 +2219,24 @@ export type WorksCreateRequest = (
    * The [part](https://devrev.ai/docs/product/parts) that the work
    * applies to. Specifying a part is required when creating tickets and
    * issues.
-   * @example "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+   * @example "PROD-12345"
    */
   applies_to_part: string;
   /**
    * The IDs of the artifacts to associate with the work item.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   * @example ["ARTIFACT-12345"]
    */
   artifacts?: string[];
   /** Body of the work object. */
   body?: string;
   /**
    * The users that own the work.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   owned_by: string[];
   /**
    * The users that reported the work.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   reported_by?: string[];
   /** Sets an object's initial stage. */
@@ -2234,6 +2246,7 @@ export type WorksCreateRequest = (
   /**
    * Timestamp for when the work is expected to be complete.
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   target_close_date?: string;
   /** Title of the work object. */
@@ -2257,7 +2270,7 @@ export interface WorksCreateRequestTicket {
   is_spam?: boolean;
   /**
    * The Rev organization that the ticket is associated with.
-   * @example "don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"
+   * @example "REV-AbCdEfGh"
    */
   rev_org?: string;
   /** Severity of the ticket. */
@@ -2275,7 +2288,7 @@ export interface WorksCreateResponse {
 export interface WorksDeleteRequest {
   /**
    * The work's ID.
-   * @example "don:core:<partition>:devo/<dev-org-id>:<work-type>/<work-id>"
+   * @example "ISS-12345"
    */
   id: string;
 }
@@ -2318,7 +2331,7 @@ export type WorksUpdateRequest = (
 ) & {
   /**
    * Updates the part that the work item applies to.
-   * @example "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+   * @example "PROD-12345"
    */
   applies_to_part?: string;
   artifacts?: WorksUpdateRequestArtifactIds;
@@ -2326,7 +2339,7 @@ export type WorksUpdateRequest = (
   body?: string;
   /**
    * The work's ID.
-   * @example "don:core:<partition>:devo/<dev-org-id>:<work-type>/<work-id>"
+   * @example "ISS-12345"
    */
   id: string;
   owned_by?: WorksUpdateRequestOwnedBy;
@@ -2337,6 +2350,7 @@ export type WorksUpdateRequest = (
   /**
    * Updates the timestamp for when the work is expected to be complete.
    * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
    */
   target_close_date?: string | null;
   /** Updated title of the work object, or unchanged if not provided. */
@@ -2348,7 +2362,7 @@ export type WorksUpdateRequest = (
 export interface WorksUpdateRequestArtifactIds {
   /**
    * Sets the IDs to the provided artifact IDs.
-   * @example ["don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"]
+   * @example ["ARTIFACT-12345"]
    */
   set?: string[];
 }
@@ -2366,7 +2380,7 @@ export interface WorksUpdateRequestOwnedBy {
   /**
    * Sets the owner IDs to the provided user IDs. This must not be
    * empty.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   set?: string[];
 }
@@ -2375,7 +2389,7 @@ export interface WorksUpdateRequestOwnedBy {
 export interface WorksUpdateRequestReportedBy {
   /**
    * Sets the users that reported the work to the provided user IDs.
-   * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+   * @example ["DEVU-12345"]
    */
   set?: string[];
 }
@@ -2394,7 +2408,7 @@ export interface WorksUpdateRequestTicket {
   is_spam?: boolean;
   /**
    * Updates the Rev organization that the ticket is associated with.
-   * @example "don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"
+   * @example "REV-AbCdEfGh"
    */
   rev_org?: string | null;
   /** Severity of the ticket. */
@@ -2600,12 +2614,13 @@ export class Api<
     query: {
       /**
        * The ID of the artifact to get the URL for.
-       * @example "don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"
+       * @example "ARTIFACT-12345"
        */
       id: string;
       /**
        * The version of the artifact that needs to be fetched.
        * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
        */
       version?: string;
     },
@@ -3215,7 +3230,7 @@ export class Api<
     query: {
       /**
        * The ID of the part to retrieve.
-       * @example "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+       * @example "PROD-12345"
        */
       id: string;
     },
@@ -3251,7 +3266,7 @@ export class Api<
     query?: {
       /**
        * Filters for parts created by any of these users.
-       * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+       * @example ["DEVU-12345"]
        */
       created_by?: string[];
       /**
@@ -3273,7 +3288,7 @@ export class Api<
       name?: string[];
       /**
        * Filters for parts owned by any of these users.
-       * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+       * @example ["DEVU-12345"]
        */
       owned_by?: string[];
       /**
@@ -3286,7 +3301,7 @@ export class Api<
        * Part IDs to fetch the hierarchy for. Required if any parent_part.*
        * fields are provided.
        * @minItems 1
-       * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+       * @example ["PROD-12345"]
        */
       'parent_part.parts'?: string[];
       /** Filters for parts of the provided type(s). */
@@ -3407,12 +3422,12 @@ export class Api<
       /**
        * The ID of account for which default Rev organization is to be
        * fetched.
-       * @example "don:core:<partition>:devo/<dev-org-id>:account/<account-id>"
+       * @example "ACC-12345"
        */
       account?: string;
       /**
        * The ID of the required Rev organization.
-       * @example "don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"
+       * @example "REV-AbCdEfGh"
        */
       id?: string;
     },
@@ -3451,12 +3466,14 @@ export class Api<
       /**
        * Filters for objects created after the provided timestamp (inclusive).
        * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
        */
       'created_date.after'?: string;
       /**
        * Filters for objects created before the provided timestamp
        * (inclusive).
        * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
        */
       'created_date.before'?: string;
       /**
@@ -3479,12 +3496,14 @@ export class Api<
       /**
        * Filters for objects created after the provided timestamp (inclusive).
        * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
        */
       'modified_date.after'?: string;
       /**
        * Filters for objects created before the provided timestamp
        * (inclusive).
        * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
        */
       'modified_date.before'?: string;
       /**
@@ -3608,7 +3627,7 @@ export class Api<
     query: {
       /**
        * The requested tag's ID.
-       * @example "don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"
+       * @example "TAG-12345"
        */
       id: string;
     },
@@ -3817,7 +3836,7 @@ export class Api<
     query: {
       /**
        * The ID of the object to list timeline entries for.
-       * @example "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+       * @example "PROD-12345"
        */
       object: string;
       /**
@@ -4104,12 +4123,12 @@ export class Api<
     query?: {
       /**
        * Filters for work belonging to any of the provided parts.
-       * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+       * @example ["PROD-12345"]
        */
       applies_to_part?: string[];
       /**
        * Filters for work created by any of these users.
-       * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+       * @example ["DEVU-12345"]
        */
       created_by?: string[];
       /**
@@ -4122,19 +4141,19 @@ export class Api<
       'issue.priority'?: IssuePriority[];
       /**
        * Filters for issues with any of the provided Rev organizations.
-       * @example ["don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"]
+       * @example ["REV-AbCdEfGh"]
        */
       'issue.rev_orgs'?: string[];
       /**
        * Filters for work owned by any of these users.
-       * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+       * @example ["DEVU-12345"]
        */
       owned_by?: string[];
       /** Filters for records in the provided stage(s) by name. */
       'stage.name'?: string[];
       /**
        * Filters for work with any of the provided tags.
-       * @example ["don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"]
+       * @example ["TAG-12345"]
        */
       tags?: string[];
       /** Filters for tickets belonging to specific groups. */
@@ -4146,7 +4165,7 @@ export class Api<
       /**
        * Filters for tickets that are associated with any of the provided Rev
        * organizations.
-       * @example ["don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"]
+       * @example ["REV-AbCdEfGh"]
        */
       'ticket.rev_org'?: string[];
       /** Filters for tickets with any of the provided severities. */
@@ -4187,7 +4206,7 @@ export class Api<
     query: {
       /**
        * The work's ID.
-       * @example "don:core:<partition>:devo/<dev-org-id>:<work-type>/<work-id>"
+       * @example "ISS-12345"
        */
       id: string;
     },
@@ -4223,12 +4242,12 @@ export class Api<
     query?: {
       /**
        * Filters for work belonging to any of the provided parts.
-       * @example ["don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"]
+       * @example ["PROD-12345"]
        */
       applies_to_part?: string[];
       /**
        * Filters for work created by any of these users.
-       * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+       * @example ["DEVU-12345"]
        */
       created_by?: string[];
       /**
@@ -4240,7 +4259,7 @@ export class Api<
       'issue.priority'?: IssuePriority[];
       /**
        * Filters for issues with any of the provided Rev organizations.
-       * @example ["don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"]
+       * @example ["REV-AbCdEfGh"]
        */
       'issue.rev_orgs'?: string[];
       /**
@@ -4255,14 +4274,14 @@ export class Api<
       mode?: ListMode;
       /**
        * Filters for work owned by any of these users.
-       * @example ["don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"]
+       * @example ["DEVU-12345"]
        */
       owned_by?: string[];
       /** Filters for records in the provided stage(s) by name. */
       'stage.name'?: string[];
       /**
        * Filters for work with any of the provided tags.
-       * @example ["don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"]
+       * @example ["TAG-12345"]
        */
       tags?: string[];
       /** Filters for tickets belonging to specific groups. */
@@ -4274,7 +4293,7 @@ export class Api<
       /**
        * Filters for tickets that are associated with any of the provided Rev
        * organizations.
-       * @example ["don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"]
+       * @example ["REV-AbCdEfGh"]
        */
       'ticket.rev_org'?: string[];
       /** Filters for tickets with any of the provided severities. */

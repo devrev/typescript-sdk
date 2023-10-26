@@ -57,6 +57,7 @@ components:
       properties:
         expires_at:
           description: The expiration timestamp of the URL.
+          example: "2023-01-01T12:00:00.000Z"
           format: date-time
           type: string
         url:
@@ -87,7 +88,7 @@ components:
           type: array
         id:
           description: The generated artifact's ID.
-          example: don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>
+          example: ARTIFACT-12345
           type: string
         url:
           description: The URL that the file's data should be uploaded to.
@@ -118,6 +119,7 @@ components:
           $ref: '#/components/schemas/user-summary'
         created_date:
           description: Timestamp when the object was created.
+          example: "2023-01-01T12:00:00.000Z"
           format: date-time
           type: string
         display_id:
@@ -130,6 +132,7 @@ components:
           $ref: '#/components/schemas/user-summary'
         modified_date:
           description: Timestamp when the object was last modified.
+          example: "2023-01-01T12:00:00.000Z"
           format: date-time
           type: string
       required:
@@ -284,10 +287,12 @@ components:
             type: string
           expires_at:
             description: The time at which the token expires.
+            example: "2023-01-01T12:00:00.000Z"
             format: date-time
             type: string
           issued_at:
             description: The time at which the token was issued.
+            example: "2023-01-01T12:00:00.000Z"
             format: date-time
             type: string
           requested_token_type:
@@ -1125,7 +1130,7 @@ components:
       properties:
         id:
           description: The ID of the part that was deleted.
-          example: don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>
+          example: PROD-12345
           type: string
       required:
       - id
@@ -1151,7 +1156,7 @@ components:
       properties:
         id:
           description: The ID of the Rev organization that was deleted.
-          example: don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>
+          example: REV-AbCdEfGh
           type: string
       required:
       - id
@@ -1202,7 +1207,7 @@ components:
       properties:
         id:
           description: The ID of the tag that was deleted.
-          example: don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>
+          example: TAG-12345
           type: string
       required:
       - id
@@ -1280,7 +1285,7 @@ components:
       properties:
         id:
           description: The ID of the work that was deleted.
-          example: don:core:<partition>:devo/<dev-org-id>:<work-type>/<work-id>
+          example: ISS-12345
           type: string
       required:
       - id
@@ -1486,7 +1491,7 @@ components:
         artifacts:
           description: The IDs of the artifacts.
           example:
-          - don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>
+          - ARTIFACT-12345
           items:
             type: string
           type: array
@@ -1499,7 +1504,7 @@ components:
         owned_by:
           description: The users that own the part.
           example:
-          - don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>
+          - DEVU-12345
           items:
             type: string
           type: array
@@ -1516,7 +1521,7 @@ components:
         parent_part:
           description: ID of the parent product for the capability.
           example:
-          - don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>
+          - PROD-12345
           items:
             type: string
           maxItems: 1
@@ -1531,7 +1536,7 @@ components:
           description: |
             ID of the parent part on which the enhancement is to be created.
           example:
-          - don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>
+          - PROD-12345
           items:
             type: string
           maxItems: 1
@@ -1539,12 +1544,14 @@ components:
         target_close_date:
           description: |
             Target close date by which enhancement is expected to be closed.
+          example: "2023-01-01T12:00:00.000Z"
           format: date-time
           type: string
         target_start_date:
           description: |
             Target start date by which enhancement is expected to be started.
             Example Date Format: 2000-11-01T01:01:01Z
+          example: "2023-01-01T12:00:00.000Z"
           format: date-time
           type: string
       required:
@@ -1556,7 +1563,7 @@ components:
         parent_part:
           description: ID of the parent capability/feature for the feature.
           example:
-          - don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>
+          - PROD-12345
           items:
             type: string
           maxItems: 1
@@ -1581,7 +1588,7 @@ components:
       properties:
         id:
           description: The ID of the part to delete.
-          example: don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>
+          example: PROD-12345
           type: string
       required:
       - id
@@ -1645,7 +1652,7 @@ components:
           type: string
         id:
           description: The ID of the part to update.
-          example: don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>
+          example: PROD-12345
           type: string
         name:
           description: The updated name of the part.
@@ -1663,7 +1670,7 @@ components:
         set:
           description: Sets the artifacts to the provided IDs.
           example:
-          - don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>
+          - ARTIFACT-12345
           items:
             type: string
           type: array
@@ -1676,12 +1683,14 @@ components:
       properties:
         target_close_date:
           description: Updates the target close date of the enhancement.
+          example: "2023-01-01T12:00:00.000Z"
           format: date-time
           type: string
         target_start_date:
           description: |
             Updates the target start date of the enhancement. Example Date
             Format: 2000-11-01T01:01:01Z
+          example: "2023-01-01T12:00:00.000Z"
           format: date-time
           type: string
       title: parts-update-request-enhancement
@@ -1696,7 +1705,7 @@ components:
             Sets the owner IDs to the provided user IDs. This must not be
             empty.
           example:
-          - don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>
+          - DEVU-12345
           items:
             type: string
           type: array
@@ -1790,7 +1799,7 @@ components:
       properties:
         id:
           description: The ID of Rev organization to delete.
-          example: don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>
+          example: REV-AbCdEfGh
           type: string
       required:
       - id
@@ -1858,7 +1867,7 @@ components:
           type: string
         id:
           description: The ID of Rev organization to update.
-          example: don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>
+          example: REV-AbCdEfGh
           type: string
         tier:
           description: The tier of the RevOrg.
@@ -1916,7 +1925,7 @@ components:
       properties:
         id:
           description: The ID of the tag.
-          example: don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>
+          example: TAG-12345
           type: string
         value:
           description: |
@@ -2046,7 +2055,7 @@ components:
       properties:
         id:
           description: The ID of the tag to delete.
-          example: don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>
+          example: TAG-12345
           type: string
       required:
       - id
@@ -2110,7 +2119,7 @@ components:
           type: string
         id:
           description: The ID of the tag to update.
-          example: don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>
+          example: TAG-12345
           type: string
         name:
           description: |
@@ -2191,11 +2200,12 @@ components:
             If set, then the entry is ephemeral and will be deleted after the
             provided time. The minimum value should be at least a minute more
             than the current timestamp.
+          example: "2023-01-01T12:00:00.000Z"
           format: date-time
           type: string
         object:
           description: The ID of the object to create the timeline entry for.
-          example: don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>
+          example: PROD-12345
           type: string
         private_to:
           description: |
@@ -2203,7 +2213,7 @@ components:
             that the entry is private to. Note the creator is always implicitly
             included in this list.
           example:
-          - don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>
+          - DEVU-12345
           items:
             type: string
           type: array
@@ -2221,7 +2231,7 @@ components:
         artifacts:
           description: The IDs of the artifacts attached to the comment.
           example:
-          - don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>
+          - ARTIFACT-12345
           items:
             type: string
           type: array
@@ -2338,7 +2348,7 @@ components:
             added more than once, i.e. nothing is done if the artifact is
             already attached. Mutually exclusive with `set`.
           example:
-          - don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>
+          - ARTIFACT-12345
           items:
             type: string
           type: array
@@ -2347,14 +2357,14 @@ components:
             Removes the provided artifacts from the comment. If an artifact is
             not present, then it's ignored. Mututally exclusive with `set`.
           example:
-          - don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>
+          - ARTIFACT-12345
           items:
             type: string
           type: array
         set:
           description: Sets the field to the provided artifacts.
           example:
-          - don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>
+          - ARTIFACT-12345
           items:
             type: string
           type: array
@@ -2596,6 +2606,7 @@ components:
             should be used to protect against replay attacks, where the event
             should only be processed if the timestamp isn't stale by several
             seconds.
+          example: "2023-01-01T12:00:00.000Z"
           format: date-time
           type: string
         type:
@@ -2872,6 +2883,7 @@ components:
             type: array
           target_close_date:
             description: Timestamp when the work is expected to be complete.
+            example: "2023-01-01T12:00:00.000Z"
             format: date-time
             type: string
           title:
@@ -2902,13 +2914,13 @@ components:
             The [part](https://devrev.ai/docs/product/parts) that the work
             applies to. Specifying a part is required when creating tickets and
             issues.
-          example: don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>
+          example: PROD-12345
           type: string
         artifacts:
           description: |
             The IDs of the artifacts to associate with the work item.
           example:
-          - don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>
+          - ARTIFACT-12345
           items:
             type: string
           type: array
@@ -2918,14 +2930,14 @@ components:
         owned_by:
           description: The users that own the work.
           example:
-          - don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>
+          - DEVU-12345
           items:
             type: string
           type: array
         reported_by:
           description: The users that reported the work.
           example:
-          - don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>
+          - DEVU-12345
           items:
             type: string
           type: array
@@ -2938,6 +2950,7 @@ components:
           type: array
         target_close_date:
           description: Timestamp for when the work is expected to be complete.
+          example: "2023-01-01T12:00:00.000Z"
           format: date-time
           type: string
         title:
@@ -2971,7 +2984,7 @@ components:
           type: boolean
         rev_org:
           description: The Rev organization that the ticket is associated with.
-          example: don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>
+          example: REV-AbCdEfGh
           type: string
         severity:
           $ref: '#/components/schemas/ticket-severity'
@@ -2993,7 +3006,7 @@ components:
       properties:
         id:
           description: The work's ID.
-          example: don:core:<partition>:devo/<dev-org-id>:<work-type>/<work-id>
+          example: ISS-12345
           type: string
       required:
       - id
@@ -3060,7 +3073,7 @@ components:
       properties:
         applies_to_part:
           description: Updates the part that the work item applies to.
-          example: don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>
+          example: PROD-12345
           type: string
         artifacts:
           $ref: '#/components/schemas/works-update-request-artifact-ids'
@@ -3070,7 +3083,7 @@ components:
           type: string
         id:
           description: The work's ID.
-          example: don:core:<partition>:devo/<dev-org-id>:<work-type>/<work-id>
+          example: ISS-12345
           type: string
         owned_by:
           $ref: '#/components/schemas/works-update-request-owned-by'
@@ -3083,6 +3096,7 @@ components:
         target_close_date:
           description: |
             Updates the timestamp for when the work is expected to be complete.
+          example: "2023-01-01T12:00:00.000Z"
           format: date-time
           nullable: true
           type: string
@@ -3101,7 +3115,7 @@ components:
         set:
           description: Sets the IDs to the provided artifact IDs.
           example:
-          - don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>
+          - ARTIFACT-12345
           items:
             type: string
           type: array
@@ -3124,7 +3138,7 @@ components:
             Sets the owner IDs to the provided user IDs. This must not be
             empty.
           example:
-          - don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>
+          - DEVU-12345
           items:
             type: string
           type: array
@@ -3136,7 +3150,7 @@ components:
           description: |
             Sets the users that reported the work to the provided user IDs.
           example:
-          - don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>
+          - DEVU-12345
           items:
             type: string
           type: array
@@ -3162,7 +3176,7 @@ components:
         rev_org:
           description: |
             Updates the Rev organization that the ticket is associated with.
-          example: don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>
+          example: REV-AbCdEfGh
           nullable: true
           type: string
         severity:
@@ -3203,13 +3217,14 @@ paths:
         name: id
         required: true
         schema:
-          example: don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>
+          example: ARTIFACT-12345
           type: string
       - description: The version of the artifact that needs to be fetched.
         explode: false
         in: query
         name: version
         schema:
+          example: "2023-01-01T12:00:00.000Z"
           format: date-time
           type: string
       responses:
@@ -3904,7 +3919,7 @@ paths:
         name: id
         required: true
         schema:
-          example: don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>
+          example: PROD-12345
           type: string
       responses:
         "200":
@@ -3942,7 +3957,7 @@ paths:
         name: created_by
         schema:
           example:
-          - don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>
+          - DEVU-12345
           items:
             type: string
           type: array
@@ -3984,7 +3999,7 @@ paths:
         name: owned_by
         schema:
           example:
-          - don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>
+          - DEVU-12345
           items:
             type: string
           type: array
@@ -4004,7 +4019,7 @@ paths:
         name: parent_part.parts
         schema:
           example:
-          - don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>
+          - PROD-12345
           items:
             type: string
           minItems: 1
@@ -4148,14 +4163,14 @@ paths:
         in: query
         name: account
         schema:
-          example: don:core:<partition>:devo/<dev-org-id>:account/<account-id>
+          example: ACC-12345
           type: string
       - description: The ID of the required Rev organization.
         explode: false
         in: query
         name: id
         schema:
-          example: don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>
+          example: REV-AbCdEfGh
           type: string
       responses:
         "200":
@@ -4203,6 +4218,7 @@ paths:
         in: query
         name: created_date.after
         schema:
+          example: "2023-01-01T12:00:00.000Z"
           format: date-time
           type: string
       - description: |
@@ -4212,6 +4228,7 @@ paths:
         in: query
         name: created_date.before
         schema:
+          example: "2023-01-01T12:00:00.000Z"
           format: date-time
           type: string
       - description: |
@@ -4252,6 +4269,7 @@ paths:
         in: query
         name: modified_date.after
         schema:
+          example: "2023-01-01T12:00:00.000Z"
           format: date-time
           type: string
       - description: |
@@ -4261,6 +4279,7 @@ paths:
         in: query
         name: modified_date.before
         schema:
+          example: "2023-01-01T12:00:00.000Z"
           format: date-time
           type: string
       - description: |
@@ -4404,7 +4423,7 @@ paths:
         name: id
         required: true
         schema:
-          example: don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>
+          example: TAG-12345
           type: string
       responses:
         "200":
@@ -4636,7 +4655,7 @@ paths:
         name: object
         required: true
         schema:
-          example: don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>
+          example: PROD-12345
           type: string
       - description: |
           The cursor to resume iteration from. If not provided, then iteration
@@ -4962,7 +4981,7 @@ paths:
         name: applies_to_part
         schema:
           example:
-          - don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>
+          - PROD-12345
           items:
             type: string
           type: array
@@ -4972,7 +4991,7 @@ paths:
         name: created_by
         schema:
           example:
-          - don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>
+          - DEVU-12345
           items:
             type: string
           type: array
@@ -5000,7 +5019,7 @@ paths:
         name: issue.rev_orgs
         schema:
           example:
-          - don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>
+          - REV-AbCdEfGh
           items:
             type: string
           type: array
@@ -5010,7 +5029,7 @@ paths:
         name: owned_by
         schema:
           example:
-          - don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>
+          - DEVU-12345
           items:
             type: string
           type: array
@@ -5028,7 +5047,7 @@ paths:
         name: tags
         schema:
           example:
-          - don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>
+          - TAG-12345
           items:
             type: string
           type: array
@@ -5060,7 +5079,7 @@ paths:
         name: ticket.rev_org
         schema:
           example:
-          - don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>
+          - REV-AbCdEfGh
           items:
             type: string
           type: array
@@ -5122,7 +5141,7 @@ paths:
         name: id
         required: true
         schema:
-          example: don:core:<partition>:devo/<dev-org-id>:<work-type>/<work-id>
+          example: ISS-12345
           type: string
       responses:
         "200":
@@ -5159,7 +5178,7 @@ paths:
         name: applies_to_part
         schema:
           example:
-          - don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>
+          - PROD-12345
           items:
             type: string
           type: array
@@ -5169,7 +5188,7 @@ paths:
         name: created_by
         schema:
           example:
-          - don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>
+          - DEVU-12345
           items:
             type: string
           type: array
@@ -5196,7 +5215,7 @@ paths:
         name: issue.rev_orgs
         schema:
           example:
-          - don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>
+          - REV-AbCdEfGh
           items:
             type: string
           type: array
@@ -5222,7 +5241,7 @@ paths:
         name: owned_by
         schema:
           example:
-          - don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>
+          - DEVU-12345
           items:
             type: string
           type: array
@@ -5240,7 +5259,7 @@ paths:
         name: tags
         schema:
           example:
-          - don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>
+          - TAG-12345
           items:
             type: string
           type: array
@@ -5272,7 +5291,7 @@ paths:
         name: ticket.rev_org
         schema:
           example:
-          - don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>
+          - REV-AbCdEfGh
           items:
             type: string
           type: array

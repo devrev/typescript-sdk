@@ -94,6 +94,7 @@
         "properties": {
           "expires_at": {
             "description": "The expiration timestamp of the URL.",
+            "example": "2023-01-01T12:00:00.000Z",
             "format": "date-time",
             "type": "string"
           },
@@ -135,7 +136,7 @@
           },
           "id": {
             "description": "The generated artifact's ID.",
-            "example": "don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>",
+            "example": "ARTIFACT-12345",
             "type": "string"
           },
           "url": {
@@ -177,6 +178,7 @@
           },
           "created_date": {
             "description": "Timestamp when the object was created.",
+            "example": "2023-01-01T12:00:00.000Z",
             "format": "date-time",
             "type": "string"
           },
@@ -193,6 +195,7 @@
           },
           "modified_date": {
             "description": "Timestamp when the object was last modified.",
+            "example": "2023-01-01T12:00:00.000Z",
             "format": "date-time",
             "type": "string"
           }
@@ -380,11 +383,13 @@
               },
               "expires_at": {
                 "description": "The time at which the token expires.",
+                "example": "2023-01-01T12:00:00.000Z",
                 "format": "date-time",
                 "type": "string"
               },
               "issued_at": {
                 "description": "The time at which the token was issued.",
+                "example": "2023-01-01T12:00:00.000Z",
                 "format": "date-time",
                 "type": "string"
               },
@@ -1537,7 +1542,7 @@
         "properties": {
           "id": {
             "description": "The ID of the part that was deleted.",
-            "example": "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>",
+            "example": "PROD-12345",
             "type": "string"
           }
         },
@@ -1575,7 +1580,7 @@
         "properties": {
           "id": {
             "description": "The ID of the Rev organization that was deleted.",
-            "example": "don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>",
+            "example": "REV-AbCdEfGh",
             "type": "string"
           }
         },
@@ -1650,7 +1655,7 @@
         "properties": {
           "id": {
             "description": "The ID of the tag that was deleted.",
-            "example": "don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>",
+            "example": "TAG-12345",
             "type": "string"
           }
         },
@@ -1764,7 +1769,7 @@
         "properties": {
           "id": {
             "description": "The ID of the work that was deleted.",
-            "example": "don:core:<partition>:devo/<dev-org-id>:<work-type>/<work-id>",
+            "example": "ISS-12345",
             "type": "string"
           }
         },
@@ -2094,7 +2099,7 @@
           "artifacts": {
             "description": "The IDs of the artifacts.",
             "example": [
-              "don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"
+              "ARTIFACT-12345"
             ],
             "items": {
               "type": "string"
@@ -2112,7 +2117,7 @@
           "owned_by": {
             "description": "The users that own the part.",
             "example": [
-              "don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"
+              "DEVU-12345"
             ],
             "items": {
               "type": "string"
@@ -2136,7 +2141,7 @@
           "parent_part": {
             "description": "ID of the parent product for the capability.",
             "example": [
-              "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+              "PROD-12345"
             ],
             "items": {
               "type": "string"
@@ -2156,7 +2161,7 @@
           "parent_part": {
             "description": "ID of the parent part on which the enhancement is to be created.\n",
             "example": [
-              "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+              "PROD-12345"
             ],
             "items": {
               "type": "string"
@@ -2166,11 +2171,13 @@
           },
           "target_close_date": {
             "description": "Target close date by which enhancement is expected to be closed.\n",
+            "example": "2023-01-01T12:00:00.000Z",
             "format": "date-time",
             "type": "string"
           },
           "target_start_date": {
             "description": "Target start date by which enhancement is expected to be started.\nExample Date Format: 2000-11-01T01:01:01Z\n",
+            "example": "2023-01-01T12:00:00.000Z",
             "format": "date-time",
             "type": "string"
           }
@@ -2186,7 +2193,7 @@
           "parent_part": {
             "description": "ID of the parent capability/feature for the feature.",
             "example": [
-              "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+              "PROD-12345"
             ],
             "items": {
               "type": "string"
@@ -2222,7 +2229,7 @@
         "properties": {
           "id": {
             "description": "The ID of the part to delete.",
-            "example": "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>",
+            "example": "PROD-12345",
             "type": "string"
           }
         },
@@ -2313,7 +2320,7 @@
           },
           "id": {
             "description": "The ID of the part to update.",
-            "example": "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>",
+            "example": "PROD-12345",
             "type": "string"
           },
           "name": {
@@ -2338,7 +2345,7 @@
           "set": {
             "description": "Sets the artifacts to the provided IDs.",
             "example": [
-              "don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"
+              "ARTIFACT-12345"
             ],
             "items": {
               "type": "string"
@@ -2357,11 +2364,13 @@
         "properties": {
           "target_close_date": {
             "description": "Updates the target close date of the enhancement.",
+            "example": "2023-01-01T12:00:00.000Z",
             "format": "date-time",
             "type": "string"
           },
           "target_start_date": {
             "description": "Updates the target start date of the enhancement. Example Date\nFormat: 2000-11-01T01:01:01Z\n",
+            "example": "2023-01-01T12:00:00.000Z",
             "format": "date-time",
             "type": "string"
           }
@@ -2378,7 +2387,7 @@
           "set": {
             "description": "Sets the owner IDs to the provided user IDs. This must not be\nempty.\n",
             "example": [
-              "don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"
+              "DEVU-12345"
             ],
             "items": {
               "type": "string"
@@ -2507,7 +2516,7 @@
         "properties": {
           "id": {
             "description": "The ID of Rev organization to delete.",
-            "example": "don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>",
+            "example": "REV-AbCdEfGh",
             "type": "string"
           }
         },
@@ -2587,7 +2596,7 @@
           },
           "id": {
             "description": "The ID of Rev organization to update.",
-            "example": "don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>",
+            "example": "REV-AbCdEfGh",
             "type": "string"
           },
           "tier": {
@@ -2663,7 +2672,7 @@
         "properties": {
           "id": {
             "description": "The ID of the tag.",
-            "example": "don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>",
+            "example": "TAG-12345",
             "type": "string"
           },
           "value": {
@@ -2832,7 +2841,7 @@
         "properties": {
           "id": {
             "description": "The ID of the tag to delete.",
-            "example": "don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>",
+            "example": "TAG-12345",
             "type": "string"
           }
         },
@@ -2914,7 +2923,7 @@
           },
           "id": {
             "description": "The ID of the tag to update.",
-            "example": "don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>",
+            "example": "TAG-12345",
             "type": "string"
           },
           "name": {
@@ -3028,18 +3037,19 @@
         "properties": {
           "expires_at": {
             "description": "If set, then the entry is ephemeral and will be deleted after the\nprovided time. The minimum value should be at least a minute more\nthan the current timestamp.\n",
+            "example": "2023-01-01T12:00:00.000Z",
             "format": "date-time",
             "type": "string"
           },
           "object": {
             "description": "The ID of the object to create the timeline entry for.",
-            "example": "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>",
+            "example": "PROD-12345",
             "type": "string"
           },
           "private_to": {
             "description": "If the visibility of the entry is private, this specifies the users\nthat the entry is private to. Note the creator is always implicitly\nincluded in this list.\n",
             "example": [
-              "don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"
+              "DEVU-12345"
             ],
             "items": {
               "type": "string"
@@ -3065,7 +3075,7 @@
           "artifacts": {
             "description": "The IDs of the artifacts attached to the comment.",
             "example": [
-              "don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"
+              "ARTIFACT-12345"
             ],
             "items": {
               "type": "string"
@@ -3221,7 +3231,7 @@
           "add": {
             "description": "Adds the provided artifacts to the comment. An artifact cannot be\nadded more than once, i.e. nothing is done if the artifact is\nalready attached. Mutually exclusive with `set`.\n",
             "example": [
-              "don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"
+              "ARTIFACT-12345"
             ],
             "items": {
               "type": "string"
@@ -3231,7 +3241,7 @@
           "remove": {
             "description": "Removes the provided artifacts from the comment. If an artifact is\nnot present, then it's ignored. Mututally exclusive with `set`.\n",
             "example": [
-              "don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"
+              "ARTIFACT-12345"
             ],
             "items": {
               "type": "string"
@@ -3241,7 +3251,7 @@
           "set": {
             "description": "Sets the field to the provided artifacts.",
             "example": [
-              "don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"
+              "ARTIFACT-12345"
             ],
             "items": {
               "type": "string"
@@ -3582,6 +3592,7 @@
           },
           "timestamp": {
             "description": "Timestamp of the webhook's invocation for the event. Note this\nshould be used to protect against replay attacks, where the event\nshould only be processed if the timestamp isn't stale by several\nseconds.\n",
+            "example": "2023-01-01T12:00:00.000Z",
             "format": "date-time",
             "type": "string"
           },
@@ -3931,6 +3942,7 @@
               },
               "target_close_date": {
                 "description": "Timestamp when the work is expected to be complete.",
+                "example": "2023-01-01T12:00:00.000Z",
                 "format": "date-time",
                 "type": "string"
               },
@@ -3974,13 +3986,13 @@
         "properties": {
           "applies_to_part": {
             "description": "The [part](https://devrev.ai/docs/product/parts) that the work\napplies to. Specifying a part is required when creating tickets and\nissues.\n",
-            "example": "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>",
+            "example": "PROD-12345",
             "type": "string"
           },
           "artifacts": {
             "description": "The IDs of the artifacts to associate with the work item.\n",
             "example": [
-              "don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"
+              "ARTIFACT-12345"
             ],
             "items": {
               "type": "string"
@@ -3994,7 +4006,7 @@
           "owned_by": {
             "description": "The users that own the work.",
             "example": [
-              "don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"
+              "DEVU-12345"
             ],
             "items": {
               "type": "string"
@@ -4004,7 +4016,7 @@
           "reported_by": {
             "description": "The users that reported the work.",
             "example": [
-              "don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"
+              "DEVU-12345"
             ],
             "items": {
               "type": "string"
@@ -4023,6 +4035,7 @@
           },
           "target_close_date": {
             "description": "Timestamp for when the work is expected to be complete.",
+            "example": "2023-01-01T12:00:00.000Z",
             "format": "date-time",
             "type": "string"
           },
@@ -4068,7 +4081,7 @@
           },
           "rev_org": {
             "description": "The Rev organization that the ticket is associated with.",
-            "example": "don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>",
+            "example": "REV-AbCdEfGh",
             "type": "string"
           },
           "severity": {
@@ -4099,7 +4112,7 @@
         "properties": {
           "id": {
             "description": "The work's ID.",
-            "example": "don:core:<partition>:devo/<dev-org-id>:<work-type>/<work-id>",
+            "example": "ISS-12345",
             "type": "string"
           }
         },
@@ -4192,7 +4205,7 @@
         "properties": {
           "applies_to_part": {
             "description": "Updates the part that the work item applies to.",
-            "example": "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>",
+            "example": "PROD-12345",
             "type": "string"
           },
           "artifacts": {
@@ -4204,7 +4217,7 @@
           },
           "id": {
             "description": "The work's ID.",
-            "example": "don:core:<partition>:devo/<dev-org-id>:<work-type>/<work-id>",
+            "example": "ISS-12345",
             "type": "string"
           },
           "owned_by": {
@@ -4221,6 +4234,7 @@
           },
           "target_close_date": {
             "description": "Updates the timestamp for when the work is expected to be complete.\n",
+            "example": "2023-01-01T12:00:00.000Z",
             "format": "date-time",
             "nullable": true,
             "type": "string"
@@ -4244,7 +4258,7 @@
           "set": {
             "description": "Sets the IDs to the provided artifact IDs.",
             "example": [
-              "don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>"
+              "ARTIFACT-12345"
             ],
             "items": {
               "type": "string"
@@ -4274,7 +4288,7 @@
           "set": {
             "description": "Sets the owner IDs to the provided user IDs. This must not be\nempty.\n",
             "example": [
-              "don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"
+              "DEVU-12345"
             ],
             "items": {
               "type": "string"
@@ -4290,7 +4304,7 @@
           "set": {
             "description": "Sets the users that reported the work to the provided user IDs.\n",
             "example": [
-              "don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"
+              "DEVU-12345"
             ],
             "items": {
               "type": "string"
@@ -4326,7 +4340,7 @@
           },
           "rev_org": {
             "description": "Updates the Rev organization that the ticket is associated with.\n",
-            "example": "don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>",
+            "example": "REV-AbCdEfGh",
             "nullable": true,
             "type": "string"
           },
@@ -4379,7 +4393,7 @@
             "name": "id",
             "required": true,
             "schema": {
-              "example": "don:core:<partition>:devo/<dev-org-id>:artifact/<artifact-id>",
+              "example": "ARTIFACT-12345",
               "type": "string"
             }
           },
@@ -4389,6 +4403,7 @@
             "in": "query",
             "name": "version",
             "schema": {
+              "example": "2023-01-01T12:00:00.000Z",
               "format": "date-time",
               "type": "string"
             }
@@ -5395,7 +5410,7 @@
             "name": "id",
             "required": true,
             "schema": {
-              "example": "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>",
+              "example": "PROD-12345",
               "type": "string"
             }
           }
@@ -5451,7 +5466,7 @@
             "name": "created_by",
             "schema": {
               "example": [
-                "don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"
+                "DEVU-12345"
               ],
               "items": {
                 "type": "string"
@@ -5506,7 +5521,7 @@
             "name": "owned_by",
             "schema": {
               "example": [
-                "don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"
+                "DEVU-12345"
               ],
               "items": {
                 "type": "string"
@@ -5532,7 +5547,7 @@
             "name": "parent_part.parts",
             "schema": {
               "example": [
-                "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+                "PROD-12345"
               ],
               "items": {
                 "type": "string"
@@ -5751,7 +5766,7 @@
             "in": "query",
             "name": "account",
             "schema": {
-              "example": "don:core:<partition>:devo/<dev-org-id>:account/<account-id>",
+              "example": "ACC-12345",
               "type": "string"
             }
           },
@@ -5761,7 +5776,7 @@
             "in": "query",
             "name": "id",
             "schema": {
-              "example": "don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>",
+              "example": "REV-AbCdEfGh",
               "type": "string"
             }
           }
@@ -5828,6 +5843,7 @@
             "in": "query",
             "name": "created_date.after",
             "schema": {
+              "example": "2023-01-01T12:00:00.000Z",
               "format": "date-time",
               "type": "string"
             }
@@ -5838,6 +5854,7 @@
             "in": "query",
             "name": "created_date.before",
             "schema": {
+              "example": "2023-01-01T12:00:00.000Z",
               "format": "date-time",
               "type": "string"
             }
@@ -5888,6 +5905,7 @@
             "in": "query",
             "name": "modified_date.after",
             "schema": {
+              "example": "2023-01-01T12:00:00.000Z",
               "format": "date-time",
               "type": "string"
             }
@@ -5898,6 +5916,7 @@
             "in": "query",
             "name": "modified_date.before",
             "schema": {
+              "example": "2023-01-01T12:00:00.000Z",
               "format": "date-time",
               "type": "string"
             }
@@ -6116,7 +6135,7 @@
             "name": "id",
             "required": true,
             "schema": {
-              "example": "don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>",
+              "example": "TAG-12345",
               "type": "string"
             }
           }
@@ -6469,7 +6488,7 @@
             "name": "object",
             "required": true,
             "schema": {
-              "example": "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>",
+              "example": "PROD-12345",
               "type": "string"
             }
           },
@@ -6958,7 +6977,7 @@
             "name": "applies_to_part",
             "schema": {
               "example": [
-                "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+                "PROD-12345"
               ],
               "items": {
                 "type": "string"
@@ -6973,7 +6992,7 @@
             "name": "created_by",
             "schema": {
               "example": [
-                "don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"
+                "DEVU-12345"
               ],
               "items": {
                 "type": "string"
@@ -7010,7 +7029,7 @@
             "name": "issue.rev_orgs",
             "schema": {
               "example": [
-                "don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"
+                "REV-AbCdEfGh"
               ],
               "items": {
                 "type": "string"
@@ -7025,7 +7044,7 @@
             "name": "owned_by",
             "schema": {
               "example": [
-                "don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"
+                "DEVU-12345"
               ],
               "items": {
                 "type": "string"
@@ -7052,7 +7071,7 @@
             "name": "tags",
             "schema": {
               "example": [
-                "don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"
+                "TAG-12345"
               ],
               "items": {
                 "type": "string"
@@ -7097,7 +7116,7 @@
             "name": "ticket.rev_org",
             "schema": {
               "example": [
-                "don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"
+                "REV-AbCdEfGh"
               ],
               "items": {
                 "type": "string"
@@ -7190,7 +7209,7 @@
             "name": "id",
             "required": true,
             "schema": {
-              "example": "don:core:<partition>:devo/<dev-org-id>:<work-type>/<work-id>",
+              "example": "ISS-12345",
               "type": "string"
             }
           }
@@ -7246,7 +7265,7 @@
             "name": "applies_to_part",
             "schema": {
               "example": [
-                "don:core:<partition>:devo/<dev-org-id>:<part-type>/<part-id>"
+                "PROD-12345"
               ],
               "items": {
                 "type": "string"
@@ -7261,7 +7280,7 @@
             "name": "created_by",
             "schema": {
               "example": [
-                "don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"
+                "DEVU-12345"
               ],
               "items": {
                 "type": "string"
@@ -7297,7 +7316,7 @@
             "name": "issue.rev_orgs",
             "schema": {
               "example": [
-                "don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"
+                "REV-AbCdEfGh"
               ],
               "items": {
                 "type": "string"
@@ -7331,7 +7350,7 @@
             "name": "owned_by",
             "schema": {
               "example": [
-                "don:identity:<partition>:devo/<dev-org-id>:devu/<dev-user-id>"
+                "DEVU-12345"
               ],
               "items": {
                 "type": "string"
@@ -7358,7 +7377,7 @@
             "name": "tags",
             "schema": {
               "example": [
-                "don:core:<partition>:devo/<dev-org-id>:tag/<tag-id>"
+                "TAG-12345"
               ],
               "items": {
                 "type": "string"
@@ -7403,7 +7422,7 @@
             "name": "ticket.rev_org",
             "schema": {
               "example": [
-                "don:identity:<partition>:devo/<dev-org-id>:revo/<rev-org-id>"
+                "REV-AbCdEfGh"
               ],
               "items": {
                 "type": "string"
