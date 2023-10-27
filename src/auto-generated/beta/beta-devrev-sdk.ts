@@ -423,6 +423,12 @@ export interface ArticlesCreateRequestResource {
    * @example ["ARTIFACT-12345"]
    */
   artifacts?: string[];
+  /**
+   * The timestamp at which the article is published at.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  published_version?: string;
   /** URL of the external article. */
   url?: string;
 }
