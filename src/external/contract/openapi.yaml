@@ -52,6 +52,22 @@ components:
       allOf:
       - $ref: '#/components/schemas/atom-base-summary'
       title: artifact-summary
+    artifacts-locate-request:
+      description: The request to get an artifact's download URL.
+      properties:
+        id:
+          description: The ID of the artifact to get the URL for.
+          example: ARTIFACT-12345
+          type: string
+        version:
+          description: The version of the artifact that needs to be fetched.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+          type: string
+      required:
+      - id
+      title: artifacts-locate-request
+      type: object
     artifacts-locate-response:
       description: The response to getting an artifact's download URL.
       properties:
@@ -496,6 +512,17 @@ components:
           type: string
       title: auth-tokens-delete-request
       type: object
+    auth-tokens-get-request:
+      description: The request to get the token metadata.
+      properties:
+        token_id:
+          description: |
+            The unique identifier of the token under a given Dev organization.
+          type: string
+      required:
+      - token_id
+      title: auth-tokens-get-request
+      type: object
     auth-tokens-get-response:
       description: The response to get the token metadata.
       properties:
@@ -506,6 +533,24 @@ components:
       title: auth-tokens-get-response
       type: object
       x-go-name: AuthTokensGetResponseBody
+    auth-tokens-list-request:
+      description: A request to list the token metadata.
+      properties:
+        client_id:
+          description: |
+            An identifier that represents the application, which requested the
+            token. Only relevant for application access tokens.
+          type: string
+        requested_token_type:
+          $ref: '#/components/schemas/auth-token-requested-token-type'
+        subject:
+          description: |
+            The subject associated with the token. In the absence of this
+            parameter, the ID of the authenticated entity is treated as the
+            subject.
+          type: string
+      title: auth-tokens-list-request
+      type: object
     auth-tokens-list-response:
       description: The response to list the token metadata.
       properties:
@@ -614,6 +659,96 @@ components:
       allOf:
       - $ref: '#/components/schemas/part-base-summary'
       title: capability-summary
+    date-filter:
+      description: Provides ways to specify date ranges on objects.
+      discriminator:
+        mapping:
+          preset: '#/components/schemas/date-time-preset'
+          range: '#/components/schemas/date-time-filter'
+        propertyName: type
+      oneOf:
+      - $ref: '#/components/schemas/date-time-filter'
+      - $ref: '#/components/schemas/date-time-preset'
+      properties:
+        type:
+          $ref: '#/components/schemas/date-filter-type'
+      required:
+      - type
+      title: date-filter
+      type: object
+    date-filter-type:
+      description: Type of date filter.
+      enum:
+      - preset
+      - range
+      type: string
+    date-time-filter:
+      properties:
+        after:
+          description: |
+            Filters for objects created after the provided timestamp
+            (inclusive).
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+          type: string
+        before:
+          description: |
+            Filters for objects created before the provided timestamp
+            (inclusive).
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+          type: string
+      title: date-time-filter
+      type: object
+    date-time-preset:
+      description: Provides preset types for date filter.
+      discriminator:
+        mapping:
+          last_n_days: '#/components/schemas/date-time-preset-last-n-days'
+          next_n_days: '#/components/schemas/date-time-preset-next-n-days'
+        propertyName: preset_type
+      oneOf:
+      - $ref: '#/components/schemas/date-time-preset-last-n-days'
+      - $ref: '#/components/schemas/date-time-preset-next-n-days'
+      properties:
+        preset_type:
+          $ref: '#/components/schemas/date-time-preset-type'
+      required:
+      - preset_type
+      title: date-time-preset
+      type: object
+    date-time-preset-last-n-days:
+      properties:
+        days:
+          description: |
+            The range starts from the current timestamp and continues for the
+            past n days.
+          maximum: 4294967295
+          minimum: 0
+          type: integer
+      required:
+      - days
+      title: date-time-preset-last-n-days
+      type: object
+    date-time-preset-next-n-days:
+      properties:
+        days:
+          description: |
+            The range starts from the current timestamp and continues for the
+            next n days.
+          maximum: 4294967295
+          minimum: 0
+          type: integer
+      required:
+      - days
+      title: date-time-preset-next-n-days
+      type: object
+    date-time-preset-type:
+      description: Type of date preset.
+      enum:
+      - last_n_days
+      - next_n_days
+      type: string
     dev-org-auth-connections-create-request:
       description: |
         Request to create a new enterprise authentication connection.
@@ -677,6 +812,18 @@ components:
       required:
       - id
       title: dev-org-auth-connections-delete-request
+      type: object
+    dev-org-auth-connections-get-request:
+      description: |
+        Request to get configuration details of organization's authentication
+        Connection.
+      properties:
+        id:
+          description: ID of the authentication connection.
+          type: string
+      required:
+      - id
+      title: dev-org-auth-connections-get-request
       type: object
     dev-org-auth-connections-get-response:
       description: |
@@ -796,6 +943,16 @@ components:
       allOf:
       - $ref: '#/components/schemas/user-base-summary'
       title: dev-user-summary
+    dev-users-get-request:
+      description: A request to get a Dev user's information.
+      properties:
+        id:
+          description: User ID of the requested Dev user.
+          type: string
+      required:
+      - id
+      title: dev-users-get-request
+      type: object
     dev-users-get-response:
       description: The response to getting the information for the Dev user.
       properties:
@@ -806,6 +963,39 @@ components:
       title: dev-users-get-response
       type: object
       x-go-name: DevUsersGetResponseBody
+    dev-users-list-request:
+      description: A request to get the list of Dev user's information.
+      properties:
+        cursor:
+          description: |
+            The cursor to resume iteration from. If not provided, then
+            iteration starts from the beginning.
+          type: string
+        email:
+          description: Filters Dev users based on email addresses.
+          items:
+            type: string
+          type: array
+        limit:
+          description: |
+            The maximum number of Dev users to return. The default is '50'.
+          format: int32
+          type: integer
+        mode:
+          $ref: '#/components/schemas/list-mode'
+        sort_by:
+          description: |
+            Fields to sort the Dev users by and the direction to sort them.
+          items:
+            type: string
+          type: array
+        state:
+          description: Filters Dev users based on state.
+          items:
+            $ref: '#/components/schemas/user-state'
+          type: array
+      title: dev-users-list-request
+      type: object
     dev-users-list-response:
       description: The response to listing the Dev users.
       properties:
@@ -829,6 +1019,10 @@ components:
       title: dev-users-list-response
       type: object
       x-go-name: DevUsersListResponseBody
+    dev-users-self-request:
+      description: A request to get the authenticated user's information.
+      title: dev-users-self-request
+      type: object
     dev-users-self-response:
       description: |
         The response to getting the information for the authenticated user.
@@ -1386,6 +1580,26 @@ components:
       enum:
       - rev_org
       type: string
+    parent-part-filter:
+      description: The filter for specifying parent part.
+      properties:
+        level:
+          description: Number of levels to fetch the part hierarchy up to.
+          format: int32
+          minimum: 1
+          type: integer
+        parts:
+          description: Part IDs to fetch the hierarchy for.
+          example:
+          - PROD-12345
+          items:
+            type: string
+          minItems: 1
+          type: array
+      required:
+      - parts
+      title: parent-part-filter
+      type: object
     part:
       discriminator:
         mapping:
@@ -1598,6 +1812,16 @@ components:
       title: parts-delete-response
       type: object
       x-go-name: PartsDeleteResponseBody
+    parts-get-request:
+      properties:
+        id:
+          description: The ID of the part to retrieve.
+          example: PROD-12345
+          type: string
+      required:
+      - id
+      title: parts-get-request
+      type: object
     parts-get-response:
       properties:
         part:
@@ -1607,6 +1831,48 @@ components:
       title: parts-get-response
       type: object
       x-go-name: PartsGetResponseBody
+    parts-list-request:
+      properties:
+        created_by:
+          description: Filters for parts created by any of these users.
+          example:
+          - DEVU-12345
+          items:
+            type: string
+          type: array
+        cursor:
+          description: |
+            The cursor to resume iteration from. If not provided, then
+            iteration starts from the beginning.
+          type: string
+        limit:
+          description: |
+            The maximum number of parts to return. The default is '50'.
+          format: int32
+          type: integer
+        mode:
+          $ref: '#/components/schemas/list-mode'
+        name:
+          description: Filters for parts of the provided name(s).
+          items:
+            type: string
+          type: array
+        owned_by:
+          description: Filters for parts owned by any of these users.
+          example:
+          - DEVU-12345
+          items:
+            type: string
+          type: array
+        parent_part:
+          $ref: '#/components/schemas/parent-part-filter'
+        type:
+          description: Filters for parts of the provided type(s).
+          items:
+            $ref: '#/components/schemas/part-type'
+          type: array
+      title: parts-list-request
+      type: object
     parts-list-response:
       properties:
         next_cursor:
@@ -1810,6 +2076,21 @@ components:
       title: rev-orgs-delete-response
       type: object
       x-go-name: RevOrgsDeleteResponseBody
+    rev-orgs-get-request:
+      description: Request object to get Rev organization's information.
+      properties:
+        account:
+          description: |
+            The ID of account for which default Rev organization is to be
+            fetched.
+          example: ACC-12345
+          type: string
+        id:
+          description: The ID of the required Rev organization.
+          example: REV-AbCdEfGh
+          type: string
+      title: rev-orgs-get-request
+      type: object
     rev-orgs-get-response:
       description: The response to getting a Rev organization's information.
       properties:
@@ -1820,6 +2101,46 @@ components:
       title: rev-orgs-get-response
       type: object
       x-go-name: RevOrgsGetResponseBody
+    rev-orgs-list-request:
+      description: |
+        A request to get the list of Rev organizations for the authenticated
+        user's Dev organization.
+      properties:
+        created_by:
+          description: Filters by creator.
+          items:
+            type: string
+          type: array
+        created_date:
+          $ref: '#/components/schemas/date-time-filter'
+        cursor:
+          description: |
+            The cursor to resume iteration from. If not provided, then
+            iteration starts from the beginning.
+          type: string
+        external_ref:
+          description: List of external refs to filter Rev organizations for.
+          items:
+            type: string
+          type: array
+        limit:
+          description: |
+            The maximum number of Rev organizations to be retrieved per page.
+          format: int32
+          type: integer
+        mode:
+          $ref: '#/components/schemas/list-mode'
+        modified_date:
+          $ref: '#/components/schemas/date-time-filter'
+        sort_by:
+          description: |
+            Fields to sort the Rev organizations by and the direction to sort
+            them.
+          items:
+            type: string
+          type: array
+      title: rev-orgs-list-request
+      type: object
     rev-orgs-list-response:
       description: |
         The response to getting a list of Rev organizations' information.
@@ -1936,6 +2257,10 @@ components:
       - id
       title: set-tag-with-value
       type: object
+    sla-summary-filter:
+      description: The filter for SLA summary.
+      title: sla-summary-filter
+      type: object
     stage:
       description: Describes the current stage of a work item.
       properties:
@@ -1945,6 +2270,16 @@ components:
       required:
       - name
       title: stage
+      type: object
+    stage-filter:
+      description: The filter for stages.
+      properties:
+        name:
+          description: Filters for records in the provided stage(s) by name.
+          items:
+            type: string
+          type: array
+      title: stage-filter
       type: object
     stage-init:
       description: Sets an object's initial stage.
@@ -1962,6 +2297,10 @@ components:
             The updated name of the stage, otherwise unchanged if not set.
           type: string
       title: stage-update
+      type: object
+    survey-aggregation-filter:
+      description: The filter for survey aggregation.
+      title: survey-aggregation-filter
       type: object
     sys-user-summary:
       allOf:
@@ -2066,6 +2405,17 @@ components:
       title: tags-delete-response
       type: object
       x-go-name: TagsDeleteResponseBody
+    tags-get-request:
+      description: The request to get a tag's information.
+      properties:
+        id:
+          description: The requested tag's ID.
+          example: TAG-12345
+          type: string
+      required:
+      - id
+      title: tags-get-request
+      type: object
     tags-get-response:
       description: The response to getting a tag's information.
       properties:
@@ -2076,6 +2426,33 @@ components:
       title: tags-get-response
       type: object
       x-go-name: TagsGetResponseBody
+    tags-list-request:
+      description: The request to get information about a list of tags.
+      properties:
+        cursor:
+          description: |
+            The cursor to resume iteration from. If not provided, then
+            iteration starts from the beginning.
+          type: string
+        limit:
+          description: |
+            The maximum number of tags to return. The default is '50'.
+          format: int32
+          type: integer
+        mode:
+          $ref: '#/components/schemas/list-mode'
+        name:
+          description: Filters for tags with the provided names.
+          items:
+            type: string
+          type: array
+        sort_by:
+          description: Fields to sort tags by and the direction to sort them.
+          items:
+            type: string
+          type: array
+      title: tags-list-request
+      type: object
     tags-list-response:
       description: The response to listing the tags.
       properties:
@@ -2274,6 +2651,17 @@ components:
       title: timeline-entries-delete-response
       type: object
       x-go-name: TimelineEntriesDeleteResponseBody
+    timeline-entries-get-request:
+      description: The request to get a timeline entry.
+      properties:
+        id:
+          description: The ID of the timeline entry to get.
+          example: don:core:<partition>:devo/<dev-org-id>:ticket/123:timeline_event/<timeline-event-id>
+          type: string
+      required:
+      - id
+      title: timeline-entries-get-request
+      type: object
     timeline-entries-get-response:
       description: The request to getting a timeline entry.
       properties:
@@ -2284,6 +2672,38 @@ components:
       title: timeline-entries-get-response
       type: object
       x-go-name: TimelineEntriesGetResponseBody
+    timeline-entries-list-request:
+      description: The request to list timeline entries for an object.
+      properties:
+        cursor:
+          description: |
+            The cursor to resume iteration from. If not provided, then
+            iteration starts from the beginning.
+          type: string
+        limit:
+          description: |
+            The maximum number of entries to return. If not set, then this
+            defaults to `50`.
+          format: int32
+          type: integer
+        mode:
+          $ref: '#/components/schemas/list-mode'
+        object:
+          description: The ID of the object to list timeline entries for.
+          example: PROD-12345
+          type: string
+        visibility:
+          description: |
+            The visibility of the timeline entries to filter for. Note this is
+            a strict filter, such that only entries with the exact visibilities
+            specified will be returned.
+          items:
+            $ref: '#/components/schemas/timeline-entry-visibility'
+          type: array
+      required:
+      - object
+      title: timeline-entries-list-request
+      type: object
     timeline-entries-list-response:
       description: The response to listing timeline entries for an object.
       properties:
@@ -2737,6 +3157,17 @@ components:
       title: webhooks-delete-response
       type: object
       x-go-name: WebhooksDeleteResponseBody
+    webhooks-get-request:
+      description: The request to get a webhook's information.
+      properties:
+        id:
+          description: ID for the webhook.
+          example: don:integration:<partition>:devo/<dev-org-id>:webhook/<webhook-id>
+          type: string
+      required:
+      - id
+      title: webhooks-get-request
+      type: object
     webhooks-get-response:
       description: The response to getting the information for the webhook.
       properties:
@@ -2747,6 +3178,10 @@ components:
       title: webhooks-get-response
       type: object
       x-go-name: WebhooksGetResponseBody
+    webhooks-list-request:
+      description: The request to list the webhooks.
+      title: webhooks-list-request
+      type: object
     webhooks-list-response:
       description: The response to listing the webhooks.
       properties:
@@ -3016,6 +3451,63 @@ components:
       title: works-delete-response
       type: object
       x-go-name: WorksDeleteResponseBody
+    works-export-request:
+      properties:
+        actual_close_date:
+          $ref: '#/components/schemas/date-filter'
+        applies_to_part:
+          description: Filters for work belonging to any of the provided parts.
+          example:
+          - PROD-12345
+          items:
+            type: string
+          type: array
+        created_by:
+          description: Filters for work created by any of these users.
+          example:
+          - DEVU-12345
+          items:
+            type: string
+          type: array
+        created_date:
+          $ref: '#/components/schemas/date-filter'
+        first:
+          description: |
+            The number of work items to return. The default is '50', the
+            maximum is '5000'.
+          format: int32
+          type: integer
+        issue:
+          $ref: '#/components/schemas/works-filter-issue'
+        modified_date:
+          $ref: '#/components/schemas/date-filter'
+        owned_by:
+          description: Filters for work owned by any of these users.
+          example:
+          - DEVU-12345
+          items:
+            type: string
+          type: array
+        stage:
+          $ref: '#/components/schemas/stage-filter'
+        tags:
+          description: Filters for work with any of the provided tags.
+          example:
+          - TAG-12345
+          items:
+            type: string
+          type: array
+        target_close_date:
+          $ref: '#/components/schemas/date-filter'
+        ticket:
+          $ref: '#/components/schemas/works-filter-ticket'
+        type:
+          description: Filters for work of the provided types.
+          items:
+            $ref: '#/components/schemas/work-type'
+          type: array
+      title: works-export-request
+      type: object
     works-export-response:
       properties:
         works:
@@ -3028,6 +3520,72 @@ components:
       title: works-export-response
       type: object
       x-go-name: WorksExportResponseBody
+    works-filter-issue:
+      properties:
+        priority:
+          description: Filters for issues with any of the provided priorities.
+          items:
+            $ref: '#/components/schemas/issue-priority'
+          type: array
+        rev_orgs:
+          description: |
+            Filters for issues with any of the provided Rev organizations.
+          example:
+          - REV-AbCdEfGh
+          items:
+            type: string
+          type: array
+      title: works-filter-issue
+      type: object
+    works-filter-ticket:
+      properties:
+        group:
+          description: Filters for tickets belonging to specific groups.
+          items:
+            type: string
+          type: array
+        is_spam:
+          description: Filters for tickets that are spam.
+          type: boolean
+        needs_response:
+          description: Filters for tickets that need response.
+          type: boolean
+        rev_org:
+          description: |
+            Filters for tickets that are associated with any of the provided
+            Rev organizations.
+          example:
+          - REV-AbCdEfGh
+          items:
+            type: string
+          type: array
+        severity:
+          description: Filters for tickets with any of the provided severities.
+          items:
+            $ref: '#/components/schemas/ticket-severity'
+          type: array
+        sla_summary:
+          $ref: '#/components/schemas/sla-summary-filter'
+        source_channel:
+          description: |
+            Filters for tickets with any of the provided source channels.
+          items:
+            type: string
+          type: array
+        surveys:
+          $ref: '#/components/schemas/survey-aggregation-filter'
+      title: works-filter-ticket
+      type: object
+    works-get-request:
+      properties:
+        id:
+          description: The work's ID.
+          example: ISS-12345
+          type: string
+      required:
+      - id
+      title: works-get-request
+      type: object
     works-get-response:
       properties:
         work:
@@ -3037,6 +3595,69 @@ components:
       title: works-get-response
       type: object
       x-go-name: WorksGetResponseBody
+    works-list-request:
+      properties:
+        actual_close_date:
+          $ref: '#/components/schemas/date-filter'
+        applies_to_part:
+          description: Filters for work belonging to any of the provided parts.
+          example:
+          - PROD-12345
+          items:
+            type: string
+          type: array
+        created_by:
+          description: Filters for work created by any of these users.
+          example:
+          - DEVU-12345
+          items:
+            type: string
+          type: array
+        created_date:
+          $ref: '#/components/schemas/date-filter'
+        cursor:
+          description: |
+            The cursor to resume iteration from. If not provided, then
+            iteration starts from the beginning.
+          type: string
+        issue:
+          $ref: '#/components/schemas/works-filter-issue'
+        limit:
+          description: |
+            The maximum number of works to return. The default is '50'.
+          format: int32
+          type: integer
+        mode:
+          $ref: '#/components/schemas/list-mode'
+        modified_date:
+          $ref: '#/components/schemas/date-filter'
+        owned_by:
+          description: Filters for work owned by any of these users.
+          example:
+          - DEVU-12345
+          items:
+            type: string
+          type: array
+        stage:
+          $ref: '#/components/schemas/stage-filter'
+        tags:
+          description: Filters for work with any of the provided tags.
+          example:
+          - TAG-12345
+          items:
+            type: string
+          type: array
+        target_close_date:
+          $ref: '#/components/schemas/date-filter'
+        ticket:
+          $ref: '#/components/schemas/works-filter-ticket'
+        type:
+          description: Filters for work of the provided types.
+          items:
+            $ref: '#/components/schemas/work-type'
+          type: array
+      title: works-list-request
+      type: object
     works-list-response:
       properties:
         next_cursor:
@@ -3251,6 +3872,37 @@ paths:
       tags:
       - artifacts
       x-request-name: ArtifactsLocateQuery
+    post:
+      description: Gets the download URL for the artifact.
+      operationId: artifacts-locate-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/artifacts-locate-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/artifacts-locate-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - artifacts
   /artifacts.prepare:
     post:
       description: |
@@ -3383,6 +4035,39 @@ paths:
       tags:
       - auth-tokens
       x-request-name: AuthTokensGetQuery
+    post:
+      description: |
+        Gets the token metadata corresponding to the given token ID under the
+        given Dev organization.
+      operationId: auth-tokens-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/auth-tokens-get-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/auth-tokens-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - auth-tokens
   /auth-tokens.list:
     get:
       description: |
@@ -3439,6 +4124,39 @@ paths:
       tags:
       - auth-tokens
       x-request-name: AuthTokensListQuery
+    post:
+      description: |
+        Gets the token metadata for all the tokens corresponding to the given
+        token type issued for a given subject.
+      operationId: auth-tokens-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/auth-tokens-list-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/auth-tokens-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - auth-tokens
   /auth-tokens.self.delete:
     post:
       description: |
@@ -3609,6 +4327,38 @@ paths:
       - auth-connection
       - dev-orgs
       x-request-name: DevOrgAuthConnectionsGetQuery
+    post:
+      description: Retrieves the details for an authentication connection.
+      operationId: dev-org-auth-connections-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dev-org-auth-connections-get-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dev-org-auth-connections-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - auth-connection
+      - dev-orgs
   /dev-orgs.auth-connections.list:
     get:
       description: |
@@ -3640,6 +4390,40 @@ paths:
       - auth-connection
       - dev-orgs
       x-request-name: DevOrgAuthConnectionsListQuery
+    post:
+      description: |
+        Lists all the authentication connections available for a Dev
+        organization. This list will include both social and enterprise
+        connections which are either available by default or are explicitly
+        created by the user.
+      operationId: dev-org-auth-connections-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/empty'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dev-org-auth-connections-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - auth-connection
+      - dev-orgs
   /dev-orgs.auth-connections.toggle:
     post:
       description: |
@@ -3743,6 +4527,37 @@ paths:
       tags:
       - dev-users
       x-request-name: DevUsersGetQuery
+    post:
+      description: Gets the requested user's information.
+      operationId: dev-users-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dev-users-get-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dev-users-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - dev-users
   /dev-users.list:
     get:
       description: Lists users within your organization.
@@ -3819,6 +4634,35 @@ paths:
       tags:
       - dev-users
       x-request-name: DevUsersListQuery
+    post:
+      description: Lists users within your organization.
+      operationId: dev-users-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dev-users-list-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dev-users-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - dev-users
   /dev-users.self:
     get:
       description: Gets the authenticated user's information.
@@ -3845,6 +4689,35 @@ paths:
       tags:
       - dev-users
       x-request-name: DevUsersSelfQuery
+    post:
+      description: Gets the authenticated user's information.
+      operationId: dev-users-self-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dev-users-self-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dev-users-self-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - dev-users
   /parts.create:
     post:
       description: Creates new [part](https://devrev.ai/docs/product/parts).
@@ -3945,6 +4818,38 @@ paths:
       tags:
       - parts
       x-request-name: PartsGetQuery
+    post:
+      description: |
+        Gets a [part's](https://devrev.ai/docs/product/parts) information.
+      operationId: parts-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/parts-get-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/parts-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - parts
   /parts.list:
     get:
       description: |
@@ -4054,6 +4959,36 @@ paths:
       tags:
       - parts
       x-request-name: PartsListQuery
+    post:
+      description: |
+        Lists a collection of [parts](https://devrev.ai/docs/product/parts).
+      operationId: parts-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/parts-list-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/parts-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - parts
   /parts.update:
     post:
       description: |
@@ -4196,6 +5131,37 @@ paths:
       tags:
       - rev-orgs
       x-request-name: RevOrgsGetQuery
+    post:
+      description: Retrieves the Rev organization's information.
+      operationId: rev-orgs-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/rev-orgs-get-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rev-orgs-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - rev-orgs
   /rev-orgs.list:
     get:
       description: |
@@ -4316,6 +5282,40 @@ paths:
       tags:
       - rev-orgs
       x-request-name: RevOrgsListQuery
+    post:
+      description: |
+        Gets the list of Rev organizations' information belonging to the
+        authenticated user's Dev Organization which the user is also authorized
+        to access.
+      operationId: rev-orgs-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/rev-orgs-list-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rev-orgs-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - rev-orgs
   /rev-orgs.update:
     post:
       description: Updates the Rev organization's information.
@@ -4449,6 +5449,37 @@ paths:
       tags:
       - tags
       x-request-name: TagsGetQuery
+    post:
+      description: Gets a tag's information.
+      operationId: tags-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/tags-get-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tags-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - tags
   /tags.list:
     get:
       description: Lists the available tags.
@@ -4515,6 +5546,35 @@ paths:
       tags:
       - tags
       x-request-name: TagsListQuery
+    post:
+      description: Lists the available tags.
+      operationId: tags-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/tags-list-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tags-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - tags
   /tags.update:
     post:
       description: Updates a tag's information.
@@ -4644,6 +5704,37 @@ paths:
       tags:
       - timeline-entries
       x-request-name: TimelineEntriesGetQuery
+    post:
+      description: Gets an entry on an object's timeline.
+      operationId: timeline-entries-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/timeline-entries-get-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/timeline-entries-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - timeline-entries
   /timeline-entries.list:
     get:
       description: Lists the timeline entries for an object.
@@ -4717,6 +5808,37 @@ paths:
       tags:
       - timeline-entries
       x-request-name: TimelineEntriesListQuery
+    post:
+      description: Lists the timeline entries for an object.
+      operationId: timeline-entries-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/timeline-entries-list-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/timeline-entries-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - timeline-entries
   /timeline-entries.update:
     post:
       description: Updates an entry on an object's timeline.
@@ -4846,6 +5968,37 @@ paths:
       tags:
       - webhooks
       x-request-name: WebhooksGetQuery
+    post:
+      description: Gets the requested webhook's information.
+      operationId: webhooks-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/webhooks-get-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/webhooks-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - webhooks
   /webhooks.list:
     get:
       description: Lists the webhooks.
@@ -4872,6 +6025,35 @@ paths:
       tags:
       - webhooks
       x-request-name: WebhooksListQuery
+    post:
+      description: Lists the webhooks.
+      operationId: webhooks-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/webhooks-list-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/webhooks-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - webhooks
   /webhooks.update:
     post:
       description: Updates the requested webhook.
@@ -5130,6 +6312,35 @@ paths:
       tags:
       - works
       x-request-name: WorksExportQuery
+    post:
+      description: Exports a collection of work items.
+      operationId: works-export-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/works-export-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/works-export-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - works
   /works.get:
     get:
       description: Gets a work item's information.
@@ -5167,6 +6378,37 @@ paths:
       tags:
       - works
       x-request-name: WorksGetQuery
+    post:
+      description: Gets a work item's information.
+      operationId: works-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/works-get-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/works-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - works
   /works.list:
     get:
       description: Lists a collection of work items.
@@ -5342,6 +6584,35 @@ paths:
       tags:
       - works
       x-request-name: WorksListQuery
+    post:
+      description: Lists a collection of work items.
+      operationId: works-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/works-list-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/works-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - works
   /works.update:
     post:
       description: Updates a work item's information.
