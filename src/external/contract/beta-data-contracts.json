@@ -650,6 +650,37 @@
         "type": "object",
         "x-go-name": "AggregatedSchemaGetResponseBody"
       },
+      "aggregation-detail": {
+        "description": "Stores aggregation type and dimension information.",
+        "properties": {
+          "aggregation_type": {
+            "$ref": "#/components/schemas/aggregation-detail-aggregation-type"
+          },
+          "unique_dimension": {
+            "description": "Unique dimension if provided to be considered for grouping metering\ndata for the UOM.\n",
+            "type": "string"
+          }
+        },
+        "required": [
+          "aggregation_type"
+        ],
+        "title": "aggregation-detail",
+        "type": "object"
+      },
+      "aggregation-detail-aggregation-type": {
+        "description": "Aggregation type to be used while aggregating the metering data for the\nUOM. 1] Sum - sum of all the values for the meter in a given period Ex.\n{ M1:2, M1:4 } => {M1:6} 2] Minimum - min of all the values for the\nmeter in a given period Ex. { M1:2, M1:4 } => {M1:2} 3] Maximum - max\nof all the values for the meter in a given period Ex. { M1:2, M1:4 } =>\n{M1:4} 4] Unique Count - Sum of distinct unique dimension observed for\nthe meter in the given period (not considering the data from the\nprevious billing period) Ex. January {M1:{VM:VM0}}, February\n{M1:{VM:VM1}, M1:{VM:VM2}, M1:{VM:VM1}} => {M1:2} 5] Running Total -\nSum of distinct active unique dimension observed for a meter in the\ngiven period, taking into consideration the active data from the\nprevious billing cycle Ex. January {M1:{VM:VM0,on}, {M1:{VM:VM1,off}\nFebruary {M1:{VM:VM2, on}, M1:{VM:VM2, off}, M1:{VM:VM3, on}} => {M1:3}\n6] Duration - Sum of distinct active unique dimension duration for a\nmeter in the given period, taking into consideration the active data\nfrom the previous month Ex. January15 {M1:{VM:VM0,on, 4}} February15\n{M1:{VM:VM0,off}, February18 {M1:{VM:VM1,on,5} => M1->\n30*4*charge_per_day + 10*5*charge_per_day 7] Latest - consider the\nlatest/last meter in the given period 8] Oldest - consider the\noldest/first record in the given period.\n",
+        "enum": [
+          "duration",
+          "latest",
+          "maximum",
+          "minimum",
+          "oldest",
+          "running_total",
+          "sum",
+          "unique_count"
+        ],
+        "type": "string"
+      },
       "app-fragment": {
         "allOf": [
           {
@@ -9000,6 +9031,32 @@
         "title": "timeline-thread",
         "type": "object"
       },
+      "unit": {
+        "description": "Unit encapsulates the name of the unit and the type of the unit. For\nexample, '#Number of API calls' where name is 'number_of_api_calls' and\ntype is 'number'.\n",
+        "properties": {
+          "name": {
+            "description": "This represents human readable unit name of the UOM For example,\nnumber of API calls.\n",
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/unit-type"
+          }
+        },
+        "required": [
+          "name",
+          "type"
+        ],
+        "title": "unit",
+        "type": "object"
+      },
+      "unit-type": {
+        "description": "This defines the UOM unit type. For example, for 'number of video\ncalls', unit type will be a number.\n",
+        "enum": [
+          "boolean",
+          "number"
+        ],
+        "type": "string"
+      },
       "unlink-rev-user-from-rev-org-request": {
         "description": "A request to unlink a rev user from a rev org.",
         "properties": {
@@ -9033,6 +9090,332 @@
         "title": "unlink-rev-user-from-rev-org-response",
         "type": "object",
         "x-go-name": "UnlinkRevUserFromRevOrgResponseBody"
+      },
+      "uom": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/atom-base"
+          },
+          {
+            "properties": {
+              "aggregation_details": {
+                "$ref": "#/components/schemas/aggregation-detail"
+              },
+              "description": {
+                "description": "Description of the UOM.",
+                "type": "string"
+              },
+              "dimensions": {
+                "description": "The list of dimensions that can be emitted along with the metering\ndata.\n",
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "is_enabled": {
+                "description": "If set to true, then the UOM can be configured as part of\nentitlements in skus and metering data only for the enabled uoms\nwill be passed through the metering pipeline.\n",
+                "type": "boolean"
+              },
+              "metric_name": {
+                "description": "Human readable metric name of the UOM.",
+                "type": "string"
+              },
+              "metric_scope": {
+                "$ref": "#/components/schemas/uom-metric-scope"
+              },
+              "name": {
+                "description": "Human readable name of the UOM.",
+                "type": "string"
+              },
+              "part": {
+                "$ref": "#/components/schemas/part-summary"
+              },
+              "product": {
+                "$ref": "#/components/schemas/part-summary"
+              },
+              "unit": {
+                "$ref": "#/components/schemas/unit"
+              }
+            },
+            "required": [
+              "aggregation_details",
+              "is_enabled",
+              "metric_name",
+              "metric_scope",
+              "name",
+              "product",
+              "unit"
+            ],
+            "type": "object"
+          }
+        ],
+        "title": "uom"
+      },
+      "uom-metric-scope": {
+        "description": "The granularity at which the metrics ingestion data is to be emitted\nfor the UOM.\n",
+        "enum": [
+          "org",
+          "user"
+        ],
+        "type": "string"
+      },
+      "uoms-create-request": {
+        "properties": {
+          "aggregation_detail": {
+            "$ref": "#/components/schemas/aggregation-detail"
+          },
+          "description": {
+            "description": "Description of the Unit of Measurement (UOM).",
+            "type": "string"
+          },
+          "dimensions": {
+            "description": "The list of dimensions that can be emitted as part of metrics data.\nDimensions consist of list of key-value pairs. For example, if the\nUOM is 'number_of_api_calls', then dimensions can be ['api_name',\n'api_version'].Dimension keys can only contain alphanumeric\ncharacters (A-Z, a-z, and 0-9) and underscores (_). Dimension keys\ncannot start with a number and is case-insensitive.Dimension keys\nmust be unique and it is not allowed to have more than one value\nwith the same key.Metrics data ingested in DevRev metrics format\nwill be grouped and aggregated based on the dimensions specified in\nUOM.\n",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 10,
+            "maxLength": 64,
+            "minLength": 1,
+            "type": "array"
+          },
+          "metric_name": {
+            "description": "Name of the Unit of Measurement (UOM). Unit of Measurement is a\nunit of measure defined over a part offered by a Dev Org. A single\npart can have multiple unit of measurements defined over it. For\nexample, a part can be 'video call', one UOM defined on this can be\n'number_of_calls', other UOM can be 'call_duration' etc.Metric name\nshould be unique across all UOMs in a Dev Org.Metric name can only\ncontain alphanumeric characters (A-Z, a-z, and 0-9) and underscores\n(_). Metric name cannot start with a number and is\ncase-insensitive.\n",
+            "maxLength": 64,
+            "minLength": 1,
+            "type": "string"
+          },
+          "name": {
+            "description": "Human readable name of the Unit of Measurement (UOM).",
+            "type": "string"
+          },
+          "part_id": {
+            "description": "The part ID for which the Unit of Measurement (UOM) is defined.\nWhen defined, ingested metrics data will be associated with part\nand product specified in UOM.\n",
+            "example": "PROD-12345",
+            "type": "string"
+          },
+          "product_id": {
+            "description": "The product ID for which the Unit of Measurement (UOM) is defined.\n",
+            "example": "PROD-12345",
+            "type": "string"
+          },
+          "unit": {
+            "$ref": "#/components/schemas/unit"
+          }
+        },
+        "required": [
+          "aggregation_detail",
+          "metric_name",
+          "name",
+          "product_id",
+          "unit"
+        ],
+        "title": "uoms-create-request",
+        "type": "object"
+      },
+      "uoms-create-response": {
+        "properties": {
+          "uom": {
+            "$ref": "#/components/schemas/uom"
+          }
+        },
+        "required": [
+          "uom"
+        ],
+        "title": "uoms-create-response",
+        "type": "object",
+        "x-go-name": "UomsCreateResponseBody"
+      },
+      "uoms-delete-request": {
+        "properties": {
+          "id": {
+            "description": "The Unit of Measurement (UOM)'s DON.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "uoms-delete-request",
+        "type": "object"
+      },
+      "uoms-get-request": {
+        "properties": {
+          "id": {
+            "description": "The Unit of Measurement (UOM)'s DON.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "uoms-get-request",
+        "type": "object"
+      },
+      "uoms-get-response": {
+        "properties": {
+          "uom": {
+            "$ref": "#/components/schemas/uom"
+          }
+        },
+        "required": [
+          "uom"
+        ],
+        "title": "uoms-get-response",
+        "type": "object",
+        "x-go-name": "UomsGetResponseBody"
+      },
+      "uoms-list-request": {
+        "properties": {
+          "aggregation_types": {
+            "description": "List of aggregation types for filtering list of UOMs.",
+            "items": {
+              "$ref": "#/components/schemas/aggregation-detail-aggregation-type"
+            },
+            "type": "array"
+          },
+          "cursor": {
+            "description": "The cursor to resume iteration from. If not provided, then\niteration starts from the beginning.\n",
+            "type": "string"
+          },
+          "ids": {
+            "description": "List of Unit of Measurement (UOM) DONs to be used in filtering\ncomplete list of UOMs defined in a Dev Org.\n",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "limit": {
+            "description": "The maximum number of UOMs to be returned in a response. The\ndefault is '50'.\n",
+            "format": "int32",
+            "type": "integer"
+          },
+          "metric_names": {
+            "description": "List of metric names for filtering list of UOMs.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/list-mode"
+          },
+          "part_ids": {
+            "description": "List of part IDs for filtering list of UOMs.",
+            "example": [
+              "PROD-12345"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "product_ids": {
+            "description": "List of product IDs for filtering list of UOMs.",
+            "example": [
+              "PROD-12345"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "sort_by": {
+            "description": "Fields to sort the Unit Of Measuments (UOMs) by and the direction\nto sort them.\n",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "unit_types": {
+            "description": "List of unit types for filtering list of UOMs.",
+            "items": {
+              "$ref": "#/components/schemas/unit-type"
+            },
+            "type": "array"
+          }
+        },
+        "title": "uoms-list-request",
+        "type": "object"
+      },
+      "uoms-list-response": {
+        "properties": {
+          "next_cursor": {
+            "description": "The cursor used to iterate subsequent results in accordance to the\nsort order. If not set, then no later elements exist.\n",
+            "type": "string"
+          },
+          "prev_cursor": {
+            "description": "The cursor used to iterate preceding results in accordance to the\nsort order. If not set, then no prior elements exist.\n",
+            "type": "string"
+          },
+          "uoms": {
+            "description": "The list of Unit of Measurement (UOM) objects.",
+            "items": {
+              "$ref": "#/components/schemas/uom"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "uoms"
+        ],
+        "title": "uoms-list-response",
+        "type": "object",
+        "x-go-name": "UomsListResponseBody"
+      },
+      "uoms-update-request": {
+        "properties": {
+          "aggregation_type": {
+            "$ref": "#/components/schemas/aggregation-detail-aggregation-type"
+          },
+          "description": {
+            "description": "Description of the Unit of Measurement (UOM).",
+            "type": "string"
+          },
+          "id": {
+            "description": "The Unit of Measurement (UOM)'s DON.",
+            "type": "string"
+          },
+          "is_enabled": {
+            "description": "Flag used to enable/disable the Unit of Measurement (UOM). When\ndisabled, any metricsrecords ingested against this UOM will be\ndropped.\n",
+            "type": "boolean"
+          },
+          "name": {
+            "description": "Human readable name of the Unit of Measurement (UOM).",
+            "type": "string"
+          },
+          "part_id": {
+            "description": "The part ID such as feature or capability for which the Unit of\nMeasurement (UOM) is defined.\n",
+            "example": "PROD-12345",
+            "type": "string"
+          },
+          "product_id": {
+            "description": "The product ID for which the Unit of Measurement (UOM) is defined.\n",
+            "example": "PROD-12345",
+            "type": "string"
+          },
+          "unit": {
+            "description": "Unit name of the Unit of Measurement (UOM).",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "uoms-update-request",
+        "type": "object"
+      },
+      "uoms-update-response": {
+        "properties": {
+          "uom": {
+            "$ref": "#/components/schemas/uom"
+          }
+        },
+        "required": [
+          "uom"
+        ],
+        "title": "uoms-update-response",
+        "type": "object",
+        "x-go-name": "UomsUpdateResponseBody"
       },
       "user-base": {
         "allOf": [
@@ -17898,6 +18281,459 @@
         ]
       }
     },
+    "/uoms.create": {
+      "post": {
+        "description": "Creates a Unit of Measurement on a part.",
+        "operationId": "uoms-create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/uoms-create-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/uoms-create-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "commerce"
+        ]
+      }
+    },
+    "/uoms.delete": {
+      "post": {
+        "description": "Deletes a Unit of Measurement.",
+        "operationId": "uoms-delete",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/uoms-delete-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/not-found"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "commerce"
+        ]
+      }
+    },
+    "/uoms.get": {
+      "get": {
+        "description": "Gets a Unit of Measurement.",
+        "operationId": "uoms-get",
+        "parameters": [
+          {
+            "description": "The Unit of Measurement (UOM)'s DON.",
+            "explode": false,
+            "in": "query",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/uoms-get-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/not-found"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "commerce"
+        ],
+        "x-request-name": "UomsGetQuery"
+      },
+      "post": {
+        "description": "Gets a Unit of Measurement.",
+        "operationId": "uoms-get-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/uoms-get-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/uoms-get-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/not-found"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "commerce"
+        ]
+      }
+    },
+    "/uoms.list": {
+      "get": {
+        "description": "Gets the Unit of Measurements based on the given filters.",
+        "operationId": "uoms-list",
+        "parameters": [
+          {
+            "description": "List of aggregation types for filtering list of UOMs.",
+            "explode": false,
+            "in": "query",
+            "name": "aggregation_types",
+            "schema": {
+              "items": {
+                "$ref": "#/components/schemas/aggregation-detail-aggregation-type"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "The cursor to resume iteration from. If not provided, then iteration\nstarts from the beginning.\n",
+            "explode": false,
+            "in": "query",
+            "name": "cursor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "List of Unit of Measurement (UOM) DONs to be used in filtering\ncomplete list of UOMs defined in a Dev Org.\n",
+            "explode": false,
+            "in": "query",
+            "name": "ids",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "The maximum number of UOMs to be returned in a response. The default\nis '50'.\n",
+            "explode": false,
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "List of metric names for filtering list of UOMs.",
+            "explode": false,
+            "in": "query",
+            "name": "metric_names",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "The iteration mode to use, otherwise if not set, then \"after\" is\nused.\n",
+            "explode": false,
+            "in": "query",
+            "name": "mode",
+            "schema": {
+              "$ref": "#/components/schemas/list-mode"
+            }
+          },
+          {
+            "description": "List of part IDs for filtering list of UOMs.",
+            "explode": false,
+            "in": "query",
+            "name": "part_ids",
+            "schema": {
+              "example": [
+                "PROD-12345"
+              ],
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "List of product IDs for filtering list of UOMs.",
+            "explode": false,
+            "in": "query",
+            "name": "product_ids",
+            "schema": {
+              "example": [
+                "PROD-12345"
+              ],
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Fields to sort the Unit Of Measuments (UOMs) by and the direction to\nsort them.\n",
+            "explode": false,
+            "in": "query",
+            "name": "sort_by",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "List of unit types for filtering list of UOMs.",
+            "explode": false,
+            "in": "query",
+            "name": "unit_types",
+            "schema": {
+              "items": {
+                "$ref": "#/components/schemas/unit-type"
+              },
+              "type": "array"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/uoms-list-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "commerce"
+        ],
+        "x-request-name": "UomsListQuery"
+      },
+      "post": {
+        "description": "Gets the Unit of Measurements based on the given filters.",
+        "operationId": "uoms-list-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/uoms-list-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/uoms-list-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "commerce"
+        ]
+      }
+    },
+    "/uoms.update": {
+      "post": {
+        "description": "Updates a Unit of Measurement.",
+        "operationId": "uoms-update",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/uoms-update-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/uoms-update-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/not-found"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "commerce"
+        ]
+      }
+    },
     "/works.create": {
       "post": {
         "description": "Creates new work ([issue](https://devrev.ai/docs/product/build),\n[ticket](https://devrev.ai/docs/product/support)) item.\n[task](https://docs.devrev.ai/product/tasks) and opportunity work types\nare supported in the beta version.\n",
@@ -18857,6 +19693,10 @@
     {
       "description": "Artifact (file) management APIs.",
       "name": "artifacts"
+    },
+    {
+      "description": "DevRev commerce interactions.",
+      "name": "commerce"
     },
     {
       "description": "DevRev conversation interaction.",

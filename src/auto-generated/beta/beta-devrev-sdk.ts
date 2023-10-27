@@ -312,6 +312,74 @@ export interface AggregatedSchemaGetResponse {
   schema: AggregatedSchema;
 }
 
+/**
+ * aggregation-detail
+ * Stores aggregation type and dimension information.
+ */
+export interface AggregationDetail {
+  /**
+   * Aggregation type to be used while aggregating the metering data for the
+   * UOM. 1] Sum - sum of all the values for the meter in a given period Ex.
+   * { M1:2, M1:4 } => {M1:6} 2] Minimum - min of all the values for the
+   * meter in a given period Ex. { M1:2, M1:4 } => {M1:2} 3] Maximum - max
+   * of all the values for the meter in a given period Ex. { M1:2, M1:4 } =>
+   * {M1:4} 4] Unique Count - Sum of distinct unique dimension observed for
+   * the meter in the given period (not considering the data from the
+   * previous billing period) Ex. January {M1:{VM:VM0}}, February
+   * {M1:{VM:VM1}, M1:{VM:VM2}, M1:{VM:VM1}} => {M1:2} 5] Running Total -
+   * Sum of distinct active unique dimension observed for a meter in the
+   * given period, taking into consideration the active data from the
+   * previous billing cycle Ex. January {M1:{VM:VM0,on}, {M1:{VM:VM1,off}
+   * February {M1:{VM:VM2, on}, M1:{VM:VM2, off}, M1:{VM:VM3, on}} => {M1:3}
+   * 6] Duration - Sum of distinct active unique dimension duration for a
+   * meter in the given period, taking into consideration the active data
+   * from the previous month Ex. January15 {M1:{VM:VM0,on, 4}} February15
+   * {M1:{VM:VM0,off}, February18 {M1:{VM:VM1,on,5} => M1->
+   * 30*4*charge_per_day + 10*5*charge_per_day 7] Latest - consider the
+   * latest/last meter in the given period 8] Oldest - consider the
+   * oldest/first record in the given period.
+   */
+  aggregation_type: AggregationDetailAggregationType;
+  /**
+   * Unique dimension if provided to be considered for grouping metering
+   * data for the UOM.
+   */
+  unique_dimension?: string;
+}
+
+/**
+ * Aggregation type to be used while aggregating the metering data for the
+ * UOM. 1] Sum - sum of all the values for the meter in a given period Ex.
+ * { M1:2, M1:4 } => {M1:6} 2] Minimum - min of all the values for the
+ * meter in a given period Ex. { M1:2, M1:4 } => {M1:2} 3] Maximum - max
+ * of all the values for the meter in a given period Ex. { M1:2, M1:4 } =>
+ * {M1:4} 4] Unique Count - Sum of distinct unique dimension observed for
+ * the meter in the given period (not considering the data from the
+ * previous billing period) Ex. January {M1:{VM:VM0}}, February
+ * {M1:{VM:VM1}, M1:{VM:VM2}, M1:{VM:VM1}} => {M1:2} 5] Running Total -
+ * Sum of distinct active unique dimension observed for a meter in the
+ * given period, taking into consideration the active data from the
+ * previous billing cycle Ex. January {M1:{VM:VM0,on}, {M1:{VM:VM1,off}
+ * February {M1:{VM:VM2, on}, M1:{VM:VM2, off}, M1:{VM:VM3, on}} => {M1:3}
+ * 6] Duration - Sum of distinct active unique dimension duration for a
+ * meter in the given period, taking into consideration the active data
+ * from the previous month Ex. January15 {M1:{VM:VM0,on, 4}} February15
+ * {M1:{VM:VM0,off}, February18 {M1:{VM:VM1,on,5} => M1->
+ * 30*4*charge_per_day + 10*5*charge_per_day 7] Latest - consider the
+ * latest/last meter in the given period 8] Oldest - consider the
+ * oldest/first record in the given period.
+ */
+export enum AggregationDetailAggregationType {
+  Duration = 'duration',
+  Latest = 'latest',
+  Maximum = 'maximum',
+  Minimum = 'minimum',
+  Oldest = 'oldest',
+  RunningTotal = 'running_total',
+  Sum = 'sum',
+  UniqueCount = 'unique_count',
+}
+
 /** app-fragment */
 export type AppFragment = CustomSchemaFragmentBase;
 
@@ -5142,6 +5210,34 @@ export interface TimelineThread {
 }
 
 /**
+ * unit
+ * Unit encapsulates the name of the unit and the type of the unit. For
+ * example, '#Number of API calls' where name is 'number_of_api_calls' and
+ * type is 'number'.
+ */
+export interface Unit {
+  /**
+   * This represents human readable unit name of the UOM For example,
+   * number of API calls.
+   */
+  name: string;
+  /**
+   * This defines the UOM unit type. For example, for 'number of video
+   * calls', unit type will be a number.
+   */
+  type: UnitType;
+}
+
+/**
+ * This defines the UOM unit type. For example, for 'number of video
+ * calls', unit type will be a number.
+ */
+export enum UnitType {
+  Boolean = 'boolean',
+  Number = 'number',
+}
+
+/**
  * unlink-rev-user-from-rev-org-request
  * A request to unlink a rev user from a rev org.
  */
@@ -5161,6 +5257,253 @@ export interface UnlinkRevUserFromRevOrgRequest {
  */
 export interface UnlinkRevUserFromRevOrgResponse {
   rev_user: RevUser;
+}
+
+/** uom */
+export type Uom = AtomBase & {
+  /** Stores aggregation type and dimension information. */
+  aggregation_details: AggregationDetail;
+  /** Description of the UOM. */
+  description?: string;
+  /**
+   * The list of dimensions that can be emitted along with the metering
+   * data.
+   */
+  dimensions?: string[];
+  /**
+   * If set to true, then the UOM can be configured as part of
+   * entitlements in skus and metering data only for the enabled uoms
+   * will be passed through the metering pipeline.
+   */
+  is_enabled: boolean;
+  /** Human readable metric name of the UOM. */
+  metric_name: string;
+  /**
+   * The granularity at which the metrics ingestion data is to be emitted
+   * for the UOM.
+   */
+  metric_scope: UomMetricScope;
+  /** Human readable name of the UOM. */
+  name: string;
+  part?: PartSummary;
+  product: PartSummary;
+  /**
+   * Unit encapsulates the name of the unit and the type of the unit. For
+   * example, '#Number of API calls' where name is 'number_of_api_calls' and
+   * type is 'number'.
+   */
+  unit: Unit;
+};
+
+/**
+ * The granularity at which the metrics ingestion data is to be emitted
+ * for the UOM.
+ */
+export enum UomMetricScope {
+  Org = 'org',
+  User = 'user',
+}
+
+/** uoms-create-request */
+export interface UomsCreateRequest {
+  /** Stores aggregation type and dimension information. */
+  aggregation_detail: AggregationDetail;
+  /** Description of the Unit of Measurement (UOM). */
+  description?: string;
+  /**
+   * The list of dimensions that can be emitted as part of metrics data.
+   * Dimensions consist of list of key-value pairs. For example, if the
+   * UOM is 'number_of_api_calls', then dimensions can be ['api_name',
+   * 'api_version'].Dimension keys can only contain alphanumeric
+   * characters (A-Z, a-z, and 0-9) and underscores (_). Dimension keys
+   * cannot start with a number and is case-insensitive.Dimension keys
+   * must be unique and it is not allowed to have more than one value
+   * with the same key.Metrics data ingested in DevRev metrics format
+   * will be grouped and aggregated based on the dimensions specified in
+   * UOM.
+   * @minLength 1
+   * @maxLength 64
+   * @maxItems 10
+   */
+  dimensions?: string[];
+  /**
+   * Name of the Unit of Measurement (UOM). Unit of Measurement is a
+   * unit of measure defined over a part offered by a Dev Org. A single
+   * part can have multiple unit of measurements defined over it. For
+   * example, a part can be 'video call', one UOM defined on this can be
+   * 'number_of_calls', other UOM can be 'call_duration' etc.Metric name
+   * should be unique across all UOMs in a Dev Org.Metric name can only
+   * contain alphanumeric characters (A-Z, a-z, and 0-9) and underscores
+   * (_). Metric name cannot start with a number and is
+   * case-insensitive.
+   * @minLength 1
+   * @maxLength 64
+   */
+  metric_name: string;
+  /** Human readable name of the Unit of Measurement (UOM). */
+  name: string;
+  /**
+   * The part ID for which the Unit of Measurement (UOM) is defined.
+   * When defined, ingested metrics data will be associated with part
+   * and product specified in UOM.
+   * @example "PROD-12345"
+   */
+  part_id?: string;
+  /**
+   * The product ID for which the Unit of Measurement (UOM) is defined.
+   * @example "PROD-12345"
+   */
+  product_id: string;
+  /**
+   * Unit encapsulates the name of the unit and the type of the unit. For
+   * example, '#Number of API calls' where name is 'number_of_api_calls' and
+   * type is 'number'.
+   */
+  unit: Unit;
+}
+
+/** uoms-create-response */
+export interface UomsCreateResponse {
+  uom: Uom;
+}
+
+/** uoms-delete-request */
+export interface UomsDeleteRequest {
+  /** The Unit of Measurement (UOM)'s DON. */
+  id: string;
+}
+
+/** uoms-get-request */
+export interface UomsGetRequest {
+  /** The Unit of Measurement (UOM)'s DON. */
+  id: string;
+}
+
+/** uoms-get-response */
+export interface UomsGetResponse {
+  uom: Uom;
+}
+
+/** uoms-list-request */
+export interface UomsListRequest {
+  /** List of aggregation types for filtering list of UOMs. */
+  aggregation_types?: AggregationDetailAggregationType[];
+  /**
+   * The cursor to resume iteration from. If not provided, then
+   * iteration starts from the beginning.
+   */
+  cursor?: string;
+  /**
+   * List of Unit of Measurement (UOM) DONs to be used in filtering
+   * complete list of UOMs defined in a Dev Org.
+   */
+  ids?: string[];
+  /**
+   * The maximum number of UOMs to be returned in a response. The
+   * default is '50'.
+   * @format int32
+   */
+  limit?: number;
+  /** List of metric names for filtering list of UOMs. */
+  metric_names?: string[];
+  /**
+   * The iteration mode to use. If "after", then entries after the provided
+   * cursor will be returned, or if no cursor is provided, then from the
+   * beginning. If "before", then entries before the provided cursor will be
+   * returned, or if no cursor is provided, then from the end. Entries will
+   * always be returned in the specified sort-by order.
+   */
+  mode?: ListMode;
+  /**
+   * List of part IDs for filtering list of UOMs.
+   * @example ["PROD-12345"]
+   */
+  part_ids?: string[];
+  /**
+   * List of product IDs for filtering list of UOMs.
+   * @example ["PROD-12345"]
+   */
+  product_ids?: string[];
+  /**
+   * Fields to sort the Unit Of Measuments (UOMs) by and the direction
+   * to sort them.
+   */
+  sort_by?: string[];
+  /** List of unit types for filtering list of UOMs. */
+  unit_types?: UnitType[];
+}
+
+/** uoms-list-response */
+export interface UomsListResponse {
+  /**
+   * The cursor used to iterate subsequent results in accordance to the
+   * sort order. If not set, then no later elements exist.
+   */
+  next_cursor?: string;
+  /**
+   * The cursor used to iterate preceding results in accordance to the
+   * sort order. If not set, then no prior elements exist.
+   */
+  prev_cursor?: string;
+  /** The list of Unit of Measurement (UOM) objects. */
+  uoms: Uom[];
+}
+
+/** uoms-update-request */
+export interface UomsUpdateRequest {
+  /**
+   * Aggregation type to be used while aggregating the metering data for the
+   * UOM. 1] Sum - sum of all the values for the meter in a given period Ex.
+   * { M1:2, M1:4 } => {M1:6} 2] Minimum - min of all the values for the
+   * meter in a given period Ex. { M1:2, M1:4 } => {M1:2} 3] Maximum - max
+   * of all the values for the meter in a given period Ex. { M1:2, M1:4 } =>
+   * {M1:4} 4] Unique Count - Sum of distinct unique dimension observed for
+   * the meter in the given period (not considering the data from the
+   * previous billing period) Ex. January {M1:{VM:VM0}}, February
+   * {M1:{VM:VM1}, M1:{VM:VM2}, M1:{VM:VM1}} => {M1:2} 5] Running Total -
+   * Sum of distinct active unique dimension observed for a meter in the
+   * given period, taking into consideration the active data from the
+   * previous billing cycle Ex. January {M1:{VM:VM0,on}, {M1:{VM:VM1,off}
+   * February {M1:{VM:VM2, on}, M1:{VM:VM2, off}, M1:{VM:VM3, on}} => {M1:3}
+   * 6] Duration - Sum of distinct active unique dimension duration for a
+   * meter in the given period, taking into consideration the active data
+   * from the previous month Ex. January15 {M1:{VM:VM0,on, 4}} February15
+   * {M1:{VM:VM0,off}, February18 {M1:{VM:VM1,on,5} => M1->
+   * 30*4*charge_per_day + 10*5*charge_per_day 7] Latest - consider the
+   * latest/last meter in the given period 8] Oldest - consider the
+   * oldest/first record in the given period.
+   */
+  aggregation_type?: AggregationDetailAggregationType;
+  /** Description of the Unit of Measurement (UOM). */
+  description?: string;
+  /** The Unit of Measurement (UOM)'s DON. */
+  id: string;
+  /**
+   * Flag used to enable/disable the Unit of Measurement (UOM). When
+   * disabled, any metricsrecords ingested against this UOM will be
+   * dropped.
+   */
+  is_enabled?: boolean;
+  /** Human readable name of the Unit of Measurement (UOM). */
+  name?: string;
+  /**
+   * The part ID such as feature or capability for which the Unit of
+   * Measurement (UOM) is defined.
+   * @example "PROD-12345"
+   */
+  part_id?: string;
+  /**
+   * The product ID for which the Unit of Measurement (UOM) is defined.
+   * @example "PROD-12345"
+   */
+  product_id?: string;
+  /** Unit name of the Unit of Measurement (UOM). */
+  unit?: string;
+}
+
+/** uoms-update-response */
+export interface UomsUpdateResponse {
+  uom: Uom;
 }
 
 /** user-base */
@@ -10219,6 +10562,248 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/timeline-entries.update`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Creates a Unit of Measurement on a part.
+   *
+   * @tags commerce
+   * @name UomsCreate
+   * @request POST:/uoms.create
+   * @secure
+   */
+  uomsCreate = (data: UomsCreateRequest, params: RequestParams = {}) =>
+    this.request<
+      UomsCreateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/uoms.create`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Deletes a Unit of Measurement.
+   *
+   * @tags commerce
+   * @name UomsDelete
+   * @request POST:/uoms.delete
+   * @secure
+   */
+  uomsDelete = (data: UomsDeleteRequest, params: RequestParams = {}) =>
+    this.request<
+      void,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/uoms.delete`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      ...params,
+    });
+
+  /**
+   * @description Gets a Unit of Measurement.
+   *
+   * @tags commerce
+   * @name UomsGet
+   * @request GET:/uoms.get
+   * @secure
+   */
+  uomsGet = (
+    query: {
+      /** The Unit of Measurement (UOM)'s DON. */
+      id: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      UomsGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/uoms.get`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets a Unit of Measurement.
+   *
+   * @tags commerce
+   * @name UomsGetPost
+   * @request POST:/uoms.get
+   * @secure
+   */
+  uomsGetPost = (data: UomsGetRequest, params: RequestParams = {}) =>
+    this.request<
+      UomsGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/uoms.get`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets the Unit of Measurements based on the given filters.
+   *
+   * @tags commerce
+   * @name UomsList
+   * @request GET:/uoms.list
+   * @secure
+   */
+  uomsList = (
+    query?: {
+      /** List of aggregation types for filtering list of UOMs. */
+      aggregation_types?: AggregationDetailAggregationType[];
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /**
+       * List of Unit of Measurement (UOM) DONs to be used in filtering
+       * complete list of UOMs defined in a Dev Org.
+       */
+      ids?: string[];
+      /**
+       * The maximum number of UOMs to be returned in a response. The default
+       * is '50'.
+       * @format int32
+       */
+      limit?: number;
+      /** List of metric names for filtering list of UOMs. */
+      metric_names?: string[];
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /**
+       * List of part IDs for filtering list of UOMs.
+       * @example ["PROD-12345"]
+       */
+      part_ids?: string[];
+      /**
+       * List of product IDs for filtering list of UOMs.
+       * @example ["PROD-12345"]
+       */
+      product_ids?: string[];
+      /**
+       * Fields to sort the Unit Of Measuments (UOMs) by and the direction to
+       * sort them.
+       */
+      sort_by?: string[];
+      /** List of unit types for filtering list of UOMs. */
+      unit_types?: UnitType[];
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      UomsListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/uoms.list`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets the Unit of Measurements based on the given filters.
+   *
+   * @tags commerce
+   * @name UomsListPost
+   * @request POST:/uoms.list
+   * @secure
+   */
+  uomsListPost = (data: UomsListRequest, params: RequestParams = {}) =>
+    this.request<
+      UomsListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/uoms.list`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Updates a Unit of Measurement.
+   *
+   * @tags commerce
+   * @name UomsUpdate
+   * @request POST:/uoms.update
+   * @secure
+   */
+  uomsUpdate = (data: UomsUpdateRequest, params: RequestParams = {}) =>
+    this.request<
+      UomsUpdateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/uoms.update`,
       method: 'POST',
       body: data,
       secure: true,
