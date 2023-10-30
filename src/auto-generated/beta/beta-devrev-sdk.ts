@@ -6714,6 +6714,91 @@ export class Api<
       format: 'json',
       ...params,
     });
+  /**
+   * @description Gets a list of accounts.
+   *
+   * @tags accounts
+   * @name AccountsList
+   * @request GET:/accounts.list
+   * @secure */
+  async *accountsListPaginator(
+    query?: {
+      /** Filters for accounts created by the specified user(s). */
+      created_by?: string[];
+      /**
+       * Filters for objects created after the provided timestamp (inclusive).
+       * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
+       */
+      'created_date.after'?: string;
+      /**
+       * Filters for objects created before the provided timestamp
+       * (inclusive).
+       * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
+       */
+      'created_date.before'?: string;
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /** Domains for accounts to be filtered. */
+      domains?: string[];
+      /** Array of references of accounts to be filtered. */
+      external_refs?: string[];
+      /**
+       * The maximum number of accounts to return per page. The default is
+       * '50'.
+       * @format int32
+       */
+      limit?: number;
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /**
+       * Filters for objects created after the provided timestamp (inclusive).
+       * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
+       */
+      'modified_date.after'?: string;
+      /**
+       * Filters for objects created before the provided timestamp
+       * (inclusive).
+       * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
+       */
+      'modified_date.before'?: string;
+      /** Filters for accounts owned by the specified user(s). */
+      owned_by?: string[];
+      /** Fields to sort the accounts by and the direction to sort them in. */
+      sort_by?: string[];
+      /** Filters for accounts on specified stages. */
+      stage?: string[];
+      /** List of tags to be filtered. */
+      tags?: string[];
+    },
+    params: RequestParams = {}
+  ) {
+    let response, cursor;
+
+    // shallow cloning the query object once here to avoid mutating the user provided object
+    query = { ...query };
+
+    do {
+      response = await this.accountsList(query, params);
+
+      yield response.data;
+
+      cursor = response.data.next_cursor;
+
+      if (cursor) {
+        query.cursor = cursor;
+      }
+    } while (cursor);
+  }
 
   /**
    * @description Gets a list of accounts.
@@ -7034,6 +7119,70 @@ export class Api<
       format: 'json',
       ...params,
     });
+  /**
+   * @description Lists a collection of articles.
+   *
+   * @tags articles
+   * @name ListArticles
+   * @request GET:/articles.list
+   * @secure */
+  async *listArticlesPaginator(
+    query?: {
+      /**
+       * Filters for articles belonging to any of the provided parts.
+       * @example ["PROD-12345"]
+       */
+      applies_to_parts?: string[];
+      /**
+       * Filters for articles authored by any of the provided users.
+       * @example ["DEVU-12345"]
+       */
+      authored_by?: string[];
+      /**
+       * Filters for articles created by any of the provided users.
+       * @example ["DEVU-12345"]
+       */
+      created_by?: string[];
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /**
+       * The maximum number of articles to return. The default is '50'.
+       * @format int32
+       */
+      limit?: number;
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /**
+       * Filters for articles owned by any of the provided users.
+       * @example ["DEVU-12345"]
+       */
+      owned_by?: string[];
+    },
+    params: RequestParams = {}
+  ) {
+    let response, cursor;
+
+    // shallow cloning the query object once here to avoid mutating the user provided object
+    query = { ...query };
+
+    do {
+      response = await this.listArticles(query, params);
+
+      yield response.data;
+
+      cursor = response.data.next_cursor;
+
+      if (cursor) {
+        query.cursor = cursor;
+      }
+    } while (cursor);
+  }
 
   /**
    * @description Lists a collection of articles.
@@ -7479,6 +7628,97 @@ export class Api<
       format: 'json',
       ...params,
     });
+  /**
+   * @description Lists the available conversations.
+   *
+   * @tags conversations
+   * @name ConversationsList
+   * @request GET:/conversations.list
+   * @secure */
+  async *conversationsListPaginator(
+    query?: {
+      /**
+       * Filters for conversations belonging to any of the provided parts.
+       * @example ["PROD-12345"]
+       */
+      applies_to_parts?: string[];
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /** Filters for conversation that belong to the given groups. */
+      group?: string[];
+      /** Filters for conversations that are created by verified users. */
+      is_creator_verified?: boolean;
+      /** Filters for conversations that are spam. */
+      is_spam?: boolean;
+      /**
+       * The maximum number of conversations to return. The default is '50'.
+       * @format int32
+       */
+      limit?: number;
+      /**
+       * Filters for conversations where these users are participants.
+       * @example ["DEVU-12345"]
+       */
+      members?: string[];
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /**
+       * Filters for conversations owned by any of these users.
+       * @example ["DEVU-12345"]
+       */
+      owned_by?: string[];
+      /**
+       * Filters for conversations that are associated with any of the
+       * provided Rev organizations.
+       * @example ["REV-AbCdEfGh"]
+       */
+      rev_org?: string[];
+      /** Filters for conversations with any of the provided source channels. */
+      source_channels?: string[];
+      /** Filters for records in the provided stage(s) by name. */
+      'stage.name'?: string[];
+      /**
+       * Filters for conversations with any of the provided tags.
+       * @deprecated
+       * @example ["TAG-12345"]
+       */
+      tags?: string[];
+      /**
+       * The ID of the tag.
+       * @example "TAG-12345"
+       */
+      'tags_v2.id'?: string;
+      /**
+       * The value for the object's association with the tag. If specified,
+       * the value must be one that's specified in the tag's allowed values.
+       */
+      'tags_v2.value'?: string;
+    },
+    params: RequestParams = {}
+  ) {
+    let response, cursor;
+
+    // shallow cloning the query object once here to avoid mutating the user provided object
+    query = { ...query };
+
+    do {
+      response = await this.conversationsList(query, params);
+
+      yield response.data;
+
+      cursor = response.data.next_cursor;
+
+      if (cursor) {
+        query.cursor = cursor;
+      }
+    } while (cursor);
+  }
 
   /**
    * @description Lists the available conversations.
@@ -7800,6 +8040,66 @@ export class Api<
       format: 'json',
       ...params,
     });
+  /**
+   * @description Lists the engagement records.
+   *
+   * @tags engagements
+   * @name EngagementsList
+   * @request GET:/engagements.list
+   * @secure */
+  async *engagementsListPaginator(
+    query?: {
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /** Filters for meetings with the provided external_refs. */
+      external_ref?: string[];
+      /**
+       * The maximum number of engagements to return.
+       * @format int32
+       */
+      limit?: number;
+      /**
+       * Filters for engagement of the provided members.
+       * @example ["DEVU-12345"]
+       */
+      members?: string[];
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /**
+       * Filters for engagements with the provided parent.
+       * @example ["ACC-12345"]
+       */
+      parent?: string[];
+      /** Fields to sort the engagements by and the direction to sort them. */
+      sort_by?: string[];
+      /** Filters for engagement of the provided types. */
+      type?: EngagementType[];
+    },
+    params: RequestParams = {}
+  ) {
+    let response, cursor;
+
+    // shallow cloning the query object once here to avoid mutating the user provided object
+    query = { ...query };
+
+    do {
+      response = await this.engagementsList(query, params);
+
+      yield response.data;
+
+      cursor = response.data.next_cursor;
+
+      if (cursor) {
+        query.cursor = cursor;
+      }
+    } while (cursor);
+  }
 
   /**
    * @description Lists the engagement records.
@@ -8123,6 +8423,54 @@ export class Api<
       format: 'json',
       ...params,
     });
+  /**
+   * @description Lists the available groups.
+   *
+   * @tags groups
+   * @name GroupsList
+   * @request GET:/groups.list
+   * @secure */
+  async *groupsListPaginator(
+    query?: {
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /**
+       * The maximum number of groups to return. The default is '50'.
+       * @format int32
+       */
+      limit?: number;
+      /** Filters the groups on basis of member type. */
+      member_type?: GroupMemberType[];
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /** Comma-separated fields to sort the groups by. */
+      sort_by?: string[];
+    },
+    params: RequestParams = {}
+  ) {
+    let response, cursor;
+
+    // shallow cloning the query object once here to avoid mutating the user provided object
+    query = { ...query };
+
+    do {
+      response = await this.groupsList(query, params);
+
+      yield response.data;
+
+      cursor = response.data.next_cursor;
+
+      if (cursor) {
+        query.cursor = cursor;
+      }
+    } while (cursor);
+  }
 
   /**
    * @description Lists the available groups.
@@ -8358,6 +8706,69 @@ export class Api<
       format: 'json',
       ...params,
     });
+  /**
+   * @description Lists the available links.
+   *
+   * @tags links
+   * @name LinksList
+   * @request GET:/links.list
+   * @secure */
+  async *linksListPaginator(
+    query: {
+      /** The ID of the object to list the links for. */
+      object: string;
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /**
+       * The direction of the links to list, otherwise if not present, then
+       * links in both directions (source and target) are included.
+       */
+      direction?: LinksDirection;
+      /**
+       * The maximum number of links to return. If not set, then the default
+       * is '50'.
+       * @format int32
+       */
+      limit?: number;
+      /**
+       * The link type(s) to filter for, otherwise if not present, all link
+       * types are included.
+       */
+      link_type?: LinkType[];
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /**
+       * The link types to filter for, otherwise if not present, all link
+       * types are included.
+       * @deprecated
+       */
+      types?: LinkType[];
+    },
+    params: RequestParams = {}
+  ) {
+    let response, cursor;
+
+    // shallow cloning the query object once here to avoid mutating the user provided object
+    query = { ...query };
+
+    do {
+      response = await this.linksList(query, params);
+
+      yield response.data;
+
+      cursor = response.data.next_cursor;
+
+      if (cursor) {
+        query.cursor = cursor;
+      }
+    } while (cursor);
+  }
 
   /**
    * @description Lists the available links.
@@ -8434,6 +8845,54 @@ export class Api<
       format: 'json',
       ...params,
     });
+  /**
+   * @description Lists metric definitions matching a filter.
+   *
+   * @tags slas
+   * @name MetricDefinitionsList
+   * @request GET:/metric-definitions.list
+   * @secure */
+  async *metricDefinitionsListPaginator(
+    query?: {
+      /** The type of objects the metric definition applies to. */
+      applies_to_type?: MetricDefinitionAppliesTo[];
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /**
+       * The maximum number of records to return. The default is '50'.
+       * @format int32
+       */
+      limit?: number;
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /** The type of metric definitions sought. */
+      type?: MetricDefinitionMetricType[];
+    },
+    params: RequestParams = {}
+  ) {
+    let response, cursor;
+
+    // shallow cloning the query object once here to avoid mutating the user provided object
+    query = { ...query };
+
+    do {
+      response = await this.metricDefinitionsList(query, params);
+
+      yield response.data;
+
+      cursor = response.data.next_cursor;
+
+      if (cursor) {
+        query.cursor = cursor;
+      }
+    } while (cursor);
+  }
 
   /**
    * @description Lists metric definitions matching a filter.
@@ -8757,6 +9216,55 @@ export class Api<
       format: 'json',
       ...params,
     });
+  /**
+   * @description Gets list of organization schedules.
+   *
+   * @tags schedules
+   * @name OrgSchedulesList
+   * @request GET:/org-schedules.list
+   * @secure */
+  async *orgSchedulesListPaginator(
+    query?: {
+      /** Creator ID the filter matches. */
+      created_by_id?: string[];
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /**
+       * Max number of organization schedules returned in a page. Default is
+       * 50.
+       * @format int32
+       */
+      limit?: number;
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /** The organization schedule statuses the filter matches. */
+      status?: OrgScheduleStatus[];
+    },
+    params: RequestParams = {}
+  ) {
+    let response, cursor;
+
+    // shallow cloning the query object once here to avoid mutating the user provided object
+    query = { ...query };
+
+    do {
+      response = await this.orgSchedulesList(query, params);
+
+      yield response.data;
+
+      cursor = response.data.next_cursor;
+
+      if (cursor) {
+        query.cursor = cursor;
+      }
+    } while (cursor);
+  }
 
   /**
    * @description Gets list of organization schedules.
@@ -9069,6 +9577,77 @@ export class Api<
       format: 'json',
       ...params,
     });
+  /**
+   * @description Lists a collection of [parts](https://devrev.ai/docs/product/parts).
+   *
+   * @tags parts
+   * @name PartsList
+   * @request GET:/parts.list
+   * @secure */
+  async *partsListPaginator(
+    query?: {
+      /**
+       * Filters for parts created by any of these users.
+       * @example ["DEVU-12345"]
+       */
+      created_by?: string[];
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /**
+       * The maximum number of parts to return. The default is '50'.
+       * @format int32
+       */
+      limit?: number;
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /** Filters for parts of the provided name(s). */
+      name?: string[];
+      /**
+       * Filters for parts owned by any of these users.
+       * @example ["DEVU-12345"]
+       */
+      owned_by?: string[];
+      /**
+       * Number of levels to fetch the part hierarchy up to.
+       * @format int32
+       * @min 1
+       */
+      'parent_part.level'?: number;
+      /**
+       * Part IDs to fetch the hierarchy for. Required if any parent_part.*
+       * fields are provided.
+       * @minItems 1
+       * @example ["PROD-12345"]
+       */
+      'parent_part.parts'?: string[];
+      /** Filters for parts of the provided type(s). */
+      type?: PartType[];
+    },
+    params: RequestParams = {}
+  ) {
+    let response, cursor;
+
+    // shallow cloning the query object once here to avoid mutating the user provided object
+    query = { ...query };
+
+    do {
+      response = await this.partsList(query, params);
+
+      yield response.data;
+
+      cursor = response.data.next_cursor;
+
+      if (cursor) {
+        query.cursor = cursor;
+      }
+    } while (cursor);
+  }
 
   /**
    * @description Lists a collection of [parts](https://devrev.ai/docs/product/parts).
@@ -9312,6 +9891,95 @@ export class Api<
       format: 'json',
       ...params,
     });
+  /**
+   * @description Gets the list of Rev organizations' information belonging to the authenticated user's Dev Organization which the user is also authorized to access.
+   *
+   * @tags rev-orgs
+   * @name RevOrgsList
+   * @request GET:/rev-orgs.list
+   * @secure */
+  async *revOrgsListPaginator(
+    query?: {
+      /**
+       * Filters by account.
+       * @example ["ACC-12345"]
+       */
+      account?: string[];
+      /** Filters by creator. */
+      created_by?: string[];
+      /**
+       * Filters for objects created after the provided timestamp (inclusive).
+       * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
+       */
+      'created_date.after'?: string;
+      /**
+       * Filters for objects created before the provided timestamp
+       * (inclusive).
+       * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
+       */
+      'created_date.before'?: string;
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /**
+       * Filters on custom fields. Input will be of the format
+       * (custom_field_filter=field_name1:val1,val2,val3&custom_field_filter=field_name2:val1,val2).
+       */
+      custom_field_filter?: string[];
+      /** List of external refs to filter Rev organizations for. */
+      external_ref?: string[];
+      /**
+       * The maximum number of Rev organizations to be retrieved per page.
+       * @format int32
+       */
+      limit?: number;
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /**
+       * Filters for objects created after the provided timestamp (inclusive).
+       * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
+       */
+      'modified_date.after'?: string;
+      /**
+       * Filters for objects created before the provided timestamp
+       * (inclusive).
+       * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
+       */
+      'modified_date.before'?: string;
+      /**
+       * Fields to sort the Rev organizations by and the direction to sort
+       * them.
+       */
+      sort_by?: string[];
+    },
+    params: RequestParams = {}
+  ) {
+    let response, cursor;
+
+    // shallow cloning the query object once here to avoid mutating the user provided object
+    query = { ...query };
+
+    do {
+      response = await this.revOrgsList(query, params);
+
+      yield response.data;
+
+      cursor = response.data.next_cursor;
+
+      if (cursor) {
+        query.cursor = cursor;
+      }
+    } while (cursor);
+  }
 
   /**
    * @description Gets the list of Rev organizations' information belonging to the authenticated user's Dev Organization which the user is also authorized to access.
@@ -9604,6 +10272,93 @@ export class Api<
       format: 'json',
       ...params,
     });
+  /**
+   * @description Returns a list of all Rev Users belonging to the authenticated user's Dev Organization.
+   *
+   * @tags rev-users
+   * @name RevUsersList
+   * @request GET:/rev-users.list
+   * @secure */
+  async *revUsersListPaginator(
+    query?: {
+      /** Filters for Rev users that were created by the specified user(s). */
+      created_by?: string[];
+      /**
+       * Filters for objects created after the provided timestamp (inclusive).
+       * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
+       */
+      'created_date.after'?: string;
+      /**
+       * Filters for objects created before the provided timestamp
+       * (inclusive).
+       * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
+       */
+      'created_date.before'?: string;
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /** List of emails of Rev users to be filtered. */
+      email?: string[];
+      /** List of external refs to filter Rev users for. */
+      external_ref?: string[];
+      /** Value of is_verified field to filter the Rev users. */
+      is_verified?: boolean;
+      /**
+       * The maximum number of Rev users to return. The default is '50'.
+       * @format int32
+       */
+      limit?: number;
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /**
+       * Filters for objects created after the provided timestamp (inclusive).
+       * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
+       */
+      'modified_date.after'?: string;
+      /**
+       * Filters for objects created before the provided timestamp
+       * (inclusive).
+       * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
+       */
+      'modified_date.before'?: string;
+      /** List of phone numbers to filter Rev users on. */
+      phone_numbers?: string[];
+      /**
+       * List of IDs of Rev organizations to be filtered.
+       * @example ["REV-AbCdEfGh"]
+       */
+      rev_org?: string[];
+      /** Fields to sort the Rev users by and the direction to sort them. */
+      sort_by?: string[];
+    },
+    params: RequestParams = {}
+  ) {
+    let response, cursor;
+
+    // shallow cloning the query object once here to avoid mutating the user provided object
+    query = { ...query };
+
+    do {
+      response = await this.revUsersList(query, params);
+
+      yield response.data;
+
+      cursor = response.data.next_cursor;
+
+      if (cursor) {
+        query.cursor = cursor;
+      }
+    } while (cursor);
+  }
 
   /**
    * @description Returns a list of all Rev Users belonging to the authenticated user's Dev Organization.
@@ -9871,6 +10626,55 @@ export class Api<
       format: 'json',
       ...params,
     });
+  /**
+   * @description Lists custom schema fragments.
+   *
+   * @tags customization
+   * @name CustomSchemaFragmentsList
+   * @request GET:/schemas.custom.list
+   * @secure */
+  async *customSchemaFragmentsListPaginator(
+    query?: {
+      /** The list of app names. */
+      app?: string[];
+      /**
+       * The cursor to resume iteration from, otherwise if not provided, then
+       * iteration starts from the beginning.
+       */
+      cursor?: string;
+      /** The list of leaf types. */
+      leaf_type?: string[];
+      /**
+       * The maximum number of items.
+       * @format int32
+       */
+      limit?: number;
+      /** The list of fields to sort the items by and how to sort them. */
+      sort_by?: string[];
+      /** The list of subtypes. */
+      subtype?: string[];
+      /** Filters for custom schema fragment of the provided types. */
+      types?: CustomSchemaFragmentType[];
+    },
+    params: RequestParams = {}
+  ) {
+    let response, cursor;
+
+    // shallow cloning the query object once here to avoid mutating the user provided object
+    query = { ...query };
+
+    do {
+      response = await this.customSchemaFragmentsList(query, params);
+
+      yield response.data;
+
+      cursor = response.data.cursor;
+
+      if (cursor) {
+        query.cursor = cursor;
+      }
+    } while (cursor);
+  }
 
   /**
    * @description Lists custom schema fragments.
@@ -10222,6 +11026,52 @@ export class Api<
       format: 'json',
       ...params,
     });
+  /**
+   * @description Lists SLAs matching a filter.
+   *
+   * @tags slas
+   * @name SlasList
+   * @request GET:/slas.list
+   * @secure */
+  async *slasListPaginator(
+    query?: {
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /**
+       * The maximum number of SLAs to return. The default is '50'.
+       * @format int32
+       */
+      limit?: number;
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /** The SLA statuses the filter matches. */
+      status?: SlaStatus[];
+    },
+    params: RequestParams = {}
+  ) {
+    let response, cursor;
+
+    // shallow cloning the query object once here to avoid mutating the user provided object
+    query = { ...query };
+
+    do {
+      response = await this.slasList(query, params);
+
+      yield response.data;
+
+      cursor = response.data.next_cursor;
+
+      if (cursor) {
+        query.cursor = cursor;
+      }
+    } while (cursor);
+  }
 
   /**
    * @description Lists SLAs matching a filter.
@@ -10353,6 +11203,53 @@ export class Api<
       format: 'json',
       ...params,
     });
+  /**
+   * @description Lists system users within your organization.
+   *
+   * @tags sys-users
+   * @name SysUsersList
+   * @request GET:/sys-users.list
+   * @secure */
+  async *sysUsersListPaginator(
+    query?: {
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /**
+       * The maximum number of system users to return. Value can range from
+       * '1' to '100', with a default of '50'.
+       * @format int32
+       */
+      limit?: number;
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /** Fields to sort the system users by and the direction to sort them. */
+      sort_by?: string[];
+    },
+    params: RequestParams = {}
+  ) {
+    let response, cursor;
+
+    // shallow cloning the query object once here to avoid mutating the user provided object
+    query = { ...query };
+
+    do {
+      response = await this.sysUsersList(query, params);
+
+      yield response.data;
+
+      cursor = response.data.next_cursor;
+
+      if (cursor) {
+        query.cursor = cursor;
+      }
+    } while (cursor);
+  }
 
   /**
    * @description Lists system users within your organization.
@@ -10508,6 +11405,74 @@ export class Api<
       format: 'json',
       ...params,
     });
+  /**
+   * @description Lists the timeline entries for an object.
+   *
+   * @tags timeline-entries
+   * @name TimelineEntriesList
+   * @request GET:/timeline-entries.list
+   * @secure */
+  async *timelineEntriesListPaginator(
+    query: {
+      /**
+       * The ID of the object to list timeline entries for.
+       * @example "PROD-12345"
+       */
+      object: string;
+      /**
+       * The collection(s) to list entries from, otherwise if not provided,
+       * all entries are returned.
+       */
+      collections?: TimelineEntriesCollection[];
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /**
+       * Filters for entries containing at least one of the provided labels,
+       * otherwise if no labels are provided, then no label filtering is done.
+       * @minLength 1
+       * @maxLength 64
+       */
+      labels?: string[];
+      /**
+       * The maximum number of entries to return. If not set, then this
+       * defaults to `50`.
+       * @format int32
+       */
+      limit?: number;
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /**
+       * The visibility of the timeline entries to filter for. Note this is a
+       * strict filter, such that only entries with the exact visibilities
+       * specified will be returned.
+       */
+      visibility?: TimelineEntryVisibility[];
+    },
+    params: RequestParams = {}
+  ) {
+    let response, cursor;
+
+    // shallow cloning the query object once here to avoid mutating the user provided object
+    query = { ...query };
+
+    do {
+      response = await this.timelineEntriesList(query, params);
+
+      yield response.data;
+
+      cursor = response.data.next_cursor;
+
+      if (cursor) {
+        query.cursor = cursor;
+      }
+    } while (cursor);
+  }
 
   /**
    * @description Lists the timeline entries for an object.
@@ -10756,6 +11721,77 @@ export class Api<
       format: 'json',
       ...params,
     });
+  /**
+   * @description Gets the Unit of Measurements based on the given filters.
+   *
+   * @tags commerce
+   * @name UomsList
+   * @request GET:/uoms.list
+   * @secure */
+  async *uomsListPaginator(
+    query?: {
+      /** List of aggregation types for filtering list of UOMs. */
+      aggregation_types?: AggregationDetailAggregationType[];
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /**
+       * List of Unit of Measurement (UOM) DONs to be used in filtering
+       * complete list of UOMs defined in a Dev Org.
+       */
+      ids?: string[];
+      /**
+       * The maximum number of UOMs to be returned in a response. The default
+       * is '50'.
+       * @format int32
+       */
+      limit?: number;
+      /** List of metric names for filtering list of UOMs. */
+      metric_names?: string[];
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /**
+       * List of part IDs for filtering list of UOMs.
+       * @example ["PROD-12345"]
+       */
+      part_ids?: string[];
+      /**
+       * List of product IDs for filtering list of UOMs.
+       * @example ["PROD-12345"]
+       */
+      product_ids?: string[];
+      /**
+       * Fields to sort the Unit Of Measuments (UOMs) by and the direction to
+       * sort them.
+       */
+      sort_by?: string[];
+      /** List of unit types for filtering list of UOMs. */
+      unit_types?: UnitType[];
+    },
+    params: RequestParams = {}
+  ) {
+    let response, cursor;
+
+    // shallow cloning the query object once here to avoid mutating the user provided object
+    query = { ...query };
+
+    do {
+      response = await this.uomsList(query, params);
+
+      yield response.data;
+
+      cursor = response.data.next_cursor;
+
+      if (cursor) {
+        query.cursor = cursor;
+      }
+    } while (cursor);
+  }
 
   /**
    * @description Gets the Unit of Measurements based on the given filters.
@@ -11154,6 +12190,108 @@ export class Api<
       format: 'json',
       ...params,
     });
+  /**
+   * @description Lists a collection of work items.
+   *
+   * @tags works
+   * @name WorksList
+   * @request GET:/works.list
+   * @secure */
+  async *worksListPaginator(
+    query?: {
+      /**
+       * Filters for work belonging to any of the provided parts.
+       * @example ["PROD-12345"]
+       */
+      applies_to_part?: string[];
+      /**
+       * Filters for work created by any of these users.
+       * @example ["DEVU-12345"]
+       */
+      created_by?: string[];
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /** Filters for custom fields. */
+      custom_fields?: object;
+      /** Filters for issues with any of the provided priorities. */
+      'issue.priority'?: IssuePriority[];
+      /**
+       * Filters for issues with any of the provided Rev organizations.
+       * @example ["REV-AbCdEfGh"]
+       */
+      'issue.rev_orgs'?: string[];
+      /**
+       * The maximum number of works to return. The default is '50'.
+       * @format int32
+       */
+      limit?: number;
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /**
+       * Filters for opportunities belonging to any of the provided accounts.
+       * @example ["ACC-12345"]
+       */
+      'opportunity.account'?: string[];
+      /** Filters for opportunities with any of the provided contacts. */
+      'opportunity.contacts'?: string[];
+      /**
+       * Filters for work owned by any of these users.
+       * @example ["DEVU-12345"]
+       */
+      owned_by?: string[];
+      /** Fields to sort the works by and the direction to sort them. */
+      sort_by?: string[];
+      /** Filters for records in the provided stage(s) by name. */
+      'stage.name'?: string[];
+      /**
+       * Filters for work with any of the provided tags.
+       * @example ["TAG-12345"]
+       */
+      tags?: string[];
+      /** Filters for tickets belonging to specific groups. */
+      'ticket.group'?: string[];
+      /** Filters for tickets that are spam. */
+      'ticket.is_spam'?: boolean;
+      /** Filters for tickets that need response. */
+      'ticket.needs_response'?: boolean;
+      /**
+       * Filters for tickets that are associated with any of the provided Rev
+       * organizations.
+       * @example ["REV-AbCdEfGh"]
+       */
+      'ticket.rev_org'?: string[];
+      /** Filters for tickets with any of the provided severities. */
+      'ticket.severity'?: TicketSeverity[];
+      /** Filters for tickets with any of the provided source channels. */
+      'ticket.source_channel'?: string[];
+      /** Filters for work of the provided types. */
+      type?: WorkType[];
+    },
+    params: RequestParams = {}
+  ) {
+    let response, cursor;
+
+    // shallow cloning the query object once here to avoid mutating the user provided object
+    query = { ...query };
+
+    do {
+      response = await this.worksList(query, params);
+
+      yield response.data;
+
+      cursor = response.data.next_cursor;
+
+      if (cursor) {
+        query.cursor = cursor;
+      }
+    } while (cursor);
+  }
 
   /**
    * @description Lists a collection of work items.

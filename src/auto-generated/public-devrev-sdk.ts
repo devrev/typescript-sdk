@@ -3886,6 +3886,56 @@ export class Api<
       format: 'json',
       ...params,
     });
+  /**
+   * @description Lists users within your organization.
+   *
+   * @tags dev-users
+   * @name DevUsersList
+   * @request GET:/dev-users.list
+   * @secure */
+  async *devUsersListPaginator(
+    query?: {
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /** Filters Dev users based on email addresses. */
+      email?: string[];
+      /**
+       * The maximum number of Dev users to return. The default is '50'.
+       * @format int32
+       */
+      limit?: number;
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /** Fields to sort the Dev users by and the direction to sort them. */
+      sort_by?: string[];
+      /** Filters Dev users based on state. */
+      state?: UserState[];
+    },
+    params: RequestParams = {}
+  ) {
+    let response, cursor;
+
+    // shallow cloning the query object once here to avoid mutating the user provided object
+    query = { ...query };
+
+    do {
+      response = await this.devUsersList(query, params);
+
+      yield response.data;
+
+      cursor = response.data.next_cursor;
+
+      if (cursor) {
+        query.cursor = cursor;
+      }
+    } while (cursor);
+  }
 
   /**
    * @description Lists users within your organization.
@@ -4156,6 +4206,77 @@ export class Api<
       format: 'json',
       ...params,
     });
+  /**
+   * @description Lists a collection of [parts](https://devrev.ai/docs/product/parts).
+   *
+   * @tags parts
+   * @name PartsList
+   * @request GET:/parts.list
+   * @secure */
+  async *partsListPaginator(
+    query?: {
+      /**
+       * Filters for parts created by any of these users.
+       * @example ["DEVU-12345"]
+       */
+      created_by?: string[];
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /**
+       * The maximum number of parts to return. The default is '50'.
+       * @format int32
+       */
+      limit?: number;
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /** Filters for parts of the provided name(s). */
+      name?: string[];
+      /**
+       * Filters for parts owned by any of these users.
+       * @example ["DEVU-12345"]
+       */
+      owned_by?: string[];
+      /**
+       * Number of levels to fetch the part hierarchy up to.
+       * @format int32
+       * @min 1
+       */
+      'parent_part.level'?: number;
+      /**
+       * Part IDs to fetch the hierarchy for. Required if any parent_part.*
+       * fields are provided.
+       * @minItems 1
+       * @example ["PROD-12345"]
+       */
+      'parent_part.parts'?: string[];
+      /** Filters for parts of the provided type(s). */
+      type?: PartType[];
+    },
+    params: RequestParams = {}
+  ) {
+    let response, cursor;
+
+    // shallow cloning the query object once here to avoid mutating the user provided object
+    query = { ...query };
+
+    do {
+      response = await this.partsList(query, params);
+
+      yield response.data;
+
+      cursor = response.data.next_cursor;
+
+      if (cursor) {
+        query.cursor = cursor;
+      }
+    } while (cursor);
+  }
 
   /**
    * @description Lists a collection of [parts](https://devrev.ai/docs/product/parts).
@@ -4417,6 +4538,85 @@ export class Api<
       format: 'json',
       ...params,
     });
+  /**
+   * @description Gets the list of Rev organizations' information belonging to the authenticated user's Dev Organization which the user is also authorized to access.
+   *
+   * @tags rev-orgs
+   * @name RevOrgsList
+   * @request GET:/rev-orgs.list
+   * @secure */
+  async *revOrgsListPaginator(
+    query?: {
+      /** Filters by creator. */
+      created_by?: string[];
+      /**
+       * Filters for objects created after the provided timestamp (inclusive).
+       * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
+       */
+      'created_date.after'?: string;
+      /**
+       * Filters for objects created before the provided timestamp
+       * (inclusive).
+       * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
+       */
+      'created_date.before'?: string;
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /** List of external refs to filter Rev organizations for. */
+      external_ref?: string[];
+      /**
+       * The maximum number of Rev organizations to be retrieved per page.
+       * @format int32
+       */
+      limit?: number;
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /**
+       * Filters for objects created after the provided timestamp (inclusive).
+       * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
+       */
+      'modified_date.after'?: string;
+      /**
+       * Filters for objects created before the provided timestamp
+       * (inclusive).
+       * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
+       */
+      'modified_date.before'?: string;
+      /**
+       * Fields to sort the Rev organizations by and the direction to sort
+       * them.
+       */
+      sort_by?: string[];
+    },
+    params: RequestParams = {}
+  ) {
+    let response, cursor;
+
+    // shallow cloning the query object once here to avoid mutating the user provided object
+    query = { ...query };
+
+    do {
+      response = await this.revOrgsList(query, params);
+
+      yield response.data;
+
+      cursor = response.data.next_cursor;
+
+      if (cursor) {
+        query.cursor = cursor;
+      }
+    } while (cursor);
+  }
 
   /**
    * @description Gets the list of Rev organizations' information belonging to the authenticated user's Dev Organization which the user is also authorized to access.
@@ -4641,6 +4841,54 @@ export class Api<
       format: 'json',
       ...params,
     });
+  /**
+   * @description Lists the available tags.
+   *
+   * @tags tags
+   * @name TagsList
+   * @request GET:/tags.list
+   * @secure */
+  async *tagsListPaginator(
+    query?: {
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /**
+       * The maximum number of tags to return. The default is '50'.
+       * @format int32
+       */
+      limit?: number;
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /** Filters for tags with the provided names. */
+      name?: string[];
+      /** Fields to sort tags by and the direction to sort them. */
+      sort_by?: string[];
+    },
+    params: RequestParams = {}
+  ) {
+    let response, cursor;
+
+    // shallow cloning the query object once here to avoid mutating the user provided object
+    query = { ...query };
+
+    do {
+      response = await this.tagsList(query, params);
+
+      yield response.data;
+
+      cursor = response.data.next_cursor;
+
+      if (cursor) {
+        query.cursor = cursor;
+      }
+    } while (cursor);
+  }
 
   /**
    * @description Lists the available tags.
@@ -4881,6 +5129,62 @@ export class Api<
       format: 'json',
       ...params,
     });
+  /**
+   * @description Lists the timeline entries for an object.
+   *
+   * @tags timeline-entries
+   * @name TimelineEntriesList
+   * @request GET:/timeline-entries.list
+   * @secure */
+  async *timelineEntriesListPaginator(
+    query: {
+      /**
+       * The ID of the object to list timeline entries for.
+       * @example "PROD-12345"
+       */
+      object: string;
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /**
+       * The maximum number of entries to return. If not set, then this
+       * defaults to `50`.
+       * @format int32
+       */
+      limit?: number;
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /**
+       * The visibility of the timeline entries to filter for. Note this is a
+       * strict filter, such that only entries with the exact visibilities
+       * specified will be returned.
+       */
+      visibility?: TimelineEntryVisibility[];
+    },
+    params: RequestParams = {}
+  ) {
+    let response, cursor;
+
+    // shallow cloning the query object once here to avoid mutating the user provided object
+    query = { ...query };
+
+    do {
+      response = await this.timelineEntriesList(query, params);
+
+      yield response.data;
+
+      cursor = response.data.next_cursor;
+
+      if (cursor) {
+        query.cursor = cursor;
+      }
+    } while (cursor);
+  }
 
   /**
    * @description Lists the timeline entries for an object.
@@ -5462,6 +5766,97 @@ export class Api<
       format: 'json',
       ...params,
     });
+  /**
+   * @description Lists a collection of work items.
+   *
+   * @tags works
+   * @name WorksList
+   * @request GET:/works.list
+   * @secure */
+  async *worksListPaginator(
+    query?: {
+      /**
+       * Filters for work belonging to any of the provided parts.
+       * @example ["PROD-12345"]
+       */
+      applies_to_part?: string[];
+      /**
+       * Filters for work created by any of these users.
+       * @example ["DEVU-12345"]
+       */
+      created_by?: string[];
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /** Filters for issues with any of the provided priorities. */
+      'issue.priority'?: IssuePriority[];
+      /**
+       * Filters for issues with any of the provided Rev organizations.
+       * @example ["REV-AbCdEfGh"]
+       */
+      'issue.rev_orgs'?: string[];
+      /**
+       * The maximum number of works to return. The default is '50'.
+       * @format int32
+       */
+      limit?: number;
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /**
+       * Filters for work owned by any of these users.
+       * @example ["DEVU-12345"]
+       */
+      owned_by?: string[];
+      /** Filters for records in the provided stage(s) by name. */
+      'stage.name'?: string[];
+      /**
+       * Filters for work with any of the provided tags.
+       * @example ["TAG-12345"]
+       */
+      tags?: string[];
+      /** Filters for tickets belonging to specific groups. */
+      'ticket.group'?: string[];
+      /** Filters for tickets that are spam. */
+      'ticket.is_spam'?: boolean;
+      /** Filters for tickets that need response. */
+      'ticket.needs_response'?: boolean;
+      /**
+       * Filters for tickets that are associated with any of the provided Rev
+       * organizations.
+       * @example ["REV-AbCdEfGh"]
+       */
+      'ticket.rev_org'?: string[];
+      /** Filters for tickets with any of the provided severities. */
+      'ticket.severity'?: TicketSeverity[];
+      /** Filters for tickets with any of the provided source channels. */
+      'ticket.source_channel'?: string[];
+      /** Filters for work of the provided types. */
+      type?: WorkType[];
+    },
+    params: RequestParams = {}
+  ) {
+    let response, cursor;
+
+    // shallow cloning the query object once here to avoid mutating the user provided object
+    query = { ...query };
+
+    do {
+      response = await this.worksList(query, params);
+
+      yield response.data;
+
+      cursor = response.data.next_cursor;
+
+      if (cursor) {
+        query.cursor = cursor;
+      }
+    } while (cursor);
+  }
 
   /**
    * @description Lists a collection of work items.
