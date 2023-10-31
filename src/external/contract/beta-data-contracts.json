@@ -901,9 +901,7 @@
             "type": "array"
           },
           "published_version": {
-            "description": "The timestamp at which the article is published at.",
-            "example": "2023-01-01T12:00:00.000Z",
-            "format": "date-time",
+            "description": "The latest published version.",
             "type": "string"
           },
           "url": {
@@ -1103,9 +1101,7 @@
             "$ref": "#/components/schemas/articles-update-request-owned-by"
           },
           "published_version": {
-            "description": "Updates the timestamp of the latest published version of the\narticle.\n",
-            "example": "2023-01-01T12:00:00.000Z",
-            "format": "date-time",
+            "description": "Updates the the latest published version.",
             "type": "string"
           },
           "status": {

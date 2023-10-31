@@ -491,11 +491,7 @@ export interface ArticlesCreateRequestResource {
    * @example ["ARTIFACT-12345"]
    */
   artifacts?: string[];
-  /**
-   * The timestamp at which the article is published at.
-   * @format date-time
-   * @example "2023-01-01T12:00:00.000Z"
-   */
+  /** The latest published version. */
   published_version?: string;
   /** URL of the external article. */
   url?: string;
@@ -636,12 +632,7 @@ export interface ArticlesUpdateRequest {
   /** Updates the language of the article. */
   language?: string;
   owned_by?: ArticlesUpdateRequestOwnedBy;
-  /**
-   * Updates the timestamp of the latest published version of the
-   * article.
-   * @format date-time
-   * @example "2023-01-01T12:00:00.000Z"
-   */
+  /** Updates the the latest published version. */
   published_version?: string;
   /** Status of the article. */
   status?: ArticleStatus;

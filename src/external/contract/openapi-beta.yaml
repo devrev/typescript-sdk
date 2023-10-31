@@ -678,9 +678,7 @@ components:
             type: string
           type: array
         published_version:
-          description: The timestamp at which the article is published at.
-          example: "2023-01-01T12:00:00.000Z"
-          format: date-time
+          description: The latest published version.
           type: string
         url:
           description: URL of the external article.
@@ -837,11 +835,7 @@ components:
         owned_by:
           $ref: '#/components/schemas/articles-update-request-owned-by'
         published_version:
-          description: |
-            Updates the timestamp of the latest published version of the
-            article.
-          example: "2023-01-01T12:00:00.000Z"
-          format: date-time
+          description: Updates the the latest published version.
           type: string
         status:
           $ref: '#/components/schemas/article-status'
