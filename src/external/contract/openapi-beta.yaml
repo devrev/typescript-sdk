@@ -5080,6 +5080,7 @@ components:
           text: '#/components/schemas/schema-text-field-descriptor'
           timestamp: '#/components/schemas/schema-timestamp-field-descriptor'
           tokens: '#/components/schemas/schema-tokens-field-descriptor'
+          unknown: '#/components/schemas/schema-unknown-field-descriptor'
         propertyName: field_type
       oneOf:
       - $ref: '#/components/schemas/schema-bool-field-descriptor'
@@ -5094,6 +5095,7 @@ components:
       - $ref: '#/components/schemas/schema-text-field-descriptor'
       - $ref: '#/components/schemas/schema-timestamp-field-descriptor'
       - $ref: '#/components/schemas/schema-tokens-field-descriptor'
+      - $ref: '#/components/schemas/schema-unknown-field-descriptor'
       properties:
         field_type:
           $ref: '#/components/schemas/schema-field-descriptor-field-type'
@@ -5202,6 +5204,7 @@ components:
       - text
       - timestamp
       - tokens
+      - unknown
       type: string
     schema-field-mfz-metadata:
       description: The schema of MFZ specific fields.
@@ -5523,6 +5526,10 @@ components:
             type: string
         type: object
       title: schema-tokens-list-field-descriptor
+    schema-unknown-field-descriptor:
+      allOf:
+      - $ref: '#/components/schemas/schema-field-descriptor-base'
+      title: schema-unknown-field-descriptor
     service-account:
       allOf:
       - $ref: '#/components/schemas/user-base'

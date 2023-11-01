@@ -3848,6 +3848,7 @@ export type SchemaFieldDescriptor = (
   | SchemaTextFieldDescriptor
   | SchemaTimestampFieldDescriptor
   | SchemaTokensFieldDescriptor
+  | SchemaUnknownFieldDescriptor
 ) & {
   field_type: SchemaFieldDescriptorFieldType;
 };
@@ -3929,6 +3930,7 @@ export enum SchemaFieldDescriptorFieldType {
   Text = 'text',
   Timestamp = 'timestamp',
   Tokens = 'tokens',
+  Unknown = 'unknown',
 }
 
 /**
@@ -4202,6 +4204,9 @@ export type SchemaTokensListFieldDescriptor = SchemaFieldDescriptorBase & {
   /** The string suffix. */
   suffix?: string;
 };
+
+/** schema-unknown-field-descriptor */
+export type SchemaUnknownFieldDescriptor = SchemaFieldDescriptorBase;
 
 /** service-account */
 export type ServiceAccount = UserBase;

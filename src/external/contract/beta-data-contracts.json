@@ -6851,7 +6851,8 @@
             "rich_text": "#/components/schemas/schema-rich-text-field-descriptor",
             "text": "#/components/schemas/schema-text-field-descriptor",
             "timestamp": "#/components/schemas/schema-timestamp-field-descriptor",
-            "tokens": "#/components/schemas/schema-tokens-field-descriptor"
+            "tokens": "#/components/schemas/schema-tokens-field-descriptor",
+            "unknown": "#/components/schemas/schema-unknown-field-descriptor"
           },
           "propertyName": "field_type"
         },
@@ -6891,6 +6892,9 @@
           },
           {
             "$ref": "#/components/schemas/schema-tokens-field-descriptor"
+          },
+          {
+            "$ref": "#/components/schemas/schema-unknown-field-descriptor"
           }
         ],
         "properties": {
@@ -7045,7 +7049,8 @@
           "rich_text",
           "text",
           "timestamp",
-          "tokens"
+          "tokens",
+          "unknown"
         ],
         "type": "string"
       },
@@ -7528,6 +7533,14 @@
           }
         ],
         "title": "schema-tokens-list-field-descriptor"
+      },
+      "schema-unknown-field-descriptor": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/schema-field-descriptor-base"
+          }
+        ],
+        "title": "schema-unknown-field-descriptor"
       },
       "service-account": {
         "allOf": [
