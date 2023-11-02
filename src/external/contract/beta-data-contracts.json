@@ -14631,7 +14631,7 @@
           }
         },
         "tags": [
-          "telemetry"
+          "product-usage"
         ]
       }
     },
@@ -18334,7 +18334,7 @@
           }
         },
         "tags": [
-          "commerce"
+          "product-usage"
         ]
       }
     },
@@ -18378,7 +18378,7 @@
           }
         },
         "tags": [
-          "commerce"
+          "product-usage"
         ]
       }
     },
@@ -18432,7 +18432,7 @@
           }
         },
         "tags": [
-          "commerce"
+          "product-usage"
         ],
         "x-request-name": "UomsGetQuery"
       },
@@ -18482,7 +18482,7 @@
           }
         },
         "tags": [
-          "commerce"
+          "product-usage"
         ]
       }
     },
@@ -18641,7 +18641,7 @@
           }
         },
         "tags": [
-          "commerce"
+          "product-usage"
         ],
         "x-request-name": "UomsListQuery"
       },
@@ -18688,7 +18688,7 @@
           }
         },
         "tags": [
-          "commerce"
+          "product-usage"
         ]
       }
     },
@@ -18739,7 +18739,7 @@
           }
         },
         "tags": [
-          "commerce"
+          "product-usage"
         ]
       }
     },
@@ -19704,10 +19704,6 @@
       "name": "artifacts"
     },
     {
-      "description": "DevRev commerce interactions.",
-      "name": "commerce"
-    },
-    {
       "description": "DevRev conversation interaction.",
       "name": "conversations"
     },
@@ -19736,6 +19732,10 @@
       "name": "parts"
     },
     {
+      "description": "Product Usage APIs",
+      "name": "product-usage"
+    },
+    {
       "description": "Rev organization interactions.",
       "name": "rev-orgs"
     },
@@ -19758,10 +19758,6 @@
     {
       "description": "System user interactions",
       "name": "sys-users"
-    },
-    {
-      "description": "DevRev Telemetry interactions",
-      "name": "telemetry"
     },
     {
       "description": "APIs to manage timeline entries for objects.",

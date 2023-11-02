@@ -8923,7 +8923,7 @@ export class Api<
   /**
    * @description Ingest endpoint for DevRev metrics data from clients.
    *
-   * @tags telemetry
+   * @tags product-usage
    * @name MetricsDevrevIngest
    * @request POST:/metrics.devrev.ingest
    * @secure
@@ -11534,7 +11534,7 @@ export class Api<
   /**
    * @description Creates a Unit of Measurement on a part.
    *
-   * @tags commerce
+   * @tags product-usage
    * @name UomsCreate
    * @request POST:/uoms.create
    * @secure
@@ -11561,7 +11561,7 @@ export class Api<
   /**
    * @description Deletes a Unit of Measurement.
    *
-   * @tags commerce
+   * @tags product-usage
    * @name UomsDelete
    * @request POST:/uoms.delete
    * @secure
@@ -11588,7 +11588,7 @@ export class Api<
   /**
    * @description Gets a Unit of Measurement.
    *
-   * @tags commerce
+   * @tags product-usage
    * @name UomsGet
    * @request GET:/uoms.get
    * @secure
@@ -11621,7 +11621,7 @@ export class Api<
   /**
    * @description Gets a Unit of Measurement.
    *
-   * @tags commerce
+   * @tags product-usage
    * @name UomsGetPost
    * @request POST:/uoms.get
    * @secure
@@ -11649,7 +11649,7 @@ export class Api<
   /**
    * @description Gets the Unit of Measurements based on the given filters.
    *
-   * @tags commerce
+   * @tags product-usage
    * @name UomsList
    * @request GET:/uoms.list
    * @secure
@@ -11720,7 +11720,7 @@ export class Api<
   /**
    * @description Gets the Unit of Measurements based on the given filters.
    *
-   * @tags commerce
+   * @tags product-usage
    * @name UomsList
    * @request GET:/uoms.list
    * @secure */
@@ -11792,7 +11792,7 @@ export class Api<
   /**
    * @description Gets the Unit of Measurements based on the given filters.
    *
-   * @tags commerce
+   * @tags product-usage
    * @name UomsListPost
    * @request POST:/uoms.list
    * @secure
@@ -11819,7 +11819,7 @@ export class Api<
   /**
    * @description Updates a Unit of Measurement.
    *
-   * @tags commerce
+   * @tags product-usage
    * @name UomsUpdate
    * @request POST:/uoms.update
    * @secure

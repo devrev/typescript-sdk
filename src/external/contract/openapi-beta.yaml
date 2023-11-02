@@ -10597,7 +10597,7 @@ paths:
         "503":
           $ref: '#/components/responses/service-unavailable'
       tags:
-      - telemetry
+      - product-usage
   /org-schedule-fragments.create:
     post:
       description: Creates an organization schedule fragment.
@@ -13076,7 +13076,7 @@ paths:
         "503":
           $ref: '#/components/responses/service-unavailable'
       tags:
-      - commerce
+      - product-usage
   /uoms.delete:
     post:
       description: Deletes a Unit of Measurement.
@@ -13104,7 +13104,7 @@ paths:
         "503":
           $ref: '#/components/responses/service-unavailable'
       tags:
-      - commerce
+      - product-usage
   /uoms.get:
     get:
       description: Gets a Unit of Measurement.
@@ -13139,7 +13139,7 @@ paths:
         "503":
           $ref: '#/components/responses/service-unavailable'
       tags:
-      - commerce
+      - product-usage
       x-request-name: UomsGetQuery
     post:
       description: Gets a Unit of Measurement.
@@ -13171,7 +13171,7 @@ paths:
         "503":
           $ref: '#/components/responses/service-unavailable'
       tags:
-      - commerce
+      - product-usage
   /uoms.list:
     get:
       description: Gets the Unit of Measurements based on the given filters.
@@ -13286,7 +13286,7 @@ paths:
         "503":
           $ref: '#/components/responses/service-unavailable'
       tags:
-      - commerce
+      - product-usage
       x-request-name: UomsListQuery
     post:
       description: Gets the Unit of Measurements based on the given filters.
@@ -13316,7 +13316,7 @@ paths:
         "503":
           $ref: '#/components/responses/service-unavailable'
       tags:
-      - commerce
+      - product-usage
   /uoms.update:
     post:
       description: Updates a Unit of Measurement.
@@ -13348,7 +13348,7 @@ paths:
         "503":
           $ref: '#/components/responses/service-unavailable'
       tags:
-      - commerce
+      - product-usage
   /works.create:
     post:
       description: |
@@ -13997,8 +13997,6 @@ tags:
   name: articles
 - description: Artifact (file) management APIs.
   name: artifacts
-- description: DevRev commerce interactions.
-  name: commerce
 - description: DevRev conversation interaction.
   name: conversations
 - description: DevRev customization.
@@ -14013,6 +14011,8 @@ tags:
   name: links
 - description: DevRev part interactions.
   name: parts
+- description: Product Usage APIs
+  name: product-usage
 - description: Rev organization interactions.
   name: rev-orgs
 - description: Rev user interactions.
@@ -14025,8 +14025,6 @@ tags:
   name: slas
 - description: System user interactions
   name: sys-users
-- description: DevRev Telemetry interactions
-  name: telemetry
 - description: APIs to manage timeline entries for objects.
   name: timeline-entries
 - description: DevRev work interactions.
