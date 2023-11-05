@@ -882,6 +882,7 @@
         },
         "required": [
           "applies_to_parts",
+          "owned_by",
           "resource",
           "title"
         ],

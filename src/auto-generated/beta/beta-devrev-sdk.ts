@@ -468,7 +468,7 @@ export interface ArticlesCreateRequest {
    * The users that own the article.
    * @example ["DEVU-12345"]
    */
-  owned_by?: string[];
+  owned_by: string[];
   /**
    * The published date of the article.
    * @format date-time

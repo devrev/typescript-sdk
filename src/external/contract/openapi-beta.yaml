@@ -664,6 +664,7 @@ components:
           type: string
       required:
       - applies_to_parts
+      - owned_by
       - resource
       - title
       title: articles-create-request
