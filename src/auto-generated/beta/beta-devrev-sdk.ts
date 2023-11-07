@@ -820,6 +820,8 @@ export type Conversation = AtomBase & {
   owned_by?: UserSummary[];
   /** Describes the current stage of a work item. */
   stage?: Stage;
+  /** Tags associated with the object. */
+  tags?: TagWithValue[];
   /** Title of the conversation object. */
   title?: string;
 };

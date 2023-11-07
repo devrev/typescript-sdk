@@ -1095,6 +1095,11 @@ components:
             type: array
           stage:
             $ref: '#/components/schemas/stage'
+          tags:
+            description: Tags associated with the object.
+            items:
+              $ref: '#/components/schemas/tag-with-value'
+            type: array
           title:
             description: Title of the conversation object.
             type: string
