@@ -99,8 +99,6 @@
           },
           "version": {
             "description": "The version of the artifact that needs to be fetched.",
-            "example": "2023-01-01T12:00:00.000Z",
-            "format": "date-time",
             "type": "string"
           }
         },
@@ -5202,8 +5200,6 @@
             "in": "query",
             "name": "version",
             "schema": {
-              "example": "2023-01-01T12:00:00.000Z",
-              "format": "date-time",
               "type": "string"
             }
           }

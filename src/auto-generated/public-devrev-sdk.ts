@@ -22,11 +22,7 @@ export interface ArtifactsLocateRequest {
    * @example "ARTIFACT-12345"
    */
   id: string;
-  /**
-   * The version of the artifact that needs to be fetched.
-   * @format date-time
-   * @example "2023-01-01T12:00:00.000Z"
-   */
+  /** The version of the artifact that needs to be fetched. */
   version?: string;
 }
 
@@ -3187,11 +3183,7 @@ export class Api<
        * @example "ARTIFACT-12345"
        */
       id: string;
-      /**
-       * The version of the artifact that needs to be fetched.
-       * @format date-time
-       * @example "2023-01-01T12:00:00.000Z"
-       */
+      /** The version of the artifact that needs to be fetched. */
       version?: string;
     },
     params: RequestParams = {}
