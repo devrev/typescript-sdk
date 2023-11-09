@@ -462,6 +462,7 @@
           "urn:devrev:params:oauth:token-type:aat:public",
           "urn:devrev:params:oauth:token-type:dev",
           "urn:devrev:params:oauth:token-type:pat",
+          "urn:devrev:params:oauth:token-type:rat",
           "urn:devrev:params:oauth:token-type:rev",
           "urn:devrev:params:oauth:token-type:session",
           "urn:devrev:params:oauth:token-type:session:dev0",
@@ -482,6 +483,9 @@
           },
           "urn:devrev:params:oauth:token-type:pat": {
             "name": "urn-devrev-params-oauth-token-type-pat"
+          },
+          "urn:devrev:params:oauth:token-type:rat": {
+            "name": "urn-devrev-params-oauth-token-type-rat"
           },
           "urn:devrev:params:oauth:token-type:rev": {
             "name": "urn-devrev-params-oauth-token-type-rev"
@@ -517,6 +521,7 @@
         "enum": [
           "urn:devrev:params:oauth:token-type:jwt:auth0",
           "urn:devrev:params:oauth:token-type:jwt:dev",
+          "urn:devrev:params:oauth:token-type:rat",
           "urn:devrev:params:oauth:token-type:revinfo",
           "urn:devrev:params:oauth:token-type:session",
           "urn:devrev:params:oauth:token-type:sysu",
@@ -531,6 +536,9 @@
           },
           "urn:devrev:params:oauth:token-type:jwt:dev": {
             "name": "urn-devrev-params-oauth-token-type-jwt-dev"
+          },
+          "urn:devrev:params:oauth:token-type:rat": {
+            "name": "urn-devrev-params-oauth-token-type-rat"
           },
           "urn:devrev:params:oauth:token-type:revinfo": {
             "name": "urn-devrev-params-oauth-token-type-revinfo"
