@@ -124,6 +124,8 @@ export interface AccountsExportRequest {
   /** Filters for accounts created by the specified user(s). */
   created_by?: string[];
   created_date?: DateTimeFilter;
+  /** Filters for custom fields. */
+  custom_fields?: object;
   /** Domains for accounts to be filtered. */
   domains?: string[];
   /** Array of references of accounts to be filtered. */
@@ -188,6 +190,8 @@ export interface AccountsListRequest {
    * iteration starts from the beginning.
    */
   cursor?: string;
+  /** Filters for custom fields. */
+  custom_fields?: object;
   /** Domains for accounts to be filtered. */
   domains?: string[];
   /** Array of references of accounts to be filtered. */
@@ -3329,6 +3333,8 @@ export type RevOrg = OrgBase & {
    * @example "don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>"
    */
   stock_schema_fragment?: string;
+  /** Tags associated with an object. */
+  tags?: TagWithValue[];
 };
 
 /** rev-org-summary */
@@ -3371,6 +3377,8 @@ export interface RevOrgsCreateRequest {
    * records.
    */
   external_ref?: string;
+  /** Tags associated with the Rev organization. */
+  tags?: SetTagWithValue[];
   /** The tier of the RevOrg. */
   tier?: string;
 }
@@ -3433,6 +3441,8 @@ export interface RevOrgsListRequest {
    * (custom_field_filter=field_name1:val1,val2,val3&custom_field_filter=field_name2:val1,val2).
    */
   custom_field_filter?: string[];
+  /** Filters for custom fields. */
+  custom_fields?: object;
   /** List of external refs to filter Rev organizations for. */
   external_ref?: string[];
   /**
@@ -3454,6 +3464,8 @@ export interface RevOrgsListRequest {
    * them.
    */
   sort_by?: string[];
+  /** List of tags to be filtered. */
+  tags?: string[];
 }
 
 /**
@@ -3510,6 +3522,8 @@ export interface RevOrgsUpdateRequest {
    * @example "REV-AbCdEfGh"
    */
   id: string;
+  /** Tags associated with the Rev organization. */
+  tags?: SetTagWithValue[];
   /** The tier of the RevOrg. */
   tier?: string;
 }
@@ -3560,6 +3574,8 @@ export type RevUser = UserBase & {
    * @example "don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>"
    */
   stock_schema_fragment?: string;
+  /** Tags associated with the object. */
+  tags?: TagWithValue[];
 };
 
 /** rev-user-summary */
@@ -3613,6 +3629,8 @@ export interface RevUsersCreateRequest {
    * @example "REV-AbCdEfGh"
    */
   rev_org?: string;
+  /** Tags associated with the Rev user. */
+  tags?: SetTagWithValue[];
 }
 
 /**
@@ -3669,6 +3687,8 @@ export interface RevUsersListRequest {
    * iteration starts from the beginning.
    */
   cursor?: string;
+  /** Filters for custom fields. */
+  custom_fields?: object;
   /** List of emails of Rev users to be filtered. */
   email?: string[];
   /** List of external refs to filter Rev users for. */
@@ -3698,6 +3718,8 @@ export interface RevUsersListRequest {
   rev_org?: string[];
   /** Fields to sort the Rev users by and the direction to sort them. */
   sort_by?: string[];
+  /** List of tags to be filtered. */
+  tags?: string[];
 }
 
 /**
@@ -3738,6 +3760,8 @@ export interface RevUsersUpdateRequest {
   external_ref?: string;
   /** The ID of Rev user to update. */
   id: string;
+  /** Tags associated with the Rev user. */
+  tags?: SetTagWithValue[];
 }
 
 /** rev-users-update-request-artifacts */
@@ -6480,6 +6504,8 @@ export class Api<
        * @example "2023-01-01T12:00:00.000Z"
        */
       'created_date.before'?: string;
+      /** Filters for custom fields. */
+      custom_fields?: object;
       /** Domains for accounts to be filtered. */
       domains?: string[];
       /** Array of references of accounts to be filtered. */
@@ -6656,6 +6682,8 @@ export class Api<
        * starts from the beginning.
        */
       cursor?: string;
+      /** Filters for custom fields. */
+      custom_fields?: object;
       /** Domains for accounts to be filtered. */
       domains?: string[];
       /** Array of references of accounts to be filtered. */
@@ -9260,6 +9288,8 @@ export class Api<
        * (custom_field_filter=field_name1:val1,val2,val3&custom_field_filter=field_name2:val1,val2).
        */
       custom_field_filter?: string[];
+      /** Filters for custom fields. */
+      custom_fields?: object;
       /** List of external refs to filter Rev organizations for. */
       external_ref?: string[];
       /**
@@ -9290,6 +9320,8 @@ export class Api<
        * them.
        */
       sort_by?: string[];
+      /** List of tags to be filtered. */
+      tags?: string[];
     },
     params: RequestParams = {}
   ) =>
@@ -9544,6 +9576,8 @@ export class Api<
        * starts from the beginning.
        */
       cursor?: string;
+      /** Filters for custom fields. */
+      custom_fields?: object;
       /** List of emails of Rev users to be filtered. */
       email?: string[];
       /** List of external refs to filter Rev users for. */
@@ -9582,6 +9616,8 @@ export class Api<
       rev_org?: string[];
       /** Fields to sort the Rev users by and the direction to sort them. */
       sort_by?: string[];
+      /** List of tags to be filtered. */
+      tags?: string[];
     },
     params: RequestParams = {}
   ) =>

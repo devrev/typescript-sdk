@@ -209,6 +209,9 @@ components:
           type: array
         created_date:
           $ref: '#/components/schemas/date-time-filter'
+        custom_fields:
+          description: Filters for custom fields.
+          type: object
         domains:
           description: Domains for accounts to be filtered.
           items:
@@ -299,6 +302,9 @@ components:
             The cursor to resume iteration from. If not provided, then
             iteration starts from the beginning.
           type: string
+        custom_fields:
+          description: Filters for custom fields.
+          type: object
         domains:
           description: Domains for accounts to be filtered.
           items:
@@ -4418,6 +4424,11 @@ components:
             description: Stock schema fragment.
             example: don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>
             type: string
+          tags:
+            description: Tags associated with an object.
+            items:
+              $ref: '#/components/schemas/tag-with-value'
+            type: array
         type: object
       title: rev-org
     rev-org-summary:
@@ -4469,6 +4480,11 @@ components:
             an unique id for this organization's data in some system of
             records.
           type: string
+        tags:
+          description: Tags associated with the Rev organization.
+          items:
+            $ref: '#/components/schemas/set-tag-with-value'
+          type: array
         tier:
           description: The tier of the RevOrg.
           type: string
@@ -4543,6 +4559,9 @@ components:
           items:
             type: string
           type: array
+        custom_fields:
+          description: Filters for custom fields.
+          type: object
         external_ref:
           description: List of external refs to filter Rev organizations for.
           items:
@@ -4561,6 +4580,11 @@ components:
           description: |
             Fields to sort the Rev organizations by and the direction to sort
             them.
+          items:
+            type: string
+          type: array
+        tags:
+          description: List of tags to be filtered.
           items:
             type: string
           type: array
@@ -4629,6 +4653,11 @@ components:
           description: The ID of Rev organization to update.
           example: REV-AbCdEfGh
           type: string
+        tags:
+          description: Tags associated with the Rev organization.
+          items:
+            $ref: '#/components/schemas/set-tag-with-value'
+          type: array
         tier:
           description: The tier of the RevOrg.
           type: string
@@ -4696,6 +4725,11 @@ components:
             description: Stock schema fragment.
             example: don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>
             type: string
+          tags:
+            description: Tags associated with the object.
+            items:
+              $ref: '#/components/schemas/tag-with-value'
+            type: array
         type: object
       title: rev-user
     rev-user-summary:
@@ -4763,6 +4797,11 @@ components:
             The ID of Rev organization for which a Rev user is to be created.
           example: REV-AbCdEfGh
           type: string
+        tags:
+          description: Tags associated with the Rev user.
+          items:
+            $ref: '#/components/schemas/set-tag-with-value'
+          type: array
       title: rev-users-create-request
       type: object
     rev-users-create-response:
@@ -4829,6 +4868,9 @@ components:
             The cursor to resume iteration from. If not provided, then
             iteration starts from the beginning.
           type: string
+        custom_fields:
+          description: Filters for custom fields.
+          type: object
         email:
           description: List of emails of Rev users to be filtered.
           items:
@@ -4866,6 +4908,11 @@ components:
         sort_by:
           description: |
             Fields to sort the Rev users by and the direction to sort them.
+          items:
+            type: string
+          type: array
+        tags:
+          description: List of tags to be filtered.
           items:
             type: string
           type: array
@@ -4920,6 +4967,11 @@ components:
         id:
           description: The ID of Rev user to update.
           type: string
+        tags:
+          description: Tags associated with the Rev user.
+          items:
+            $ref: '#/components/schemas/set-tag-with-value'
+          type: array
       required:
       - id
       title: rev-users-update-request
@@ -8127,6 +8179,12 @@ paths:
           example: "2023-01-01T12:00:00.000Z"
           format: date-time
           type: string
+      - description: Filters for custom fields.
+        explode: false
+        in: query
+        name: custom_fields
+        schema:
+          type: object
       - description: Domains for accounts to be filtered.
         explode: false
         in: query
@@ -8363,6 +8421,12 @@ paths:
         name: cursor
         schema:
           type: string
+      - description: Filters for custom fields.
+        explode: false
+        in: query
+        name: custom_fields
+        schema:
+          type: object
       - description: Domains for accounts to be filtered.
         explode: false
         in: query
@@ -11488,6 +11552,12 @@ paths:
           items:
             type: string
           type: array
+      - description: Filters for custom fields.
+        explode: false
+        in: query
+        name: custom_fields
+        schema:
+          type: object
       - description: List of external refs to filter Rev organizations for.
         explode: false
         in: query
@@ -11537,6 +11607,14 @@ paths:
         explode: false
         in: query
         name: sort_by
+        schema:
+          items:
+            type: string
+          type: array
+      - description: List of tags to be filtered.
+        explode: false
+        in: query
+        name: tags
         schema:
           items:
             type: string
@@ -11837,6 +11915,12 @@ paths:
         name: cursor
         schema:
           type: string
+      - description: Filters for custom fields.
+        explode: false
+        in: query
+        name: custom_fields
+        schema:
+          type: object
       - description: List of emails of Rev users to be filtered.
         explode: false
         in: query
@@ -11917,6 +12001,14 @@ paths:
         explode: false
         in: query
         name: sort_by
+        schema:
+          items:
+            type: string
+          type: array
+      - description: List of tags to be filtered.
+        explode: false
+        in: query
+        name: tags
         schema:
           items:
             type: string

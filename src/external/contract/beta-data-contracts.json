@@ -300,6 +300,10 @@
           "created_date": {
             "$ref": "#/components/schemas/date-time-filter"
           },
+          "custom_fields": {
+            "description": "Filters for custom fields.",
+            "type": "object"
+          },
           "domains": {
             "description": "Domains for accounts to be filtered.",
             "items": {
@@ -419,6 +423,10 @@
           "cursor": {
             "description": "The cursor to resume iteration from. If not provided, then\niteration starts from the beginning.\n",
             "type": "string"
+          },
+          "custom_fields": {
+            "description": "Filters for custom fields.",
+            "type": "object"
           },
           "domains": {
             "description": "Domains for accounts to be filtered.",
@@ -5962,6 +5970,13 @@
                 "description": "Stock schema fragment.",
                 "example": "don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>",
                 "type": "string"
+              },
+              "tags": {
+                "description": "Tags associated with an object.",
+                "items": {
+                  "$ref": "#/components/schemas/tag-with-value"
+                },
+                "type": "array"
               }
             },
             "type": "object"
@@ -6027,6 +6042,13 @@
           "external_ref": {
             "description": "External ref is a custom unique identifier which is a reference to\nan unique id for this organization's data in some system of\nrecords.\n",
             "type": "string"
+          },
+          "tags": {
+            "description": "Tags associated with the Rev organization.",
+            "items": {
+              "$ref": "#/components/schemas/set-tag-with-value"
+            },
+            "type": "array"
           },
           "tier": {
             "description": "The tier of the RevOrg.",
@@ -6118,6 +6140,10 @@
             },
             "type": "array"
           },
+          "custom_fields": {
+            "description": "Filters for custom fields.",
+            "type": "object"
+          },
           "external_ref": {
             "description": "List of external refs to filter Rev organizations for.",
             "items": {
@@ -6138,6 +6164,13 @@
           },
           "sort_by": {
             "description": "Fields to sort the Rev organizations by and the direction to sort\nthem.\n",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "tags": {
+            "description": "List of tags to be filtered.",
             "items": {
               "type": "string"
             },
@@ -6217,6 +6250,13 @@
             "description": "The ID of Rev organization to update.",
             "example": "REV-AbCdEfGh",
             "type": "string"
+          },
+          "tags": {
+            "description": "Tags associated with the Rev organization.",
+            "items": {
+              "$ref": "#/components/schemas/set-tag-with-value"
+            },
+            "type": "array"
           },
           "tier": {
             "description": "The tier of the RevOrg.",
@@ -6306,6 +6346,13 @@
                 "description": "Stock schema fragment.",
                 "example": "don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>",
                 "type": "string"
+              },
+              "tags": {
+                "description": "Tags associated with the object.",
+                "items": {
+                  "$ref": "#/components/schemas/tag-with-value"
+                },
+                "type": "array"
               }
             },
             "type": "object"
@@ -6387,6 +6434,13 @@
             "description": "The ID of Rev organization for which a Rev user is to be created.\n",
             "example": "REV-AbCdEfGh",
             "type": "string"
+          },
+          "tags": {
+            "description": "Tags associated with the Rev user.",
+            "items": {
+              "$ref": "#/components/schemas/set-tag-with-value"
+            },
+            "type": "array"
           }
         },
         "title": "rev-users-create-request",
@@ -6471,6 +6525,10 @@
             "description": "The cursor to resume iteration from. If not provided, then\niteration starts from the beginning.\n",
             "type": "string"
           },
+          "custom_fields": {
+            "description": "Filters for custom fields.",
+            "type": "object"
+          },
           "email": {
             "description": "List of emails of Rev users to be filtered.",
             "items": {
@@ -6519,6 +6577,13 @@
           },
           "sort_by": {
             "description": "Fields to sort the Rev users by and the direction to sort them.\n",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "tags": {
+            "description": "List of tags to be filtered.",
             "items": {
               "type": "string"
             },
@@ -6586,6 +6651,13 @@
           "id": {
             "description": "The ID of Rev user to update.",
             "type": "string"
+          },
+          "tags": {
+            "description": "Tags associated with the Rev user.",
+            "items": {
+              "$ref": "#/components/schemas/set-tag-with-value"
+            },
+            "type": "array"
           }
         },
         "required": [
@@ -10944,6 +11016,15 @@
             }
           },
           {
+            "description": "Filters for custom fields.",
+            "explode": false,
+            "in": "query",
+            "name": "custom_fields",
+            "schema": {
+              "type": "object"
+            }
+          },
+          {
             "description": "Domains for accounts to be filtered.",
             "explode": false,
             "in": "query",
@@ -11283,6 +11364,15 @@
             "name": "cursor",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "description": "Filters for custom fields.",
+            "explode": false,
+            "in": "query",
+            "name": "custom_fields",
+            "schema": {
+              "type": "object"
             }
           },
           {
@@ -15960,6 +16050,15 @@
             }
           },
           {
+            "description": "Filters for custom fields.",
+            "explode": false,
+            "in": "query",
+            "name": "custom_fields",
+            "schema": {
+              "type": "object"
+            }
+          },
+          {
             "description": "List of external refs to filter Rev organizations for.",
             "explode": false,
             "in": "query",
@@ -16017,6 +16116,18 @@
             "explode": false,
             "in": "query",
             "name": "sort_by",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "List of tags to be filtered.",
+            "explode": false,
+            "in": "query",
+            "name": "tags",
             "schema": {
               "items": {
                 "type": "string"
@@ -16467,6 +16578,15 @@
             }
           },
           {
+            "description": "Filters for custom fields.",
+            "explode": false,
+            "in": "query",
+            "name": "custom_fields",
+            "schema": {
+              "type": "object"
+            }
+          },
+          {
             "description": "List of emails of Rev users to be filtered.",
             "explode": false,
             "in": "query",
@@ -16572,6 +16692,18 @@
             "explode": false,
             "in": "query",
             "name": "sort_by",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "List of tags to be filtered.",
+            "explode": false,
+            "in": "query",
+            "name": "tags",
             "schema": {
               "items": {
                 "type": "string"
