@@ -2615,6 +2615,7 @@ components:
           - ARTIFACT-12345
           items:
             type: string
+          maxItems: 10
           type: array
         body:
           description: The comment's body.
@@ -2775,6 +2776,7 @@ components:
           - ARTIFACT-12345
           items:
             type: string
+          maxItems: 10
           type: array
         remove:
           description: |
@@ -2784,6 +2786,7 @@ components:
           - ARTIFACT-12345
           items:
             type: string
+          maxItems: 10
           type: array
         set:
           description: Sets the field to the provided artifacts.
@@ -2791,6 +2794,7 @@ components:
           - ARTIFACT-12345
           items:
             type: string
+          maxItems: 10
           type: array
       title: timeline-entries-update-request-timeline-comment-artifacts
       type: object

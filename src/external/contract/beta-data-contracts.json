@@ -8700,6 +8700,7 @@
             "items": {
               "type": "string"
             },
+            "maxItems": 10,
             "type": "array"
           },
           "body": {
@@ -8884,6 +8885,7 @@
             "items": {
               "type": "string"
             },
+            "maxItems": 10,
             "type": "array"
           },
           "remove": {
@@ -8894,6 +8896,7 @@
             "items": {
               "type": "string"
             },
+            "maxItems": 10,
             "type": "array"
           },
           "set": {
@@ -8904,6 +8907,7 @@
             "items": {
               "type": "string"
             },
+            "maxItems": 10,
             "type": "array"
           }
         },
