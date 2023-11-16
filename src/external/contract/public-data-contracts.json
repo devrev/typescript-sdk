@@ -2098,6 +2098,20 @@
         ],
         "type": "string"
       },
+      "legacy-stage": {
+        "description": "Describes the current stage of a work item.",
+        "properties": {
+          "name": {
+            "description": "Current stage name of the work item.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "legacy-stage",
+        "type": "object"
+      },
       "list-mode": {
         "description": "The iteration mode to use. If \"after\", then entries after the provided\ncursor will be returned, or if no cursor is provided, then from the\nbeginning. If \"before\", then entries before the provided cursor will be\nreturned, or if no cursor is provided, then from the end. Entries will\nalways be returned in the specified sort-by order.\n",
         "enum": [
@@ -3100,20 +3114,6 @@
       "sla-summary-filter": {
         "description": "The filter for SLA summary.",
         "title": "sla-summary-filter",
-        "type": "object"
-      },
-      "stage": {
-        "description": "Describes the current stage of a work item.",
-        "properties": {
-          "name": {
-            "description": "Current stage name of the work item.",
-            "type": "string"
-          }
-        },
-        "required": [
-          "name"
-        ],
-        "title": "stage",
         "type": "object"
       },
       "stage-filter": {
@@ -4487,7 +4487,7 @@
                 "type": "array"
               },
               "stage": {
-                "$ref": "#/components/schemas/stage"
+                "$ref": "#/components/schemas/legacy-stage"
               },
               "tags": {
                 "description": "Tags associated with the object.",

@@ -1476,7 +1476,7 @@
                 "type": "array"
               },
               "stage": {
-                "$ref": "#/components/schemas/stage"
+                "$ref": "#/components/schemas/legacy-stage"
               },
               "tags": {
                 "description": "Tags associated with the object.",
@@ -4146,6 +4146,20 @@
           }
         ],
         "title": "issue-summary"
+      },
+      "legacy-stage": {
+        "description": "Describes the current stage of a work item.",
+        "properties": {
+          "name": {
+            "description": "Current stage name of the work item.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "legacy-stage",
+        "type": "object"
       },
       "link": {
         "allOf": [
@@ -8179,20 +8193,6 @@
         "type": "object",
         "x-go-name": "SlasUpdateResponseBody"
       },
-      "stage": {
-        "description": "Describes the current stage of a work item.",
-        "properties": {
-          "name": {
-            "description": "Current stage name of the work item.",
-            "type": "string"
-          }
-        },
-        "required": [
-          "name"
-        ],
-        "title": "stage",
-        "type": "object"
-      },
       "stage-filter": {
         "description": "The filter for stages.",
         "properties": {
@@ -9928,7 +9928,7 @@
                 "type": "array"
               },
               "stage": {
-                "$ref": "#/components/schemas/stage"
+                "$ref": "#/components/schemas/legacy-stage"
               },
               "stock_schema_fragment": {
                 "description": "Stock schema fragment.",

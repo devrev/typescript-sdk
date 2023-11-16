@@ -1170,6 +1170,15 @@ export enum IssuePriority {
 }
 
 /**
+ * legacy-stage
+ * Describes the current stage of a work item.
+ */
+export interface LegacyStage {
+  /** Current stage name of the work item. */
+  name: string;
+}
+
+/**
  * The iteration mode to use. If "after", then entries after the provided
  * cursor will be returned, or if no cursor is provided, then from the
  * beginning. If "before", then entries before the provided cursor will be
@@ -1736,15 +1745,6 @@ export interface SetTagWithValue {
  * The filter for SLA summary.
  */
 export type SlaSummaryFilter = object;
-
-/**
- * stage
- * Describes the current stage of a work item.
- */
-export interface Stage {
-  /** Current stage name of the work item. */
-  name: string;
-}
 
 /**
  * stage-filter
@@ -2620,7 +2620,7 @@ export type WorkBase = AtomBase & {
   /** Users that reported the work. */
   reported_by?: UserSummary[];
   /** Describes the current stage of a work item. */
-  stage?: Stage;
+  stage?: LegacyStage;
   /** Tags associated with the object. */
   tags?: TagWithValue[];
   /**

@@ -823,7 +823,7 @@ export type Conversation = AtomBase & {
   /** Owner IDs for the conversation. */
   owned_by?: UserSummary[];
   /** Describes the current stage of a work item. */
-  stage?: Stage;
+  stage?: LegacyStage;
   /** Tags associated with the object. */
   tags?: TagWithValue[];
   /** Title of the conversation object. */
@@ -2230,6 +2230,15 @@ export type IssueSummary = WorkBaseSummary & {
   /** Priority of the work based upon impact and criticality. */
   priority?: IssuePriority;
 };
+
+/**
+ * legacy-stage
+ * Describes the current stage of a work item.
+ */
+export interface LegacyStage {
+  /** Current stage name of the work item. */
+  name: string;
+}
 
 /** link */
 export type Link = AtomBase & {
@@ -4614,15 +4623,6 @@ export interface SlasUpdateResponse {
 }
 
 /**
- * stage
- * Describes the current stage of a work item.
- */
-export interface Stage {
-  /** Current stage name of the work item. */
-  name: string;
-}
-
-/**
  * stage-filter
  * The filter for stages.
  */
@@ -5731,7 +5731,7 @@ export type WorkBase = AtomBase & {
   /** Users that reported the work. */
   reported_by?: UserSummary[];
   /** Describes the current stage of a work item. */
-  stage?: Stage;
+  stage?: LegacyStage;
   /**
    * Stock schema fragment.
    * @example "don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>"

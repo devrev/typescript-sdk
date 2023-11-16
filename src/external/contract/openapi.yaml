@@ -1529,6 +1529,16 @@ components:
       - p2
       - p3
       type: string
+    legacy-stage:
+      description: Describes the current stage of a work item.
+      properties:
+        name:
+          description: Current stage name of the work item.
+          type: string
+      required:
+      - name
+      title: legacy-stage
+      type: object
     list-mode:
       description: |
         The iteration mode to use. If "after", then entries after the provided
@@ -2264,16 +2274,6 @@ components:
     sla-summary-filter:
       description: The filter for SLA summary.
       title: sla-summary-filter
-      type: object
-    stage:
-      description: Describes the current stage of a work item.
-      properties:
-        name:
-          description: Current stage name of the work item.
-          type: string
-      required:
-      - name
-      title: stage
       type: object
     stage-filter:
       description: The filter for stages.
@@ -3318,7 +3318,7 @@ components:
               $ref: '#/components/schemas/user-summary'
             type: array
           stage:
-            $ref: '#/components/schemas/stage'
+            $ref: '#/components/schemas/legacy-stage'
           tags:
             description: Tags associated with the object.
             items:

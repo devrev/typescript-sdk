@@ -1100,7 +1100,7 @@ components:
               $ref: '#/components/schemas/user-summary'
             type: array
           stage:
-            $ref: '#/components/schemas/stage'
+            $ref: '#/components/schemas/legacy-stage'
           tags:
             description: Tags associated with the object.
             items:
@@ -3017,6 +3017,16 @@ components:
             $ref: '#/components/schemas/issue-priority'
         type: object
       title: issue-summary
+    legacy-stage:
+      description: Describes the current stage of a work item.
+      properties:
+        name:
+          description: Current stage name of the work item.
+          type: string
+      required:
+      - name
+      title: legacy-stage
+      type: object
     link:
       allOf:
       - $ref: '#/components/schemas/atom-base'
@@ -6034,16 +6044,6 @@ components:
       title: slas-update-response
       type: object
       x-go-name: SlasUpdateResponseBody
-    stage:
-      description: Describes the current stage of a work item.
-      properties:
-        name:
-          description: Current stage name of the work item.
-          type: string
-      required:
-      - name
-      title: stage
-      type: object
     stage-filter:
       description: The filter for stages.
       properties:
@@ -7384,7 +7384,7 @@ components:
               $ref: '#/components/schemas/user-summary'
             type: array
           stage:
-            $ref: '#/components/schemas/stage'
+            $ref: '#/components/schemas/legacy-stage'
           stock_schema_fragment:
             description: Stock schema fragment.
             example: don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>
