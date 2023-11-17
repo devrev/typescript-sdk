@@ -1229,6 +1229,8 @@ export interface CustomSchemaFragmentsListRequest {
    * then iteration starts from the beginning.
    */
   cursor?: string;
+  /** Whether only deprecated fragments should be filtered. */
+  deprecated?: boolean;
   /** The list of leaf types. */
   leaf_type?: string[];
   /**
@@ -9942,6 +9944,8 @@ export class Api<
        * iteration starts from the beginning.
        */
       cursor?: string;
+      /** Whether only deprecated fragments should be filtered. */
+      deprecated?: boolean;
       /** The list of leaf types. */
       leaf_type?: string[];
       /**

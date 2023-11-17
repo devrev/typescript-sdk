@@ -2193,6 +2193,10 @@
             "description": "The cursor to resume iteration from, otherwise if not provided,\nthen iteration starts from the beginning.\n",
             "type": "string"
           },
+          "deprecated": {
+            "description": "Whether only deprecated fragments should be filtered.",
+            "type": "boolean"
+          },
           "leaf_type": {
             "description": "The list of leaf types.",
             "items": {
@@ -17306,6 +17310,15 @@
             "name": "cursor",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "description": "Whether only deprecated fragments should be filtered.",
+            "explode": false,
+            "in": "query",
+            "name": "deprecated",
+            "schema": {
+              "type": "boolean"
             }
           },
           {
