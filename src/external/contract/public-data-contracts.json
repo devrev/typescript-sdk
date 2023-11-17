@@ -1891,6 +1891,43 @@
         "title": "event-rev-user-updated",
         "type": "object"
       },
+      "event-sla-tracker-created": {
+        "properties": {
+          "sla_tracker": {
+            "$ref": "#/components/schemas/sla-tracker"
+          }
+        },
+        "required": [
+          "sla_tracker"
+        ],
+        "title": "event-sla-tracker-created",
+        "type": "object"
+      },
+      "event-sla-tracker-deleted": {
+        "properties": {
+          "id": {
+            "description": "The ID of the SLA tracker that was deleted.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "event-sla-tracker-deleted",
+        "type": "object"
+      },
+      "event-sla-tracker-updated": {
+        "properties": {
+          "sla_tracker": {
+            "$ref": "#/components/schemas/sla-tracker"
+          }
+        },
+        "required": [
+          "sla_tracker"
+        ],
+        "title": "event-sla-tracker-updated",
+        "type": "object"
+      },
       "event-tag-created": {
         "properties": {
           "tag": {
@@ -3116,6 +3153,14 @@
         "title": "sla-summary-filter",
         "type": "object"
       },
+      "sla-tracker": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/atom-base"
+          }
+        ],
+        "title": "sla-tracker"
+      },
       "stage-filter": {
         "description": "The filter for stages.",
         "properties": {
@@ -4107,6 +4152,15 @@
           },
           "rev_user_updated": {
             "$ref": "#/components/schemas/event-rev-user-updated"
+          },
+          "sla_tracker_created": {
+            "$ref": "#/components/schemas/event-sla-tracker-created"
+          },
+          "sla_tracker_deleted": {
+            "$ref": "#/components/schemas/event-sla-tracker-deleted"
+          },
+          "sla_tracker_updated": {
+            "$ref": "#/components/schemas/event-sla-tracker-updated"
           },
           "tag_created": {
             "$ref": "#/components/schemas/event-tag-created"

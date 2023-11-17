@@ -1884,6 +1884,22 @@ export interface EventRevUserUpdated {
   rev_user: RevUser;
 }
 
+/** event-sla-tracker-created */
+export interface EventSlaTrackerCreated {
+  sla_tracker: SlaTracker;
+}
+
+/** event-sla-tracker-deleted */
+export interface EventSlaTrackerDeleted {
+  /** The ID of the SLA tracker that was deleted. */
+  id: string;
+}
+
+/** event-sla-tracker-updated */
+export interface EventSlaTrackerUpdated {
+  sla_tracker: SlaTracker;
+}
+
 /** event-source */
 export type EventSource = AtomBase & {
   /**
@@ -4476,6 +4492,9 @@ export enum SlaStatus {
  */
 export type SlaSummaryFilter = object;
 
+/** sla-tracker */
+export type SlaTracker = AtomBase;
+
 /** slas-assign-request */
 export interface SlasAssignRequest {
   /**
@@ -5618,6 +5637,9 @@ export interface WebhookEventRequest {
   rev_user_created?: EventRevUserCreated;
   rev_user_deleted?: EventRevUserDeleted;
   rev_user_updated?: EventRevUserUpdated;
+  sla_tracker_created?: EventSlaTrackerCreated;
+  sla_tracker_deleted?: EventSlaTrackerDeleted;
+  sla_tracker_updated?: EventSlaTrackerUpdated;
   tag_created?: EventTagCreated;
   tag_deleted?: EventTagDeleted;
   tag_updated?: EventTagUpdated;
