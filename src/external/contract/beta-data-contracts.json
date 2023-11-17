@@ -6983,6 +6983,7 @@
             "text": "#/components/schemas/schema-text-field-descriptor",
             "timestamp": "#/components/schemas/schema-timestamp-field-descriptor",
             "tokens": "#/components/schemas/schema-tokens-field-descriptor",
+            "uenum": "#/components/schemas/schema-uenum-field-descriptor",
             "unknown": "#/components/schemas/schema-unknown-field-descriptor"
           },
           "propertyName": "field_type"
@@ -7025,6 +7026,9 @@
             "$ref": "#/components/schemas/schema-tokens-field-descriptor"
           },
           {
+            "$ref": "#/components/schemas/schema-uenum-field-descriptor"
+          },
+          {
             "$ref": "#/components/schemas/schema-unknown-field-descriptor"
           }
         ],
@@ -7052,7 +7056,8 @@
             "rich_text": "#/components/schemas/schema-rich-text-list-field-descriptor",
             "text": "#/components/schemas/schema-text-list-field-descriptor",
             "timestamp": "#/components/schemas/schema-timestamp-list-field-descriptor",
-            "tokens": "#/components/schemas/schema-tokens-list-field-descriptor"
+            "tokens": "#/components/schemas/schema-tokens-list-field-descriptor",
+            "uenum": "#/components/schemas/schema-uenum-list-field-descriptor"
           },
           "propertyName": "base_type"
         },
@@ -7089,6 +7094,9 @@
           },
           {
             "$ref": "#/components/schemas/schema-tokens-list-field-descriptor"
+          },
+          {
+            "$ref": "#/components/schemas/schema-uenum-list-field-descriptor"
           }
         ],
         "properties": {
@@ -7124,7 +7132,8 @@
           "rich_text",
           "text",
           "timestamp",
-          "tokens"
+          "tokens",
+          "uenum"
         ],
         "type": "string"
       },
@@ -7181,6 +7190,7 @@
           "text",
           "timestamp",
           "tokens",
+          "uenum",
           "unknown"
         ],
         "type": "string"
@@ -7664,6 +7674,65 @@
           }
         ],
         "title": "schema-tokens-list-field-descriptor"
+      },
+      "schema-uenum-field-descriptor": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/schema-field-descriptor-base"
+          },
+          {
+            "properties": {
+              "allowed_values": {
+                "description": "Allowed values for the field.",
+                "items": {
+                  "$ref": "#/components/schemas/uenum-value"
+                },
+                "type": "array"
+              },
+              "default_value": {
+                "description": "Default value.",
+                "format": "int64",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "allowed_values"
+            ],
+            "type": "object"
+          }
+        ],
+        "title": "schema-uenum-field-descriptor"
+      },
+      "schema-uenum-list-field-descriptor": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/schema-field-descriptor-base"
+          },
+          {
+            "properties": {
+              "allowed_values": {
+                "description": "Allowed values for the field.",
+                "items": {
+                  "$ref": "#/components/schemas/uenum-value"
+                },
+                "type": "array"
+              },
+              "default_value": {
+                "description": "Default value.",
+                "items": {
+                  "format": "int64",
+                  "type": "integer"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "allowed_values"
+            ],
+            "type": "object"
+          }
+        ],
+        "title": "schema-uenum-list-field-descriptor"
       },
       "schema-unknown-field-descriptor": {
         "allOf": [
@@ -9167,6 +9236,39 @@
           }
         },
         "title": "timeline-thread",
+        "type": "object"
+      },
+      "uenum-value": {
+        "properties": {
+          "id": {
+            "description": "The ID of the enum value.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "is_deprecated": {
+            "description": "Whether the enum value is deprecated.",
+            "type": "boolean"
+          },
+          "label": {
+            "description": "The label of the enum value.",
+            "type": "string"
+          },
+          "ordinal": {
+            "description": "The ordinal of the enum value.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "tooltip": {
+            "description": "The tooltip of the enum value.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "ordinal"
+        ],
+        "title": "uenum-value",
         "type": "object"
       },
       "unit": {

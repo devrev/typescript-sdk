@@ -3899,6 +3899,7 @@ export type SchemaFieldDescriptor = (
   | SchemaTextFieldDescriptor
   | SchemaTimestampFieldDescriptor
   | SchemaTokensFieldDescriptor
+  | SchemaUenumFieldDescriptor
   | SchemaUnknownFieldDescriptor
 ) & {
   field_type: SchemaFieldDescriptorFieldType;
@@ -3917,6 +3918,7 @@ export type SchemaFieldDescriptorArrayType = (
   | SchemaTextListFieldDescriptor
   | SchemaTimestampListFieldDescriptor
   | SchemaTokensListFieldDescriptor
+  | SchemaUenumListFieldDescriptor
 ) & {
   base_type: SchemaFieldDescriptorArrayTypeBaseType;
   /**
@@ -3943,6 +3945,7 @@ export enum SchemaFieldDescriptorArrayTypeBaseType {
   Text = 'text',
   Timestamp = 'timestamp',
   Tokens = 'tokens',
+  Uenum = 'uenum',
 }
 
 /** schema-field-descriptor-base */
@@ -3981,6 +3984,7 @@ export enum SchemaFieldDescriptorFieldType {
   Text = 'text',
   Timestamp = 'timestamp',
   Tokens = 'tokens',
+  Uenum = 'uenum',
   Unknown = 'unknown',
 }
 
@@ -4254,6 +4258,25 @@ export type SchemaTokensListFieldDescriptor = SchemaFieldDescriptorBase & {
   prefix?: string;
   /** The string suffix. */
   suffix?: string;
+};
+
+/** schema-uenum-field-descriptor */
+export type SchemaUenumFieldDescriptor = SchemaFieldDescriptorBase & {
+  /** Allowed values for the field. */
+  allowed_values: UenumValue[];
+  /**
+   * Default value.
+   * @format int64
+   */
+  default_value?: number;
+};
+
+/** schema-uenum-list-field-descriptor */
+export type SchemaUenumListFieldDescriptor = SchemaFieldDescriptorBase & {
+  /** Allowed values for the field. */
+  allowed_values: UenumValue[];
+  /** Default value. */
+  default_value?: number[];
 };
 
 /** schema-unknown-field-descriptor */
@@ -5252,6 +5275,26 @@ export interface TimelineThread {
    * @format int32
    */
   total_replies?: number;
+}
+
+/** uenum-value */
+export interface UenumValue {
+  /**
+   * The ID of the enum value.
+   * @format int64
+   */
+  id: number;
+  /** Whether the enum value is deprecated. */
+  is_deprecated?: boolean;
+  /** The label of the enum value. */
+  label: string;
+  /**
+   * The ordinal of the enum value.
+   * @format int64
+   */
+  ordinal: number;
+  /** The tooltip of the enum value. */
+  tooltip?: string;
 }
 
 /**
