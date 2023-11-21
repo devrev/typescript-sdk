@@ -5413,7 +5413,7 @@ export interface UomsCreateRequest {
    * UOM.
    * @minLength 1
    * @maxLength 64
-   * @maxItems 10
+   * @maxItems 12
    */
   dimensions?: string[];
   /**

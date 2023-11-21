@@ -9417,7 +9417,7 @@
             "items": {
               "type": "string"
             },
-            "maxItems": 10,
+            "maxItems": 12,
             "maxLength": 64,
             "minLength": 1,
             "type": "array"
