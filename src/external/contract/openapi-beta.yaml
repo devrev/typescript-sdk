@@ -5935,8 +5935,25 @@ components:
       type: string
     sla-summary-filter:
       description: The filter for SLA summary.
+      properties:
+        stage:
+          description: Filters for records with any of the provided SLA stages.
+          items:
+            $ref: '#/components/schemas/sla-summary-stage'
+          type: array
       title: sla-summary-filter
       type: object
+    sla-summary-stage:
+      description: |
+        The stage of the SLA. This is the metric stage which is closest to
+        breach.
+      enum:
+      - breached
+      - completed
+      - paused
+      - running
+      - warning
+      type: string
     sla-tracker:
       allOf:
       - $ref: '#/components/schemas/atom-base'
@@ -9297,6 +9314,14 @@ paths:
           items:
             type: string
           type: array
+      - description: Filters for records with any of the provided SLA stages.
+        explode: false
+        in: query
+        name: sla_summary.stage
+        schema:
+          items:
+            $ref: '#/components/schemas/sla-summary-stage'
+          type: array
       - description: |
           Filters for conversations with any of the provided source channels.
         explode: false
@@ -9551,6 +9576,14 @@ paths:
           - REV-AbCdEfGh
           items:
             type: string
+          type: array
+      - description: Filters for records with any of the provided SLA stages.
+        explode: false
+        in: query
+        name: sla_summary.stage
+        schema:
+          items:
+            $ref: '#/components/schemas/sla-summary-stage'
           type: array
       - description: |
           Filters for conversations with any of the provided source channels.
@@ -13784,6 +13817,14 @@ paths:
           items:
             $ref: '#/components/schemas/ticket-severity'
           type: array
+      - description: Filters for records with any of the provided SLA stages.
+        explode: false
+        in: query
+        name: ticket.sla_summary.stage
+        schema:
+          items:
+            $ref: '#/components/schemas/sla-summary-stage'
+          type: array
       - description: |
           Filters for tickets with any of the provided source channels.
         explode: false
@@ -14090,6 +14131,14 @@ paths:
         schema:
           items:
             $ref: '#/components/schemas/ticket-severity'
+          type: array
+      - description: Filters for records with any of the provided SLA stages.
+        explode: false
+        in: query
+        name: ticket.sla_summary.stage
+        schema:
+          items:
+            $ref: '#/components/schemas/sla-summary-stage'
           type: array
       - description: |
           Filters for tickets with any of the provided source channels.

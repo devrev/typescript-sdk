@@ -4515,7 +4515,22 @@ export enum SlaStatus {
  * sla-summary-filter
  * The filter for SLA summary.
  */
-export type SlaSummaryFilter = object;
+export interface SlaSummaryFilter {
+  /** Filters for records with any of the provided SLA stages. */
+  stage?: SlaSummaryStage[];
+}
+
+/**
+ * The stage of the SLA. This is the metric stage which is closest to
+ * breach.
+ */
+export enum SlaSummaryStage {
+  Breached = 'breached',
+  Completed = 'completed',
+  Paused = 'paused',
+  Running = 'running',
+  Warning = 'warning',
+}
 
 /** sla-tracker */
 export type SlaTracker = AtomBase;
@@ -7351,6 +7366,8 @@ export class Api<
        * @example ["REV-AbCdEfGh"]
        */
       rev_org?: string[];
+      /** Filters for records with any of the provided SLA stages. */
+      'sla_summary.stage'?: SlaSummaryStage[];
       /** Filters for conversations with any of the provided source channels. */
       source_channels?: string[];
       /** Filters for records in the provided stage(s) by name. */
@@ -7537,6 +7554,8 @@ export class Api<
        * @example ["REV-AbCdEfGh"]
        */
       rev_org?: string[];
+      /** Filters for records with any of the provided SLA stages. */
+      'sla_summary.stage'?: SlaSummaryStage[];
       /** Filters for conversations with any of the provided source channels. */
       source_channels?: string[];
       /** Filters for records in the provided stage(s) by name. */
@@ -11044,6 +11063,8 @@ export class Api<
       'ticket.rev_org'?: string[];
       /** Filters for tickets with any of the provided severities. */
       'ticket.severity'?: TicketSeverity[];
+      /** Filters for records with any of the provided SLA stages. */
+      'ticket.sla_summary.stage'?: SlaSummaryStage[];
       /** Filters for tickets with any of the provided source channels. */
       'ticket.source_channel'?: string[];
       /** Filters for work of the provided types. */
@@ -11238,6 +11259,8 @@ export class Api<
       'ticket.rev_org'?: string[];
       /** Filters for tickets with any of the provided severities. */
       'ticket.severity'?: TicketSeverity[];
+      /** Filters for records with any of the provided SLA stages. */
+      'ticket.sla_summary.stage'?: SlaSummaryStage[];
       /** Filters for tickets with any of the provided source channels. */
       'ticket.source_channel'?: string[];
       /** Filters for work of the provided types. */
