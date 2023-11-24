@@ -2721,6 +2721,12 @@ export type WorksCreateRequest = (
 
 /** works-create-request-issue */
 export interface WorksCreateRequestIssue {
+  /**
+   * The IDs of the parts associated with issue.
+   * @maxItems 8
+   * @example ["PROD-12345"]
+   */
+  developed_with?: string[];
   /** Priority of the work based upon impact and criticality. */
   priority?: IssuePriority;
   /** The sprint that the issue belongs to. */
@@ -2978,10 +2984,21 @@ export interface WorksUpdateRequestArtifactIds {
 
 /** works-update-request-issue */
 export interface WorksUpdateRequestIssue {
+  developed_with?: WorksUpdateRequestIssueDevelopedWith;
   /** Priority of the work based upon impact and criticality. */
   priority?: IssuePriority;
   /** Updates the sprint that the issue belongs to. */
   sprint?: string | null;
+}
+
+/** works-update-request-issue-developed-with */
+export interface WorksUpdateRequestIssueDevelopedWith {
+  /**
+   * Sets the IDs of the parts associated with issue.
+   * @maxItems 8
+   * @example ["PROD-12345"]
+   */
+  set?: string[];
 }
 
 /** works-update-request-owned-by */

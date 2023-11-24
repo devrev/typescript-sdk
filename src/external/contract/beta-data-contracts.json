@@ -10284,6 +10284,17 @@
       },
       "works-create-request-issue": {
         "properties": {
+          "developed_with": {
+            "description": "The IDs of the parts associated with issue.",
+            "example": [
+              "PROD-12345"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 8,
+            "type": "array"
+          },
           "priority": {
             "$ref": "#/components/schemas/issue-priority"
           },
@@ -10884,6 +10895,9 @@
       },
       "works-update-request-issue": {
         "properties": {
+          "developed_with": {
+            "$ref": "#/components/schemas/works-update-request-issue-developed-with"
+          },
           "priority": {
             "$ref": "#/components/schemas/issue-priority"
           },
@@ -10894,6 +10908,23 @@
           }
         },
         "title": "works-update-request-issue",
+        "type": "object"
+      },
+      "works-update-request-issue-developed-with": {
+        "properties": {
+          "set": {
+            "description": "Sets the IDs of the parts associated with issue.",
+            "example": [
+              "PROD-12345"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 8,
+            "type": "array"
+          }
+        },
+        "title": "works-update-request-issue-developed-with",
         "type": "object"
       },
       "works-update-request-opportunity": {
