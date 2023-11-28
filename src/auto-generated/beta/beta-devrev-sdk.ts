@@ -2599,7 +2599,7 @@ export interface MetricsData {
    * external_ref=org_customer_1 may resolve to
    * don:identity:dvrv-us-1:devo/0:revo/155.
    */
-  org_ref?: string;
+  org_ref: string;
   /** Rev User ID or user ref for which metric is being published. */
   user_ref?: string;
 }

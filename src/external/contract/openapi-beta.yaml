@@ -3450,6 +3450,7 @@ components:
       required:
       - data_points
       - name
+      - org_ref
       title: metrics-data
       type: object
     metrics-data-ingest-request:

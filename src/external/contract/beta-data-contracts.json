@@ -4676,7 +4676,8 @@
         },
         "required": [
           "data_points",
-          "name"
+          "name",
+          "org_ref"
         ],
         "title": "metrics-data",
         "type": "object"
