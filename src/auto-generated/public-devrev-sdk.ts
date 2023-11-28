@@ -1173,6 +1173,8 @@ export type GroupSummary = AtomBaseSummary;
 
 /** issue */
 export type Issue = WorkBase & {
+  /** Parts associated based on git events. */
+  developed_with?: PartSummary[];
   /** Priority of the work based upon impact and criticality. */
   priority?: IssuePriority;
 };

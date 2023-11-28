@@ -2116,6 +2116,13 @@
           },
           {
             "properties": {
+              "developed_with": {
+                "description": "Parts associated based on git events.",
+                "items": {
+                  "$ref": "#/components/schemas/part-summary"
+                },
+                "type": "array"
+              },
               "priority": {
                 "$ref": "#/components/schemas/issue-priority"
               }
