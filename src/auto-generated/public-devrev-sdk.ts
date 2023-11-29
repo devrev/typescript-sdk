@@ -255,6 +255,7 @@ export enum AuthTokenRequestedTokenType {
   UrnDevrevParamsOauthTokenTypeAatPublic = 'urn:devrev:params:oauth:token-type:aat:public',
   UrnDevrevParamsOauthTokenTypeDev = 'urn:devrev:params:oauth:token-type:dev',
   UrnDevrevParamsOauthTokenTypePat = 'urn:devrev:params:oauth:token-type:pat',
+  UrnDevrevParamsOauthTokenTypePatActAs = 'urn:devrev:params:oauth:token-type:pat:act-as',
   UrnDevrevParamsOauthTokenTypeRat = 'urn:devrev:params:oauth:token-type:rat',
   UrnDevrevParamsOauthTokenTypeRev = 'urn:devrev:params:oauth:token-type:rev',
   UrnDevrevParamsOauthTokenTypeSession = 'urn:devrev:params:oauth:token-type:session',
@@ -295,6 +296,8 @@ export enum AuthTokenTokenType {
  * type.
  */
 export interface AuthTokensCreateRequest {
+  /** The unique ID of the Dev user to impersonate. */
+  act_as?: string;
   /** The expected audience values with respect to the token. */
   aud?: string[];
   /**

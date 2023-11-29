@@ -344,6 +344,7 @@ components:
       - urn:devrev:params:oauth:token-type:aat:public
       - urn:devrev:params:oauth:token-type:dev
       - urn:devrev:params:oauth:token-type:pat
+      - urn:devrev:params:oauth:token-type:pat:act-as
       - urn:devrev:params:oauth:token-type:rat
       - urn:devrev:params:oauth:token-type:rev
       - urn:devrev:params:oauth:token-type:session
@@ -361,6 +362,8 @@ components:
           name: urn-devrev-params-oauth-token-type-dev
         urn:devrev:params:oauth:token-type:pat:
           name: urn-devrev-params-oauth-token-type-pat
+        urn:devrev:params:oauth:token-type:pat:act-as:
+          name: urn-devrev-params-oauth-token-type-pat-act-as
         urn:devrev:params:oauth:token-type:rat:
           name: urn-devrev-params-oauth-token-type-rat
         urn:devrev:params:oauth:token-type:rev:
@@ -425,6 +428,9 @@ components:
         A request to create a new token corresponding to the requested token
         type.
       properties:
+        act_as:
+          description: The unique ID of the Dev user to impersonate.
+          type: string
         aud:
           description: The expected audience values with respect to the token.
           items:
