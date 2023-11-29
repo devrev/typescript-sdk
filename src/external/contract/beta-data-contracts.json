@@ -1437,6 +1437,185 @@
         ],
         "title": "capability-summary"
       },
+      "code-change": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/atom-base"
+          },
+          {
+            "properties": {
+              "branch": {
+                "description": "Name of the code branch in the repo.",
+                "type": "string"
+              },
+              "description": {
+                "description": "Detailed description of the contents of this change.",
+                "type": "string"
+              },
+              "external_identifier": {
+                "description": "Unique external identifier for this change.e.g Pull Request URL.\n",
+                "type": "string"
+              },
+              "repo_url": {
+                "description": "URL pointing to the repo this change was on.",
+                "type": "string"
+              },
+              "source": {
+                "$ref": "#/components/schemas/code-change-source"
+              },
+              "title": {
+                "description": "Title describing in brief the contents of this change.",
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        ],
+        "title": "code-change"
+      },
+      "code-change-source": {
+        "description": "Source of the code change object.",
+        "enum": [
+          "github"
+        ],
+        "type": "string"
+      },
+      "code-changes-create-request": {
+        "title": "code-changes-create-request",
+        "type": "object"
+      },
+      "code-changes-create-response": {
+        "properties": {
+          "code_change": {
+            "$ref": "#/components/schemas/code-change"
+          }
+        },
+        "required": [
+          "code_change"
+        ],
+        "title": "code-changes-create-response",
+        "type": "object",
+        "x-go-name": "CodeChangesCreateResponseBody"
+      },
+      "code-changes-delete-request": {
+        "properties": {
+          "id": {
+            "description": "ID of the code change object which is to be deleted.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "code-changes-delete-request",
+        "type": "object"
+      },
+      "code-changes-delete-response": {
+        "title": "code-changes-delete-response",
+        "type": "object",
+        "x-go-name": "CodeChangesDeleteResponseBody"
+      },
+      "code-changes-get-request": {
+        "properties": {
+          "id": {
+            "description": "The code change object ID.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "code-changes-get-request",
+        "type": "object"
+      },
+      "code-changes-get-response": {
+        "properties": {
+          "code_change": {
+            "$ref": "#/components/schemas/code-change"
+          }
+        },
+        "required": [
+          "code_change"
+        ],
+        "title": "code-changes-get-response",
+        "type": "object",
+        "x-go-name": "CodeChangesGetResponseBody"
+      },
+      "code-changes-list-request": {
+        "properties": {
+          "created_date": {
+            "$ref": "#/components/schemas/date-filter"
+          },
+          "cursor": {
+            "description": "The cursor to resume iteration from. If not provided, then\niteration starts from the beginning.\n",
+            "type": "string"
+          },
+          "limit": {
+            "description": "The maximum number of code change objects to return. The default is\n'50'.\n",
+            "format": "int32",
+            "type": "integer"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/list-mode"
+          },
+          "modified_date": {
+            "$ref": "#/components/schemas/date-filter"
+          }
+        },
+        "title": "code-changes-list-request",
+        "type": "object"
+      },
+      "code-changes-list-response": {
+        "properties": {
+          "code_changes": {
+            "description": "The list of requested code change objects.",
+            "items": {
+              "$ref": "#/components/schemas/code-change"
+            },
+            "type": "array"
+          },
+          "next_cursor": {
+            "description": "The cursor used to iterate subsequent results in accordance to the\nsort order. If not set, then no later elements exist.\n",
+            "type": "string"
+          },
+          "prev_cursor": {
+            "description": "The cursor used to iterate preceding results in accordance to the\nsort order. If not set, then no prior elements exist.\n",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code_changes"
+        ],
+        "title": "code-changes-list-response",
+        "type": "object",
+        "x-go-name": "CodeChangesListResponseBody"
+      },
+      "code-changes-update-request": {
+        "properties": {
+          "id": {
+            "description": "The ID of the code change object to be updated.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "code-changes-update-request",
+        "type": "object"
+      },
+      "code-changes-update-response": {
+        "properties": {
+          "code_change": {
+            "$ref": "#/components/schemas/code-change"
+          }
+        },
+        "required": [
+          "code_change"
+        ],
+        "title": "code-changes-update-response",
+        "type": "object",
+        "x-go-name": "CodeChangesUpdateResponseBody"
+      },
       "conversation": {
         "allOf": [
           {
@@ -12523,6 +12702,364 @@
         },
         "tags": [
           "artifacts"
+        ]
+      }
+    },
+    "/code-changes.create": {
+      "post": {
+        "description": "Create CodeChange object.",
+        "operationId": "code-changes-create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/code-changes-create-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/code-changes-create-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "works"
+        ]
+      }
+    },
+    "/code-changes.delete": {
+      "post": {
+        "description": "Delete CodeChange object.",
+        "operationId": "code-changes-delete",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/code-changes-delete-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/code-changes-delete-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "works"
+        ]
+      }
+    },
+    "/code-changes.get": {
+      "get": {
+        "description": "Get CodeChange object.",
+        "operationId": "code-changes-get",
+        "parameters": [
+          {
+            "description": "The code change object ID.",
+            "explode": false,
+            "in": "query",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/code-changes-get-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "works"
+        ],
+        "x-request-name": "CodeChangesGetQuery"
+      },
+      "post": {
+        "description": "Get CodeChange object.",
+        "operationId": "code-changes-get-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/code-changes-get-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/code-changes-get-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "works"
+        ]
+      }
+    },
+    "/code-changes.list": {
+      "get": {
+        "description": "List CodeChange objects.",
+        "operationId": "code-changes-list",
+        "parameters": [
+          {
+            "description": "The cursor to resume iteration from. If not provided, then iteration\nstarts from the beginning.\n",
+            "explode": false,
+            "in": "query",
+            "name": "cursor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The maximum number of code change objects to return. The default is\n'50'.\n",
+            "explode": false,
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "The iteration mode to use, otherwise if not set, then \"after\" is\nused.\n",
+            "explode": false,
+            "in": "query",
+            "name": "mode",
+            "schema": {
+              "$ref": "#/components/schemas/list-mode"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/code-changes-list-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "works"
+        ],
+        "x-request-name": "CodeChangesListQuery"
+      },
+      "post": {
+        "description": "List CodeChange objects.",
+        "operationId": "code-changes-list-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/code-changes-list-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/code-changes-list-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "works"
+        ]
+      }
+    },
+    "/code-changes.update": {
+      "post": {
+        "description": "Update CodeChange object.",
+        "operationId": "code-changes-update",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/code-changes-update-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/code-changes-update-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "works"
         ]
       }
     },

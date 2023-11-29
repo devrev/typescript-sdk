@@ -809,6 +809,109 @@ export type Capability = PartBase;
 /** capability-summary */
 export type CapabilitySummary = PartBaseSummary;
 
+/** code-change */
+export type CodeChange = AtomBase & {
+  /** Name of the code branch in the repo. */
+  branch?: string;
+  /** Detailed description of the contents of this change. */
+  description?: string;
+  /** Unique external identifier for this change.e.g Pull Request URL. */
+  external_identifier?: string;
+  /** URL pointing to the repo this change was on. */
+  repo_url?: string;
+  /** Source of the code change object. */
+  source?: CodeChangeSource;
+  /** Title describing in brief the contents of this change. */
+  title?: string;
+};
+
+/** Source of the code change object. */
+export enum CodeChangeSource {
+  Github = 'github',
+}
+
+/** code-changes-create-request */
+export type CodeChangesCreateRequest = object;
+
+/** code-changes-create-response */
+export interface CodeChangesCreateResponse {
+  code_change: CodeChange;
+}
+
+/** code-changes-delete-request */
+export interface CodeChangesDeleteRequest {
+  /** ID of the code change object which is to be deleted. */
+  id: string;
+}
+
+/** code-changes-delete-response */
+export type CodeChangesDeleteResponse = object;
+
+/** code-changes-get-request */
+export interface CodeChangesGetRequest {
+  /** The code change object ID. */
+  id: string;
+}
+
+/** code-changes-get-response */
+export interface CodeChangesGetResponse {
+  code_change: CodeChange;
+}
+
+/** code-changes-list-request */
+export interface CodeChangesListRequest {
+  /** Provides ways to specify date ranges on objects. */
+  created_date?: DateFilter;
+  /**
+   * The cursor to resume iteration from. If not provided, then
+   * iteration starts from the beginning.
+   */
+  cursor?: string;
+  /**
+   * The maximum number of code change objects to return. The default is
+   * '50'.
+   * @format int32
+   */
+  limit?: number;
+  /**
+   * The iteration mode to use. If "after", then entries after the provided
+   * cursor will be returned, or if no cursor is provided, then from the
+   * beginning. If "before", then entries before the provided cursor will be
+   * returned, or if no cursor is provided, then from the end. Entries will
+   * always be returned in the specified sort-by order.
+   */
+  mode?: ListMode;
+  /** Provides ways to specify date ranges on objects. */
+  modified_date?: DateFilter;
+}
+
+/** code-changes-list-response */
+export interface CodeChangesListResponse {
+  /** The list of requested code change objects. */
+  code_changes: CodeChange[];
+  /**
+   * The cursor used to iterate subsequent results in accordance to the
+   * sort order. If not set, then no later elements exist.
+   */
+  next_cursor?: string;
+  /**
+   * The cursor used to iterate preceding results in accordance to the
+   * sort order. If not set, then no prior elements exist.
+   */
+  prev_cursor?: string;
+}
+
+/** code-changes-update-request */
+export interface CodeChangesUpdateRequest {
+  /** The ID of the code change object to be updated. */
+  id: string;
+}
+
+/** code-changes-update-response */
+export interface CodeChangesUpdateResponse {
+  code_change: CodeChange;
+}
+
 /** conversation */
 export type Conversation = AtomBase & {
   /** Description of the conversation object. */
@@ -7273,6 +7376,234 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/artifacts.versions.prepare`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Create CodeChange object.
+   *
+   * @tags works
+   * @name CodeChangesCreate
+   * @request POST:/code-changes.create
+   * @secure
+   */
+  codeChangesCreate = (
+    data: CodeChangesCreateRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      CodeChangesCreateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/code-changes.create`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Delete CodeChange object.
+   *
+   * @tags works
+   * @name CodeChangesDelete
+   * @request POST:/code-changes.delete
+   * @secure
+   */
+  codeChangesDelete = (
+    data: CodeChangesDeleteRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      CodeChangesDeleteResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/code-changes.delete`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Get CodeChange object.
+   *
+   * @tags works
+   * @name CodeChangesGet
+   * @request GET:/code-changes.get
+   * @secure
+   */
+  codeChangesGet = (
+    query: {
+      /** The code change object ID. */
+      id: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      CodeChangesGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/code-changes.get`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Get CodeChange object.
+   *
+   * @tags works
+   * @name CodeChangesGetPost
+   * @request POST:/code-changes.get
+   * @secure
+   */
+  codeChangesGetPost = (
+    data: CodeChangesGetRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      CodeChangesGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/code-changes.get`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description List CodeChange objects.
+   *
+   * @tags works
+   * @name CodeChangesList
+   * @request GET:/code-changes.list
+   * @secure
+   */
+  codeChangesList = (
+    query?: {
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /**
+       * The maximum number of code change objects to return. The default is
+       * '50'.
+       * @format int32
+       */
+      limit?: number;
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      CodeChangesListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/code-changes.list`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description List CodeChange objects.
+   *
+   * @tags works
+   * @name CodeChangesListPost
+   * @request POST:/code-changes.list
+   * @secure
+   */
+  codeChangesListPost = (
+    data: CodeChangesListRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      CodeChangesListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/code-changes.list`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Update CodeChange object.
+   *
+   * @tags works
+   * @name CodeChangesUpdate
+   * @request POST:/code-changes.update
+   * @secure
+   */
+  codeChangesUpdate = (
+    data: CodeChangesUpdateRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      CodeChangesUpdateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/code-changes.update`,
       method: 'POST',
       body: data,
       secure: true,
