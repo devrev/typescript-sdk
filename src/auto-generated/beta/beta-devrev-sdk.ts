@@ -5686,6 +5686,7 @@ export interface UomsUpdateRequest {
   aggregation_type?: AggregationDetailAggregationType;
   /** Description of the Unit of Measurement (UOM). */
   description?: string;
+  dimensions?: UomsUpdateRequestDimensions;
   /** The Unit of Measurement (UOM)'s DON. */
   id: string;
   /**
@@ -5709,6 +5710,14 @@ export interface UomsUpdateRequest {
   product_id?: string;
   /** Unit name of the Unit of Measurement (UOM). */
   unit?: string;
+}
+
+/** uoms-update-request-dimensions */
+export interface UomsUpdateRequestDimensions {
+  /** Adds the provided dimensions to the UOM. */
+  add?: string[];
+  /** Removes the provided dimensions from the UOM. */
+  remove?: string[];
 }
 
 /** uoms-update-response */

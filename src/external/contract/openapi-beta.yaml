@@ -7306,6 +7306,8 @@ components:
         description:
           description: Description of the Unit of Measurement (UOM).
           type: string
+        dimensions:
+          $ref: '#/components/schemas/uoms-update-request-dimensions'
         id:
           description: The Unit of Measurement (UOM)'s DON.
           type: string
@@ -7335,6 +7337,20 @@ components:
       required:
       - id
       title: uoms-update-request
+      type: object
+    uoms-update-request-dimensions:
+      properties:
+        add:
+          description: Adds the provided dimensions to the UOM.
+          items:
+            type: string
+          type: array
+        remove:
+          description: Removes the provided dimensions from the UOM.
+          items:
+            type: string
+          type: array
+      title: uoms-update-request-dimensions
       type: object
     uoms-update-response:
       properties:
