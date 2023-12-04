@@ -3017,6 +3017,99 @@ components:
       - dev_user
       - rev_user
       type: string
+    group-members-add-request:
+      description: A request to add a new member to a group.
+      properties:
+        group:
+          description: ID of the group where the member is being added.
+          type: string
+        member:
+          description: ID of the member to be added.
+          example: DEVU-12345
+          type: string
+      required:
+      - group
+      - member
+      title: group-members-add-request
+      type: object
+    group-members-add-response:
+      title: group-members-add-response
+      type: object
+      x-go-name: GroupMembersAddResponseBody
+    group-members-list-request:
+      description: A request to list group members.
+      properties:
+        cursor:
+          description: |
+            The cursor to resume iteration from. If not provided, then
+            iteration starts from the beginning.
+          type: string
+        group:
+          description: ID of the group for which to list members.
+          type: string
+        limit:
+          description: |
+            The maximum number of members to return. If not set, then the
+            default is '50'.
+          format: int32
+          type: integer
+        mode:
+          $ref: '#/components/schemas/list-mode'
+      required:
+      - group
+      title: group-members-list-request
+      type: object
+    group-members-list-response:
+      description: List of group members.
+      properties:
+        members:
+          description: List of members.
+          items:
+            $ref: '#/components/schemas/group-members-list-response-member'
+          type: array
+        next_cursor:
+          description: |
+            The cursor used to iterate subsequent results in accordance to the
+            sort order. If not set, then no later elements exist.
+          type: string
+        prev_cursor:
+          description: |
+            The cursor used to iterate preceding results in accordance to the
+            sort order. If not set, then no prior elements exist.
+          type: string
+      required:
+      - members
+      title: group-members-list-response
+      type: object
+      x-go-name: GroupMembersListResponseBody
+    group-members-list-response-member:
+      description: A group member.
+      properties:
+        member:
+          $ref: '#/components/schemas/member-summary'
+      required:
+      - member
+      title: group-members-list-response-member
+      type: object
+    group-members-remove-request:
+      description: A request to remove a group member.
+      properties:
+        group:
+          description: ID of the group where the member is being removed.
+          type: string
+        member:
+          description: ID of the member to be removed.
+          example: DEVU-12345
+          type: string
+      required:
+      - group
+      - member
+      title: group-members-remove-request
+      type: object
+    group-members-remove-response:
+      title: group-members-remove-response
+      type: object
+      x-go-name: GroupMembersRemoveResponseBody
     group-summary:
       allOf:
       - $ref: '#/components/schemas/atom-base-summary'
@@ -3432,6 +3525,30 @@ components:
       enum:
       - after
       - before
+      type: string
+    member-summary:
+      discriminator:
+        mapping:
+          dev_user: '#/components/schemas/dev-user-summary'
+          rev_user: '#/components/schemas/rev-user-summary'
+          sys_user: '#/components/schemas/sys-user-summary'
+        propertyName: type
+      oneOf:
+      - $ref: '#/components/schemas/dev-user-summary'
+      - $ref: '#/components/schemas/rev-user-summary'
+      - $ref: '#/components/schemas/sys-user-summary'
+      properties:
+        type:
+          $ref: '#/components/schemas/member-type'
+      required:
+      - type
+      title: member-summary
+      type: object
+    member-type:
+      enum:
+      - dev_user
+      - rev_user
+      - sys_user
       type: string
     metric-data-point:
       properties:
@@ -10812,6 +10929,158 @@ paths:
           $ref: '#/components/responses/unauthorized'
         "403":
           $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - groups
+  /groups.members.add:
+    post:
+      description: Adds a member to a group.
+      operationId: group-members-add
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/group-members-add-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/group-members-add-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - groups
+  /groups.members.list:
+    get:
+      description: Lists the members in a group.
+      operationId: group-members-list
+      parameters:
+      - description: ID of the group for which to list members.
+        explode: false
+        in: query
+        name: group
+        required: true
+        schema:
+          type: string
+      - description: |
+          The cursor to resume iteration from. If not provided, then iteration
+          starts from the beginning.
+        explode: false
+        in: query
+        name: cursor
+        schema:
+          type: string
+      - description: |
+          The maximum number of members to return. If not set, then the default
+          is '50'.
+        explode: false
+        in: query
+        name: limit
+        schema:
+          format: int32
+          type: integer
+      - description: |
+          The iteration mode to use, otherwise if not set, then "after" is
+          used.
+        explode: false
+        in: query
+        name: mode
+        schema:
+          $ref: '#/components/schemas/list-mode'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/group-members-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - groups
+      x-request-name: GroupMembersListQuery
+    post:
+      description: Lists the members in a group.
+      operationId: group-members-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/group-members-list-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/group-members-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - groups
+  /groups.members.remove:
+    post:
+      description: Removes a member from a group.
+      operationId: group-members-remove
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/group-members-remove-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/group-members-remove-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
         "429":
           $ref: '#/components/responses/too-many-requests'
         "500":

@@ -2215,6 +2215,95 @@ export enum GroupMemberType {
   RevUser = 'rev_user',
 }
 
+/**
+ * group-members-add-request
+ * A request to add a new member to a group.
+ */
+export interface GroupMembersAddRequest {
+  /** ID of the group where the member is being added. */
+  group: string;
+  /**
+   * ID of the member to be added.
+   * @example "DEVU-12345"
+   */
+  member: string;
+}
+
+/** group-members-add-response */
+export type GroupMembersAddResponse = object;
+
+/**
+ * group-members-list-request
+ * A request to list group members.
+ */
+export interface GroupMembersListRequest {
+  /**
+   * The cursor to resume iteration from. If not provided, then
+   * iteration starts from the beginning.
+   */
+  cursor?: string;
+  /** ID of the group for which to list members. */
+  group: string;
+  /**
+   * The maximum number of members to return. If not set, then the
+   * default is '50'.
+   * @format int32
+   */
+  limit?: number;
+  /**
+   * The iteration mode to use. If "after", then entries after the provided
+   * cursor will be returned, or if no cursor is provided, then from the
+   * beginning. If "before", then entries before the provided cursor will be
+   * returned, or if no cursor is provided, then from the end. Entries will
+   * always be returned in the specified sort-by order.
+   */
+  mode?: ListMode;
+}
+
+/**
+ * group-members-list-response
+ * List of group members.
+ */
+export interface GroupMembersListResponse {
+  /** List of members. */
+  members: GroupMembersListResponseMember[];
+  /**
+   * The cursor used to iterate subsequent results in accordance to the
+   * sort order. If not set, then no later elements exist.
+   */
+  next_cursor?: string;
+  /**
+   * The cursor used to iterate preceding results in accordance to the
+   * sort order. If not set, then no prior elements exist.
+   */
+  prev_cursor?: string;
+}
+
+/**
+ * group-members-list-response-member
+ * A group member.
+ */
+export interface GroupMembersListResponseMember {
+  member: MemberSummary;
+}
+
+/**
+ * group-members-remove-request
+ * A request to remove a group member.
+ */
+export interface GroupMembersRemoveRequest {
+  /** ID of the group where the member is being removed. */
+  group: string;
+  /**
+   * ID of the member to be removed.
+   * @example "DEVU-12345"
+   */
+  member: string;
+}
+
+/** group-members-remove-response */
+export type GroupMembersRemoveResponse = object;
+
 /** group-summary */
 export type GroupSummary = AtomBaseSummary & {
   /** Name of the group. */
@@ -2569,6 +2658,21 @@ export interface LinksListResponse {
 export enum ListMode {
   After = 'after',
   Before = 'before',
+}
+
+/** member-summary */
+export type MemberSummary = (
+  | DevUserSummary
+  | RevUserSummary
+  | SysUserSummary
+) & {
+  type: MemberType;
+};
+
+export enum MemberType {
+  DevUser = 'dev_user',
+  RevUser = 'rev_user',
+  SysUser = 'sys_user',
 }
 
 /** metric-data-point */
@@ -8618,6 +8722,146 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/groups.list`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Adds a member to a group.
+   *
+   * @tags groups
+   * @name GroupMembersAdd
+   * @request POST:/groups.members.add
+   * @secure
+   */
+  groupMembersAdd = (
+    data: GroupMembersAddRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      GroupMembersAddResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/groups.members.add`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Lists the members in a group.
+   *
+   * @tags groups
+   * @name GroupMembersList
+   * @request GET:/groups.members.list
+   * @secure
+   */
+  groupMembersList = (
+    query: {
+      /** ID of the group for which to list members. */
+      group: string;
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /**
+       * The maximum number of members to return. If not set, then the default
+       * is '50'.
+       * @format int32
+       */
+      limit?: number;
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      GroupMembersListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/groups.members.list`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Lists the members in a group.
+   *
+   * @tags groups
+   * @name GroupMembersListPost
+   * @request POST:/groups.members.list
+   * @secure
+   */
+  groupMembersListPost = (
+    data: GroupMembersListRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      GroupMembersListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/groups.members.list`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Removes a member from a group.
+   *
+   * @tags groups
+   * @name GroupMembersRemove
+   * @request POST:/groups.members.remove
+   * @secure
+   */
+  groupMembersRemove = (
+    data: GroupMembersRemoveRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      GroupMembersRemoveResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/groups.members.remove`,
       method: 'POST',
       body: data,
       secure: true,
