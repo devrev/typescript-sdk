@@ -174,12 +174,15 @@ components:
       title: accounts-create-request
       type: object
     accounts-create-response:
-      description: Response object for request to create a new account.
+      description: The response to creating a new account.
       properties:
         account:
           $ref: '#/components/schemas/account'
+        default_rev_org:
+          $ref: '#/components/schemas/rev-org'
       required:
       - account
+      - default_rev_org
       title: accounts-create-response
       type: object
       x-go-name: AccountsCreateResponseBody

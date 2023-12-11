@@ -92,10 +92,11 @@ export interface AccountsCreateRequest {
 
 /**
  * accounts-create-response
- * Response object for request to create a new account.
+ * The response to creating a new account.
  */
 export interface AccountsCreateResponse {
   account: Account;
+  default_rev_org: RevOrg;
 }
 
 /**
