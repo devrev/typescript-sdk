@@ -1298,7 +1298,10 @@ export type CustomSchemaFragment = (
 };
 
 /** custom-schema-fragment-base */
-export type CustomSchemaFragmentBase = AtomBase;
+export type CustomSchemaFragmentBase = AtomBase & {
+  /** List of all fields in this custom schema fragment. */
+  fields?: SchemaFieldDescriptor[];
+};
 
 /**
  * custom-schema-fragment-condition

@@ -1737,6 +1737,13 @@ components:
     custom-schema-fragment-base:
       allOf:
       - $ref: '#/components/schemas/atom-base'
+      - properties:
+          fields:
+            description: List of all fields in this custom schema fragment.
+            items:
+              $ref: '#/components/schemas/schema-field-descriptor'
+            type: array
+        type: object
       title: custom-schema-fragment-base
     custom-schema-fragment-condition:
       description: The condition associated with a field.
