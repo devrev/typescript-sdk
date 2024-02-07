@@ -1027,10 +1027,82 @@ components:
       title: articles-update-response
       type: object
       x-go-name: ArticlesUpdateResponseBody
+    artifact:
+      allOf:
+      - $ref: '#/components/schemas/atom-base'
+      title: artifact
     artifact-summary:
       allOf:
       - $ref: '#/components/schemas/atom-base-summary'
       title: artifact-summary
+    artifact-version:
+      description: The version of the artifact.
+      properties:
+        modified_by:
+          $ref: '#/components/schemas/user-summary'
+        timestamp:
+          description: The timestamp at which the version was created.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+          type: string
+        version:
+          description: The version of the artifact.
+          type: string
+      required:
+      - timestamp
+      - version
+      title: artifact-version
+      type: object
+    artifacts-get-request:
+      description: The request to get an artifact's information.
+      properties:
+        id:
+          description: The requested artifact's ID.
+          example: ARTIFACT-12345
+          type: string
+        version:
+          description: The version of the artifact that needs to be fetched.
+          type: string
+      required:
+      - id
+      title: artifacts-get-request
+      type: object
+    artifacts-get-response:
+      description: The response to getting an artifact's information.
+      properties:
+        artifact:
+          $ref: '#/components/schemas/artifact'
+        version:
+          $ref: '#/components/schemas/artifact-version'
+      required:
+      - artifact
+      - version
+      title: artifacts-get-response
+      type: object
+      x-go-name: ArtifactsGetResponseBody
+    artifacts-list-request:
+      description: The request to list artifacts attached to an object.
+      properties:
+        parent_id:
+          description: The ID of the object to filter artifacts.
+          type: string
+      required:
+      - parent_id
+      title: artifacts-list-request
+      type: object
+    artifacts-list-response:
+      description: The response to list artifacts attached to an object.
+      properties:
+        artifacts:
+          description: The artifact's information.
+          items:
+            $ref: '#/components/schemas/artifact'
+          type: array
+      required:
+      - artifacts
+      title: artifacts-list-response
+      type: object
+      x-go-name: ArtifactsListResponseBody
     artifacts-locate-request:
       description: The request to get an artifact's download URL.
       properties:
@@ -8012,6 +8084,11 @@ components:
       allOf:
       - $ref: '#/components/schemas/work-base'
       - properties:
+          channels:
+            description: Channels of the ticket.
+            items:
+              type: string
+            type: array
           group:
             $ref: '#/components/schemas/group-summary'
           rev_org:
@@ -9544,6 +9621,14 @@ components:
       type: object
     works-create-request-ticket:
       properties:
+        channels:
+          description: Channels of the ticket.
+          items:
+            type: string
+          maxItems: 10
+          maxLength: 64
+          minLength: 1
+          type: array
         group:
           description: The group that the ticket is associated with.
           type: string
@@ -9716,6 +9801,14 @@ components:
       type: object
     works-filter-ticket:
       properties:
+        channels:
+          description: Filters for tickets with any of the provided channels.
+          items:
+            type: string
+          maxItems: 10
+          maxLength: 64
+          minLength: 1
+          type: array
         group:
           description: Filters for tickets belonging to specific groups.
           items:
@@ -11016,6 +11109,147 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
       - articles
+  /artifacts.get:
+    get:
+      description: Gets the requested artifact's information.
+      operationId: artifacts-get
+      parameters:
+      - description: The requested artifact's ID.
+        explode: false
+        in: query
+        name: id
+        required: true
+        schema:
+          example: ARTIFACT-12345
+          type: string
+      - description: The version of the artifact that needs to be fetched.
+        explode: false
+        in: query
+        name: version
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/artifacts-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - artifacts
+      x-request-name: ArtifactsGetQuery
+    post:
+      description: Gets the requested artifact's information.
+      operationId: artifacts-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/artifacts-get-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/artifacts-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - artifacts
+  /artifacts.list:
+    get:
+      description: List the artifacts attached to an object.
+      operationId: artifacts-list
+      parameters:
+      - description: The ID of the object to filter artifacts.
+        explode: false
+        in: query
+        name: parent_id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/artifacts-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - artifacts
+      x-request-name: ArtifactsListQuery
+    post:
+      description: List the artifacts attached to an object.
+      operationId: artifacts-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/artifacts-list-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/artifacts-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - artifacts
   /artifacts.locate:
     get:
       description: Gets the download URL for the artifact.
@@ -17636,6 +17870,17 @@ paths:
           items:
             type: string
           type: array
+      - description: Filters for tickets with any of the provided channels.
+        explode: false
+        in: query
+        name: ticket.channels
+        schema:
+          items:
+            type: string
+          maxItems: 10
+          maxLength: 64
+          minLength: 1
+          type: array
       - description: Filters for tickets belonging to specific groups.
         explode: false
         in: query
@@ -17970,6 +18215,17 @@ paths:
           - TAG-12345
           items:
             type: string
+          type: array
+      - description: Filters for tickets with any of the provided channels.
+        explode: false
+        in: query
+        name: ticket.channels
+        schema:
+          items:
+            type: string
+          maxItems: 10
+          maxLength: 64
+          minLength: 1
           type: array
       - description: Filters for tickets belonging to specific groups.
         explode: false

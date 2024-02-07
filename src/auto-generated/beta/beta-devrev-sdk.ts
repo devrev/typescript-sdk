@@ -759,8 +759,69 @@ export interface ArticlesUpdateResponse {
   article: Article;
 }
 
+/** artifact */
+export type Artifact = AtomBase;
+
 /** artifact-summary */
 export type ArtifactSummary = AtomBaseSummary;
+
+/**
+ * artifact-version
+ * The version of the artifact.
+ */
+export interface ArtifactVersion {
+  modified_by?: UserSummary;
+  /**
+   * The timestamp at which the version was created.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  timestamp: string;
+  /** The version of the artifact. */
+  version: string;
+}
+
+/**
+ * artifacts-get-request
+ * The request to get an artifact's information.
+ */
+export interface ArtifactsGetRequest {
+  /**
+   * The requested artifact's ID.
+   * @example "ARTIFACT-12345"
+   */
+  id: string;
+  /** The version of the artifact that needs to be fetched. */
+  version?: string;
+}
+
+/**
+ * artifacts-get-response
+ * The response to getting an artifact's information.
+ */
+export interface ArtifactsGetResponse {
+  artifact: Artifact;
+  /** The version of the artifact. */
+  version: ArtifactVersion;
+}
+
+/**
+ * artifacts-list-request
+ * The request to list artifacts attached to an object.
+ */
+export interface ArtifactsListRequest {
+  /** The ID of the object to filter artifacts. */
+  parent_id: string;
+}
+
+/**
+ * artifacts-list-response
+ * The response to list artifacts attached to an object.
+ */
+export interface ArtifactsListResponse {
+  /** The artifact's information. */
+  artifacts: Artifact[];
+}
 
 /**
  * artifacts-locate-request
@@ -6225,6 +6286,8 @@ export type TenantFragment = CustomSchemaFragmentBase;
 
 /** ticket */
 export type Ticket = WorkBase & {
+  /** Channels of the ticket. */
+  channels?: string[];
   group?: GroupSummary;
   rev_org?: OrgSummary;
   /** Severity of the ticket. */
@@ -7483,6 +7546,13 @@ export interface WorksCreateRequestTask {
 
 /** works-create-request-ticket */
 export interface WorksCreateRequestTicket {
+  /**
+   * Channels of the ticket.
+   * @minLength 1
+   * @maxLength 64
+   * @maxItems 10
+   */
+  channels?: string[];
   /** The group that the ticket is associated with. */
   group?: string;
   /** Whether the ticket is spam. */
@@ -7602,6 +7672,13 @@ export interface WorksFilterOpportunity {
 
 /** works-filter-ticket */
 export interface WorksFilterTicket {
+  /**
+   * Filters for tickets with any of the provided channels.
+   * @minLength 1
+   * @maxLength 64
+   * @maxItems 10
+   */
+  channels?: string[];
   /** Filters for tickets belonging to specific groups. */
   group?: string[];
   /** Filters for tickets that are spam. */
@@ -8756,6 +8833,136 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/articles.update`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets the requested artifact's information.
+   *
+   * @tags artifacts
+   * @name ArtifactsGet
+   * @request GET:/artifacts.get
+   * @secure
+   */
+  artifactsGet = (
+    query: {
+      /**
+       * The requested artifact's ID.
+       * @example "ARTIFACT-12345"
+       */
+      id: string;
+      /** The version of the artifact that needs to be fetched. */
+      version?: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      ArtifactsGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/artifacts.get`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets the requested artifact's information.
+   *
+   * @tags artifacts
+   * @name ArtifactsGetPost
+   * @request POST:/artifacts.get
+   * @secure
+   */
+  artifactsGetPost = (data: ArtifactsGetRequest, params: RequestParams = {}) =>
+    this.request<
+      ArtifactsGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/artifacts.get`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description List the artifacts attached to an object.
+   *
+   * @tags artifacts
+   * @name ArtifactsList
+   * @request GET:/artifacts.list
+   * @secure
+   */
+  artifactsList = (
+    query: {
+      /** The ID of the object to filter artifacts. */
+      parent_id: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      ArtifactsListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/artifacts.list`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description List the artifacts attached to an object.
+   *
+   * @tags artifacts
+   * @name ArtifactsListPost
+   * @request POST:/artifacts.list
+   * @secure
+   */
+  artifactsListPost = (
+    data: ArtifactsListRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      ArtifactsListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/artifacts.list`,
       method: 'POST',
       body: data,
       secure: true,
@@ -14361,6 +14568,13 @@ export class Api<
        * @example ["TAG-12345"]
        */
       tags?: string[];
+      /**
+       * Filters for tickets with any of the provided channels.
+       * @minLength 1
+       * @maxLength 64
+       * @maxItems 10
+       */
+      'ticket.channels'?: string[];
       /** Filters for tickets belonging to specific groups. */
       'ticket.group'?: string[];
       /** Filters for tickets that are spam. */
@@ -14564,6 +14778,13 @@ export class Api<
        * @example ["TAG-12345"]
        */
       tags?: string[];
+      /**
+       * Filters for tickets with any of the provided channels.
+       * @minLength 1
+       * @maxLength 64
+       * @maxItems 10
+       */
+      'ticket.channels'?: string[];
       /** Filters for tickets belonging to specific groups. */
       'ticket.group'?: string[];
       /** Filters for tickets that are spam. */
