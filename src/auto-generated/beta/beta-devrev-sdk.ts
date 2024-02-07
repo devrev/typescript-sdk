@@ -158,6 +158,26 @@ export interface AccountsExportResponse {
   accounts: Account[];
 }
 
+/** accounts-filters */
+export interface AccountsFilters {
+  /** Filters for accounts created by the specified user(s). */
+  created_by?: string[];
+  created_date?: DateTimeFilter;
+  /** Filters for custom fields. */
+  custom_fields?: object;
+  /** Domains for accounts to be filtered. */
+  domains?: string[];
+  /** Array of references of accounts to be filtered. */
+  external_refs?: string[];
+  modified_date?: DateTimeFilter;
+  /** Filters for accounts owned by the specified user(s). */
+  owned_by?: string[];
+  /** Filters for accounts on specified stages. */
+  stage?: string[];
+  /** List of tags to be filtered. */
+  tags?: string[];
+}
+
 /**
  * accounts-get-request
  * Request object to get an account's information.
@@ -386,7 +406,10 @@ export enum AggregationDetailAggregationType {
 }
 
 /** app-fragment */
-export type AppFragment = CustomSchemaFragmentBase;
+export type AppFragment = CustomSchemaFragmentBase & {
+  /** App this fragment applies to. */
+  app?: string;
+};
 
 /** article */
 export type Article = AtomBase & {
@@ -396,6 +419,9 @@ export type Article = AtomBase & {
   description?: string;
   /** Artifacts containing the extracted content. */
   extracted_content?: ArtifactSummary[];
+  parent?: DirectorySummary;
+  /** Rank of the article. */
+  rank?: string;
   /** Resource details. */
   resource?: Resource;
   /** Title of the article. */
@@ -474,6 +500,8 @@ export interface ArticlesCreateRequest {
    * @example ["DEVU-12345"]
    */
   owned_by: string[];
+  /** The parent directory of the article. */
+  parent?: string;
   /**
    * The published date of the article.
    * @format date-time
@@ -481,6 +509,8 @@ export interface ArticlesCreateRequest {
    */
   published_at?: string;
   resource: ArticlesCreateRequestResource;
+  /** Information about the role the member receives due to the share. */
+  shared_with?: SharedWithMembership[];
   /** Status of the article. */
   status?: ArticleStatus;
   /** Tags associated with the article. */
@@ -637,8 +667,12 @@ export interface ArticlesUpdateRequest {
   /** Updates the language of the article. */
   language?: string;
   owned_by?: ArticlesUpdateRequestOwnedBy;
+  /** The updated parent directory for the article. */
+  parent?: string | null;
   /** Updates the the latest published version. */
   published_version?: string;
+  reorder?: ArticlesUpdateRequestReorder;
+  shared_with?: ArticlesUpdateRequestSharedWith;
   /** Status of the article. */
   status?: ArticleStatus;
   tags?: ArticlesUpdateRequestTags;
@@ -694,6 +728,26 @@ export interface ArticlesUpdateRequestOwnedBy {
   set?: string[];
 }
 
+/** articles-update-request-reorder */
+export interface ArticlesUpdateRequestReorder {
+  /**
+   * The article after which the reordered article is placed.
+   * @example "ARTICLE-12345"
+   */
+  after?: string;
+  /**
+   * The article before which the reordered article is placed.
+   * @example "ARTICLE-12345"
+   */
+  before?: string;
+}
+
+/** articles-update-request-shared-with */
+export interface ArticlesUpdateRequestSharedWith {
+  /** Sets the field to the provided membership list. */
+  set?: SharedWithMembership[];
+}
+
 /** articles-update-request-tags */
 export interface ArticlesUpdateRequestTags {
   /** Sets the provided tags on the article. */
@@ -707,6 +761,35 @@ export interface ArticlesUpdateResponse {
 
 /** artifact-summary */
 export type ArtifactSummary = AtomBaseSummary;
+
+/**
+ * artifacts-locate-request
+ * The request to get an artifact's download URL.
+ */
+export interface ArtifactsLocateRequest {
+  /**
+   * The ID of the artifact to get the URL for.
+   * @example "ARTIFACT-12345"
+   */
+  id: string;
+  /** The version of the artifact that needs to be fetched. */
+  version?: string;
+}
+
+/**
+ * artifacts-locate-response
+ * The response to getting an artifact's download URL.
+ */
+export interface ArtifactsLocateResponse {
+  /**
+   * The expiration timestamp of the URL.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  expires_at?: string;
+  /** The artifact's download URL. */
+  url: string;
+}
 
 /**
  * artifacts-prepare-request
@@ -804,6 +887,425 @@ export interface AtomBaseSummary {
   id: string;
 }
 
+/**
+ * auth-connection
+ * Connection object that specifies the configuration for an
+ * authentication connection that is set up for a Dev organization.
+ */
+export type AuthConnection = (
+  | AuthConnectionOptionsAzureAd
+  | AuthConnectionOptionsGoogleApps
+  | AuthConnectionOptionsOidc
+  | AuthConnectionOptionsSaml
+  | AuthConnectionOptionsSocial
+) & {
+  /**
+   * Display name of the authentication connection. This name will be
+   * visible to all the users when they sign in to this Dev
+   * organization. For example, if the display_name is 'abclogin', then
+   * it would appear on the login button as 'Log in to abclogin'.
+   */
+  display_name?: string;
+  /**
+   * Whether the authentication connection is enabled or disabled. If
+   * set to false, the authentication connection will not show up on the
+   * login screen as a login option.
+   */
+  enabled?: boolean;
+  /** ID of the authentication connection. */
+  id: string;
+  /**
+   * Defines the type for the authentication connection. The configuration
+   * for each authentication connection will depend on the type value.
+   */
+  type: AuthConnectionType;
+};
+
+/**
+ * auth-connection-options-azure-ad
+ * Object encapsulating the configuration parameters for an Azure AD
+ * authentication connection.
+ */
+export interface AuthConnectionOptionsAzureAd {
+  /** Client ID for the Azure authentication connection. */
+  client_id?: string;
+  /** Client secret for the Azure authentication connection. */
+  client_secret?: string;
+  /** Domain URL of the Azure authentication connection. */
+  domain?: string;
+}
+
+/**
+ * auth-connection-options-google-apps
+ * Object encapsulating the configuration parameters for a Google Apps
+ * authentication connection.
+ */
+export interface AuthConnectionOptionsGoogleApps {
+  /** Client ID for the Google Apps authentication connection. */
+  client_id?: string;
+  /** Client secret for the Google Apps authentication connection. */
+  client_secret?: string;
+  /** Tenant domain URL of the Google Apps authentication connection. */
+  tenant_domain?: string;
+}
+
+/**
+ * auth-connection-options-oidc
+ * Object encapsulating the configuration parameters for an OIDC
+ * authentication connection.
+ */
+export interface AuthConnectionOptionsOidc {
+  /** Client ID for the OIDC authentication connection. */
+  client_id?: string;
+  /** Client secret for the OIDC authentication connection. */
+  client_secret?: string;
+  /** Issuer URL of the OIDC authentication connection. */
+  issuer?: string;
+}
+
+/**
+ * auth-connection-options-saml
+ * Object encapsulating the configuration parameters for a SAML
+ * authentication connection.
+ */
+export interface AuthConnectionOptionsSaml {
+  /** Sign In endpoint for the SAML authentication connection. */
+  sign_in_endpoint?: string;
+  /** Signing certificate for the SAML authentication connection. */
+  signing_cert?: string;
+}
+
+/** auth-connection-options-social */
+export type AuthConnectionOptionsSocial = object;
+
+export enum AuthConnectionToggle {
+  Disable = 'disable',
+  Enable = 'enable',
+}
+
+/**
+ * Defines the type for the authentication connection. The configuration
+ * for each authentication connection will depend on the type value.
+ */
+export enum AuthConnectionType {
+  GoogleApps = 'google_apps',
+  Oidc = 'oidc',
+  Samlp = 'samlp',
+  Social = 'social',
+  Waad = 'waad',
+}
+
+/** auth-token */
+export type AuthToken = AtomBase & {
+  /**
+   * An identifier that represents the application that requested the
+   * token. Only applicable for application access tokens.
+   */
+  client_id?: string;
+  /**
+   * The time at which the token expires.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  expires_at?: string;
+  /**
+   * The time at which the token was issued.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  issued_at?: string;
+  /** The type of the requested token. */
+  requested_token_type?: AuthTokenRequestedTokenType;
+  /** The scopes associated with the issued token. */
+  scopes?: string[];
+  /** The status of the token. */
+  status?: AuthTokenStatus;
+  /** The subject of the token. */
+  subject?: string;
+  /** A hint that identifies the token. */
+  token_hint?: string;
+};
+
+/** Specifies the process of obtaining a token. */
+export enum AuthTokenGrantType {
+  UrnDevrevParamsOauthGrantTypeTokenIssue = 'urn:devrev:params:oauth:grant-type:token-issue',
+  UrnIetfParamsOauthGrantTypeTokenExchange = 'urn:ietf:params:oauth:grant-type:token-exchange',
+}
+
+/** The type of the requested token. */
+export enum AuthTokenRequestedTokenType {
+  UrnDevrevParamsOauthTokenTypeAat = 'urn:devrev:params:oauth:token-type:aat',
+  UrnDevrevParamsOauthTokenTypeAatPublic = 'urn:devrev:params:oauth:token-type:aat:public',
+  UrnDevrevParamsOauthTokenTypeDev = 'urn:devrev:params:oauth:token-type:dev',
+  UrnDevrevParamsOauthTokenTypeGat = 'urn:devrev:params:oauth:token-type:gat',
+  UrnDevrevParamsOauthTokenTypePat = 'urn:devrev:params:oauth:token-type:pat',
+  UrnDevrevParamsOauthTokenTypePatActAs = 'urn:devrev:params:oauth:token-type:pat:act-as',
+  UrnDevrevParamsOauthTokenTypeRat = 'urn:devrev:params:oauth:token-type:rat',
+  UrnDevrevParamsOauthTokenTypeRev = 'urn:devrev:params:oauth:token-type:rev',
+  UrnDevrevParamsOauthTokenTypeSession = 'urn:devrev:params:oauth:token-type:session',
+  UrnDevrevParamsOauthTokenTypeSessionDev0 = 'urn:devrev:params:oauth:token-type:session:dev0',
+  UrnDevrevParamsOauthTokenTypeSessionOnetime = 'urn:devrev:params:oauth:token-type:session:onetime',
+  UrnDevrevParamsOauthTokenTypeSuper = 'urn:devrev:params:oauth:token-type:super',
+  UrnDevrevParamsOauthTokenTypeSys = 'urn:devrev:params:oauth:token-type:sys',
+  UrnIetfParamsOauthTokenTypeJwt = 'urn:ietf:params:oauth:token-type:jwt',
+}
+
+/** The status of the token. */
+export enum AuthTokenStatus {
+  Active = 'active',
+  Expired = 'expired',
+  Revoked = 'revoked',
+}
+
+/** The type of the subject token. */
+export enum AuthTokenSubjectTokenType {
+  UrnDevrevParamsOauthTokenTypeJwtAuth0 = 'urn:devrev:params:oauth:token-type:jwt:auth0',
+  UrnDevrevParamsOauthTokenTypeJwtDev = 'urn:devrev:params:oauth:token-type:jwt:dev',
+  UrnDevrevParamsOauthTokenTypeRat = 'urn:devrev:params:oauth:token-type:rat',
+  UrnDevrevParamsOauthTokenTypeRevinfo = 'urn:devrev:params:oauth:token-type:revinfo',
+  UrnDevrevParamsOauthTokenTypeSession = 'urn:devrev:params:oauth:token-type:session',
+  UrnDevrevParamsOauthTokenTypeSysu = 'urn:devrev:params:oauth:token-type:sysu',
+  UrnDevrevParamsOauthTokenTypeUserinfo = 'urn:devrev:params:oauth:token-type:userinfo',
+  UrnDevrevParamsOauthTokenTypeUserinfoProfile = 'urn:devrev:params:oauth:token-type:userinfo:profile',
+  UrnIetfParamsOauthTokenTypeJwt = 'urn:ietf:params:oauth:token-type:jwt',
+}
+
+/** The type of the issued token. Bearer is the only supported token type. */
+export enum AuthTokenTokenType {
+  Bearer = 'bearer',
+}
+
+/**
+ * auth-tokens-create-request
+ * A request to create a new token corresponding to the requested token
+ * type.
+ */
+export interface AuthTokensCreateRequest {
+  /** The unique ID of the Dev user to impersonate. */
+  act_as?: string;
+  /** The expected audience values with respect to the token. */
+  aud?: string[];
+  /**
+   * An identifier that represents the application which is requesting
+   * the token. If no client_id is present in the request to generate an
+   * application access token (AAT), DevRev will generate a client_id.
+   * This client_id is only associated with an AAT.
+   */
+  client_id?: string;
+  /**
+   * The expected validity lifetime of the token in number of days. In
+   * practice, the value should be based on the usage of the token.
+   * @min 0
+   * @max 4294967295
+   */
+  expires_in?: number;
+  /** Specifies the process of obtaining a token. */
+  grant_type?: AuthTokenGrantType;
+  /** The type of the requested token. */
+  requested_token_type?: AuthTokenRequestedTokenType;
+  /**
+   * Carries info corresponding to the Rev user to be provisioned and/or
+   * issue a Rev session token.
+   */
+  rev_info?: AuthTokensRevInfo;
+  /**
+   * The requested set of scopes associated with the issued token. A
+   * space-delimited list of values in which the order of values does
+   * not matter.
+   */
+  scope?: string;
+  /**
+   * Represents the entity that requests the token. Not required when
+   * requesting an application access token (AAT).
+   */
+  subject_token?: string;
+  /** The type of the subject token. */
+  subject_token_type?: AuthTokenSubjectTokenType;
+  /** A hint that identifies the token. */
+  token_hint?: string;
+}
+
+/**
+ * auth-tokens-create-response
+ * Response for the request to create a new token corresponding to the
+ * requested token type.
+ */
+export interface AuthTokensCreateResponse {
+  /**
+   * The issued JSON Web Token (JWT) corresponding to the requested
+   * token type.
+   */
+  access_token: string;
+  /**
+   * An identifier that represents the application which is requesting
+   * the token. Only present in a response corresponding to an
+   * application access token (AAT).
+   */
+  client_id?: string;
+  /**
+   * The validity lifetime of the token specified in seconds since Unix
+   * epoch.
+   * @format int64
+   */
+  expires_in: number;
+  /** A token to refresh the issued token. */
+  refresh_token?: string;
+  /**
+   * The scopes associated with the issued token. A space-delimited list
+   * of values in which the order of values does not matter.
+   */
+  scope?: string;
+  /** The type of the issued token. Bearer is the only supported token type. */
+  token_type: AuthTokenTokenType;
+}
+
+/**
+ * auth-tokens-delete-request
+ * The request to revoke the token.
+ */
+export interface AuthTokensDeleteRequest {
+  /**
+   * The unique identifier for the token under a given Dev organization.
+   * If no token ID is provided, then the token ID will be set from the
+   * JTI claim of the token in the authorization header.
+   */
+  token_id?: string;
+}
+
+/**
+ * auth-tokens-get-request
+ * The request to get the token metadata.
+ */
+export interface AuthTokensGetRequest {
+  /** The unique identifier of the token under a given Dev organization. */
+  token_id: string;
+}
+
+/**
+ * auth-tokens-get-response
+ * The response to get the token metadata.
+ */
+export interface AuthTokensGetResponse {
+  token: AuthToken;
+}
+
+/**
+ * auth-tokens-list-request
+ * A request to list the token metadata.
+ */
+export interface AuthTokensListRequest {
+  /**
+   * An identifier that represents the application, which requested the
+   * token. Only relevant for application access tokens.
+   */
+  client_id?: string;
+  /** The type of the requested token. */
+  requested_token_type?: AuthTokenRequestedTokenType;
+  /**
+   * The subject associated with the token. In the absence of this
+   * parameter, the ID of the authenticated entity is treated as the
+   * subject.
+   */
+  subject?: string;
+}
+
+/**
+ * auth-tokens-list-response
+ * The response to list the token metadata.
+ */
+export interface AuthTokensListResponse {
+  /** The list of token metadata. */
+  tokens: AuthToken[];
+}
+
+/**
+ * auth-tokens-org-traits
+ * Carries Rev org info.
+ */
+export interface AuthTokensOrgTraits {
+  /** Application-defined custom fields of the Rev org. */
+  custom_fields?: object;
+  /** The description of the Rev org. */
+  description?: string;
+  /** The display name of the Rev org. */
+  display_name?: string;
+  /** The domain of the Rev org. */
+  domain?: string;
+  /** Phone numbers of the Rev org. */
+  phone_numbers?: string[];
+  /** The tier of the Rev org. */
+  tier?: string;
+}
+
+/**
+ * auth-tokens-rev-info
+ * Carries info corresponding to the Rev user to be provisioned and/or
+ * issue a Rev session token.
+ */
+export interface AuthTokensRevInfo {
+  /** An identifier which uniquely identifies a Rev org. */
+  org_ref?: string;
+  /** Carries Rev org info. */
+  org_traits?: AuthTokensOrgTraits;
+  /** The unique ID of the Rev user. */
+  user_id?: string;
+  /** An identifier which uniquely identifies a Rev user. */
+  user_ref?: string;
+  /** Carries Rev user info. */
+  user_traits?: AuthTokensUserTraits;
+}
+
+/**
+ * auth-tokens-self-delete-request
+ * The request to delete all the tokens created by the authenticated user,
+ * that match with the provided token type.
+ */
+export interface AuthTokensSelfDeleteRequest {
+  /** The type of the requested token. */
+  requested_token_type?: AuthTokenRequestedTokenType;
+}
+
+/**
+ * auth-tokens-update-request
+ * A request to update the token metadata.
+ */
+export interface AuthTokensUpdateRequest {
+  /** A hint that identifies the token. */
+  token_hint: string;
+  /** The unique identifier of the token under a given Dev organization. */
+  token_id: string;
+}
+
+/**
+ * auth-tokens-update-response
+ * Response for the request to update the token metadata.
+ */
+export interface AuthTokensUpdateResponse {
+  token: AuthToken;
+}
+
+/**
+ * auth-tokens-user-traits
+ * Carries Rev user info.
+ */
+export interface AuthTokensUserTraits {
+  /** Application-defined custom fields of the Rev user. */
+  custom_fields?: object;
+  /** The description of the Rev user. */
+  description?: string;
+  /** The display name of the Rev user. */
+  display_name?: string;
+  /** The email address of the Rev user. */
+  email?: string;
+  /**
+   * The full name of the Rev user.
+   * @deprecated
+   */
+  full_name?: string;
+  /** Phone numbers of the Rev user. */
+  phone_numbers?: string[];
+}
+
 /** capability */
 export type Capability = PartBase;
 
@@ -818,12 +1320,16 @@ export type CodeChange = AtomBase & {
   description?: string;
   /** Unique external identifier for this change.e.g Pull Request URL. */
   external_identifier?: string;
+  /** Details of lines of code in this code change. */
+  filtered_loc?: LinesOfCode;
   /** URL pointing to the repo this change was on. */
   repo_url?: string;
   /** Source of the code change object. */
   source?: CodeChangeSource;
   /** Title describing in brief the contents of this change. */
   title?: string;
+  /** Details of lines of code in this code change. */
+  total_loc?: LinesOfCode;
 };
 
 /** Source of the code change object. */
@@ -1300,8 +1806,22 @@ export type CustomSchemaFragment = (
 
 /** custom-schema-fragment-base */
 export type CustomSchemaFragmentBase = AtomBase & {
+  /** The conditions associated with the fields. */
+  conditions?: CustomSchemaFragmentCondition[];
+  /**
+   * Indicates if the fragment has been deprecated. Modifications to
+   * this field are done in-place and don't result in creation of a new
+   * fragment in chain.
+   */
+  deprecated?: boolean;
+  /** Description of the custom schema fragment. */
+  description?: string;
   /** List of all fields in this custom schema fragment. */
   fields?: SchemaFieldDescriptor[];
+  /** Type of the custom schema fragment. */
+  fragment_type?: CustomSchemaFragmentFragmentType;
+  /** Leaf type this fragment applies to. */
+  leaf_type?: string;
 };
 
 /**
@@ -1309,6 +1829,13 @@ export type CustomSchemaFragmentBase = AtomBase & {
  * The condition associated with a field.
  */
 export type CustomSchemaFragmentCondition = object;
+
+/** Type of the custom schema fragment. */
+export enum CustomSchemaFragmentFragmentType {
+  App = 'app',
+  CustomType = 'custom_type',
+  Tenant = 'tenant',
+}
 
 export enum CustomSchemaFragmentType {
   AppFragment = 'app_fragment',
@@ -1400,8 +1927,6 @@ export interface CustomSchemaFragmentsSetRequestCustomTypeFragment {
   path?: CustomTypePathComponent[];
   /** The ID of the associated custom stage diagram. */
   stage_diagram?: string;
-  /** List of stock field enum overrides. */
-  stock_field_uenum_overrides?: StockFieldUenumOverride[];
   /** The string used to populate the subtype in the leaf type. */
   subtype: string;
   /** The display name of the subtype. */
@@ -1409,7 +1934,10 @@ export interface CustomSchemaFragmentsSetRequestCustomTypeFragment {
 }
 
 /** custom-schema-fragments-set-request-tenant-fragment */
-export type CustomSchemaFragmentsSetRequestTenantFragment = object;
+export interface CustomSchemaFragmentsSetRequestTenantFragment {
+  /** List of Per-DevOrg stock field overrides. */
+  stock_field_overrides?: StockFieldOverride[];
+}
 
 export enum CustomSchemaFragmentsSetRequestType {
   AppFragment = 'app_fragment',
@@ -1424,7 +1952,16 @@ export interface CustomSchemaFragmentsSetResponse {
 }
 
 /** custom-type-fragment */
-export type CustomTypeFragment = CustomSchemaFragmentBase;
+export type CustomTypeFragment = CustomSchemaFragmentBase & {
+  stage_diagram?: StageDiagramSummary;
+  /** The string used to populate the subtype in the leaf type. */
+  subtype?: string;
+  /**
+   * Display name of the subtype. Modifications to this field are done
+   * in-place and don't result in creation of a new fragment in chain.
+   */
+  subtype_display_name?: string;
+};
 
 /**
  * custom-type-path-component
@@ -1505,8 +2042,275 @@ export enum DateTimePresetType {
   NextNDays = 'next_n_days',
 }
 
+/**
+ * dev-org-auth-connections-create-request
+ * Request to create a new enterprise authentication connection.
+ */
+export type DevOrgAuthConnectionsCreateRequest = (
+  | AuthConnectionOptionsAzureAd
+  | AuthConnectionOptionsGoogleApps
+  | AuthConnectionOptionsOidc
+  | AuthConnectionOptionsSaml
+) & {
+  /**
+   * Display name of the authentication connection. This name will be
+   * visible to all the users when they sign in to this Dev
+   * organization. For example, if the display_name is 'abclogin', then
+   * it would appear on the login button as 'Log in to abclogin'.
+   */
+  display_name?: string;
+  /**
+   * Defines the type for the authentication connection. Different types of
+   * authentication connections have different configuration parameters.
+   */
+  type: DevOrgAuthConnectionsCreateRequestType;
+};
+
+/**
+ * Defines the type for the authentication connection. Different types of
+ * authentication connections have different configuration parameters.
+ */
+export enum DevOrgAuthConnectionsCreateRequestType {
+  GoogleApps = 'google_apps',
+  Oidc = 'oidc',
+  Samlp = 'samlp',
+  Waad = 'waad',
+}
+
+/**
+ * dev-org-auth-connections-create-response
+ * Response for the request to create a new enterprise authentication
+ * connection.
+ */
+export interface DevOrgAuthConnectionsCreateResponse {
+  /**
+   * Connection object that specifies the configuration for an
+   * authentication connection that is set up for a Dev organization.
+   */
+  auth_connection: AuthConnection;
+}
+
+/**
+ * dev-org-auth-connections-delete-request
+ * Request to delete an enterprise authentication connection for a Dev
+ * organization. A default connection and a connection which is currently
+ * enabled cannot be deleted.
+ */
+export interface DevOrgAuthConnectionsDeleteRequest {
+  /** ID of the authentication connection to be deleted. */
+  id: string;
+}
+
+/**
+ * dev-org-auth-connections-get-request
+ * Request to get configuration details of organization's authentication
+ * Connection.
+ */
+export interface DevOrgAuthConnectionsGetRequest {
+  /** ID of the authentication connection. */
+  id: string;
+}
+
+/**
+ * dev-org-auth-connections-get-response
+ * Response object encapsulating the configuration details of an
+ * authentication connection.
+ */
+export interface DevOrgAuthConnectionsGetResponse {
+  /**
+   * Connection object that specifies the configuration for an
+   * authentication connection that is set up for a Dev organization.
+   */
+  auth_connection: AuthConnection;
+}
+
+/**
+ * dev-org-auth-connections-list-response
+ * Response object for the request to list all the social and enterprise
+ * authentication connections configured for a Dev organization.
+ */
+export interface DevOrgAuthConnectionsListResponse {
+  /**
+   * List of all the authentication connections currently configured for
+   * a Dev organization.
+   */
+  auth_connections: AuthConnection[];
+}
+
+/**
+ * dev-org-auth-connections-toggle-request
+ * Request to enable or disable an authentication connection for a Dev
+ * organization.
+ */
+export interface DevOrgAuthConnectionsToggleRequest {
+  /** ID of the authentication connection to be toggled. */
+  id: string;
+  toggle?: AuthConnectionToggle;
+}
+
+/**
+ * dev-org-auth-connections-update-request
+ * Request to update an enterprise authentication connection for a Dev
+ * organization.
+ */
+export type DevOrgAuthConnectionsUpdateRequest = (
+  | AuthConnectionOptionsAzureAd
+  | AuthConnectionOptionsGoogleApps
+  | AuthConnectionOptionsOidc
+  | AuthConnectionOptionsSaml
+  | Empty
+) & {
+  /**
+   * New display name of the authentication connection. This name will
+   * be visible to all the users when they sign in to this Dev
+   * organization. For example, if the display_name is 'abclogin', then
+   * it would appear on the login button as 'Log in to abclogin'.
+   */
+  display_name?: string;
+  /** ID of the authentication connection which is to be updated. */
+  id: string;
+  /**
+   * Specifies the type for the authentication connection. Different types
+   * of authentication connections have different configuration parameters
+   * that can be updated.
+   */
+  type?: DevOrgAuthConnectionsUpdateRequestType;
+};
+
+/**
+ * Specifies the type for the authentication connection. Different types
+ * of authentication connections have different configuration parameters
+ * that can be updated.
+ */
+export enum DevOrgAuthConnectionsUpdateRequestType {
+  GoogleApps = 'google_apps',
+  None = 'none',
+  Oidc = 'oidc',
+  Samlp = 'samlp',
+  Waad = 'waad',
+}
+
+/**
+ * dev-org-auth-connections-update-response
+ * Response for the request to update an enterprise authentication
+ * connection.
+ */
+export interface DevOrgAuthConnectionsUpdateResponse {
+  /**
+   * Connection object that specifies the configuration for an
+   * authentication connection that is set up for a Dev organization.
+   */
+  auth_connection: AuthConnection;
+}
+
+/** dev-user */
+export type DevUser = UserBase & {
+  /** IDs of the Dev User outside the DevRev SOR. */
+  external_identities?: ExternalIdentity[];
+};
+
+/** dev-user-external-identity-filter */
+export interface DevUserExternalIdentityFilter {
+  /** Unique ID of the user in the external source. */
+  id?: string;
+  /** Issuer of the external identity of the user. */
+  issuer?: string;
+}
+
 /** dev-user-summary */
 export type DevUserSummary = UserBaseSummary;
+
+/**
+ * dev-users-get-request
+ * A request to get a Dev user's information.
+ */
+export interface DevUsersGetRequest {
+  /** User ID of the requested Dev user. */
+  id: string;
+}
+
+/**
+ * dev-users-get-response
+ * The response to getting the information for the Dev user.
+ */
+export interface DevUsersGetResponse {
+  dev_user: DevUser;
+}
+
+/**
+ * dev-users-list-request
+ * A request to get the list of Dev user's information.
+ */
+export interface DevUsersListRequest {
+  /**
+   * The cursor to resume iteration from. If not provided, then
+   * iteration starts from the beginning.
+   */
+  cursor?: string;
+  /** Filters Dev users based on email addresses. */
+  email?: string[];
+  /** Filters Dev users based on external identity. */
+  external_identity?: DevUserExternalIdentityFilter[];
+  /**
+   * The maximum number of Dev users to return. The default is '50'.
+   * @format int32
+   */
+  limit?: number;
+  /**
+   * The iteration mode to use. If "after", then entries after the provided
+   * cursor will be returned, or if no cursor is provided, then from the
+   * beginning. If "before", then entries before the provided cursor will be
+   * returned, or if no cursor is provided, then from the end. Entries will
+   * always be returned in the specified sort-by order.
+   */
+  mode?: ListMode;
+  /** Fields to sort the Dev users by and the direction to sort them. */
+  sort_by?: string[];
+  /** Filters Dev users based on state. */
+  state?: UserState[];
+}
+
+/**
+ * dev-users-list-response
+ * The response to listing the Dev users.
+ */
+export interface DevUsersListResponse {
+  /** The list of Dev users. */
+  dev_users: DevUser[];
+  /**
+   * The cursor used to iterate subsequent results in accordance to the
+   * sort order. If not set, then no later elements exist.
+   */
+  next_cursor?: string;
+  /**
+   * The cursor used to iterate preceding results in accordance to the
+   * sort order. If not set, then no prior elements exist.
+   */
+  prev_cursor?: string;
+}
+
+/**
+ * dev-users-self-request
+ * A request to get the authenticated user's information.
+ */
+export type DevUsersSelfRequest = object;
+
+/**
+ * dev-users-self-response
+ * The response to getting the information for the authenticated user.
+ */
+export interface DevUsersSelfResponse {
+  dev_user: DevUser;
+}
+
+/** directory-summary */
+export type DirectorySummary = AtomBaseSummary;
+
+/**
+ * dynamic-group-info
+ * Information to define dynamic groups.
+ */
+export type DynamicGroupInfo = object;
 
 /** empty */
 export type Empty = object;
@@ -1923,6 +2727,25 @@ export enum ErrorUnauthorizedType {
 /** error-unauthorized-unauthenticated */
 export type ErrorUnauthorizedUnauthenticated = object;
 
+/** event-account-created */
+export interface EventAccountCreated {
+  account: Account;
+}
+
+/** event-account-deleted */
+export interface EventAccountDeleted {
+  /**
+   * The ID of the account that was deleted.
+   * @example "ACC-12345"
+   */
+  id: string;
+}
+
+/** event-account-updated */
+export interface EventAccountUpdated {
+  account: Account;
+}
+
 /** event-conversation-created */
 export interface EventConversationCreated {
   conversation: Conversation;
@@ -1937,6 +2760,22 @@ export interface EventConversationDeleted {
 /** event-conversation-updated */
 export interface EventConversationUpdated {
   conversation: Conversation;
+}
+
+/** event-dev-user-created */
+export interface EventDevUserCreated {
+  dev_user: DevUser;
+}
+
+/** event-dev-user-deleted */
+export interface EventDevUserDeleted {
+  /** The ID of the Dev user that was deleted. */
+  id: string;
+}
+
+/** event-dev-user-updated */
+export interface EventDevUserUpdated {
+  dev_user: DevUser;
 }
 
 /** event-part-created */
@@ -2188,6 +3027,12 @@ export interface EventWorkUpdated {
   work: Work;
 }
 
+/**
+ * external-identity
+ * External identity of a user.
+ */
+export type ExternalIdentity = object;
+
 /** feature */
 export type Feature = PartBase;
 
@@ -2314,6 +3159,12 @@ export type GroupSummary = AtomBaseSummary & {
   name?: string;
 };
 
+/** Type of the group. */
+export enum GroupType {
+  Dynamic = 'dynamic',
+  Static = 'static',
+}
+
 /**
  * groups-create-request
  * A request to create a new group.
@@ -2321,12 +3172,16 @@ export type GroupSummary = AtomBaseSummary & {
 export interface GroupsCreateRequest {
   /** Description of the group. */
   description: string;
+  /** Information to define dynamic groups. */
+  dynamic_group_info?: DynamicGroupInfo;
   /** Type of the members in the group. */
   member_type?: GroupMemberType;
   /** Unique name of the group. */
   name: string;
   /** Owner of the group. */
   owner?: string;
+  /** Type of the group. */
+  type?: GroupType;
 }
 
 /**
@@ -2454,6 +3309,33 @@ export type IssueSummary = WorkBaseSummary & {
 export interface LegacyStage {
   /** Current stage name of the work item. */
   name: string;
+}
+
+/**
+ * lines-of-code
+ * Details of lines of code in this code change.
+ */
+export interface LinesOfCode {
+  /**
+   * Count of files involved in this code change.
+   * @format int64
+   */
+  file_count?: number;
+  /**
+   * Number of new lines added in this code change.
+   * @format int64
+   */
+  lines_added?: number;
+  /**
+   * Number of lines deleted in this code change.
+   * @format int64
+   */
+  lines_deleted?: number;
+  /**
+   * Number of lines modified in this code change.
+   * @format int64
+   */
+  lines_modified?: number;
 }
 
 /** link */
@@ -2683,7 +3565,7 @@ export enum MemberType {
 export interface MetricDataPoint {
   /**
    * Key-value pairs for specifying additional attributes.
-   * @maxItems 10
+   * @maxItems 12
    */
   dimensions?: MetricDataPointDimension[];
   /**
@@ -3632,6 +4514,24 @@ export interface RevOrgsCreateResponse {
 }
 
 /**
+ * rev-orgs-delete-request
+ * Request object to delete a Rev organization.
+ */
+export interface RevOrgsDeleteRequest {
+  /**
+   * The ID of Rev organization to delete.
+   * @example "REV-AbCdEfGh"
+   */
+  id: string;
+}
+
+/**
+ * rev-orgs-delete-response
+ * The response to deleting a Rev organization.
+ */
+export type RevOrgsDeleteResponse = object;
+
+/**
  * rev-orgs-get-request
  * Request object to get Rev organization's information.
  */
@@ -3862,7 +4762,7 @@ export interface RevUsersCreateRequest {
    * system-generated identifier will be assigned to the user.
    */
   external_ref?: string;
-  /** Phone numbers of the Rev user. */
+  /** Phone numbers, in E.164 format, of the Rev user. */
   phone_numbers?: string[];
   /**
    * The ID of Rev organization for which a Rev user is to be created.
@@ -3949,7 +4849,7 @@ export interface RevUsersListRequest {
    */
   mode?: ListMode;
   modified_date?: DateTimeFilter;
-  /** List of phone numbers to filter Rev users on. */
+  /** List of phone numbers, in E.164 format, to filter Rev users on. */
   phone_numbers?: string[];
   /**
    * List of IDs of Rev organizations to be filtered.
@@ -4000,6 +4900,8 @@ export interface RevUsersUpdateRequest {
   external_ref?: string;
   /** The ID of Rev user to update. */
   id: string;
+  /** The phone numbers, in E.164 format, of the Rev user. */
+  phone_numbers?: string[];
   /** Tags associated with the Rev user. */
   tags?: SetTagWithValue[];
 }
@@ -4210,13 +5112,16 @@ export enum SchemaFieldDescriptorFieldType {
 export type SchemaFieldMfzMetadata = object;
 
 /**
+ * schema-field-uenum-value
+ * A unified enum value.
+ */
+export type SchemaFieldUenumValue = object;
+
+/**
  * schema-field-ui-metadata
  * The schema of ui specific fields.
  */
-export interface SchemaFieldUiMetadata {
-  /** Display name of the field. */
-  display_name?: string;
-}
+export type SchemaFieldUiMetadata = object;
 
 /** schema-id-field-descriptor */
 export type SchemaIdFieldDescriptor = SchemaFieldDescriptorBase & {
@@ -4478,7 +5383,7 @@ export type SchemaTokensListFieldDescriptor = SchemaFieldDescriptorBase & {
 /** schema-uenum-field-descriptor */
 export type SchemaUenumFieldDescriptor = SchemaFieldDescriptorBase & {
   /** Allowed values for the field. */
-  allowed_values: UenumValue[];
+  allowed_values: SchemaFieldUenumValue[];
   /**
    * Default value.
    * @format int64
@@ -4489,7 +5394,7 @@ export type SchemaUenumFieldDescriptor = SchemaFieldDescriptorBase & {
 /** schema-uenum-list-field-descriptor */
 export type SchemaUenumListFieldDescriptor = SchemaFieldDescriptorBase & {
   /** Allowed values for the field. */
-  allowed_values: UenumValue[];
+  allowed_values: SchemaFieldUenumValue[];
   /** Default value. */
   default_value?: number[];
 };
@@ -4558,6 +5463,8 @@ export interface SetSlaSelector {
   severity?: SlaSelectorSeverity[];
   /** The SLA policy applies to conversations with these sources. */
   source_channel?: string[];
+  /** The SLA policy applies to tickets with these subtypes. */
+  subtype?: string[];
   /**
    * The SLA policy applies to items with these tags.
    * @example ["TAG-12345"]
@@ -4620,6 +5527,12 @@ export interface SetWeeklyOrgSchedule {
    */
   period_name: string;
 }
+
+/**
+ * shared-with-membership
+ * Information about the role the member receives due to the share.
+ */
+export type SharedWithMembership = object;
 
 /** sla */
 export type Sla = AtomBase & {
@@ -4771,6 +5684,7 @@ export interface SlasAssignResponse {
 
 /** slas-create-request */
 export interface SlasCreateRequest {
+  account_selector?: AccountsFilters;
   /** Description of the purpose and capabilities of the SLA. */
   description?: string;
   /**
@@ -4866,6 +5780,7 @@ export interface SlasTransitionResponse {
 
 /** slas-update-request */
 export interface SlasUpdateRequest {
+  account_selector?: AccountsFilters;
   /** Description of the purpose and capabilities of the SLA. */
   description?: string;
   /**
@@ -4893,6 +5808,56 @@ export interface SlasUpdateRequest {
 export interface SlasUpdateResponse {
   sla: Sla;
 }
+
+/** snap-in-version-summary */
+export type SnapInVersionSummary = AtomBaseSummary;
+
+/** snap-ins-resources-request */
+export interface SnapInsResourcesRequest {
+  /** The ID of the snap-in to get resources for. */
+  id: string;
+  /** The ID of the user to get resources for. */
+  user: string;
+}
+
+/** snap-ins-resources-response */
+export interface SnapInsResourcesResponse {
+  event_sources?: SnapInsResourcesResponseEventSourcesEntry;
+  /** The inputs for the snap-in. */
+  inputs?: object;
+  keyrings?: SnapInsResourcesResponseKeyringsEntry;
+  snap_in_version: SnapInVersionSummary;
+}
+
+/** snap-ins-resources-response-event-sources-entry */
+export interface SnapInsResourcesResponseEventSourcesEntry {
+  key: string;
+  value: string;
+}
+
+/** snap-ins-resources-response-keyring-data */
+export interface SnapInsResourcesResponseKeyringData {
+  /** The ID of the keyring. */
+  id: string;
+  /** The secret value of the keyring. This must be handled with caution. */
+  secret: string;
+}
+
+/** snap-ins-resources-response-keyrings-entry */
+export interface SnapInsResourcesResponseKeyringsEntry {
+  key: string;
+  value: SnapInsResourcesResponseKeyringData;
+}
+
+/** snap-widget */
+export interface SnapWidget {
+  type: SnapWidgetType;
+}
+
+export type SnapWidgetType = string;
+
+/** stage-diagram-summary */
+export type StageDiagramSummary = AtomBaseSummary;
 
 /**
  * stage-filter
@@ -4922,10 +5887,10 @@ export interface StageUpdate {
 }
 
 /**
- * stock-field-uenum-override
- * Override for the allowed values of a stock field enum.
+ * stock-field-override
+ * A stock field override.
  */
-export type StockFieldUenumOverride = object;
+export type StockFieldOverride = object;
 
 /** subtype */
 export interface Subtype {
@@ -5093,6 +6058,154 @@ export interface TagWithValueFilter {
   value?: string;
 }
 
+/**
+ * tags-create-request
+ * The request to create a new tag.
+ */
+export interface TagsCreateRequest {
+  /**
+   * The allowed values for the tag, or empty if no values are
+   * permitted.
+   */
+  allowed_values?: string[];
+  /** The description for the tag. */
+  description?: string;
+  /** The name for the tag, which must be unique across all tags. */
+  name: string;
+}
+
+/**
+ * tags-create-response
+ * The response to creating a new tag.
+ */
+export interface TagsCreateResponse {
+  tag: Tag;
+}
+
+/**
+ * tags-delete-request
+ * The request to delete a tag.
+ */
+export interface TagsDeleteRequest {
+  /**
+   * The ID of the tag to delete.
+   * @example "TAG-12345"
+   */
+  id: string;
+}
+
+/**
+ * tags-delete-response
+ * The response for deleting a tag.
+ */
+export type TagsDeleteResponse = object;
+
+/**
+ * tags-get-request
+ * The request to get a tag's information.
+ */
+export interface TagsGetRequest {
+  /**
+   * The requested tag's ID.
+   * @example "TAG-12345"
+   */
+  id: string;
+}
+
+/**
+ * tags-get-response
+ * The response to getting a tag's information.
+ */
+export interface TagsGetResponse {
+  tag: Tag;
+}
+
+/**
+ * tags-list-request
+ * The request to get information about a list of tags.
+ */
+export interface TagsListRequest {
+  /**
+   * The cursor to resume iteration from. If not provided, then
+   * iteration starts from the beginning.
+   */
+  cursor?: string;
+  /**
+   * The maximum number of tags to return. The default is '50'.
+   * @format int32
+   */
+  limit?: number;
+  /**
+   * The iteration mode to use. If "after", then entries after the provided
+   * cursor will be returned, or if no cursor is provided, then from the
+   * beginning. If "before", then entries before the provided cursor will be
+   * returned, or if no cursor is provided, then from the end. Entries will
+   * always be returned in the specified sort-by order.
+   */
+  mode?: ListMode;
+  /** Filters for tags with the provided names. */
+  name?: string[];
+  /** Fields to sort tags by and the direction to sort them. */
+  sort_by?: string[];
+}
+
+/**
+ * tags-list-response
+ * The response to listing the tags.
+ */
+export interface TagsListResponse {
+  /**
+   * The cursor used to iterate subsequent results in accordance to the
+   * sort order. If not set, then no later elements exist.
+   */
+  next_cursor?: string;
+  /**
+   * The cursor used to iterate preceding results in accordance to the
+   * sort order. If not set, then no prior elements exist.
+   */
+  prev_cursor?: string;
+  /** The list of tags. */
+  tags: Tag[];
+}
+
+/**
+ * tags-update-allowed-values
+ * Specifies an update to a tag's allowed values.
+ */
+export interface TagsUpdateAllowedValues {
+  /** Sets the allowed values for the tag. */
+  set?: string[];
+}
+
+/**
+ * tags-update-request
+ * The request to update a tag.
+ */
+export interface TagsUpdateRequest {
+  /** Specifies an update to a tag's allowed values. */
+  allowed_values?: TagsUpdateAllowedValues;
+  /** The updated description of the tag. */
+  description?: string;
+  /**
+   * The ID of the tag to update.
+   * @example "TAG-12345"
+   */
+  id: string;
+  /**
+   * The updated name of the tag. The name must be unique across all
+   * tags.
+   */
+  name?: string;
+}
+
+/**
+ * tags-update-response
+ * The response for updating a tag.
+ */
+export interface TagsUpdateResponse {
+  tag: Tag;
+}
+
 /** task */
 export type Task = WorkBase;
 
@@ -5116,6 +6229,8 @@ export type Ticket = WorkBase & {
   rev_org?: OrgSummary;
   /** Severity of the ticket. */
   severity?: TicketSeverity;
+  /** Source channel of the ticket. */
+  source_channel?: string;
 };
 
 /** Severity of the ticket. */
@@ -5146,11 +6261,14 @@ export type TimelineComment = TimelineEntryBase & {
   body_type?: TimelineCommentBodyType;
   /** Snap Kit Body of the comment. */
   snap_kit_body?: TimelineSnapKitBody;
+  /** The snap widget body of the comment. */
+  snap_widget_body?: SnapWidget[];
 };
 
 /** The type of the body to use for the comment. */
 export enum TimelineCommentBodyType {
   SnapKit = 'snap_kit',
+  SnapWidget = 'snap_widget',
   Text = 'text',
 }
 
@@ -5239,6 +6357,44 @@ export enum TimelineEntriesCreateRequestType {
  * The response to creating a timeline entry for an object.
  */
 export interface TimelineEntriesCreateResponse {
+  timeline_entry: TimelineEntry;
+}
+
+/**
+ * timeline-entries-delete-request
+ * The request to delete a timeline entry from an object.
+ */
+export interface TimelineEntriesDeleteRequest {
+  /**
+   * The ID of the timeline entry to delete.
+   * @example "don:core:<partition>:devo/<dev-org-id>:ticket/123:timeline_event/<timeline-event-id>"
+   */
+  id: string;
+}
+
+/**
+ * timeline-entries-delete-response
+ * The response to deleting a timeline entry from an object.
+ */
+export type TimelineEntriesDeleteResponse = object;
+
+/**
+ * timeline-entries-get-request
+ * The request to get a timeline entry.
+ */
+export interface TimelineEntriesGetRequest {
+  /**
+   * The ID of the timeline entry to get.
+   * @example "don:core:<partition>:devo/<dev-org-id>:ticket/123:timeline_event/<timeline-event-id>"
+   */
+  id: string;
+}
+
+/**
+ * timeline-entries-get-response
+ * The request to getting a timeline entry.
+ */
+export interface TimelineEntriesGetResponse {
   timeline_entry: TimelineEntry;
 }
 
@@ -5408,6 +6564,8 @@ export type TimelineEntryBase = AtomBase & {
   labels?: string[];
   /** The object that the Timeline entry belongs to. */
   object: string;
+  /** The display ID of the object that the Timeline entry belongs to. */
+  object_display_id: string;
   /** The type of object that the Timeline entry belongs to. */
   object_type?: TimelineEntryObjectType;
   /** The reactions to the entry. */
@@ -5505,26 +6663,6 @@ export interface TimelineThread {
    * @format int32
    */
   total_replies?: number;
-}
-
-/** uenum-value */
-export interface UenumValue {
-  /**
-   * The ID of the enum value.
-   * @format int64
-   */
-  id: number;
-  /** Whether the enum value is deprecated. */
-  is_deprecated?: boolean;
-  /** The label of the enum value. */
-  label: string;
-  /**
-   * The ordinal of the enum value.
-   * @format int64
-   */
-  ordinal: number;
-  /** The tooltip of the enum value. */
-  tooltip?: string;
 }
 
 /**
@@ -5905,9 +7043,15 @@ export type Webhook = AtomBase & {
 
 /** webhook-event-request */
 export interface WebhookEventRequest {
+  account_created?: EventAccountCreated;
+  account_deleted?: EventAccountDeleted;
+  account_updated?: EventAccountUpdated;
   conversation_created?: EventConversationCreated;
   conversation_deleted?: EventConversationDeleted;
   conversation_updated?: EventConversationUpdated;
+  dev_user_created?: EventDevUserCreated;
+  dev_user_deleted?: EventDevUserDeleted;
+  dev_user_updated?: EventDevUserUpdated;
   /** The event's ID. */
   id: string;
   part_created?: EventPartCreated;
@@ -5965,6 +7109,15 @@ export interface WebhookEventResponse {
 
 /** The event types that the webhook will receive. */
 export enum WebhookEventType {
+  AccountCreated = 'account_created',
+  AccountDeleted = 'account_deleted',
+  AccountUpdated = 'account_updated',
+  ConversationCreated = 'conversation_created',
+  ConversationDeleted = 'conversation_deleted',
+  ConversationUpdated = 'conversation_updated',
+  DevUserCreated = 'dev_user_created',
+  DevUserDeleted = 'dev_user_deleted',
+  DevUserUpdated = 'dev_user_updated',
   PartCreated = 'part_created',
   PartDeleted = 'part_deleted',
   PartUpdated = 'part_updated',
@@ -6003,6 +7156,152 @@ export enum WebhookStatus {
   Active = 'active',
   Inactive = 'inactive',
   Unverified = 'unverified',
+}
+
+/**
+ * webhooks-create-request
+ * The request to create a new webhook.
+ */
+export interface WebhooksCreateRequest {
+  /** The event types that the webhook endpoint will receive. */
+  event_types?: WebhookEventType[];
+  /**
+   * The secret to use when verifying webhook events. If provided, the
+   * secret must be between 8 and 32 bytes (inclusive). If not set, a
+   * secret will be automatically generated and provided in the
+   * response.
+   * @format byte
+   */
+  secret?: string;
+  /** The URL of the webhook endpoint. */
+  url: string;
+}
+
+/**
+ * webhooks-create-response
+ * The response to creating a new webhook.
+ */
+export interface WebhooksCreateResponse {
+  webhook: Webhook;
+}
+
+/**
+ * webhooks-delete-request
+ * The request to delete a webhook.
+ */
+export interface WebhooksDeleteRequest {
+  /**
+   * ID for the webhook.
+   * @example "don:integration:<partition>:devo/<dev-org-id>:webhook/<webhook-id>"
+   */
+  id: string;
+}
+
+/**
+ * webhooks-delete-response
+ * The response to deleting the webhook.
+ */
+export type WebhooksDeleteResponse = object;
+
+/**
+ * webhooks-get-request
+ * The request to get a webhook's information.
+ */
+export interface WebhooksGetRequest {
+  /**
+   * ID for the webhook.
+   * @example "don:integration:<partition>:devo/<dev-org-id>:webhook/<webhook-id>"
+   */
+  id: string;
+}
+
+/**
+ * webhooks-get-response
+ * The response to getting the information for the webhook.
+ */
+export interface WebhooksGetResponse {
+  webhook: Webhook;
+}
+
+/**
+ * webhooks-list-request
+ * The request to list the webhooks.
+ */
+export type WebhooksListRequest = object;
+
+/**
+ * webhooks-list-response
+ * The response to listing the webhooks.
+ */
+export interface WebhooksListResponse {
+  /** The list of webhooks. */
+  webhooks: Webhook[];
+}
+
+/** The action to update the webhook's status. */
+export enum WebhooksUpdateAction {
+  Activate = 'activate',
+  Deactivate = 'deactivate',
+}
+
+/**
+ * webhooks-update-request
+ * The request to update a webhook.
+ */
+export interface WebhooksUpdateRequest {
+  /** The action to update the webhook's status. */
+  action?: WebhooksUpdateAction;
+  event_types?: WebhooksUpdateRequestEventTypes;
+  /**
+   * ID for the webhook.
+   * @example "don:integration:<partition>:devo/<dev-org-id>:webhook/<webhook-id>"
+   */
+  id: string;
+  /**
+   * If provided, updates the secret that's used when verifying webhook
+   * events, which must be between 8 and 32 bytes (inclusive). Otherwise
+   * if empty, then a new secret is generated. If the webhook is active,
+   * then its status will transition to the 'unverified' state and it
+   * won't receive any object events until successfully verified.
+   * @format byte
+   */
+  secret?: string;
+  /**
+   * The webhook's updated URL. If the webhook is active, then the
+   * webhook's status will transition to the 'unverified' state and it
+   * won't receive any object events until successfully verified.
+   */
+  url?: string;
+}
+
+/** webhooks-update-request-event-types */
+export interface WebhooksUpdateRequestEventTypes {
+  /**
+   * The event types to add. If a provided event type is already set for
+   * the webhook, then nothing is done. Note this is mutually exclusive
+   * with 'set'.
+   */
+  add?: WebhookEventType[];
+  /**
+   * The event types to remove. If a provided event type isn't set for
+   * the webhook, then nothing is done. Note this is mutually exclusive
+   * with 'set'.
+   */
+  remove?: WebhookEventType[];
+  /**
+   * The updated event types, which will replace the webhook's current
+   * event types. Note this is mutually exclusive with 'add' and
+   * 'remove'.
+   */
+  set?: WebhookEventType[];
+}
+
+/**
+ * webhooks-update-response
+ * The response to updating the webhook.
+ */
+export interface WebhooksUpdateResponse {
+  webhook: Webhook;
 }
 
 /**
@@ -6129,6 +7428,11 @@ export interface WorksCreateRequestIssue {
   developed_with?: string[];
   /** Priority of the work based upon impact and criticality. */
   priority?: IssuePriority;
+  /**
+   * Priority enum id of the work based upon impact and criticality.
+   * @format int64
+   */
+  priority_v2?: number;
   /** The sprint that the issue belongs to. */
   sprint?: string;
 }
@@ -6268,8 +7572,15 @@ export interface WorksExportResponse {
 
 /** works-filter-issue */
 export interface WorksFilterIssue {
+  /**
+   * Filters for issues with any of the provided Accounts.
+   * @example ["ACC-12345"]
+   */
+  accounts?: string[];
   /** Filters for issues with any of the provided priorities. */
   priority?: IssuePriority[];
+  /** Filters for issues with any of the provided priority enum ids. */
+  priority_v2?: number[];
   /**
    * Filters for issues with any of the provided Rev organizations.
    * @example ["REV-AbCdEfGh"]
@@ -6436,6 +7747,7 @@ export type WorksUpdateRequest = (
   reported_by?: WorksUpdateRequestReportedBy;
   /** Updates an object's stage. */
   stage?: StageUpdate;
+  staged_info?: WorksUpdateRequestStagedInfoStagedInfoUpdate;
   tags?: WorksUpdateRequestTags;
   /**
    * Updates the timestamp for when the work is expected to be complete.
@@ -6462,6 +7774,11 @@ export interface WorksUpdateRequestIssue {
   developed_with?: WorksUpdateRequestIssueDevelopedWith;
   /** Priority of the work based upon impact and criticality. */
   priority?: IssuePriority;
+  /**
+   * Priority enum id of the work based upon impact and criticality.
+   * @format int64
+   */
+  priority_v2?: number;
   /** Updates the sprint that the issue belongs to. */
   sprint?: string | null;
 }
@@ -6527,6 +7844,12 @@ export interface WorksUpdateRequestReportedBy {
   set?: string[];
 }
 
+/** works-update-request-staged-info-staged-info-update */
+export interface WorksUpdateRequestStagedInfoStagedInfoUpdate {
+  /** Updates the unresolved fields of the staged work. */
+  unresolved_fields: string[];
+}
+
 /** works-update-request-tags */
 export interface WorksUpdateRequestTags {
   /** Sets the provided tags on the work item. */
@@ -6549,8 +7872,8 @@ export interface WorksUpdateRequestTask {
 
 /** works-update-request-ticket */
 export interface WorksUpdateRequestTicket {
-  /** The group that the ticket is associated with. */
-  group?: string;
+  /** Updates the group that the ticket is associated with. */
+  group?: string | null;
   /** Updates whether the ticket is spam. */
   is_spam?: boolean;
   /**
@@ -6740,11 +8063,11 @@ export class HttpClient<SecurityDataType = unknown> {
 }
 
 /**
- * @title DevRev Beta REST API
- * @version BETA
+ * @title DevRev REST API
+ * @version 2022-10-20
  * @baseUrl {protocol}://{hostname}
  *
- * DevRev's BETA REST API Specification.
+ * DevRev's REST API.
  */
 export class Api<
   SecurityDataType extends unknown
@@ -7442,6 +8765,75 @@ export class Api<
     });
 
   /**
+   * @description Gets the download URL for the artifact.
+   *
+   * @tags artifacts
+   * @name ArtifactsLocate
+   * @request GET:/artifacts.locate
+   * @secure
+   */
+  artifactsLocate = (
+    query: {
+      /**
+       * The ID of the artifact to get the URL for.
+       * @example "ARTIFACT-12345"
+       */
+      id: string;
+      /** The version of the artifact that needs to be fetched. */
+      version?: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      ArtifactsLocateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/artifacts.locate`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets the download URL for the artifact.
+   *
+   * @tags artifacts
+   * @name ArtifactsLocatePost
+   * @request POST:/artifacts.locate
+   * @secure
+   */
+  artifactsLocatePost = (
+    data: ArtifactsLocateRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      ArtifactsLocateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/artifacts.locate`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
    * @description Creates an artifact and generates an upload URL for its data.
    *
    * @tags artifacts
@@ -7493,6 +8885,269 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/artifacts.versions.prepare`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Creates a JWT corresponding to the requested token type for the authenticated user.
+   *
+   * @tags auth-tokens
+   * @name AuthTokensCreate
+   * @request POST:/auth-tokens.create
+   * @secure
+   */
+  authTokensCreate = (
+    data: AuthTokensCreateRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      AuthTokensCreateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/auth-tokens.create`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Revokes the token that matches the given token ID issued under the given Dev organization.
+   *
+   * @tags auth-tokens
+   * @name AuthTokensDelete
+   * @request POST:/auth-tokens.delete
+   * @secure
+   */
+  authTokensDelete = (
+    data: AuthTokensDeleteRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      void,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/auth-tokens.delete`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      ...params,
+    });
+
+  /**
+   * @description Gets the token metadata corresponding to the given token ID under the given Dev organization.
+   *
+   * @tags auth-tokens
+   * @name AuthTokensGet
+   * @request GET:/auth-tokens.get
+   * @secure
+   */
+  authTokensGet = (
+    query: {
+      /** The unique identifier of the token under a given Dev organization. */
+      token_id: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      AuthTokensGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/auth-tokens.get`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets the token metadata corresponding to the given token ID under the given Dev organization.
+   *
+   * @tags auth-tokens
+   * @name AuthTokensGetPost
+   * @request POST:/auth-tokens.get
+   * @secure
+   */
+  authTokensGetPost = (
+    data: AuthTokensGetRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      AuthTokensGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/auth-tokens.get`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets the token metadata for all the tokens corresponding to the given token type issued for a given subject.
+   *
+   * @tags auth-tokens
+   * @name AuthTokensList
+   * @request GET:/auth-tokens.list
+   * @secure
+   */
+  authTokensList = (
+    query?: {
+      /**
+       * An identifier that represents the application, which requested the
+       * token. Only relevant for application access tokens.
+       */
+      client_id?: string;
+      /**
+       * The type of the requested token. If no value is specified, the
+       * response will include tokens of all the types.
+       */
+      requested_token_type?: AuthTokenRequestedTokenType;
+      /**
+       * The subject associated with the token. In the absence of this
+       * parameter, the ID of the authenticated entity is treated as the
+       * subject.
+       */
+      subject?: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      AuthTokensListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/auth-tokens.list`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets the token metadata for all the tokens corresponding to the given token type issued for a given subject.
+   *
+   * @tags auth-tokens
+   * @name AuthTokensListPost
+   * @request POST:/auth-tokens.list
+   * @secure
+   */
+  authTokensListPost = (
+    data: AuthTokensListRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      AuthTokensListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/auth-tokens.list`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Revokes all the tokens that matches the given token type created by the authenticated user.
+   *
+   * @tags auth-tokens
+   * @name AuthTokensSelfDelete
+   * @request POST:/auth-tokens.self.delete
+   * @secure
+   */
+  authTokensSelfDelete = (
+    data: AuthTokensSelfDeleteRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      void,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/auth-tokens.self.delete`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      ...params,
+    });
+
+  /**
+   * @description Updates token metadata of a token issued under a given Dev organization.
+   *
+   * @tags auth-tokens
+   * @name AuthTokensUpdate
+   * @request POST:/auth-tokens.update
+   * @secure
+   */
+  authTokensUpdate = (
+    data: AuthTokensUpdateRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      AuthTokensUpdateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/auth-tokens.update`,
       method: 'POST',
       body: data,
       secure: true,
@@ -8116,6 +9771,438 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/conversations.update`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Creates a new enterprise authentication connection for a Dev organization. This authentication connection will not be enabled by default for the organization and the user will need to explicitly enable this. Keep in mind that at a time, only one authentication connection can be enabled for a Dev organization. At present, only 5 enterprise connections can be created by an organization.
+   *
+   * @tags auth-connection, dev-orgs
+   * @name DevOrgAuthConnectionsCreate
+   * @request POST:/dev-orgs.auth-connections.create
+   * @secure
+   */
+  devOrgAuthConnectionsCreate = (
+    data: DevOrgAuthConnectionsCreateRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      DevOrgAuthConnectionsCreateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/dev-orgs.auth-connections.create`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Deletes an authentication connection. Only enterprise connections which are explicitly set up for a Dev organization can be deleted. Default connections can not be deleted using this method.
+   *
+   * @tags auth-connection, dev-orgs
+   * @name DevOrgAuthConnectionsDelete
+   * @request POST:/dev-orgs.auth-connections.delete
+   * @secure
+   */
+  devOrgAuthConnectionsDelete = (
+    data: DevOrgAuthConnectionsDeleteRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      void,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/dev-orgs.auth-connections.delete`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      ...params,
+    });
+
+  /**
+   * @description Retrieves the details for an authentication connection.
+   *
+   * @tags auth-connection, dev-orgs
+   * @name DevOrgAuthConnectionsGet
+   * @request GET:/dev-orgs.auth-connections.get
+   * @secure
+   */
+  devOrgAuthConnectionsGet = (
+    query: {
+      /** ID of the authentication connection. */
+      id: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      DevOrgAuthConnectionsGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/dev-orgs.auth-connections.get`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Retrieves the details for an authentication connection.
+   *
+   * @tags auth-connection, dev-orgs
+   * @name DevOrgAuthConnectionsGetPost
+   * @request POST:/dev-orgs.auth-connections.get
+   * @secure
+   */
+  devOrgAuthConnectionsGetPost = (
+    data: DevOrgAuthConnectionsGetRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      DevOrgAuthConnectionsGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/dev-orgs.auth-connections.get`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Lists all the authentication connections available for a Dev organization. This list will include both social and enterprise connections which are either available by default or are explicitly created by the user.
+   *
+   * @tags auth-connection, dev-orgs
+   * @name DevOrgAuthConnectionsList
+   * @request GET:/dev-orgs.auth-connections.list
+   * @secure
+   */
+  devOrgAuthConnectionsList = (params: RequestParams = {}) =>
+    this.request<
+      DevOrgAuthConnectionsListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/dev-orgs.auth-connections.list`,
+      method: 'GET',
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Lists all the authentication connections available for a Dev organization. This list will include both social and enterprise connections which are either available by default or are explicitly created by the user.
+   *
+   * @tags auth-connection, dev-orgs
+   * @name DevOrgAuthConnectionsListPost
+   * @request POST:/dev-orgs.auth-connections.list
+   * @secure
+   */
+  devOrgAuthConnectionsListPost = (data: Empty, params: RequestParams = {}) =>
+    this.request<
+      DevOrgAuthConnectionsListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/dev-orgs.auth-connections.list`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Enable or disable an authentication connection for a Dev organization. Currently, only 1 authentication connection can be enabled at a time. When a new authentication connection is enabled, the connection which is currently enabled for the Dev organization is automatically disabled.
+   *
+   * @tags auth-connection, dev-orgs
+   * @name DevOrgAuthConnectionsToggle
+   * @request POST:/dev-orgs.auth-connections.toggle
+   * @secure
+   */
+  devOrgAuthConnectionsToggle = (
+    data: DevOrgAuthConnectionsToggleRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      void,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/dev-orgs.auth-connections.toggle`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      ...params,
+    });
+
+  /**
+   * @description Updates an authentication connection.
+   *
+   * @tags auth-connection, dev-orgs
+   * @name DevOrgAuthConnectionsUpdate
+   * @request POST:/dev-orgs.auth-connections.update
+   * @secure
+   */
+  devOrgAuthConnectionsUpdate = (
+    data: DevOrgAuthConnectionsUpdateRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      DevOrgAuthConnectionsUpdateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/dev-orgs.auth-connections.update`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets the requested user's information.
+   *
+   * @tags dev-users
+   * @name DevUsersGet
+   * @request GET:/dev-users.get
+   * @secure
+   */
+  devUsersGet = (
+    query: {
+      /** User ID of the requested Dev user. */
+      id: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      DevUsersGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/dev-users.get`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets the requested user's information.
+   *
+   * @tags dev-users
+   * @name DevUsersGetPost
+   * @request POST:/dev-users.get
+   * @secure
+   */
+  devUsersGetPost = (data: DevUsersGetRequest, params: RequestParams = {}) =>
+    this.request<
+      DevUsersGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/dev-users.get`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Lists users within your organization.
+   *
+   * @tags dev-users
+   * @name DevUsersList
+   * @request GET:/dev-users.list
+   * @secure
+   */
+  devUsersList = (
+    query?: {
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /** Filters Dev users based on email addresses. */
+      email?: string[];
+      /** Unique ID of the user in the external source. */
+      'external_identity.id'?: string;
+      /** Issuer of the external identity of the user. */
+      'external_identity.issuer'?: string;
+      /**
+       * The maximum number of Dev users to return. The default is '50'.
+       * @format int32
+       */
+      limit?: number;
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /** Fields to sort the Dev users by and the direction to sort them. */
+      sort_by?: string[];
+      /** Filters Dev users based on state. */
+      state?: UserState[];
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      DevUsersListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/dev-users.list`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Lists users within your organization.
+   *
+   * @tags dev-users
+   * @name DevUsersListPost
+   * @request POST:/dev-users.list
+   * @secure
+   */
+  devUsersListPost = (data: DevUsersListRequest, params: RequestParams = {}) =>
+    this.request<
+      DevUsersListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/dev-users.list`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets the authenticated user's information.
+   *
+   * @tags dev-users
+   * @name DevUsersSelf
+   * @request GET:/dev-users.self
+   * @secure
+   */
+  devUsersSelf = (params: RequestParams = {}) =>
+    this.request<
+      DevUsersSelfResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/dev-users.self`,
+      method: 'GET',
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets the authenticated user's information.
+   *
+   * @tags dev-users
+   * @name DevUsersSelfPost
+   * @request POST:/dev-users.self
+   * @secure
+   */
+  devUsersSelfPost = (data: DevUsersSelfRequest, params: RequestParams = {}) =>
+    this.request<
+      DevUsersSelfResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/dev-users.self`,
       method: 'POST',
       body: data,
       secure: true,
@@ -9876,6 +11963,34 @@ export class Api<
     });
 
   /**
+   * @description Deletes the Rev organization.
+   *
+   * @tags rev-orgs
+   * @name RevOrgsDelete
+   * @request POST:/rev-orgs.delete
+   * @secure
+   */
+  revOrgsDelete = (data: RevOrgsDeleteRequest, params: RequestParams = {}) =>
+    this.request<
+      RevOrgsDeleteResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/rev-orgs.delete`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
    * @description Retrieves the Rev organization's information.
    *
    * @tags rev-orgs
@@ -10304,7 +12419,7 @@ export class Api<
        * @example "2023-01-01T12:00:00.000Z"
        */
       'modified_date.before'?: string;
-      /** List of phone numbers to filter Rev users on. */
+      /** List of phone numbers, in E.164 format, to filter Rev users on. */
       phone_numbers?: string[];
       /**
        * List of IDs of Rev organizations to be filtered.
@@ -11040,6 +13155,70 @@ export class Api<
     });
 
   /**
+   * @description Gets snap-in resources for a user in a snap-in.
+   *
+   * @tags snap-ins
+   * @name SnapInsResources
+   * @request GET:/snap-ins.resources
+   * @secure
+   */
+  snapInsResources = (
+    query: {
+      /** The ID of the snap-in to get resources for. */
+      id: string;
+      /** The ID of the user to get resources for. */
+      user: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      SnapInsResourcesResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/snap-ins.resources`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets snap-in resources for a user in a snap-in.
+   *
+   * @tags snap-ins
+   * @name SnapInsResourcesPost
+   * @request POST:/snap-ins.resources
+   * @secure
+   */
+  snapInsResourcesPost = (
+    data: SnapInsResourcesRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      SnapInsResourcesResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/snap-ins.resources`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
    * @description Lists system users within your organization.
    *
    * @tags sys-users
@@ -11143,6 +13322,229 @@ export class Api<
     });
 
   /**
+   * @description Creates a new tag, which is used to create associations between objects and a logical concept denoted by the tag's name.
+   *
+   * @tags tags
+   * @name TagsCreate
+   * @request POST:/tags.create
+   * @secure
+   */
+  tagsCreate = (data: TagsCreateRequest, params: RequestParams = {}) =>
+    this.request<
+      TagsCreateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/tags.create`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Deletes a tag.
+   *
+   * @tags tags
+   * @name TagsDelete
+   * @request POST:/tags.delete
+   * @secure
+   */
+  tagsDelete = (data: TagsDeleteRequest, params: RequestParams = {}) =>
+    this.request<
+      TagsDeleteResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/tags.delete`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets a tag's information.
+   *
+   * @tags tags
+   * @name TagsGet
+   * @request GET:/tags.get
+   * @secure
+   */
+  tagsGet = (
+    query: {
+      /**
+       * The requested tag's ID.
+       * @example "TAG-12345"
+       */
+      id: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      TagsGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/tags.get`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets a tag's information.
+   *
+   * @tags tags
+   * @name TagsGetPost
+   * @request POST:/tags.get
+   * @secure
+   */
+  tagsGetPost = (data: TagsGetRequest, params: RequestParams = {}) =>
+    this.request<
+      TagsGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/tags.get`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Lists the available tags.
+   *
+   * @tags tags
+   * @name TagsList
+   * @request GET:/tags.list
+   * @secure
+   */
+  tagsList = (
+    query?: {
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /**
+       * The maximum number of tags to return. The default is '50'.
+       * @format int32
+       */
+      limit?: number;
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /** Filters for tags with the provided names. */
+      name?: string[];
+      /** Fields to sort tags by and the direction to sort them. */
+      sort_by?: string[];
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      TagsListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/tags.list`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Lists the available tags.
+   *
+   * @tags tags
+   * @name TagsListPost
+   * @request POST:/tags.list
+   * @secure
+   */
+  tagsListPost = (data: TagsListRequest, params: RequestParams = {}) =>
+    this.request<
+      TagsListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/tags.list`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Updates a tag's information.
+   *
+   * @tags tags
+   * @name TagsUpdate
+   * @request POST:/tags.update
+   * @secure
+   */
+  tagsUpdate = (data: TagsUpdateRequest, params: RequestParams = {}) =>
+    this.request<
+      TagsUpdateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/tags.update`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
    * @description Creates a new entry on an object's timeline.
    *
    * @tags timeline-entries
@@ -11164,6 +13566,103 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/timeline-entries.create`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Deletes an entry from an object's timeline.
+   *
+   * @tags timeline-entries
+   * @name TimelineEntriesDelete
+   * @request POST:/timeline-entries.delete
+   * @secure
+   */
+  timelineEntriesDelete = (
+    data: TimelineEntriesDeleteRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      TimelineEntriesDeleteResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/timeline-entries.delete`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets an entry on an object's timeline.
+   *
+   * @tags timeline-entries
+   * @name TimelineEntriesGet
+   * @request GET:/timeline-entries.get
+   * @secure
+   */
+  timelineEntriesGet = (
+    query: {
+      /**
+       * The ID of the timeline entry to get.
+       * @example "don:core:<partition>:devo/<dev-org-id>:ticket/123:timeline_event/<timeline-event-id>"
+       */
+      id: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      TimelineEntriesGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/timeline-entries.get`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets an entry on an object's timeline.
+   *
+   * @tags timeline-entries
+   * @name TimelineEntriesGetPost
+   * @request POST:/timeline-entries.get
+   * @secure
+   */
+  timelineEntriesGetPost = (
+    data: TimelineEntriesGetRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      TimelineEntriesGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/timeline-entries.get`,
       method: 'POST',
       body: data,
       secure: true,
@@ -11546,6 +14045,205 @@ export class Api<
     });
 
   /**
+   * @description Creates a new webhook target.
+   *
+   * @tags webhooks
+   * @name WebhooksCreate
+   * @request POST:/webhooks.create
+   * @secure
+   */
+  webhooksCreate = (data: WebhooksCreateRequest, params: RequestParams = {}) =>
+    this.request<
+      WebhooksCreateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/webhooks.create`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Deletes the requested webhook.
+   *
+   * @tags webhooks
+   * @name WebhooksDelete
+   * @request POST:/webhooks.delete
+   * @secure
+   */
+  webhooksDelete = (data: WebhooksDeleteRequest, params: RequestParams = {}) =>
+    this.request<
+      WebhooksDeleteResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/webhooks.delete`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets the requested webhook's information.
+   *
+   * @tags webhooks
+   * @name WebhooksGet
+   * @request GET:/webhooks.get
+   * @secure
+   */
+  webhooksGet = (
+    query: {
+      /**
+       * ID for the webhook.
+       * @example "don:integration:<partition>:devo/<dev-org-id>:webhook/<webhook-id>"
+       */
+      id: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      WebhooksGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/webhooks.get`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets the requested webhook's information.
+   *
+   * @tags webhooks
+   * @name WebhooksGetPost
+   * @request POST:/webhooks.get
+   * @secure
+   */
+  webhooksGetPost = (data: WebhooksGetRequest, params: RequestParams = {}) =>
+    this.request<
+      WebhooksGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/webhooks.get`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Lists the webhooks.
+   *
+   * @tags webhooks
+   * @name WebhooksList
+   * @request GET:/webhooks.list
+   * @secure
+   */
+  webhooksList = (params: RequestParams = {}) =>
+    this.request<
+      WebhooksListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/webhooks.list`,
+      method: 'GET',
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Lists the webhooks.
+   *
+   * @tags webhooks
+   * @name WebhooksListPost
+   * @request POST:/webhooks.list
+   * @secure
+   */
+  webhooksListPost = (data: WebhooksListRequest, params: RequestParams = {}) =>
+    this.request<
+      WebhooksListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/webhooks.list`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Updates the requested webhook.
+   *
+   * @tags webhooks
+   * @name WebhooksUpdate
+   * @request POST:/webhooks.update
+   * @secure
+   */
+  webhooksUpdate = (data: WebhooksUpdateRequest, params: RequestParams = {}) =>
+    this.request<
+      WebhooksUpdateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/webhooks.update`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
    * @description Creates new work ([issue](https://devrev.ai/docs/product/build), [ticket](https://devrev.ai/docs/product/support)) item. [task](https://docs.devrev.ai/product/tasks) and opportunity work types are supported in the beta version.
    *
    * @tags works
@@ -11628,8 +14326,15 @@ export class Api<
        * @format int32
        */
       first?: number;
+      /**
+       * Filters for issues with any of the provided Accounts.
+       * @example ["ACC-12345"]
+       */
+      'issue.accounts'?: string[];
       /** Filters for issues with any of the provided priorities. */
       'issue.priority'?: IssuePriority[];
+      /** Filters for issues with any of the provided priority enum ids. */
+      'issue.priority_v2'?: number[];
       /**
        * Filters for issues with any of the provided Rev organizations.
        * @example ["REV-AbCdEfGh"]
@@ -11814,8 +14519,15 @@ export class Api<
       cursor?: string;
       /** Filters for custom fields. */
       custom_fields?: object;
+      /**
+       * Filters for issues with any of the provided Accounts.
+       * @example ["ACC-12345"]
+       */
+      'issue.accounts'?: string[];
       /** Filters for issues with any of the provided priorities. */
       'issue.priority'?: IssuePriority[];
+      /** Filters for issues with any of the provided priority enum ids. */
+      'issue.priority_v2'?: number[];
       /**
        * Filters for issues with any of the provided Rev organizations.
        * @example ["REV-AbCdEfGh"]

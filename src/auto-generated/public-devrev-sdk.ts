@@ -9,6 +9,23 @@
  * ---------------------------------------------------------------
  */
 
+/** account */
+export type Account = OrgBase & {
+  /** Description of the corresponding Account. */
+  description?: string;
+  /** Company's domain names. Example - 'devrev.ai'. */
+  domains?: string[];
+  /**
+   * External refs are unique identifiers from your customer system of
+   * records, stored as a list.
+   */
+  external_refs: string[];
+  /** List of Dev user IDs owning this Account. */
+  owned_by: UserSummary[];
+  /** The Tier of the corresponding Account. */
+  tier?: string;
+};
+
 /** artifact-summary */
 export type ArtifactSummary = AtomBaseSummary;
 
@@ -254,6 +271,7 @@ export enum AuthTokenRequestedTokenType {
   UrnDevrevParamsOauthTokenTypeAat = 'urn:devrev:params:oauth:token-type:aat',
   UrnDevrevParamsOauthTokenTypeAatPublic = 'urn:devrev:params:oauth:token-type:aat:public',
   UrnDevrevParamsOauthTokenTypeDev = 'urn:devrev:params:oauth:token-type:dev',
+  UrnDevrevParamsOauthTokenTypeGat = 'urn:devrev:params:oauth:token-type:gat',
   UrnDevrevParamsOauthTokenTypePat = 'urn:devrev:params:oauth:token-type:pat',
   UrnDevrevParamsOauthTokenTypePatActAs = 'urn:devrev:params:oauth:token-type:pat:act-as',
   UrnDevrevParamsOauthTokenTypeRat = 'urn:devrev:params:oauth:token-type:rat',
@@ -261,6 +279,7 @@ export enum AuthTokenRequestedTokenType {
   UrnDevrevParamsOauthTokenTypeSession = 'urn:devrev:params:oauth:token-type:session',
   UrnDevrevParamsOauthTokenTypeSessionDev0 = 'urn:devrev:params:oauth:token-type:session:dev0',
   UrnDevrevParamsOauthTokenTypeSessionOnetime = 'urn:devrev:params:oauth:token-type:session:onetime',
+  UrnDevrevParamsOauthTokenTypeSuper = 'urn:devrev:params:oauth:token-type:super',
   UrnDevrevParamsOauthTokenTypeSys = 'urn:devrev:params:oauth:token-type:sys',
   UrnIetfParamsOauthTokenTypeJwt = 'urn:ietf:params:oauth:token-type:jwt',
 }
@@ -308,8 +327,10 @@ export interface AuthTokensCreateRequest {
    */
   client_id?: string;
   /**
-   * The expected validity lifetime of the token in number of days.
-   * @format int64
+   * The expected validity lifetime of the token in number of days. In
+   * practice, the value should be based on the usage of the token.
+   * @min 0
+   * @max 4294967295
    */
   expires_in?: number;
   /** Specifies the process of obtaining a token. */
@@ -436,10 +457,18 @@ export interface AuthTokensListResponse {
  * Carries Rev org info.
  */
 export interface AuthTokensOrgTraits {
+  /** Application-defined custom fields of the Rev org. */
+  custom_fields?: object;
+  /** The description of the Rev org. */
+  description?: string;
   /** The display name of the Rev org. */
   display_name?: string;
   /** The domain of the Rev org. */
   domain?: string;
+  /** Phone numbers of the Rev org. */
+  phone_numbers?: string[];
+  /** The tier of the Rev org. */
+  tier?: string;
 }
 
 /**
@@ -494,13 +523,18 @@ export interface AuthTokensUpdateResponse {
  * Carries Rev user info.
  */
 export interface AuthTokensUserTraits {
-  /** Application-defined custom fields. */
+  /** Application-defined custom fields of the Rev user. */
   custom_fields?: object;
+  /** The description of the Rev user. */
+  description?: string;
   /** The display name of the Rev user. */
   display_name?: string;
   /** The email address of the Rev user. */
   email?: string;
-  /** The full name of the Rev user. */
+  /**
+   * The full name of the Rev user.
+   * @deprecated
+   */
   full_name?: string;
   /** Phone numbers of the Rev user. */
   phone_numbers?: string[];
@@ -511,6 +545,39 @@ export type Capability = PartBase;
 
 /** capability-summary */
 export type CapabilitySummary = PartBaseSummary;
+
+/** conversation */
+export type Conversation = AtomBase & {
+  /** Description of the conversation object. */
+  description?: string;
+  group?: GroupSummary;
+  /** The users in the conversation. */
+  members: UserSummary[];
+  /** The latest messages on the conversation. */
+  messages?: TimelineEntry[];
+  /** Metadata on conversation. */
+  metadata?: ConversationMetadata;
+  /** Owner IDs for the conversation. */
+  owned_by?: UserSummary[];
+  /** Describes the current stage of a work item. */
+  stage?: LegacyStage;
+  /** Tags associated with the object. */
+  tags?: TagWithValue[];
+  /** Title of the conversation object. */
+  title?: string;
+};
+
+/**
+ * conversation-metadata
+ * Metadata on conversation.
+ */
+export interface ConversationMetadata {
+  /**
+   * URL from which the conversation was created if the conversation was
+   * created via PLuG.
+   */
+  url_context?: string;
+}
 
 /**
  * date-filter
@@ -752,6 +819,14 @@ export type DevUser = UserBase & {
   external_identities?: ExternalIdentity[];
 };
 
+/** dev-user-external-identity-filter */
+export interface DevUserExternalIdentityFilter {
+  /** Unique ID of the user in the external source. */
+  id?: string;
+  /** Issuer of the external identity of the user. */
+  issuer?: string;
+}
+
 /** dev-user-summary */
 export type DevUserSummary = UserBaseSummary;
 
@@ -784,6 +859,8 @@ export interface DevUsersListRequest {
   cursor?: string;
   /** Filters Dev users based on email addresses. */
   email?: string[];
+  /** Filters Dev users based on external identity. */
+  external_identity?: DevUserExternalIdentityFilter[];
   /**
    * The maximum number of Dev users to return. The default is '50'.
    * @format int32
@@ -1012,6 +1089,57 @@ export enum ErrorUnauthorizedType {
 
 /** error-unauthorized-unauthenticated */
 export type ErrorUnauthorizedUnauthenticated = object;
+
+/** event-account-created */
+export interface EventAccountCreated {
+  account: Account;
+}
+
+/** event-account-deleted */
+export interface EventAccountDeleted {
+  /**
+   * The ID of the account that was deleted.
+   * @example "ACC-12345"
+   */
+  id: string;
+}
+
+/** event-account-updated */
+export interface EventAccountUpdated {
+  account: Account;
+}
+
+/** event-conversation-created */
+export interface EventConversationCreated {
+  conversation: Conversation;
+}
+
+/** event-conversation-deleted */
+export interface EventConversationDeleted {
+  /** The ID of the conversation that was deleted. */
+  id: string;
+}
+
+/** event-conversation-updated */
+export interface EventConversationUpdated {
+  conversation: Conversation;
+}
+
+/** event-dev-user-created */
+export interface EventDevUserCreated {
+  dev_user: DevUser;
+}
+
+/** event-dev-user-deleted */
+export interface EventDevUserDeleted {
+  /** The ID of the Dev user that was deleted. */
+  id: string;
+}
+
+/** event-dev-user-updated */
+export interface EventDevUserUpdated {
+  dev_user: DevUser;
+}
 
 /** event-part-created */
 export interface EventPartCreated {
@@ -1785,6 +1913,13 @@ export enum SlaSummaryStage {
 /** sla-tracker */
 export type SlaTracker = AtomBase;
 
+/** snap-widget */
+export interface SnapWidget {
+  type: SnapWidgetType;
+}
+
+export type SnapWidgetType = string;
+
 /**
  * stage-filter
  * The filter for stages.
@@ -2013,6 +2148,8 @@ export type Ticket = WorkBase & {
   rev_org?: OrgSummary;
   /** Severity of the ticket. */
   severity?: TicketSeverity;
+  /** Source channel of the ticket. */
+  source_channel?: string;
 };
 
 /** Severity of the ticket. */
@@ -2036,11 +2173,14 @@ export type TimelineComment = TimelineEntryBase & {
   body_type?: TimelineCommentBodyType;
   /** Snap Kit Body of the comment. */
   snap_kit_body?: TimelineSnapKitBody;
+  /** The snap widget body of the comment. */
+  snap_widget_body?: SnapWidget[];
 };
 
 /** The type of the body to use for the comment. */
 export enum TimelineCommentBodyType {
   SnapKit = 'snap_kit',
+  SnapWidget = 'snap_widget',
   Text = 'text',
 }
 
@@ -2274,6 +2414,8 @@ export type TimelineEntry = TimelineComment & {
 export type TimelineEntryBase = AtomBase & {
   /** The object that the Timeline entry belongs to. */
   object: string;
+  /** The display ID of the object that the Timeline entry belongs to. */
+  object_display_id: string;
   /** The type of object that the Timeline entry belongs to. */
   object_type?: TimelineEntryObjectType;
   /**
@@ -2402,6 +2544,15 @@ export type Webhook = AtomBase & {
 
 /** webhook-event-request */
 export interface WebhookEventRequest {
+  account_created?: EventAccountCreated;
+  account_deleted?: EventAccountDeleted;
+  account_updated?: EventAccountUpdated;
+  conversation_created?: EventConversationCreated;
+  conversation_deleted?: EventConversationDeleted;
+  conversation_updated?: EventConversationUpdated;
+  dev_user_created?: EventDevUserCreated;
+  dev_user_deleted?: EventDevUserDeleted;
+  dev_user_updated?: EventDevUserUpdated;
   /** The event's ID. */
   id: string;
   part_created?: EventPartCreated;
@@ -2459,6 +2610,15 @@ export interface WebhookEventResponse {
 
 /** The event types that the webhook will receive. */
 export enum WebhookEventType {
+  AccountCreated = 'account_created',
+  AccountDeleted = 'account_deleted',
+  AccountUpdated = 'account_updated',
+  ConversationCreated = 'conversation_created',
+  ConversationDeleted = 'conversation_deleted',
+  ConversationUpdated = 'conversation_updated',
+  DevUserCreated = 'dev_user_created',
+  DevUserDeleted = 'dev_user_deleted',
+  DevUserUpdated = 'dev_user_updated',
   PartCreated = 'part_created',
   PartDeleted = 'part_deleted',
   PartUpdated = 'part_updated',
@@ -2734,6 +2894,11 @@ export interface WorksCreateRequestIssue {
   developed_with?: string[];
   /** Priority of the work based upon impact and criticality. */
   priority?: IssuePriority;
+  /**
+   * Priority enum id of the work based upon impact and criticality.
+   * @format int64
+   */
+  priority_v2?: number;
   /** The sprint that the issue belongs to. */
   sprint?: string;
 }
@@ -2824,8 +2989,15 @@ export interface WorksExportResponse {
 
 /** works-filter-issue */
 export interface WorksFilterIssue {
+  /**
+   * Filters for issues with any of the provided Accounts.
+   * @example ["ACC-12345"]
+   */
+  accounts?: string[];
   /** Filters for issues with any of the provided priorities. */
   priority?: IssuePriority[];
+  /** Filters for issues with any of the provided priority enum ids. */
+  priority_v2?: number[];
   /**
    * Filters for issues with any of the provided Rev organizations.
    * @example ["REV-AbCdEfGh"]
@@ -2966,6 +3138,7 @@ export type WorksUpdateRequest = (
   reported_by?: WorksUpdateRequestReportedBy;
   /** Updates an object's stage. */
   stage?: StageUpdate;
+  staged_info?: WorksUpdateRequestStagedInfoStagedInfoUpdate;
   tags?: WorksUpdateRequestTags;
   /**
    * Updates the timestamp for when the work is expected to be complete.
@@ -2992,6 +3165,11 @@ export interface WorksUpdateRequestIssue {
   developed_with?: WorksUpdateRequestIssueDevelopedWith;
   /** Priority of the work based upon impact and criticality. */
   priority?: IssuePriority;
+  /**
+   * Priority enum id of the work based upon impact and criticality.
+   * @format int64
+   */
+  priority_v2?: number;
   /** Updates the sprint that the issue belongs to. */
   sprint?: string | null;
 }
@@ -3025,6 +3203,12 @@ export interface WorksUpdateRequestReportedBy {
   set?: string[];
 }
 
+/** works-update-request-staged-info-staged-info-update */
+export interface WorksUpdateRequestStagedInfoStagedInfoUpdate {
+  /** Updates the unresolved fields of the staged work. */
+  unresolved_fields: string[];
+}
+
 /** works-update-request-tags */
 export interface WorksUpdateRequestTags {
   /** Sets the provided tags on the work item. */
@@ -3033,8 +3217,8 @@ export interface WorksUpdateRequestTags {
 
 /** works-update-request-ticket */
 export interface WorksUpdateRequestTicket {
-  /** The group that the ticket is associated with. */
-  group?: string;
+  /** Updates the group that the ticket is associated with. */
+  group?: string | null;
   /** Updates whether the ticket is spam. */
   is_spam?: boolean;
   /**
@@ -3910,6 +4094,10 @@ export class Api<
       cursor?: string;
       /** Filters Dev users based on email addresses. */
       email?: string[];
+      /** Unique ID of the user in the external source. */
+      'external_identity.id'?: string;
+      /** Issuer of the external identity of the user. */
+      'external_identity.issuer'?: string;
       /**
        * The maximum number of Dev users to return. The default is '50'.
        * @format int32
@@ -5280,8 +5468,15 @@ export class Api<
        * @format int32
        */
       first?: number;
+      /**
+       * Filters for issues with any of the provided Accounts.
+       * @example ["ACC-12345"]
+       */
+      'issue.accounts'?: string[];
       /** Filters for issues with any of the provided priorities. */
       'issue.priority'?: IssuePriority[];
+      /** Filters for issues with any of the provided priority enum ids. */
+      'issue.priority_v2'?: number[];
       /**
        * Filters for issues with any of the provided Rev organizations.
        * @example ["REV-AbCdEfGh"]
@@ -5455,8 +5650,15 @@ export class Api<
        * starts from the beginning.
        */
       cursor?: string;
+      /**
+       * Filters for issues with any of the provided Accounts.
+       * @example ["ACC-12345"]
+       */
+      'issue.accounts'?: string[];
       /** Filters for issues with any of the provided priorities. */
       'issue.priority'?: IssuePriority[];
+      /** Filters for issues with any of the provided priority enum ids. */
+      'issue.priority_v2'?: number[];
       /**
        * Filters for issues with any of the provided Rev organizations.
        * @example ["REV-AbCdEfGh"]
