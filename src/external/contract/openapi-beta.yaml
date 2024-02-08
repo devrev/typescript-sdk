@@ -7387,6 +7387,8 @@ components:
           items:
             $ref: '#/components/schemas/sla-summary-stage'
           type: array
+        target_time:
+          $ref: '#/components/schemas/date-filter'
       title: sla-summary-filter
       type: object
     sla-summary-stage:

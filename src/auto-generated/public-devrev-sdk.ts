@@ -1957,6 +1957,8 @@ export interface SetTagWithValue {
 export interface SlaSummaryFilter {
   /** Filters for records with any of the provided SLA stages. */
   stage?: SlaSummaryStage[];
+  /** Provides ways to specify date ranges on objects. */
+  target_time?: DateFilter;
 }
 
 /**
