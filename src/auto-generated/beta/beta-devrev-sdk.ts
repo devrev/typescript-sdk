@@ -6289,7 +6289,7 @@ export type TenantFragment = CustomSchemaFragmentBase;
 /** ticket */
 export type Ticket = WorkBase & {
   /** Channels of the ticket. */
-  channels?: string[];
+  channels?: TicketChannels[];
   group?: GroupSummary;
   rev_org?: OrgSummary;
   /** Severity of the ticket. */
@@ -6297,6 +6297,12 @@ export type Ticket = WorkBase & {
   /** Source channel of the ticket. */
   source_channel?: string;
 };
+
+/** Channels of the ticket. */
+export enum TicketChannels {
+  Email = 'email',
+  Slack = 'slack',
+}
 
 /** Severity of the ticket. */
 export enum TicketSeverity {
@@ -7548,13 +7554,8 @@ export interface WorksCreateRequestTask {
 
 /** works-create-request-ticket */
 export interface WorksCreateRequestTicket {
-  /**
-   * Channels of the ticket.
-   * @minLength 1
-   * @maxLength 64
-   * @maxItems 10
-   */
-  channels?: string[];
+  /** Channels of the ticket. */
+  channels?: TicketChannels[];
   /** The group that the ticket is associated with. */
   group?: string;
   /** Whether the ticket is spam. */
@@ -7674,13 +7675,8 @@ export interface WorksFilterOpportunity {
 
 /** works-filter-ticket */
 export interface WorksFilterTicket {
-  /**
-   * Filters for tickets with any of the provided channels.
-   * @minLength 1
-   * @maxLength 64
-   * @maxItems 10
-   */
-  channels?: string[];
+  /** Filters for tickets with any of the provided channels. */
+  channels?: TicketChannels[];
   /** Filters for tickets belonging to specific groups. */
   group?: string[];
   /** Filters for tickets that are spam. */
@@ -14570,13 +14566,8 @@ export class Api<
        * @example ["TAG-12345"]
        */
       tags?: string[];
-      /**
-       * Filters for tickets with any of the provided channels.
-       * @minLength 1
-       * @maxLength 64
-       * @maxItems 10
-       */
-      'ticket.channels'?: string[];
+      /** Filters for tickets with any of the provided channels. */
+      'ticket.channels'?: TicketChannels[];
       /** Filters for tickets belonging to specific groups. */
       'ticket.group'?: string[];
       /** Filters for tickets that are spam. */
@@ -14780,13 +14771,8 @@ export class Api<
        * @example ["TAG-12345"]
        */
       tags?: string[];
-      /**
-       * Filters for tickets with any of the provided channels.
-       * @minLength 1
-       * @maxLength 64
-       * @maxItems 10
-       */
-      'ticket.channels'?: string[];
+      /** Filters for tickets with any of the provided channels. */
+      'ticket.channels'?: TicketChannels[];
       /** Filters for tickets belonging to specific groups. */
       'ticket.group'?: string[];
       /** Filters for tickets that are spam. */

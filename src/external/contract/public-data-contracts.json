@@ -3930,7 +3930,7 @@
               "channels": {
                 "description": "Channels of the ticket.",
                 "items": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/ticket-channels"
                 },
                 "type": "array"
               },
@@ -3952,6 +3952,14 @@
           }
         ],
         "title": "ticket"
+      },
+      "ticket-channels": {
+        "description": "Channels of the ticket.",
+        "enum": [
+          "email",
+          "slack"
+        ],
+        "type": "string"
       },
       "ticket-severity": {
         "description": "Severity of the ticket.",
@@ -5201,11 +5209,8 @@
           "channels": {
             "description": "Channels of the ticket.",
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/ticket-channels"
             },
-            "maxItems": 10,
-            "maxLength": 64,
-            "minLength": 1,
             "type": "array"
           },
           "group": {
@@ -5406,11 +5411,8 @@
           "channels": {
             "description": "Filters for tickets with any of the provided channels.",
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/ticket-channels"
             },
-            "maxItems": 10,
-            "maxLength": 64,
-            "minLength": 1,
             "type": "array"
           },
           "group": {
@@ -9677,11 +9679,8 @@
             "name": "ticket.channels",
             "schema": {
               "items": {
-                "type": "string"
+                "$ref": "#/components/schemas/ticket-channels"
               },
-              "maxItems": 10,
-              "maxLength": 64,
-              "minLength": 1,
               "type": "array"
             }
           },
@@ -10133,11 +10132,8 @@
             "name": "ticket.channels",
             "schema": {
               "items": {
-                "type": "string"
+                "$ref": "#/components/schemas/ticket-channels"
               },
-              "maxItems": 10,
-              "maxLength": 64,
-              "minLength": 1,
               "type": "array"
             }
           },

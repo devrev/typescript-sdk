@@ -8089,7 +8089,7 @@ components:
           channels:
             description: Channels of the ticket.
             items:
-              type: string
+              $ref: '#/components/schemas/ticket-channels'
             type: array
           group:
             $ref: '#/components/schemas/group-summary'
@@ -8102,6 +8102,12 @@ components:
             type: string
         type: object
       title: ticket
+    ticket-channels:
+      description: Channels of the ticket.
+      enum:
+      - email
+      - slack
+      type: string
     ticket-severity:
       description: Severity of the ticket.
       enum:
@@ -9626,10 +9632,7 @@ components:
         channels:
           description: Channels of the ticket.
           items:
-            type: string
-          maxItems: 10
-          maxLength: 64
-          minLength: 1
+            $ref: '#/components/schemas/ticket-channels'
           type: array
         group:
           description: The group that the ticket is associated with.
@@ -9806,10 +9809,7 @@ components:
         channels:
           description: Filters for tickets with any of the provided channels.
           items:
-            type: string
-          maxItems: 10
-          maxLength: 64
-          minLength: 1
+            $ref: '#/components/schemas/ticket-channels'
           type: array
         group:
           description: Filters for tickets belonging to specific groups.
@@ -17878,10 +17878,7 @@ paths:
         name: ticket.channels
         schema:
           items:
-            type: string
-          maxItems: 10
-          maxLength: 64
-          minLength: 1
+            $ref: '#/components/schemas/ticket-channels'
           type: array
       - description: Filters for tickets belonging to specific groups.
         explode: false
@@ -18224,10 +18221,7 @@ paths:
         name: ticket.channels
         schema:
           items:
-            type: string
-          maxItems: 10
-          maxLength: 64
-          minLength: 1
+            $ref: '#/components/schemas/ticket-channels'
           type: array
       - description: Filters for tickets belonging to specific groups.
         explode: false
