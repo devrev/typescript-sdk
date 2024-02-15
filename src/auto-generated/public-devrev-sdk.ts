@@ -3292,6 +3292,7 @@ export interface WorksUpdateRequestTags {
 
 /** works-update-request-ticket */
 export interface WorksUpdateRequestTicket {
+  channels?: WorksUpdateRequestTicketChannels;
   /** Updates the group that the ticket is associated with. */
   group?: string | null;
   /** Updates whether the ticket is spam. */
@@ -3303,6 +3304,12 @@ export interface WorksUpdateRequestTicket {
   rev_org?: string | null;
   /** Severity of the ticket. */
   severity?: TicketSeverity;
+}
+
+/** works-update-request-ticket-channels */
+export interface WorksUpdateRequestTicketChannels {
+  /** Sets the channels to the provided channels. */
+  set?: TicketChannels[];
 }
 
 /** works-update-response */

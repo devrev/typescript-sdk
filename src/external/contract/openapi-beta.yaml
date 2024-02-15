@@ -10170,6 +10170,8 @@ components:
       type: object
     works-update-request-ticket:
       properties:
+        channels:
+          $ref: '#/components/schemas/works-update-request-ticket-channels'
         group:
           description: Updates the group that the ticket is associated with.
           nullable: true
@@ -10186,6 +10188,15 @@ components:
         severity:
           $ref: '#/components/schemas/ticket-severity'
       title: works-update-request-ticket
+      type: object
+    works-update-request-ticket-channels:
+      properties:
+        set:
+          description: Sets the channels to the provided channels.
+          items:
+            $ref: '#/components/schemas/ticket-channels'
+          type: array
+      title: works-update-request-ticket-channels
       type: object
     works-update-response:
       properties:
