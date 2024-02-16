@@ -6397,8 +6397,6 @@
         "description": "The list of item types on which the metric might be applied.",
         "enum": [
           "conversation",
-          "issue",
-          "task",
           "ticket"
         ],
         "type": "string"

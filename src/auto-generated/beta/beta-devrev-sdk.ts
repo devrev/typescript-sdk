@@ -3674,8 +3674,6 @@ export type MetricDefinition = AtomBase;
 /** The list of item types on which the metric might be applied. */
 export enum MetricDefinitionAppliesTo {
   Conversation = 'conversation',
-  Issue = 'issue',
-  Task = 'task',
   Ticket = 'ticket',
 }
 
