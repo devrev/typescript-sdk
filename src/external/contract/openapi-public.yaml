@@ -1256,20 +1256,24 @@ components:
       - discriminator:
           mapping:
             bad_request: '#/components/schemas/error-bad-request-bad-request'
+            invalid_api_version: '#/components/schemas/error-bad-request-invalid-api-version'
             invalid_enum_value: '#/components/schemas/error-bad-request-invalid-enum-value'
             invalid_field: '#/components/schemas/error-bad-request-invalid-field'
             missing_dependency: '#/components/schemas/error-bad-request-missing-dependency'
             missing_required_field: '#/components/schemas/error-bad-request-missing-required-field'
             parse_error: '#/components/schemas/error-bad-request-parse-error'
+            stale_schema_fragments: '#/components/schemas/error-bad-request-stale-schema-fragments'
             value_not_permitted: '#/components/schemas/error-bad-request-value-not-permitted'
           propertyName: type
         oneOf:
         - $ref: '#/components/schemas/error-bad-request-bad-request'
+        - $ref: '#/components/schemas/error-bad-request-invalid-api-version'
         - $ref: '#/components/schemas/error-bad-request-invalid-enum-value'
         - $ref: '#/components/schemas/error-bad-request-invalid-field'
         - $ref: '#/components/schemas/error-bad-request-missing-dependency'
         - $ref: '#/components/schemas/error-bad-request-missing-required-field'
         - $ref: '#/components/schemas/error-bad-request-parse-error'
+        - $ref: '#/components/schemas/error-bad-request-stale-schema-fragments'
         - $ref: '#/components/schemas/error-bad-request-value-not-permitted'
         properties:
           type:
@@ -1280,6 +1284,15 @@ components:
       title: error-bad-request
     error-bad-request-bad-request:
       title: error-bad-request-bad-request
+      type: object
+    error-bad-request-invalid-api-version:
+      properties:
+        value:
+          description: The provided API version.
+          type: string
+      required:
+      - value
+      title: error-bad-request-invalid-api-version
       type: object
     error-bad-request-invalid-enum-value:
       properties:
@@ -1337,14 +1350,25 @@ components:
     error-bad-request-parse-error:
       title: error-bad-request-parse-error
       type: object
+    error-bad-request-stale-schema-fragments:
+      description: |
+        Error indicating that the request contained one or more stale schema
+        fragments, which are schema fragments that have been replaced by a
+        newer version and are therefore considered deprecated schema fragments.
+        The caller should refresh and use the latest schema fragments in their
+        request.
+      title: error-bad-request-stale-schema-fragments
+      type: object
     error-bad-request-type:
       enum:
       - bad_request
+      - invalid_api_version
       - invalid_enum_value
       - invalid_field
       - missing_dependency
       - missing_required_field
       - parse_error
+      - stale_schema_fragments
       - value_not_permitted
       type: string
     error-bad-request-value-not-permitted:

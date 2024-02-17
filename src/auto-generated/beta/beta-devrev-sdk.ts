@@ -2624,11 +2624,13 @@ export interface Error {
 export type ErrorBadRequest = ErrorBase &
   (
     | ErrorBadRequestBadRequest
+    | ErrorBadRequestInvalidApiVersion
     | ErrorBadRequestInvalidEnumValue
     | ErrorBadRequestInvalidField
     | ErrorBadRequestMissingDependency
     | ErrorBadRequestMissingRequiredField
     | ErrorBadRequestParseError
+    | ErrorBadRequestStaleSchemaFragments
     | ErrorBadRequestValueNotPermitted
   ) & {
     type: ErrorBadRequestType;
@@ -2636,6 +2638,12 @@ export type ErrorBadRequest = ErrorBase &
 
 /** error-bad-request-bad-request */
 export type ErrorBadRequestBadRequest = object;
+
+/** error-bad-request-invalid-api-version */
+export interface ErrorBadRequestInvalidApiVersion {
+  /** The provided API version. */
+  value: string;
+}
 
 /** error-bad-request-invalid-enum-value */
 export interface ErrorBadRequestInvalidEnumValue {
@@ -2674,13 +2682,25 @@ export interface ErrorBadRequestMissingRequiredField {
 /** error-bad-request-parse-error */
 export type ErrorBadRequestParseError = object;
 
+/**
+ * error-bad-request-stale-schema-fragments
+ * Error indicating that the request contained one or more stale schema
+ * fragments, which are schema fragments that have been replaced by a
+ * newer version and are therefore considered deprecated schema fragments.
+ * The caller should refresh and use the latest schema fragments in their
+ * request.
+ */
+export type ErrorBadRequestStaleSchemaFragments = object;
+
 export enum ErrorBadRequestType {
   BadRequest = 'bad_request',
+  InvalidApiVersion = 'invalid_api_version',
   InvalidEnumValue = 'invalid_enum_value',
   InvalidField = 'invalid_field',
   MissingDependency = 'missing_dependency',
   MissingRequiredField = 'missing_required_field',
   ParseError = 'parse_error',
+  StaleSchemaFragments = 'stale_schema_fragments',
   ValueNotPermitted = 'value_not_permitted',
 }
 
