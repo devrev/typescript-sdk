@@ -8843,6 +8843,17 @@
         ],
         "title": "schema-enum-list-field-descriptor"
       },
+      "schema-field-create-view-ui-metadata": {
+        "description": "Create view UI hint overrides.",
+        "properties": {
+          "is_hidden": {
+            "description": "Whether field is hidden in the UI create view.",
+            "type": "boolean"
+          }
+        },
+        "title": "schema-field-create-view-ui-metadata",
+        "type": "object"
+      },
       "schema-field-descriptor": {
         "description": "Set of field attributes.",
         "discriminator": {
@@ -9071,9 +9082,53 @@
         ],
         "type": "string"
       },
+      "schema-field-detail-view-ui-metadata": {
+        "description": "Detail view UI hint overrides.",
+        "properties": {
+          "is_hidden": {
+            "description": "Whether the field is hidden in the UI detail view.",
+            "type": "boolean"
+          }
+        },
+        "title": "schema-field-detail-view-ui-metadata",
+        "type": "object"
+      },
+      "schema-field-filter-view-ui-metadata": {
+        "description": "Filter view UI hint overrides.",
+        "properties": {
+          "is_hidden": {
+            "description": "Whether field is hidden in the UI filter view.",
+            "type": "boolean"
+          }
+        },
+        "title": "schema-field-filter-view-ui-metadata",
+        "type": "object"
+      },
+      "schema-field-list-view-ui-metadata": {
+        "description": "List view UI hint overrides.",
+        "properties": {
+          "is_hidden": {
+            "description": "Whether the field is hidden in the UI list view.",
+            "type": "boolean"
+          }
+        },
+        "title": "schema-field-list-view-ui-metadata",
+        "type": "object"
+      },
       "schema-field-mfz-metadata": {
         "description": "The schema of MFZ specific fields.",
         "title": "schema-field-mfz-metadata",
+        "type": "object"
+      },
+      "schema-field-summary-view-ui-metadata": {
+        "description": "Summary view UI hint overrides.",
+        "properties": {
+          "is_hidden": {
+            "description": "Whether field is hidden in the UI summary view.",
+            "type": "boolean"
+          }
+        },
+        "title": "schema-field-summary-view-ui-metadata",
         "type": "object"
       },
       "schema-field-uenum-value": {
@@ -9083,6 +9138,71 @@
       },
       "schema-field-ui-metadata": {
         "description": "The schema of ui specific fields.",
+        "properties": {
+          "create_view": {
+            "$ref": "#/components/schemas/schema-field-create-view-ui-metadata"
+          },
+          "detail_view": {
+            "$ref": "#/components/schemas/schema-field-detail-view-ui-metadata"
+          },
+          "display_name": {
+            "description": "The display name of the field.",
+            "type": "string"
+          },
+          "filter_view": {
+            "$ref": "#/components/schemas/schema-field-filter-view-ui-metadata"
+          },
+          "group_name": {
+            "description": "An optional group name for the field.",
+            "type": "string"
+          },
+          "is_active_in_detail_view": {
+            "description": "Whether the field is active in the UI detail view.",
+            "type": "boolean"
+          },
+          "is_bulk_action_enabled": {
+            "description": "Whether the field supports bulk action.",
+            "type": "boolean"
+          },
+          "is_groupable": {
+            "description": "Whether the field is groupable in the UI.",
+            "type": "boolean"
+          },
+          "is_hidden": {
+            "description": "Whether the field is hidden in the UI.",
+            "type": "boolean"
+          },
+          "is_hidden_during_create": {
+            "description": "Whether the field is hidden in the UI during creation.",
+            "type": "boolean"
+          },
+          "is_read_only": {
+            "description": "Whether the field is read-only in the UI.",
+            "type": "boolean"
+          },
+          "is_shown_in_summary": {
+            "description": "Whether the field is shown in the UI summary view.",
+            "type": "boolean"
+          },
+          "is_sortable": {
+            "description": "Whether the field is sortable in the UI.",
+            "type": "boolean"
+          },
+          "list_view": {
+            "$ref": "#/components/schemas/schema-field-list-view-ui-metadata"
+          },
+          "placeholder": {
+            "description": "A placeholder for the field.",
+            "type": "string"
+          },
+          "summary_view": {
+            "$ref": "#/components/schemas/schema-field-summary-view-ui-metadata"
+          },
+          "tooltip": {
+            "description": "Tooltip for the field.",
+            "type": "string"
+          }
+        },
         "title": "schema-field-ui-metadata",
         "type": "object"
       },

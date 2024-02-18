@@ -5079,6 +5079,15 @@ export type SchemaEnumListFieldDescriptor = SchemaFieldDescriptorBase & {
 };
 
 /**
+ * schema-field-create-view-ui-metadata
+ * Create view UI hint overrides.
+ */
+export interface SchemaFieldCreateViewUiMetadata {
+  /** Whether field is hidden in the UI create view. */
+  is_hidden?: boolean;
+}
+
+/**
  * schema-field-descriptor
  * Set of field attributes.
  */
@@ -5185,10 +5194,46 @@ export enum SchemaFieldDescriptorFieldType {
 }
 
 /**
+ * schema-field-detail-view-ui-metadata
+ * Detail view UI hint overrides.
+ */
+export interface SchemaFieldDetailViewUiMetadata {
+  /** Whether the field is hidden in the UI detail view. */
+  is_hidden?: boolean;
+}
+
+/**
+ * schema-field-filter-view-ui-metadata
+ * Filter view UI hint overrides.
+ */
+export interface SchemaFieldFilterViewUiMetadata {
+  /** Whether field is hidden in the UI filter view. */
+  is_hidden?: boolean;
+}
+
+/**
+ * schema-field-list-view-ui-metadata
+ * List view UI hint overrides.
+ */
+export interface SchemaFieldListViewUiMetadata {
+  /** Whether the field is hidden in the UI list view. */
+  is_hidden?: boolean;
+}
+
+/**
  * schema-field-mfz-metadata
  * The schema of MFZ specific fields.
  */
 export type SchemaFieldMfzMetadata = object;
+
+/**
+ * schema-field-summary-view-ui-metadata
+ * Summary view UI hint overrides.
+ */
+export interface SchemaFieldSummaryViewUiMetadata {
+  /** Whether field is hidden in the UI summary view. */
+  is_hidden?: boolean;
+}
 
 /**
  * schema-field-uenum-value
@@ -5200,7 +5245,42 @@ export type SchemaFieldUenumValue = object;
  * schema-field-ui-metadata
  * The schema of ui specific fields.
  */
-export type SchemaFieldUiMetadata = object;
+export interface SchemaFieldUiMetadata {
+  /** Create view UI hint overrides. */
+  create_view?: SchemaFieldCreateViewUiMetadata;
+  /** Detail view UI hint overrides. */
+  detail_view?: SchemaFieldDetailViewUiMetadata;
+  /** The display name of the field. */
+  display_name?: string;
+  /** Filter view UI hint overrides. */
+  filter_view?: SchemaFieldFilterViewUiMetadata;
+  /** An optional group name for the field. */
+  group_name?: string;
+  /** Whether the field is active in the UI detail view. */
+  is_active_in_detail_view?: boolean;
+  /** Whether the field supports bulk action. */
+  is_bulk_action_enabled?: boolean;
+  /** Whether the field is groupable in the UI. */
+  is_groupable?: boolean;
+  /** Whether the field is hidden in the UI. */
+  is_hidden?: boolean;
+  /** Whether the field is hidden in the UI during creation. */
+  is_hidden_during_create?: boolean;
+  /** Whether the field is read-only in the UI. */
+  is_read_only?: boolean;
+  /** Whether the field is shown in the UI summary view. */
+  is_shown_in_summary?: boolean;
+  /** Whether the field is sortable in the UI. */
+  is_sortable?: boolean;
+  /** List view UI hint overrides. */
+  list_view?: SchemaFieldListViewUiMetadata;
+  /** A placeholder for the field. */
+  placeholder?: string;
+  /** Summary view UI hint overrides. */
+  summary_view?: SchemaFieldSummaryViewUiMetadata;
+  /** Tooltip for the field. */
+  tooltip?: string;
+}
 
 /** schema-id-field-descriptor */
 export type SchemaIdFieldDescriptor = SchemaFieldDescriptorBase & {
