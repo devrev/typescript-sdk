@@ -458,6 +458,8 @@ export interface ArticlesCountRequest {
    * @example ["DEVU-12345"]
    */
   owned_by?: string[];
+  /** Filter for articles based on intended audience. */
+  shared_with?: SharedWithMembershipFilter[];
 }
 
 /** articles-count-response */
@@ -618,6 +620,8 @@ export interface ArticlesListRequest {
    * @example ["DEVU-12345"]
    */
   owned_by?: string[];
+  /** Filter for articles based on intended audience. */
+  shared_with?: SharedWithMembershipFilter[];
 }
 
 /**
@@ -5692,6 +5696,12 @@ export interface SetWeeklyOrgSchedule {
  * Information about the role the member receives due to the share.
  */
 export type SharedWithMembership = object;
+
+/**
+ * shared-with-membership-filter
+ * Filter on target item based on intended audience.
+ */
+export type SharedWithMembershipFilter = object;
 
 /** sla */
 export type Sla = AtomBase & {

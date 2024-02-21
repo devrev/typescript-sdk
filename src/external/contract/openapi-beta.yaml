@@ -652,6 +652,11 @@ components:
           items:
             type: string
           type: array
+        shared_with:
+          description: Filter for articles based on intended audience.
+          items:
+            $ref: '#/components/schemas/shared-with-membership-filter'
+          type: array
       title: articles-count-request
       type: object
     articles-count-response:
@@ -846,6 +851,11 @@ components:
           - DEVU-12345
           items:
             type: string
+          type: array
+        shared_with:
+          description: Filter for articles based on intended audience.
+          items:
+            $ref: '#/components/schemas/shared-with-membership-filter'
           type: array
       title: articles-list-request
       type: object
@@ -7391,6 +7401,10 @@ components:
       description: |
         Information about the role the member receives due to the share.
       title: shared-with-membership
+      type: object
+    shared-with-membership-filter:
+      description: Filter on target item based on intended audience.
+      title: shared-with-membership-filter
       type: object
     sla:
       allOf:

@@ -867,6 +867,13 @@
               "type": "string"
             },
             "type": "array"
+          },
+          "shared_with": {
+            "description": "Filter for articles based on intended audience.",
+            "items": {
+              "$ref": "#/components/schemas/shared-with-membership-filter"
+            },
+            "type": "array"
           }
         },
         "title": "articles-count-request",
@@ -1125,6 +1132,13 @@
             ],
             "items": {
               "type": "string"
+            },
+            "type": "array"
+          },
+          "shared_with": {
+            "description": "Filter for articles based on intended audience.",
+            "items": {
+              "$ref": "#/components/schemas/shared-with-membership-filter"
             },
             "type": "array"
           }
@@ -9957,6 +9971,11 @@
       "shared-with-membership": {
         "description": "Information about the role the member receives due to the share.\n",
         "title": "shared-with-membership",
+        "type": "object"
+      },
+      "shared-with-membership-filter": {
+        "description": "Filter on target item based on intended audience.",
+        "title": "shared-with-membership-filter",
         "type": "object"
       },
       "sla": {
