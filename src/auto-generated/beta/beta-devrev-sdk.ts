@@ -5131,6 +5131,11 @@ export type SchemaFieldDescriptorArrayType = (
 ) & {
   base_type: SchemaFieldDescriptorArrayTypeBaseType;
   /**
+   * The exact array length.
+   * @format int64
+   */
+  eq_items?: number;
+  /**
    * The maximum array length.
    * @format int64
    */

@@ -6709,6 +6709,10 @@ components:
       properties:
         base_type:
           $ref: '#/components/schemas/schema-field-descriptor-array-type-base-type'
+        eq_items:
+          description: The exact array length.
+          format: int64
+          type: integer
         max_items:
           description: The maximum array length.
           format: int64
