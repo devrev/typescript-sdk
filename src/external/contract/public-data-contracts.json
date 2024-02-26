@@ -5346,6 +5346,16 @@
             },
             "type": "array"
           },
+          "reported_by": {
+            "description": "Filters for work reported by any of these users.",
+            "example": [
+              "DEVU-12345"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
           "stage": {
             "$ref": "#/components/schemas/stage-filter"
           },
@@ -5567,6 +5577,16 @@
           },
           "owned_by": {
             "description": "Filters for work owned by any of these users.",
+            "example": [
+              "DEVU-12345"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "reported_by": {
+            "description": "Filters for work reported by any of these users.",
             "example": [
               "DEVU-12345"
             ],
@@ -9690,6 +9710,21 @@
             }
           },
           {
+            "description": "Filters for work reported by any of these users.",
+            "explode": false,
+            "in": "query",
+            "name": "reported_by",
+            "schema": {
+              "example": [
+                "DEVU-12345"
+              ],
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
             "description": "Filters for records in the provided stage(s) by name.",
             "explode": false,
             "in": "query",
@@ -10132,6 +10167,21 @@
             "explode": false,
             "in": "query",
             "name": "owned_by",
+            "schema": {
+              "example": [
+                "DEVU-12345"
+              ],
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Filters for work reported by any of these users.",
+            "explode": false,
+            "in": "query",
+            "name": "reported_by",
             "schema": {
               "example": [
                 "DEVU-12345"

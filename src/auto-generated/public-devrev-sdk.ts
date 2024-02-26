@@ -3060,6 +3060,11 @@ export interface WorksExportRequest {
    * @example ["DEVU-12345"]
    */
   owned_by?: string[];
+  /**
+   * Filters for work reported by any of these users.
+   * @example ["DEVU-12345"]
+   */
+  reported_by?: string[];
   /** The filter for stages. */
   stage?: StageFilter;
   /**
@@ -3180,6 +3185,11 @@ export interface WorksListRequest {
    * @example ["DEVU-12345"]
    */
   owned_by?: string[];
+  /**
+   * Filters for work reported by any of these users.
+   * @example ["DEVU-12345"]
+   */
+  reported_by?: string[];
   /** The filter for stages. */
   stage?: StageFilter;
   /**
@@ -5719,6 +5729,11 @@ export class Api<
        * @example ["DEVU-12345"]
        */
       owned_by?: string[];
+      /**
+       * Filters for work reported by any of these users.
+       * @example ["DEVU-12345"]
+       */
+      reported_by?: string[];
       /** Filters for records in the provided stage(s) by name. */
       'stage.name'?: string[];
       /**
@@ -5913,6 +5928,11 @@ export class Api<
        * @example ["DEVU-12345"]
        */
       owned_by?: string[];
+      /**
+       * Filters for work reported by any of these users.
+       * @example ["DEVU-12345"]
+       */
+      reported_by?: string[];
       /** Filters for records in the provided stage(s) by name. */
       'stage.name'?: string[];
       /**

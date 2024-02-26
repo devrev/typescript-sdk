@@ -13147,6 +13147,16 @@
             },
             "type": "array"
           },
+          "reported_by": {
+            "description": "Filters for work reported by any of these users.",
+            "example": [
+              "DEVU-12345"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
           "sort_by": {
             "description": "Fields to sort the work items by and the direction to sort them.\n",
             "items": {
@@ -13405,6 +13415,16 @@
           },
           "owned_by": {
             "description": "Filters for work owned by any of these users.",
+            "example": [
+              "DEVU-12345"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "reported_by": {
+            "description": "Filters for work reported by any of these users.",
             "example": [
               "DEVU-12345"
             ],
@@ -25237,6 +25257,21 @@
             }
           },
           {
+            "description": "Filters for work reported by any of these users.",
+            "explode": false,
+            "in": "query",
+            "name": "reported_by",
+            "schema": {
+              "example": [
+                "DEVU-12345"
+              ],
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
             "description": "Fields to sort the work items by and the direction to sort them.\n",
             "explode": false,
             "in": "query",
@@ -25727,6 +25762,21 @@
             "explode": false,
             "in": "query",
             "name": "owned_by",
+            "schema": {
+              "example": [
+                "DEVU-12345"
+              ],
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Filters for work reported by any of these users.",
+            "explode": false,
+            "in": "query",
+            "name": "reported_by",
             "schema": {
               "example": [
                 "DEVU-12345"

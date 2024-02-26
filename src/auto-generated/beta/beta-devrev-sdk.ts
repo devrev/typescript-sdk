@@ -7734,6 +7734,11 @@ export interface WorksExportRequest {
    * @example ["DEVU-12345"]
    */
   owned_by?: string[];
+  /**
+   * Filters for work reported by any of these users.
+   * @example ["DEVU-12345"]
+   */
+  reported_by?: string[];
   /** Fields to sort the work items by and the direction to sort them. */
   sort_by?: string[];
   /** The filter for stages. */
@@ -7871,6 +7876,11 @@ export interface WorksListRequest {
    * @example ["DEVU-12345"]
    */
   owned_by?: string[];
+  /**
+   * Filters for work reported by any of these users.
+   * @example ["DEVU-12345"]
+   */
+  reported_by?: string[];
   /** Fields to sort the works by and the direction to sort them. */
   sort_by?: string[];
   /** The filter for stages. */
@@ -14677,6 +14687,11 @@ export class Api<
        * @example ["DEVU-12345"]
        */
       owned_by?: string[];
+      /**
+       * Filters for work reported by any of these users.
+       * @example ["DEVU-12345"]
+       */
+      reported_by?: string[];
       /** Fields to sort the work items by and the direction to sort them. */
       sort_by?: string[];
       /** Filters for records in the provided stage(s) by name. */
@@ -14882,6 +14897,11 @@ export class Api<
        * @example ["DEVU-12345"]
        */
       owned_by?: string[];
+      /**
+       * Filters for work reported by any of these users.
+       * @example ["DEVU-12345"]
+       */
+      reported_by?: string[];
       /** Fields to sort the works by and the direction to sort them. */
       sort_by?: string[];
       /** Filters for records in the provided stage(s) by name. */
