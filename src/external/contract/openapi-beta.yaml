@@ -580,6 +580,10 @@ components:
             type: string
         type: object
       title: app-fragment
+    app-fragment-summary:
+      allOf:
+      - $ref: '#/components/schemas/custom-schema-fragment-base-summary'
+      title: app-fragment-summary
     article:
       allOf:
       - $ref: '#/components/schemas/atom-base'
@@ -1270,6 +1274,90 @@ components:
       - id
       title: atom-base-summary
       type: object
+    atom-summary:
+      discriminator:
+        mapping:
+          account: '#/components/schemas/account-summary'
+          app_fragment: '#/components/schemas/app-fragment-summary'
+          capability: '#/components/schemas/capability-summary'
+          conversation: '#/components/schemas/conversation-summary'
+          custom_type_fragment: '#/components/schemas/custom-type-fragment-summary'
+          dev_user: '#/components/schemas/dev-user-summary'
+          engagement: '#/components/schemas/engagement-summary'
+          enhancement: '#/components/schemas/enhancement-summary'
+          feature: '#/components/schemas/feature-summary'
+          issue: '#/components/schemas/issue-summary'
+          meeting: '#/components/schemas/meeting-summary'
+          opportunity: '#/components/schemas/opportunity-summary'
+          product: '#/components/schemas/product-summary'
+          rev_org: '#/components/schemas/rev-org-summary'
+          rev_user: '#/components/schemas/rev-user-summary'
+          service_account: '#/components/schemas/service-account-summary'
+          sys_user: '#/components/schemas/sys-user-summary'
+          tag: '#/components/schemas/tag-summary'
+          task: '#/components/schemas/task-summary'
+          tenant_fragment: '#/components/schemas/tenant-fragment-summary'
+          ticket: '#/components/schemas/ticket-summary'
+          timeline_comment: '#/components/schemas/timeline-comment-summary'
+          webhook: '#/components/schemas/webhook-summary'
+        propertyName: type
+      oneOf:
+      - $ref: '#/components/schemas/account-summary'
+      - $ref: '#/components/schemas/app-fragment-summary'
+      - $ref: '#/components/schemas/capability-summary'
+      - $ref: '#/components/schemas/conversation-summary'
+      - $ref: '#/components/schemas/custom-type-fragment-summary'
+      - $ref: '#/components/schemas/dev-user-summary'
+      - $ref: '#/components/schemas/engagement-summary'
+      - $ref: '#/components/schemas/enhancement-summary'
+      - $ref: '#/components/schemas/feature-summary'
+      - $ref: '#/components/schemas/issue-summary'
+      - $ref: '#/components/schemas/meeting-summary'
+      - $ref: '#/components/schemas/opportunity-summary'
+      - $ref: '#/components/schemas/product-summary'
+      - $ref: '#/components/schemas/rev-org-summary'
+      - $ref: '#/components/schemas/rev-user-summary'
+      - $ref: '#/components/schemas/service-account-summary'
+      - $ref: '#/components/schemas/sys-user-summary'
+      - $ref: '#/components/schemas/tag-summary'
+      - $ref: '#/components/schemas/task-summary'
+      - $ref: '#/components/schemas/tenant-fragment-summary'
+      - $ref: '#/components/schemas/ticket-summary'
+      - $ref: '#/components/schemas/timeline-comment-summary'
+      - $ref: '#/components/schemas/webhook-summary'
+      properties:
+        type:
+          $ref: '#/components/schemas/atom-type'
+      required:
+      - type
+      title: atom-summary
+      type: object
+    atom-type:
+      enum:
+      - account
+      - app_fragment
+      - capability
+      - conversation
+      - custom_type_fragment
+      - dev_user
+      - engagement
+      - enhancement
+      - feature
+      - issue
+      - meeting
+      - opportunity
+      - product
+      - rev_org
+      - rev_user
+      - service_account
+      - sys_user
+      - tag
+      - task
+      - tenant_fragment
+      - ticket
+      - timeline_comment
+      - webhook
+      type: string
     auth-connection:
       description: |
         Connection object that specifies the configuration for an
@@ -2493,8 +2581,16 @@ components:
           leaf_type:
             description: Leaf type this fragment applies to.
             type: string
+          new_fragment_ref:
+            $ref: '#/components/schemas/custom-schema-fragment-summary'
+          old_fragment_ref:
+            $ref: '#/components/schemas/custom-schema-fragment-summary'
         type: object
       title: custom-schema-fragment-base
+    custom-schema-fragment-base-summary:
+      allOf:
+      - $ref: '#/components/schemas/atom-base-summary'
+      title: custom-schema-fragment-base-summary
     custom-schema-fragment-condition:
       description: The condition associated with a field.
       title: custom-schema-fragment-condition
@@ -2506,6 +2602,24 @@ components:
       - custom_type
       - tenant
       type: string
+    custom-schema-fragment-summary:
+      discriminator:
+        mapping:
+          app_fragment: '#/components/schemas/app-fragment-summary'
+          custom_type_fragment: '#/components/schemas/custom-type-fragment-summary'
+          tenant_fragment: '#/components/schemas/tenant-fragment-summary'
+        propertyName: type
+      oneOf:
+      - $ref: '#/components/schemas/app-fragment-summary'
+      - $ref: '#/components/schemas/custom-type-fragment-summary'
+      - $ref: '#/components/schemas/tenant-fragment-summary'
+      properties:
+        type:
+          $ref: '#/components/schemas/custom-schema-fragment-type'
+      required:
+      - type
+      title: custom-schema-fragment-summary
+      type: object
     custom-schema-fragment-type:
       enum:
       - app_fragment
@@ -2708,6 +2822,10 @@ components:
             type: string
         type: object
       title: custom-type-fragment
+    custom-type-fragment-summary:
+      allOf:
+      - $ref: '#/components/schemas/custom-schema-fragment-base-summary'
+      title: custom-type-fragment-summary
     custom-type-path-component:
       description: Path component for rendering custom type lists in tree form.
       title: custom-type-path-component
@@ -3122,6 +3240,10 @@ components:
             type: string
         type: object
       title: engagement
+    engagement-summary:
+      allOf:
+      - $ref: '#/components/schemas/atom-base-summary'
+      title: engagement-summary
     engagement-type:
       description: Type of engagement.
       enum:
@@ -4347,6 +4469,11 @@ components:
             The cursor to resume iteration from. If not provided, then
             iteration starts from the beginning.
           type: string
+        group_type:
+          description: Filters the groups based on the group type.
+          items:
+            $ref: '#/components/schemas/group-type'
+          type: array
         limit:
           description: |
             The maximum number of groups to return. The default is '50'.
@@ -4718,6 +4845,10 @@ components:
       - after
       - before
       type: string
+    meeting-summary:
+      allOf:
+      - $ref: '#/components/schemas/atom-base-summary'
+      title: meeting-summary
     member-summary:
       discriminator:
         mapping:
@@ -7830,6 +7961,92 @@ components:
       description: A stock field override.
       title: stock-field-override
       type: object
+    stock-schema-fragment:
+      allOf:
+      - $ref: '#/components/schemas/atom-base'
+      - properties:
+          description:
+            description: Description of the schema.
+            type: string
+          fields:
+            description: List of all fields in this schema.
+            items:
+              $ref: '#/components/schemas/schema-field-descriptor'
+            type: array
+          leaf_type:
+            description: Leaf type this fragment applies to.
+            type: string
+          new_fragment_ref:
+            $ref: '#/components/schemas/atom-summary'
+          old_fragment_ref:
+            $ref: '#/components/schemas/atom-summary'
+          title:
+            description: Title of the schema.
+            type: string
+        required:
+        - fields
+        type: object
+      title: stock-schema-fragment
+    stock-schema-fragments-get-request:
+      properties:
+        id:
+          description: The ID of the stock schema fragment.
+          type: string
+        leaf_type:
+          description: The leaf type this fragment applies to.
+          type: string
+      title: stock-schema-fragments-get-request
+      type: object
+    stock-schema-fragments-get-response:
+      properties:
+        fragment:
+          $ref: '#/components/schemas/stock-schema-fragment'
+      required:
+      - fragment
+      title: stock-schema-fragments-get-response
+      type: object
+      x-go-name: StockSchemaFragmentsGetResponseBody
+    stock-schema-fragments-list-request:
+      properties:
+        cursor:
+          description: |
+            The cursor to resume iteration from, otherwise if not provided,
+            then iteration starts from the beginning.
+          type: string
+        leaf_type:
+          description: The list of leaf types.
+          items:
+            type: string
+          type: array
+        limit:
+          description: The maximum number of items.
+          format: int32
+          type: integer
+        sort_by:
+          description: |
+            The list of fields to sort the items by and how to sort them.
+          items:
+            type: string
+          type: array
+      title: stock-schema-fragments-list-request
+      type: object
+    stock-schema-fragments-list-response:
+      properties:
+        cursor:
+          description: |
+            The cursor to resume iteration from, otherwise if not provided,
+            then iteration starts from the beginning.
+          type: string
+        result:
+          description: The stock schema fragments.
+          items:
+            $ref: '#/components/schemas/stock-schema-fragment'
+          type: array
+      required:
+      - result
+      title: stock-schema-fragments-list-response
+      type: object
+      x-go-name: StockSchemaFragmentsListResponseBody
     subtype:
       properties:
         display_name:
@@ -8209,6 +8426,10 @@ components:
       allOf:
       - $ref: '#/components/schemas/custom-schema-fragment-base'
       title: tenant-fragment
+    tenant-fragment-summary:
+      allOf:
+      - $ref: '#/components/schemas/custom-schema-fragment-base-summary'
+      title: tenant-fragment-summary
     ticket:
       allOf:
       - $ref: '#/components/schemas/work-base'
@@ -8285,6 +8506,10 @@ components:
       - snap_widget
       - text
       type: string
+    timeline-comment-summary:
+      allOf:
+      - $ref: '#/components/schemas/timeline-entry-base-summary'
+      title: timeline-comment-summary
     timeline-entries-collection:
       description: Describes collections of timeline entries.
       enum:
@@ -8655,6 +8880,10 @@ components:
         - object_display_id
         type: object
       title: timeline-entry-base
+    timeline-entry-base-summary:
+      allOf:
+      - $ref: '#/components/schemas/atom-base-summary'
+      title: timeline-entry-base-summary
     timeline-entry-object-type:
       description: The type of object that the Timeline entry belongs to.
       enum:
@@ -9344,6 +9573,10 @@ components:
       - inactive
       - unverified
       type: string
+    webhook-summary:
+      allOf:
+      - $ref: '#/components/schemas/atom-base-summary'
+      title: webhook-summary
     webhooks-create-request:
       description: The request to create a new webhook.
       properties:
@@ -13724,6 +13957,14 @@ paths:
         name: cursor
         schema:
           type: string
+      - description: Filters the groups based on the group type.
+        explode: false
+        in: query
+        name: group_type
+        schema:
+          items:
+            $ref: '#/components/schemas/group-type'
+          type: array
       - description: |
           The maximum number of groups to return. The default is '50'.
         explode: false
@@ -16135,6 +16376,166 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/custom-schema-fragments-set-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - customization
+  /schemas.stock.get:
+    get:
+      description: Gets a stock schema fragment.
+      operationId: stock-schema-fragments-get
+      parameters:
+      - description: The ID of the stock schema fragment.
+        explode: false
+        in: query
+        name: id
+        schema:
+          type: string
+      - description: The leaf type this fragment applies to.
+        explode: false
+        in: query
+        name: leaf_type
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stock-schema-fragments-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - customization
+      x-request-name: StockSchemaFragmentsGetQuery
+    post:
+      description: Gets a stock schema fragment.
+      operationId: stock-schema-fragments-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/stock-schema-fragments-get-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stock-schema-fragments-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - customization
+  /schemas.stock.list:
+    get:
+      description: Lists stock schema fragments.
+      operationId: stock-schema-fragments-list
+      parameters:
+      - description: |
+          The cursor to resume iteration from, otherwise if not provided, then
+          iteration starts from the beginning.
+        explode: false
+        in: query
+        name: cursor
+        schema:
+          type: string
+      - description: The list of leaf types.
+        explode: false
+        in: query
+        name: leaf_type
+        schema:
+          items:
+            type: string
+          type: array
+      - description: The maximum number of items.
+        explode: false
+        in: query
+        name: limit
+        schema:
+          format: int32
+          type: integer
+      - description: |
+          The list of fields to sort the items by and how to sort them.
+        explode: false
+        in: query
+        name: sort_by
+        schema:
+          items:
+            type: string
+          type: array
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stock-schema-fragments-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - customization
+      x-request-name: StockSchemaFragmentsListQuery
+    post:
+      description: Lists stock schema fragments.
+      operationId: stock-schema-fragments-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/stock-schema-fragments-list-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stock-schema-fragments-list-response'
           description: Success.
         "400":
           $ref: '#/components/responses/bad-request'

@@ -411,6 +411,9 @@ export type AppFragment = CustomSchemaFragmentBase & {
   app?: string;
 };
 
+/** app-fragment-summary */
+export type AppFragmentSummary = CustomSchemaFragmentBaseSummary;
+
 /** article */
 export type Article = AtomBase & {
   /** Details of the parts relevant to the article. */
@@ -950,6 +953,61 @@ export interface AtomBaseSummary {
   display_id?: string;
   /** Globally unique object ID. */
   id: string;
+}
+
+/** atom-summary */
+export type AtomSummary = (
+  | AccountSummary
+  | AppFragmentSummary
+  | CapabilitySummary
+  | ConversationSummary
+  | CustomTypeFragmentSummary
+  | DevUserSummary
+  | EngagementSummary
+  | EnhancementSummary
+  | FeatureSummary
+  | IssueSummary
+  | MeetingSummary
+  | OpportunitySummary
+  | ProductSummary
+  | RevOrgSummary
+  | RevUserSummary
+  | ServiceAccountSummary
+  | SysUserSummary
+  | TagSummary
+  | TaskSummary
+  | TenantFragmentSummary
+  | TicketSummary
+  | TimelineCommentSummary
+  | WebhookSummary
+) & {
+  type: AtomType;
+};
+
+export enum AtomType {
+  Account = 'account',
+  AppFragment = 'app_fragment',
+  Capability = 'capability',
+  Conversation = 'conversation',
+  CustomTypeFragment = 'custom_type_fragment',
+  DevUser = 'dev_user',
+  Engagement = 'engagement',
+  Enhancement = 'enhancement',
+  Feature = 'feature',
+  Issue = 'issue',
+  Meeting = 'meeting',
+  Opportunity = 'opportunity',
+  Product = 'product',
+  RevOrg = 'rev_org',
+  RevUser = 'rev_user',
+  ServiceAccount = 'service_account',
+  SysUser = 'sys_user',
+  Tag = 'tag',
+  Task = 'task',
+  TenantFragment = 'tenant_fragment',
+  Ticket = 'ticket',
+  TimelineComment = 'timeline_comment',
+  Webhook = 'webhook',
 }
 
 /**
@@ -1887,7 +1945,12 @@ export type CustomSchemaFragmentBase = AtomBase & {
   fragment_type?: CustomSchemaFragmentFragmentType;
   /** Leaf type this fragment applies to. */
   leaf_type?: string;
+  new_fragment_ref?: CustomSchemaFragmentSummary;
+  old_fragment_ref?: CustomSchemaFragmentSummary;
 };
+
+/** custom-schema-fragment-base-summary */
+export type CustomSchemaFragmentBaseSummary = AtomBaseSummary;
 
 /**
  * custom-schema-fragment-condition
@@ -1901,6 +1964,15 @@ export enum CustomSchemaFragmentFragmentType {
   CustomType = 'custom_type',
   Tenant = 'tenant',
 }
+
+/** custom-schema-fragment-summary */
+export type CustomSchemaFragmentSummary = (
+  | AppFragmentSummary
+  | CustomTypeFragmentSummary
+  | TenantFragmentSummary
+) & {
+  type: CustomSchemaFragmentType;
+};
 
 export enum CustomSchemaFragmentType {
   AppFragment = 'app_fragment',
@@ -2027,6 +2099,9 @@ export type CustomTypeFragment = CustomSchemaFragmentBase & {
    */
   subtype_display_name?: string;
 };
+
+/** custom-type-fragment-summary */
+export type CustomTypeFragmentSummary = CustomSchemaFragmentBaseSummary;
 
 /**
  * custom-type-path-component
@@ -2385,6 +2460,9 @@ export type Engagement = AtomBase & {
   /** Description of the engagement object. */
   description?: string;
 };
+
+/** engagement-summary */
+export type EngagementSummary = AtomBaseSummary;
 
 /** Type of engagement. */
 export enum EngagementType {
@@ -3304,6 +3382,8 @@ export interface GroupsListRequest {
    * iteration starts from the beginning.
    */
   cursor?: string;
+  /** Filters the groups based on the group type. */
+  group_type?: GroupType[];
   /**
    * The maximum number of groups to return. The default is '50'.
    * @format int32
@@ -3630,6 +3710,9 @@ export enum ListMode {
   After = 'after',
   Before = 'before',
 }
+
+/** meeting-summary */
+export type MeetingSummary = AtomBaseSummary;
 
 /** member-summary */
 export type MemberSummary = (
@@ -6068,6 +6151,62 @@ export interface StageUpdate {
  */
 export type StockFieldOverride = object;
 
+/** stock-schema-fragment */
+export type StockSchemaFragment = AtomBase & {
+  /** Description of the schema. */
+  description?: string;
+  /** List of all fields in this schema. */
+  fields: SchemaFieldDescriptor[];
+  /** Leaf type this fragment applies to. */
+  leaf_type?: string;
+  new_fragment_ref?: AtomSummary;
+  old_fragment_ref?: AtomSummary;
+  /** Title of the schema. */
+  title?: string;
+};
+
+/** stock-schema-fragments-get-request */
+export interface StockSchemaFragmentsGetRequest {
+  /** The ID of the stock schema fragment. */
+  id?: string;
+  /** The leaf type this fragment applies to. */
+  leaf_type?: string;
+}
+
+/** stock-schema-fragments-get-response */
+export interface StockSchemaFragmentsGetResponse {
+  fragment: StockSchemaFragment;
+}
+
+/** stock-schema-fragments-list-request */
+export interface StockSchemaFragmentsListRequest {
+  /**
+   * The cursor to resume iteration from, otherwise if not provided,
+   * then iteration starts from the beginning.
+   */
+  cursor?: string;
+  /** The list of leaf types. */
+  leaf_type?: string[];
+  /**
+   * The maximum number of items.
+   * @format int32
+   */
+  limit?: number;
+  /** The list of fields to sort the items by and how to sort them. */
+  sort_by?: string[];
+}
+
+/** stock-schema-fragments-list-response */
+export interface StockSchemaFragmentsListResponse {
+  /**
+   * The cursor to resume iteration from, otherwise if not provided,
+   * then iteration starts from the beginning.
+   */
+  cursor?: string;
+  /** The stock schema fragments. */
+  result: StockSchemaFragment[];
+}
+
 /** subtype */
 export interface Subtype {
   /** Display name of the subtype. */
@@ -6399,6 +6538,9 @@ export type TaskSummary = WorkBaseSummary;
 /** tenant-fragment */
 export type TenantFragment = CustomSchemaFragmentBase;
 
+/** tenant-fragment-summary */
+export type TenantFragmentSummary = CustomSchemaFragmentBaseSummary;
+
 /** ticket */
 export type Ticket = WorkBase & {
   /** Channels of the ticket. */
@@ -6455,6 +6597,9 @@ export enum TimelineCommentBodyType {
   SnapWidget = 'snap_widget',
   Text = 'text',
 }
+
+/** timeline-comment-summary */
+export type TimelineCommentSummary = TimelineEntryBaseSummary;
 
 /** Describes collections of timeline entries. */
 export enum TimelineEntriesCollection {
@@ -6765,6 +6910,9 @@ export type TimelineEntryBase = AtomBase & {
    */
   visibility?: TimelineEntryVisibility;
 };
+
+/** timeline-entry-base-summary */
+export type TimelineEntryBaseSummary = AtomBaseSummary;
 
 /** The type of object that the Timeline entry belongs to. */
 export enum TimelineEntryObjectType {
@@ -7341,6 +7489,9 @@ export enum WebhookStatus {
   Inactive = 'inactive',
   Unverified = 'unverified',
 }
+
+/** webhook-summary */
+export type WebhookSummary = AtomBaseSummary;
 
 /**
  * webhooks-create-request
@@ -11095,6 +11246,8 @@ export class Api<
        * starts from the beginning.
        */
       cursor?: string;
+      /** Filters the groups based on the group type. */
+      group_type?: GroupType[];
       /**
        * The maximum number of groups to return. The default is '50'.
        * @format int32
@@ -13107,6 +13260,146 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/schemas.custom.set`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets a stock schema fragment.
+   *
+   * @tags customization
+   * @name StockSchemaFragmentsGet
+   * @request GET:/schemas.stock.get
+   * @secure
+   */
+  stockSchemaFragmentsGet = (
+    query?: {
+      /** The ID of the stock schema fragment. */
+      id?: string;
+      /** The leaf type this fragment applies to. */
+      leaf_type?: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      StockSchemaFragmentsGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/schemas.stock.get`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets a stock schema fragment.
+   *
+   * @tags customization
+   * @name StockSchemaFragmentsGetPost
+   * @request POST:/schemas.stock.get
+   * @secure
+   */
+  stockSchemaFragmentsGetPost = (
+    data: StockSchemaFragmentsGetRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      StockSchemaFragmentsGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/schemas.stock.get`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Lists stock schema fragments.
+   *
+   * @tags customization
+   * @name StockSchemaFragmentsList
+   * @request GET:/schemas.stock.list
+   * @secure
+   */
+  stockSchemaFragmentsList = (
+    query?: {
+      /**
+       * The cursor to resume iteration from, otherwise if not provided, then
+       * iteration starts from the beginning.
+       */
+      cursor?: string;
+      /** The list of leaf types. */
+      leaf_type?: string[];
+      /**
+       * The maximum number of items.
+       * @format int32
+       */
+      limit?: number;
+      /** The list of fields to sort the items by and how to sort them. */
+      sort_by?: string[];
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      StockSchemaFragmentsListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/schemas.stock.list`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Lists stock schema fragments.
+   *
+   * @tags customization
+   * @name StockSchemaFragmentsListPost
+   * @request POST:/schemas.stock.list
+   * @secure
+   */
+  stockSchemaFragmentsListPost = (
+    data: StockSchemaFragmentsListRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      StockSchemaFragmentsListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/schemas.stock.list`,
       method: 'POST',
       body: data,
       secure: true,
