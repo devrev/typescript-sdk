@@ -3985,6 +3985,7 @@
         "description": "Channels of the ticket.",
         "enum": [
           "email",
+          "plug",
           "slack"
         ],
         "type": "string"

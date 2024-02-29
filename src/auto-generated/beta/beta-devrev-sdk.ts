@@ -6556,6 +6556,7 @@ export type Ticket = WorkBase & {
 /** Channels of the ticket. */
 export enum TicketChannels {
   Email = 'email',
+  Plug = 'plug',
   Slack = 'slack',
 }
 
