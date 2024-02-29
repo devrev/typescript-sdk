@@ -127,6 +127,8 @@ export interface AccountsExportRequest {
   created_date?: DateTimeFilter;
   /** Filters for custom fields. */
   custom_fields?: object;
+  /** Array of display names of accounts to be filtered. */
+  display_name?: string[];
   /** Domains for accounts to be filtered. */
   domains?: string[];
   /** Array of references of accounts to be filtered. */
@@ -165,6 +167,8 @@ export interface AccountsFilters {
   created_date?: DateTimeFilter;
   /** Filters for custom fields. */
   custom_fields?: object;
+  /** Array of display names of accounts to be filtered. */
+  display_name?: string[];
   /** Domains for accounts to be filtered. */
   domains?: string[];
   /** Array of references of accounts to be filtered. */
@@ -213,6 +217,8 @@ export interface AccountsListRequest {
   cursor?: string;
   /** Filters for custom fields. */
   custom_fields?: object;
+  /** Array of display names of accounts to be filtered. */
+  display_name?: string[];
   /** Domains for accounts to be filtered. */
   domains?: string[];
   /** Array of references of accounts to be filtered. */
@@ -8511,6 +8517,8 @@ export class Api<
       'created_date.before'?: string;
       /** Filters for custom fields. */
       custom_fields?: object;
+      /** Array of display names of accounts to be filtered. */
+      display_name?: string[];
       /** Domains for accounts to be filtered. */
       domains?: string[];
       /** Array of references of accounts to be filtered. */
@@ -8689,6 +8697,8 @@ export class Api<
       cursor?: string;
       /** Filters for custom fields. */
       custom_fields?: object;
+      /** Array of display names of accounts to be filtered. */
+      display_name?: string[];
       /** Domains for accounts to be filtered. */
       domains?: string[];
       /** Array of references of accounts to be filtered. */

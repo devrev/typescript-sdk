@@ -308,6 +308,13 @@
             "description": "Filters for custom fields.",
             "type": "object"
           },
+          "display_name": {
+            "description": "Array of display names of accounts to be filtered.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
           "domains": {
             "description": "Domains for accounts to be filtered.",
             "items": {
@@ -397,6 +404,13 @@
           "custom_fields": {
             "description": "Filters for custom fields.",
             "type": "object"
+          },
+          "display_name": {
+            "description": "Array of display names of accounts to be filtered.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
           },
           "domains": {
             "description": "Domains for accounts to be filtered.",
@@ -489,6 +503,13 @@
           "custom_fields": {
             "description": "Filters for custom fields.",
             "type": "object"
+          },
+          "display_name": {
+            "description": "Array of display names of accounts to be filtered.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
           },
           "domains": {
             "description": "Domains for accounts to be filtered.",
@@ -14366,6 +14387,18 @@
             }
           },
           {
+            "description": "Array of display names of accounts to be filtered.",
+            "explode": false,
+            "in": "query",
+            "name": "display_name",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
             "description": "Domains for accounts to be filtered.",
             "explode": false,
             "in": "query",
@@ -14714,6 +14747,18 @@
             "name": "custom_fields",
             "schema": {
               "type": "object"
+            }
+          },
+          {
+            "description": "Array of display names of accounts to be filtered.",
+            "explode": false,
+            "in": "query",
+            "name": "display_name",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
             }
           },
           {
