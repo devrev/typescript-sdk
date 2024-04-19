@@ -11,6 +11,16 @@
         },
         "description": "400 Bad Request."
       },
+      "conflict": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error-conflict"
+            }
+          }
+        },
+        "description": "409 Conflict."
+      },
       "forbidden": {
         "content": {
           "application/json": {
@@ -149,6 +159,10 @@
                 "example": "don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>",
                 "type": "string"
               },
+              "subtype": {
+                "description": "Subtype corresponding to the custom type fragment.",
+                "type": "string"
+              },
               "tags": {
                 "description": "Tags associated with an object.",
                 "items": {
@@ -169,6 +183,25 @@
           }
         ],
         "title": "account"
+      },
+      "account-search-summary": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/search-summary-base"
+          },
+          {
+            "properties": {
+              "account": {
+                "$ref": "#/components/schemas/account-summary"
+              }
+            },
+            "required": [
+              "account"
+            ],
+            "type": "object"
+          }
+        ],
+        "title": "account-search-summary"
       },
       "account-summary": {
         "allOf": [
@@ -211,7 +244,7 @@
             "type": "array"
           },
           "external_refs": {
-            "description": "External refs are unique identifiers from your customer system of\nrecords, stored as a list. Currently the length of this field is\nlimited to 1.\n",
+            "description": "External refs are unique identifiers from your customer system of\nrecords, stored as a list.\n",
             "items": {
               "type": "string"
             },
@@ -244,6 +277,13 @@
           "tier": {
             "description": "The tier of the account.",
             "type": "string"
+          },
+          "websites": {
+            "description": "List of company websites. Example - ['www.devrev.ai',\n'www.marketplace.devrev.ai'].\n",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
           }
         },
         "required": [
@@ -286,6 +326,7 @@
         "type": "object"
       },
       "accounts-delete-response": {
+        "additionalProperties": false,
         "description": "The response to deleting an account.",
         "title": "accounts-delete-response",
         "type": "object",
@@ -620,7 +661,7 @@
             "type": "array"
           },
           "external_refs": {
-            "description": "Updated External Refs of account. Currently the length of this\nfield is limited to 1.\n",
+            "description": "Updated External Refs of account.",
             "items": {
               "type": "string"
             },
@@ -657,6 +698,7 @@
           },
           "tier": {
             "description": "Updated tier of the account.",
+            "nullable": true,
             "type": "string"
           }
         },
@@ -697,6 +739,7 @@
         "x-go-name": "AccountsUpdateResponseBody"
       },
       "aggregated-schema": {
+        "additionalProperties": false,
         "description": "List of custom fields from multiple source fragments.",
         "title": "aggregated-schema",
         "type": "object"
@@ -709,6 +752,10 @@
               "type": "string"
             },
             "type": "array"
+          },
+          "leaf_type": {
+            "description": "The leaf type. Used for inferring the default stage diagram and\ntenant fragment ID.\n",
+            "type": "string"
           },
           "per_object_schema": {
             "description": "Per object schema, if associated with the leaf type.",
@@ -797,6 +844,43 @@
         ],
         "title": "app-fragment-summary"
       },
+      "archetype-metric-target": {
+        "description": "Metric with corresponding target values.",
+        "properties": {
+          "is_out_of_schedule": {
+            "description": "If true, the schedule attached to this metric is out of schedule at\nthe time of the query.\n",
+            "type": "boolean"
+          },
+          "metric_definition": {
+            "$ref": "#/components/schemas/metric-definition-summary"
+          },
+          "org_schedule": {
+            "$ref": "#/components/schemas/org-schedule-summary"
+          },
+          "remaining_time": {
+            "description": "Time in minutes that remains on a paused metric.",
+            "format": "int32",
+            "type": "integer"
+          },
+          "target_time": {
+            "description": "Time at which the metric would breach SLA if no action taken.\n",
+            "example": "2023-01-01T12:00:00.000Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "warning_target_time": {
+            "description": "Time at which the metric would reach the SLA warning limit if no\naction taken.\n",
+            "example": "2023-01-01T12:00:00.000Z",
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "metric_definition"
+        ],
+        "title": "archetype-metric-target",
+        "type": "object"
+      },
       "article": {
         "allOf": [
           {
@@ -822,6 +906,16 @@
                 },
                 "type": "array"
               },
+              "num_downvotes": {
+                "description": "Number of downvotes on the article.",
+                "format": "int32",
+                "type": "integer"
+              },
+              "num_upvotes": {
+                "description": "Number of upvotes on the article.",
+                "format": "int32",
+                "type": "integer"
+              },
               "parent": {
                 "$ref": "#/components/schemas/directory-summary"
               },
@@ -845,6 +939,25 @@
         ],
         "title": "article"
       },
+      "article-search-summary": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/search-summary-base"
+          },
+          {
+            "properties": {
+              "article": {
+                "$ref": "#/components/schemas/article-summary"
+              }
+            },
+            "required": [
+              "article"
+            ],
+            "type": "object"
+          }
+        ],
+        "title": "article-search-summary"
+      },
       "article-status": {
         "description": "Status of the article.",
         "enum": [
@@ -854,6 +967,26 @@
           "review_needed"
         ],
         "type": "string"
+      },
+      "article-summary": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/atom-base-summary"
+          },
+          {
+            "properties": {
+              "resource": {
+                "$ref": "#/components/schemas/resource-summary"
+              },
+              "title": {
+                "description": "Title of the article.",
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        ],
+        "title": "article-summary"
       },
       "articles-count-request": {
         "properties": {
@@ -994,7 +1127,7 @@
           "shared_with": {
             "description": "Information about the role the member receives due to the share.\n",
             "items": {
-              "$ref": "#/components/schemas/shared-with-membership"
+              "$ref": "#/components/schemas/set-shared-with-membership"
             },
             "type": "array"
           },
@@ -1076,6 +1209,7 @@
         "type": "object"
       },
       "articles-delete-response": {
+        "additionalProperties": false,
         "title": "articles-delete-response",
         "type": "object",
         "x-go-name": "ArticlesDeleteResponseBody"
@@ -1378,7 +1512,7 @@
           "set": {
             "description": "Sets the field to the provided membership list.",
             "items": {
-              "$ref": "#/components/schemas/shared-with-membership"
+              "$ref": "#/components/schemas/set-shared-with-membership"
             },
             "type": "array"
           }
@@ -1419,6 +1553,25 @@
           }
         ],
         "title": "artifact"
+      },
+      "artifact-search-summary": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/search-summary-base"
+          },
+          {
+            "properties": {
+              "artifact": {
+                "$ref": "#/components/schemas/artifact-summary"
+              }
+            },
+            "required": [
+              "artifact"
+            ],
+            "type": "object"
+          }
+        ],
+        "title": "artifact-search-summary"
       },
       "artifact-summary": {
         "allOf": [
@@ -1497,9 +1650,6 @@
             "type": "string"
           }
         },
-        "required": [
-          "parent_id"
-        ],
         "title": "artifacts-list-request",
         "type": "object"
       },
@@ -1999,6 +2149,7 @@
         "type": "object"
       },
       "auth-connection-options-social": {
+        "additionalProperties": false,
         "title": "auth-connection-options-social",
         "type": "object"
       },
@@ -2090,8 +2241,10 @@
         "description": "The type of the requested token.",
         "enum": [
           "urn:devrev:params:oauth:token-type:aat",
+          "urn:devrev:params:oauth:token-type:aat:act-as",
           "urn:devrev:params:oauth:token-type:aat:public",
           "urn:devrev:params:oauth:token-type:dev",
+          "urn:devrev:params:oauth:token-type:dev:connect",
           "urn:devrev:params:oauth:token-type:gat",
           "urn:devrev:params:oauth:token-type:pat",
           "urn:devrev:params:oauth:token-type:pat:act-as",
@@ -2109,11 +2262,17 @@
           "urn:devrev:params:oauth:token-type:aat": {
             "name": "urn-devrev-params-oauth-token-type-aat"
           },
+          "urn:devrev:params:oauth:token-type:aat:act-as": {
+            "name": "urn-devrev-params-oauth-token-type-aat-act-as"
+          },
           "urn:devrev:params:oauth:token-type:aat:public": {
             "name": "urn-devrev-params-oauth-token-type-aat-public"
           },
           "urn:devrev:params:oauth:token-type:dev": {
             "name": "urn-devrev-params-oauth-token-type-dev"
+          },
+          "urn:devrev:params:oauth:token-type:dev:connect": {
+            "name": "urn-devrev-params-oauth-token-type-dev-connect"
           },
           "urn:devrev:params:oauth:token-type:gat": {
             "name": "urn-devrev-params-oauth-token-type-gat"
@@ -2214,7 +2373,7 @@
         "description": "A request to create a new token corresponding to the requested token\ntype.\n",
         "properties": {
           "act_as": {
-            "description": "The unique ID of the Dev user to impersonate.",
+            "description": "The unique ID of the Dev user or the service account to\nimpersonate.\n",
             "type": "string"
           },
           "aud": {
@@ -2527,6 +2686,149 @@
         ],
         "title": "capability-summary"
       },
+      "client-context": {
+        "description": "Properties of client to be used in track API.",
+        "properties": {
+          "browser": {
+            "$ref": "#/components/schemas/client-context-browser"
+          },
+          "cpu": {
+            "$ref": "#/components/schemas/client-context-cpu"
+          },
+          "device": {
+            "$ref": "#/components/schemas/client-context-device"
+          },
+          "engine": {
+            "$ref": "#/components/schemas/client-context-engine"
+          },
+          "ip": {
+            "description": "IP address of the client.",
+            "type": "string"
+          },
+          "locale": {
+            "description": "The client's locale, example: en-US.",
+            "type": "string"
+          },
+          "os": {
+            "$ref": "#/components/schemas/client-context-os"
+          },
+          "page": {
+            "$ref": "#/components/schemas/client-context-page"
+          },
+          "timezone": {
+            "description": "The client's timezone, example: Asia/Kolkata.",
+            "type": "string"
+          },
+          "user_agent": {
+            "description": "User agent of the client, example: Mozilla/5.0 (Macintosh; Intel\nMac OS X.\n",
+            "type": "string"
+          }
+        },
+        "title": "client-context",
+        "type": "object"
+      },
+      "client-context-browser": {
+        "description": "Properties of client's browser to be used in track API.",
+        "properties": {
+          "name": {
+            "description": "The browser's name, example: Chrome, Safari.",
+            "type": "string"
+          },
+          "version": {
+            "description": "The browser's version, example: 53.0.2785.143.",
+            "type": "string"
+          }
+        },
+        "title": "client-context-browser",
+        "type": "object"
+      },
+      "client-context-cpu": {
+        "description": "Properties of client's CPU to be used in track API.",
+        "properties": {
+          "architecture": {
+            "description": "CPU architecture, example: amd64.",
+            "type": "string"
+          }
+        },
+        "title": "client-context-cpu",
+        "type": "object"
+      },
+      "client-context-device": {
+        "description": "Properties of client's device to be used in track API.",
+        "properties": {
+          "manufacturer": {
+            "description": "Device manufacturer, example: Apple.",
+            "type": "string"
+          },
+          "model": {
+            "description": "Device model, example: iphone 6s.",
+            "type": "string"
+          },
+          "type": {
+            "description": "Device type, example: mobile, tablet, desktop.",
+            "type": "string"
+          }
+        },
+        "title": "client-context-device",
+        "type": "object"
+      },
+      "client-context-engine": {
+        "description": "Properties of client's engine to be used in track API.",
+        "properties": {
+          "name": {
+            "description": "The engine's name, example: Blink, WebKit.",
+            "type": "string"
+          },
+          "version": {
+            "description": "The engine's version, example: 537.36.",
+            "type": "string"
+          }
+        },
+        "title": "client-context-engine",
+        "type": "object"
+      },
+      "client-context-os": {
+        "description": "Properties of client's OS to be used in track API.",
+        "properties": {
+          "name": {
+            "description": "The OS's name, example : Windows, Mac OS X.",
+            "type": "string"
+          },
+          "version": {
+            "description": "The OS's version, example : 10.11.1.",
+            "type": "string"
+          }
+        },
+        "title": "client-context-os",
+        "type": "object"
+      },
+      "client-context-page": {
+        "description": "Properties of client's page to be used in track API.",
+        "properties": {
+          "domain": {
+            "description": "Page domain, example: devrev.ai",
+            "type": "string"
+          },
+          "path": {
+            "description": "Page path, example: /pricing",
+            "type": "string"
+          },
+          "referrer": {
+            "description": "Page referrer, example: https://devrev.ai",
+            "type": "string"
+          },
+          "title": {
+            "description": "Page title, example: Pricing",
+            "type": "string"
+          },
+          "url": {
+            "description": "Page URL, example: https://devrev.ai/pricing",
+            "type": "string"
+          }
+        },
+        "title": "client-context-page",
+        "type": "object"
+      },
       "code-change": {
         "allOf": [
           {
@@ -2577,6 +2879,7 @@
         "type": "string"
       },
       "code-changes-create-request": {
+        "additionalProperties": false,
         "title": "code-changes-create-request",
         "type": "object"
       },
@@ -2607,6 +2910,7 @@
         "type": "object"
       },
       "code-changes-delete-response": {
+        "additionalProperties": false,
         "title": "code-changes-delete-response",
         "type": "object",
         "x-go-name": "CodeChangesDeleteResponseBody"
@@ -2750,6 +3054,9 @@
                 },
                 "type": "array"
               },
+              "sla_tracker": {
+                "$ref": "#/components/schemas/sla-tracker-summary"
+              },
               "stage": {
                 "$ref": "#/components/schemas/legacy-stage"
               },
@@ -2783,6 +3090,25 @@
         },
         "title": "conversation-metadata",
         "type": "object"
+      },
+      "conversation-search-summary": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/search-summary-base"
+          },
+          {
+            "properties": {
+              "conversation": {
+                "$ref": "#/components/schemas/conversation-summary"
+              }
+            },
+            "required": [
+              "conversation"
+            ],
+            "type": "object"
+          }
+        ],
+        "title": "conversation-search-summary"
       },
       "conversation-summary": {
         "allOf": [
@@ -2935,6 +3261,7 @@
         "type": "object"
       },
       "conversations-delete-response": {
+        "additionalProperties": false,
         "description": "The response for deleting a conversation.",
         "title": "conversations-delete-response",
         "type": "object",
@@ -3327,6 +3654,131 @@
         "type": "object",
         "x-go-name": "ConversationsUpdateResponseBody"
       },
+      "create-email-info": {
+        "description": "Information related to an email.",
+        "properties": {
+          "address": {
+            "description": "The address of the email address.",
+            "type": "string"
+          },
+          "name": {
+            "description": "The name of the email address.",
+            "type": "string"
+          },
+          "user": {
+            "description": "The ID of the user associated with the email address.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "address"
+        ],
+        "title": "create-email-info",
+        "type": "object"
+      },
+      "create-email-inline-attachment": {
+        "description": "An inline attachment.",
+        "properties": {
+          "artifact": {
+            "description": "The artifact of the attachment.",
+            "example": "ARTIFACT-12345",
+            "type": "string"
+          },
+          "content_id": {
+            "description": "The content id of the attachment.",
+            "type": "string"
+          }
+        },
+        "title": "create-email-inline-attachment",
+        "type": "object"
+      },
+      "create-email-preview-widget": {
+        "description": "An email preview widget.",
+        "properties": {
+          "bcc": {
+            "description": "The list of bcc addresses.",
+            "items": {
+              "$ref": "#/components/schemas/create-email-info"
+            },
+            "type": "array"
+          },
+          "cc": {
+            "description": "The list of cc addresses.",
+            "items": {
+              "$ref": "#/components/schemas/create-email-info"
+            },
+            "type": "array"
+          },
+          "from": {
+            "description": "The list of from addresses.",
+            "items": {
+              "$ref": "#/components/schemas/create-email-info"
+            },
+            "type": "array"
+          },
+          "html_body": {
+            "description": "The html body of the email.",
+            "type": "string"
+          },
+          "in_reply_to": {
+            "description": "The in reply to of the email.",
+            "type": "string"
+          },
+          "inlines": {
+            "description": "The list of inline attachments.",
+            "items": {
+              "$ref": "#/components/schemas/create-email-inline-attachment"
+            },
+            "type": "array"
+          },
+          "message_id": {
+            "description": "The message id of the email.",
+            "type": "string"
+          },
+          "raw_email_artifact": {
+            "description": "The raw email artifact.",
+            "example": "ARTIFACT-12345",
+            "type": "string"
+          },
+          "references": {
+            "description": "The list of references in the email.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "reply_to": {
+            "description": "The list of reply to addresses.",
+            "items": {
+              "$ref": "#/components/schemas/create-email-info"
+            },
+            "type": "array"
+          },
+          "sent_timestamp": {
+            "description": "The time the email was sent.",
+            "example": "2023-01-01T12:00:00.000Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "subject": {
+            "description": "The subject of the email.",
+            "type": "string"
+          },
+          "text_body": {
+            "description": "The text body of the email.",
+            "type": "string"
+          },
+          "to": {
+            "description": "The list of to addresses.",
+            "items": {
+              "$ref": "#/components/schemas/create-email-info"
+            },
+            "type": "array"
+          }
+        },
+        "title": "create-email-preview-widget",
+        "type": "object"
+      },
       "create-org-schedule-interval": {
         "properties": {
           "from": {
@@ -3376,6 +3828,15 @@
         ],
         "title": "create-weekly-org-schedule-interval",
         "type": "object"
+      },
+      "curated-vista-summary": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/vista-base-summary"
+          }
+        ],
+        "description": "Static collection of Devrev objects.",
+        "title": "curated-vista-summary"
       },
       "custom-schema-fragment": {
         "discriminator": {
@@ -3465,6 +3926,7 @@
         "title": "custom-schema-fragment-base-summary"
       },
       "custom-schema-fragment-condition": {
+        "additionalProperties": false,
         "description": "The condition associated with a field.",
         "title": "custom-schema-fragment-condition",
         "type": "object"
@@ -3553,7 +4015,7 @@
             "type": "array"
           },
           "cursor": {
-            "description": "The cursor to resume iteration from, otherwise if not provided,\nthen iteration starts from the beginning.\n",
+            "description": "The cursor to resume iteration from. If not provided, then\niteration starts from the beginning.\n",
             "type": "string"
           },
           "deprecated": {
@@ -3571,6 +4033,16 @@
             "description": "The maximum number of items.",
             "format": "int32",
             "type": "integer"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/list-mode"
+          },
+          "prune": {
+            "description": "List of fields which are not required in the payload and can be\npruned away.\n",
+            "items": {
+              "$ref": "#/components/schemas/custom-schema-fragments-list-request-prune"
+            },
+            "type": "array"
           },
           "sort_by": {
             "description": "The list of fields to sort the items by and how to sort them.\n",
@@ -3597,10 +4069,20 @@
         "title": "custom-schema-fragments-list-request",
         "type": "object"
       },
+      "custom-schema-fragments-list-request-prune": {
+        "enum": [
+          "fields"
+        ],
+        "type": "string"
+      },
       "custom-schema-fragments-list-response": {
         "properties": {
-          "cursor": {
-            "description": "The cursor to resume iteration from, otherwise if not provided,\nthen iteration starts from the beginning.\n",
+          "next_cursor": {
+            "description": "The cursor used to iterate subsequent results in accordance to the\nsort order. If not set, then no later elements exist.\n",
+            "type": "string"
+          },
+          "prev_cursor": {
+            "description": "The cursor used to iterate preceding results in accordance to the\nsort order. If not set, then no prior elements exist.\n",
             "type": "string"
           },
           "result": {
@@ -3668,6 +4150,10 @@
             },
             "type": "array"
           },
+          "is_custom_leaf_type": {
+            "description": "Whether the leaf type corresponds to a custom object",
+            "type": "boolean"
+          },
           "leaf_type": {
             "description": "The leaf type this fragment applies to.",
             "type": "string"
@@ -3710,6 +4196,13 @@
             "description": "The ID of the associated custom stage diagram.",
             "type": "string"
           },
+          "stock_field_overrides": {
+            "description": "List of Per-DevOrg stock field overrides.",
+            "items": {
+              "$ref": "#/components/schemas/stock-field-override"
+            },
+            "type": "array"
+          },
           "subtype": {
             "description": "The string used to populate the subtype in the leaf type.\n",
             "type": "string"
@@ -3727,6 +4220,10 @@
       },
       "custom-schema-fragments-set-request-tenant-fragment": {
         "properties": {
+          "id_prefix": {
+            "description": "The display ID prefix for the custom object.",
+            "type": "string"
+          },
           "stock_field_overrides": {
             "description": "List of Per-DevOrg stock field overrides.",
             "items": {
@@ -3759,6 +4256,32 @@
         "title": "custom-schema-fragments-set-response",
         "type": "object",
         "x-go-name": "CustomSchemaFragmentsSetResponseBody"
+      },
+      "custom-schema-spec": {
+        "description": "Requested custom schemas described abstractly. Every provided schema's\ncustom field must be specified, otherwise a bad request error is\nreturned. If a new custom schema specifier is provided, then it will be\nadded to the work, otherwise if a custom schema is omitted from the\nspecifier, it remains unmodified.\n",
+        "properties": {
+          "apps": {
+            "description": "List of apps that are requested.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "subtype": {
+            "description": "Name of the subtype requested.",
+            "type": "string"
+          },
+          "tenant_fragment": {
+            "description": "Whether the tenant schema is requested.",
+            "type": "boolean"
+          },
+          "validate_required_fields": {
+            "description": "Whether to enforce required fields validation.",
+            "type": "boolean"
+          }
+        },
+        "title": "custom-schema-spec",
+        "type": "object"
       },
       "custom-type-fragment": {
         "allOf": [
@@ -3793,9 +4316,37 @@
         "title": "custom-type-fragment-summary"
       },
       "custom-type-path-component": {
+        "additionalProperties": false,
         "description": "Path component for rendering custom type lists in tree form.",
         "title": "custom-type-path-component",
         "type": "object"
+      },
+      "dashboard-search-summary": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/search-summary-base"
+          },
+          {
+            "properties": {
+              "dashboard": {
+                "$ref": "#/components/schemas/dashboard-summary"
+              }
+            },
+            "required": [
+              "dashboard"
+            ],
+            "type": "object"
+          }
+        ],
+        "title": "dashboard-search-summary"
+      },
+      "dashboard-summary": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/atom-base-summary"
+          }
+        ],
+        "title": "dashboard-summary"
       },
       "date-filter": {
         "description": "Provides ways to specify date ranges on objects.",
@@ -4275,6 +4826,7 @@
         "x-go-name": "DevUsersListResponseBody"
       },
       "dev-users-self-request": {
+        "additionalProperties": false,
         "description": "A request to get the authenticated user's information.",
         "title": "dev-users-self-request",
         "type": "object"
@@ -4302,11 +4854,155 @@
         "title": "directory-summary"
       },
       "dynamic-group-info": {
+        "additionalProperties": false,
         "description": "Information to define dynamic groups.",
         "title": "dynamic-group-info",
         "type": "object"
       },
+      "dynamic-vista-summary": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/vista-base-summary"
+          }
+        ],
+        "description": "Dynamic collection of Devrev objects, all adhering to a specific\nfilter.\n",
+        "title": "dynamic-vista-summary"
+      },
+      "email-info": {
+        "properties": {
+          "address": {
+            "description": "The email address.",
+            "type": "string"
+          },
+          "name": {
+            "description": "The email recipient's name.",
+            "type": "string"
+          },
+          "user": {
+            "$ref": "#/components/schemas/user-summary"
+          }
+        },
+        "required": [
+          "address"
+        ],
+        "title": "email-info",
+        "type": "object"
+      },
+      "email-inline-attachment": {
+        "properties": {
+          "artifact": {
+            "$ref": "#/components/schemas/artifact-summary"
+          },
+          "content_id": {
+            "description": "The content id of the attachment.",
+            "type": "string"
+          }
+        },
+        "title": "email-inline-attachment",
+        "type": "object"
+      },
+      "email-preview-widget": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/snap-widget-base"
+          },
+          {
+            "properties": {
+              "bcc": {
+                "description": "The list of bcc addresses.",
+                "items": {
+                  "$ref": "#/components/schemas/email-info"
+                },
+                "type": "array"
+              },
+              "cc": {
+                "description": "The list of cc addresses.",
+                "items": {
+                  "$ref": "#/components/schemas/email-info"
+                },
+                "type": "array"
+              },
+              "from": {
+                "description": "The list of from addresses.",
+                "items": {
+                  "$ref": "#/components/schemas/email-info"
+                },
+                "type": "array"
+              },
+              "html_body": {
+                "description": "The html body of the email.",
+                "type": "string"
+              },
+              "in_reply_to": {
+                "description": "The in-reply-to header of the email.",
+                "type": "string"
+              },
+              "inlines": {
+                "description": "The list of inline attachments.",
+                "items": {
+                  "$ref": "#/components/schemas/email-inline-attachment"
+                },
+                "type": "array"
+              },
+              "message_id": {
+                "description": "The message id of the email.",
+                "type": "string"
+              },
+              "raw_email_artifact": {
+                "$ref": "#/components/schemas/artifact-summary"
+              },
+              "references": {
+                "description": "The references header in the email.",
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "reply_to": {
+                "description": "The list of reply to addresses.",
+                "items": {
+                  "$ref": "#/components/schemas/email-info"
+                },
+                "type": "array"
+              },
+              "sent_timestamp": {
+                "description": "The time the email was sent.",
+                "example": "2023-01-01T12:00:00.000Z",
+                "format": "date-time",
+                "type": "string"
+              },
+              "subject": {
+                "description": "The subject of the email.",
+                "type": "string"
+              },
+              "text_body": {
+                "description": "The text body of the email.",
+                "type": "string"
+              },
+              "to": {
+                "description": "The list of to addresses.",
+                "items": {
+                  "$ref": "#/components/schemas/email-info"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "bcc",
+              "cc",
+              "from",
+              "inlines",
+              "references",
+              "reply_to",
+              "to"
+            ],
+            "type": "object"
+          }
+        ],
+        "title": "email-preview-widget"
+      },
       "empty": {
+        "additionalProperties": false,
         "title": "empty",
         "type": "object"
       },
@@ -4439,6 +5135,7 @@
               "type": "string"
             },
             "maxItems": 50,
+            "minItems": 1,
             "type": "array"
           },
           "parent": {
@@ -4465,7 +5162,9 @@
           }
         },
         "required": [
+          "members",
           "parent",
+          "scheduled_date",
           "title"
         ],
         "title": "engagements-create-request",
@@ -4509,6 +5208,7 @@
         "type": "object"
       },
       "engagements-delete-response": {
+        "additionalProperties": false,
         "title": "engagements-delete-response",
         "type": "object",
         "x-go-name": "EngagementsDeleteResponseBody"
@@ -4782,6 +5482,7 @@
                 "missing_required_field": "#/components/schemas/error-bad-request-missing-required-field",
                 "parse_error": "#/components/schemas/error-bad-request-parse-error",
                 "stale_schema_fragments": "#/components/schemas/error-bad-request-stale-schema-fragments",
+                "unexpected_json_type": "#/components/schemas/error-bad-request-unexpected-json-type",
                 "value_not_permitted": "#/components/schemas/error-bad-request-value-not-permitted"
               },
               "propertyName": "type"
@@ -4812,6 +5513,9 @@
                 "$ref": "#/components/schemas/error-bad-request-stale-schema-fragments"
               },
               {
+                "$ref": "#/components/schemas/error-bad-request-unexpected-json-type"
+              },
+              {
                 "$ref": "#/components/schemas/error-bad-request-value-not-permitted"
               }
             ],
@@ -4829,6 +5533,7 @@
         "title": "error-bad-request"
       },
       "error-bad-request-bad-request": {
+        "additionalProperties": false,
         "title": "error-bad-request-bad-request",
         "type": "object"
       },
@@ -4886,6 +5591,13 @@
       },
       "error-bad-request-missing-dependency": {
         "properties": {
+          "dependencies": {
+            "description": "The dependent fields.",
+            "items": {
+              "$ref": "#/components/schemas/error-bad-request-missing-dependency-dependency"
+            },
+            "type": "array"
+          },
           "dependent_field_name": {
             "description": "The field on which the value depends.",
             "type": "string"
@@ -4906,6 +5618,24 @@
         "title": "error-bad-request-missing-dependency",
         "type": "object"
       },
+      "error-bad-request-missing-dependency-dependency": {
+        "properties": {
+          "field_name": {
+            "description": "The dependent field name.",
+            "type": "string"
+          },
+          "field_value": {
+            "description": "The dependent field value.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "field_name",
+          "field_value"
+        ],
+        "title": "error-bad-request-missing-dependency-dependency",
+        "type": "object"
+      },
       "error-bad-request-missing-required-field": {
         "properties": {
           "field_name": {
@@ -4920,10 +5650,12 @@
         "type": "object"
       },
       "error-bad-request-parse-error": {
+        "additionalProperties": false,
         "title": "error-bad-request-parse-error",
         "type": "object"
       },
       "error-bad-request-stale-schema-fragments": {
+        "additionalProperties": false,
         "description": "Error indicating that the request contained one or more stale schema\nfragments, which are schema fragments that have been replaced by a\nnewer version and are therefore considered deprecated schema fragments.\nThe caller should refresh and use the latest schema fragments in their\nrequest.\n",
         "title": "error-bad-request-stale-schema-fragments",
         "type": "object"
@@ -4938,12 +5670,52 @@
           "missing_required_field",
           "parse_error",
           "stale_schema_fragments",
+          "unexpected_json_type",
           "value_not_permitted"
+        ],
+        "type": "string"
+      },
+      "error-bad-request-unexpected-json-type": {
+        "properties": {
+          "actual": {
+            "$ref": "#/components/schemas/error-bad-request-unexpected-json-type-type"
+          },
+          "expected": {
+            "$ref": "#/components/schemas/error-bad-request-unexpected-json-type-type"
+          },
+          "field_name": {
+            "description": "The field name that's invalid.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "actual",
+          "expected",
+          "field_name"
+        ],
+        "title": "error-bad-request-unexpected-json-type",
+        "type": "object"
+      },
+      "error-bad-request-unexpected-json-type-type": {
+        "enum": [
+          "array",
+          "bool",
+          "null",
+          "number",
+          "object",
+          "string"
         ],
         "type": "string"
       },
       "error-bad-request-value-not-permitted": {
         "properties": {
+          "allowed_values": {
+            "description": "The allowed values for the field.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
           "field_name": {
             "description": "The field whose value is not permitted.",
             "type": "string"
@@ -4972,6 +5744,47 @@
         },
         "title": "error-base",
         "type": "object"
+      },
+      "error-conflict": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/error-base"
+          },
+          {
+            "discriminator": {
+              "mapping": {
+                "conflict": "#/components/schemas/error-conflict-conflict"
+              },
+              "propertyName": "type"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/error-conflict-conflict"
+              }
+            ],
+            "properties": {
+              "type": {
+                "$ref": "#/components/schemas/error-conflict-type"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "type": "object"
+          }
+        ],
+        "title": "error-conflict"
+      },
+      "error-conflict-conflict": {
+        "additionalProperties": false,
+        "title": "error-conflict-conflict",
+        "type": "object"
+      },
+      "error-conflict-type": {
+        "enum": [
+          "conflict"
+        ],
+        "type": "string"
       },
       "error-forbidden": {
         "allOf": [
@@ -5004,6 +5817,7 @@
         "title": "error-forbidden"
       },
       "error-forbidden-forbidden": {
+        "additionalProperties": false,
         "title": "error-forbidden-forbidden",
         "type": "object"
       },
@@ -5048,6 +5862,7 @@
         "title": "error-internal-server-error"
       },
       "error-internal-server-error-internal-error": {
+        "additionalProperties": false,
         "title": "error-internal-server-error-internal-error",
         "type": "object"
       },
@@ -5088,6 +5903,7 @@
         "title": "error-not-found"
       },
       "error-not-found-not-found": {
+        "additionalProperties": false,
         "title": "error-not-found-not-found",
         "type": "object"
       },
@@ -5128,6 +5944,7 @@
         "title": "error-service-unavailable"
       },
       "error-service-unavailable-service-unavailable": {
+        "additionalProperties": false,
         "title": "error-service-unavailable-service-unavailable",
         "type": "object"
       },
@@ -5173,6 +5990,7 @@
         "title": "error-too-many-requests"
       },
       "error-too-many-requests-too-many-requests": {
+        "additionalProperties": false,
         "title": "error-too-many-requests-too-many-requests",
         "type": "object"
       },
@@ -5219,6 +6037,7 @@
         "type": "string"
       },
       "error-unauthorized-unauthenticated": {
+        "additionalProperties": false,
         "title": "error-unauthorized-unauthenticated",
         "type": "object"
       },
@@ -5628,6 +6447,43 @@
         "type": "object",
         "x-go-name": "EventSourcesScheduleEventResponseBody"
       },
+      "event-survey-response-created": {
+        "properties": {
+          "survey_response": {
+            "$ref": "#/components/schemas/survey-response"
+          }
+        },
+        "required": [
+          "survey_response"
+        ],
+        "title": "event-survey-response-created",
+        "type": "object"
+      },
+      "event-survey-response-deleted": {
+        "properties": {
+          "id": {
+            "description": "The ID of the survey response that was deleted.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "event-survey-response-deleted",
+        "type": "object"
+      },
+      "event-survey-response-updated": {
+        "properties": {
+          "survey_response": {
+            "$ref": "#/components/schemas/survey-response"
+          }
+        },
+        "required": [
+          "survey_response"
+        ],
+        "title": "event-survey-response-updated",
+        "type": "object"
+      },
       "event-tag-created": {
         "properties": {
           "tag": {
@@ -5781,6 +6637,7 @@
         "type": "object"
       },
       "external-identity": {
+        "additionalProperties": false,
         "description": "External identity of a user.",
         "title": "external-identity",
         "type": "object"
@@ -5802,6 +6659,7 @@
         "title": "feature-summary"
       },
       "field-descriptor": {
+        "additionalProperties": false,
         "description": "Set of field attributes.",
         "title": "field-descriptor",
         "type": "object"
@@ -5869,6 +6727,7 @@
         "type": "object"
       },
       "group-members-add-response": {
+        "additionalProperties": false,
         "title": "group-members-add-response",
         "type": "object",
         "x-go-name": "GroupMembersAddResponseBody"
@@ -5959,9 +6818,29 @@
         "type": "object"
       },
       "group-members-remove-response": {
+        "additionalProperties": false,
         "title": "group-members-remove-response",
         "type": "object",
         "x-go-name": "GroupMembersRemoveResponseBody"
+      },
+      "group-search-summary": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/search-summary-base"
+          },
+          {
+            "properties": {
+              "group": {
+                "$ref": "#/components/schemas/group-summary"
+              }
+            },
+            "required": [
+              "group"
+            ],
+            "type": "object"
+          }
+        ],
+        "title": "group-search-summary"
       },
       "group-summary": {
         "allOf": [
@@ -5987,6 +6866,32 @@
           "static"
         ],
         "type": "string"
+      },
+      "grouped-vista-flavor": {
+        "description": "Denotes the use case of the grouped vista.",
+        "enum": [
+          "nnl",
+          "sprint_board",
+          "support_inbox"
+        ],
+        "type": "string"
+      },
+      "grouped-vista-summary": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/vista-base-summary"
+          },
+          {
+            "properties": {
+              "flavor": {
+                "$ref": "#/components/schemas/grouped-vista-flavor"
+              }
+            },
+            "type": "object"
+          }
+        ],
+        "description": "Represents a group of multiple vistas as a single unit.",
+        "title": "grouped-vista-summary"
       },
       "groups-create-request": {
         "description": "A request to create a new group.",
@@ -6184,6 +7089,12 @@
               },
               "priority": {
                 "$ref": "#/components/schemas/issue-priority"
+              },
+              "target_start_date": {
+                "description": "Target start date for the object.",
+                "example": "2023-01-01T12:00:00.000Z",
+                "format": "date-time",
+                "type": "string"
               }
             },
             "type": "object"
@@ -6229,6 +7140,20 @@
           "name"
         ],
         "title": "legacy-stage",
+        "type": "object"
+      },
+      "legacy-stage-summary": {
+        "description": "Describes the current stage of a work item.",
+        "properties": {
+          "name": {
+            "description": "Current stage name of the work item.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "legacy-stage-summary",
         "type": "object"
       },
       "lines-of-code": {
@@ -6388,6 +7313,52 @@
         "type": "object",
         "x-go-name": "LinkRevUserToRevOrgResponseBody"
       },
+      "link-search-summary": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/search-summary-base"
+          },
+          {
+            "properties": {
+              "link": {
+                "$ref": "#/components/schemas/link-summary"
+              }
+            },
+            "required": [
+              "link"
+            ],
+            "type": "object"
+          }
+        ],
+        "title": "link-search-summary"
+      },
+      "link-summary": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/atom-base-summary"
+          },
+          {
+            "properties": {
+              "link_type": {
+                "$ref": "#/components/schemas/link-type"
+              },
+              "source": {
+                "$ref": "#/components/schemas/link-endpoint-summary"
+              },
+              "target": {
+                "$ref": "#/components/schemas/link-endpoint-summary"
+              }
+            },
+            "required": [
+              "link_type",
+              "source",
+              "target"
+            ],
+            "type": "object"
+          }
+        ],
+        "title": "link-summary"
+      },
       "link-type": {
         "description": "Type of link used to define the relationship.",
         "enum": [
@@ -6454,6 +7425,7 @@
         "type": "object"
       },
       "links-delete-response": {
+        "additionalProperties": false,
         "description": "The response for deleting a link.",
         "title": "links-delete-response",
         "type": "object",
@@ -6675,6 +7647,15 @@
         "allOf": [
           {
             "$ref": "#/components/schemas/atom-base"
+          },
+          {
+            "properties": {
+              "name": {
+                "description": "Human readable name of the metric.",
+                "type": "string"
+              }
+            },
+            "type": "object"
           }
         ],
         "title": "metric-definition"
@@ -6695,6 +7676,23 @@
         ],
         "type": "string"
       },
+      "metric-definition-summary": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/atom-base-summary"
+          },
+          {
+            "properties": {
+              "name": {
+                "description": "Human readable name of the metric.",
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        ],
+        "title": "metric-definition-summary"
+      },
       "metric-definitions-list-request": {
         "properties": {
           "applies_to_type": {
@@ -6707,6 +7705,10 @@
           "cursor": {
             "description": "The cursor to resume iteration from. If not provided, then\niteration starts from the beginning.\n",
             "type": "string"
+          },
+          "include_custom_metrics": {
+            "description": "Whether to include custom metrics in the response. If not set, then\ncustom metrics are excluded.\n",
+            "type": "boolean"
           },
           "limit": {
             "description": "The maximum number of records to return. The default is '50'.\n",
@@ -6799,6 +7801,33 @@
         ],
         "title": "metrics-data-ingest-request",
         "type": "object"
+      },
+      "object-member-search-summary": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/search-summary-base"
+          },
+          {
+            "properties": {
+              "object_member": {
+                "$ref": "#/components/schemas/object-member-summary"
+              }
+            },
+            "required": [
+              "object_member"
+            ],
+            "type": "object"
+          }
+        ],
+        "title": "object-member-search-summary"
+      },
+      "object-member-summary": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/atom-base-summary"
+          }
+        ],
+        "title": "object-member-summary"
       },
       "opportunity": {
         "allOf": [
@@ -6986,6 +8015,7 @@
         "title": "org-schedule-fragment"
       },
       "org-schedule-fragment-overview": {
+        "additionalProperties": false,
         "description": "The representation of the organization schedule fragment embedded\ninside a organization schedule, used to quickly look up the schedule\nfragment for the right period.\n",
         "title": "org-schedule-fragment-overview",
         "type": "object"
@@ -7111,6 +8141,7 @@
         "x-go-name": "OrgScheduleFragmentsTransitionResponseBody"
       },
       "org-schedule-interval": {
+        "additionalProperties": false,
         "description": "An optionally named period on day granularity.",
         "title": "org-schedule-interval",
         "type": "object"
@@ -7123,6 +8154,39 @@
           "published"
         ],
         "type": "string"
+      },
+      "org-schedule-summary": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/atom-base-summary"
+          },
+          {
+            "properties": {
+              "name": {
+                "description": "Human-readable name.",
+                "type": "string"
+              },
+              "status": {
+                "$ref": "#/components/schemas/org-schedule-status"
+              },
+              "timezone": {
+                "description": "Timezone in which this is defined. Only organization schedules in\nthe same timezone can be directly combined.\n",
+                "type": "string"
+              },
+              "valid_until": {
+                "description": "Derived field indicating when a valid organization schedule will\nbecome invalid. If omitted, the schedule is already invalid. A\nschedule is valid if it has a weekly schedule for all named periods\nfor all its schedule fragments, and if it has a schedule fragment\nfor the time period in question.\n",
+                "example": "2023-01-01T12:00:00.000Z",
+                "format": "date-time",
+                "type": "string"
+              }
+            },
+            "required": [
+              "status"
+            ],
+            "type": "object"
+          }
+        ],
+        "title": "org-schedule-summary"
       },
       "org-schedules-create-request": {
         "properties": {
@@ -7380,6 +8444,25 @@
         "type": "object",
         "x-go-name": "OrgSchedulesUpdateResponseBody"
       },
+      "org-search-summary": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/search-summary-base"
+          },
+          {
+            "properties": {
+              "org": {
+                "$ref": "#/components/schemas/org-summary"
+              }
+            },
+            "required": [
+              "org"
+            ],
+            "type": "object"
+          }
+        ],
+        "title": "org-search-summary"
+      },
       "org-summary": {
         "discriminator": {
           "mapping": {
@@ -7524,6 +8607,10 @@
                 "example": "don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>",
                 "type": "string"
               },
+              "subtype": {
+                "description": "Subtype corresponding to the custom type fragment.",
+                "type": "string"
+              },
               "tags": {
                 "description": "Tags associated with the object.",
                 "items": {
@@ -7560,6 +8647,25 @@
           }
         ],
         "title": "part-base-summary"
+      },
+      "part-search-summary": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/search-summary-base"
+          },
+          {
+            "properties": {
+              "part": {
+                "$ref": "#/components/schemas/part-summary"
+              }
+            },
+            "required": [
+              "part"
+            ],
+            "type": "object"
+          }
+        ],
+        "title": "part-search-summary"
       },
       "part-summary": {
         "discriminator": {
@@ -7757,6 +8863,7 @@
         "type": "object"
       },
       "parts-create-request-product": {
+        "additionalProperties": false,
         "title": "parts-create-request-product",
         "type": "object"
       },
@@ -7788,6 +8895,7 @@
         "type": "object"
       },
       "parts-delete-response": {
+        "additionalProperties": false,
         "title": "parts-delete-response",
         "type": "object",
         "x-go-name": "PartsDeleteResponseBody"
@@ -7988,6 +9096,7 @@
         "type": "object"
       },
       "parts-update-request-capability": {
+        "additionalProperties": false,
         "title": "parts-update-request-capability",
         "type": "object"
       },
@@ -8010,6 +9119,7 @@
         "type": "object"
       },
       "parts-update-request-feature": {
+        "additionalProperties": false,
         "title": "parts-update-request-feature",
         "type": "object"
       },
@@ -8030,6 +9140,7 @@
         "type": "object"
       },
       "parts-update-request-product": {
+        "additionalProperties": false,
         "title": "parts-update-request-product",
         "type": "object"
       },
@@ -8062,6 +9173,505 @@
         ],
         "title": "product-summary"
       },
+      "question-answer": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/atom-base"
+          },
+          {
+            "properties": {
+              "answer": {
+                "description": "The Answer.",
+                "type": "string"
+              },
+              "question": {
+                "description": "The Question.",
+                "type": "string"
+              },
+              "suggested_answer": {
+                "description": "An alternative answer suggested by the Q/A generation algorithm.\n",
+                "type": "string"
+              },
+              "suggested_for_deletion": {
+                "description": "Whether the Q/A was marked for deletion by the Q/A generation\nalgorithm.\n",
+                "type": "boolean"
+              },
+              "topic": {
+                "description": "The topic to which the QA belongs.",
+                "type": "string"
+              },
+              "verified": {
+                "description": "Whether the Q/A was verified.",
+                "type": "boolean"
+              }
+            },
+            "type": "object"
+          }
+        ],
+        "title": "question-answer"
+      },
+      "question-answer-search-summary": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/search-summary-base"
+          },
+          {
+            "properties": {
+              "question_answer": {
+                "$ref": "#/components/schemas/question-answer-summary"
+              }
+            },
+            "required": [
+              "question_answer"
+            ],
+            "type": "object"
+          }
+        ],
+        "title": "question-answer-search-summary"
+      },
+      "question-answer-status": {
+        "description": "Status of the question answer.",
+        "enum": [
+          "archived",
+          "draft",
+          "published",
+          "review_needed"
+        ],
+        "type": "string"
+      },
+      "question-answer-summary": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/atom-base-summary"
+          },
+          {
+            "properties": {
+              "question": {
+                "description": "The Question.",
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        ],
+        "title": "question-answer-summary"
+      },
+      "question-answers-create-request": {
+        "description": "The request to create a question-answer.",
+        "properties": {
+          "access_level": {
+            "$ref": "#/components/schemas/access-level"
+          },
+          "answer": {
+            "description": "Answer of the question-answer.",
+            "type": "string"
+          },
+          "applies_to_articles": {
+            "description": "The articles that the question-answer applies to.",
+            "example": [
+              "ARTICLE-12345"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "applies_to_parts": {
+            "description": "The parts that the question-answer applies to.",
+            "example": [
+              "PROD-12345"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "type": "array"
+          },
+          "owned_by": {
+            "description": "The users that own the question-answer.",
+            "example": [
+              "DEVU-12345"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "question": {
+            "description": "Question of the question-answer.",
+            "type": "string"
+          },
+          "shared_with": {
+            "description": "Information about the role the member receives due to the share.\n",
+            "items": {
+              "$ref": "#/components/schemas/set-shared-with-membership"
+            },
+            "type": "array"
+          },
+          "sources": {
+            "description": "The source of the question-answer.",
+            "example": [
+              "ARTICLE-12345"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "status": {
+            "$ref": "#/components/schemas/question-answer-status"
+          },
+          "suggested_answer": {
+            "description": "Alternative answer for the question-answer sugested by Q/A\nDiscovery.\n",
+            "type": "string"
+          },
+          "suggested_for_deletion": {
+            "description": "Whether the question-answer was suggeste to be deleted by Q/A\nDiscovery.\n",
+            "type": "boolean"
+          },
+          "tags": {
+            "description": "Tags associated with the question-answer.",
+            "items": {
+              "$ref": "#/components/schemas/set-tag-with-value"
+            },
+            "type": "array"
+          },
+          "topic": {
+            "description": "Topic of the question-answer.",
+            "type": "string"
+          },
+          "verified": {
+            "description": "Whether the question-answer was verified by a user or not.\n",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "answer",
+          "applies_to_parts",
+          "owned_by",
+          "question",
+          "status"
+        ],
+        "title": "question-answers-create-request",
+        "type": "object"
+      },
+      "question-answers-create-response": {
+        "description": "Create question-answer response.",
+        "properties": {
+          "question_answer": {
+            "$ref": "#/components/schemas/question-answer"
+          }
+        },
+        "required": [
+          "question_answer"
+        ],
+        "title": "question-answers-create-response",
+        "type": "object",
+        "x-go-name": "QuestionAnswersCreateResponseBody"
+      },
+      "question-answers-delete-request": {
+        "description": "The request to delete a question-answer.",
+        "properties": {
+          "id": {
+            "description": "The ID of the question-answer.",
+            "type": "string"
+          },
+          "question_answer_id": {
+            "deprecated": true,
+            "description": "The ID of the question-answer.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "question-answers-delete-request",
+        "type": "object"
+      },
+      "question-answers-get-request": {
+        "description": "The request to get a question-answer.",
+        "properties": {
+          "id": {
+            "description": "The ID of the required question-answer.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "question-answers-get-request",
+        "type": "object"
+      },
+      "question-answers-get-response": {
+        "description": "Get question-answer response.",
+        "properties": {
+          "question_answer": {
+            "$ref": "#/components/schemas/question-answer"
+          }
+        },
+        "required": [
+          "question_answer"
+        ],
+        "title": "question-answers-get-response",
+        "type": "object",
+        "x-go-name": "QuestionAnswersGetResponseBody"
+      },
+      "question-answers-list-request": {
+        "description": "The request to list question-answers.",
+        "properties": {
+          "applies_to_articles": {
+            "description": "Filters for question-answer belonging to any of the provided\narticles.\n",
+            "example": [
+              "ARTICLE-12345"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "applies_to_parts": {
+            "description": "Filters for question-answer belonging to any of the provided parts.\n",
+            "example": [
+              "PROD-12345"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "created_by": {
+            "description": "Filters for question-answers created by any of the provided users.\n",
+            "example": [
+              "DEVU-12345"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "cursor": {
+            "description": "The cursor to resume iteration from. If not provided, then\niteration starts from the beginning.\n",
+            "type": "string"
+          },
+          "limit": {
+            "description": "The maximum number of question-answers to return. The default is\n'50'.\n",
+            "format": "int32",
+            "type": "integer"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/list-mode"
+          },
+          "owned_by": {
+            "description": "Filters for question-answers owned by any of the provided users.\n",
+            "example": [
+              "DEVU-12345"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "title": "question-answers-list-request",
+        "type": "object"
+      },
+      "question-answers-list-response": {
+        "description": "List question-answers response.",
+        "properties": {
+          "next_cursor": {
+            "description": "The cursor used to iterate subsequent results in accordance to the\nsort order. If not set, then no later elements exist.\n",
+            "type": "string"
+          },
+          "prev_cursor": {
+            "description": "The cursor used to iterate preceding results in accordance to the\nsort order. If not set, then no prior elements exist.\n",
+            "type": "string"
+          },
+          "question_answers": {
+            "description": "The question-answers entries matching the request.",
+            "items": {
+              "$ref": "#/components/schemas/question-answer"
+            },
+            "type": "array"
+          },
+          "total": {
+            "description": "Total number of question-answer items for the request.",
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "question_answers",
+          "total"
+        ],
+        "title": "question-answers-list-response",
+        "type": "object",
+        "x-go-name": "QuestionAnswersListResponseBody"
+      },
+      "question-answers-update-request": {
+        "description": "The request to update a question-answer.",
+        "properties": {
+          "access_level": {
+            "$ref": "#/components/schemas/access-level"
+          },
+          "answer": {
+            "description": "Updated answer of the question-answer object, or unchanged if not\nprovided.\n",
+            "type": "string"
+          },
+          "applies_to_articles": {
+            "$ref": "#/components/schemas/question-answers-update-request-applies-to-articles"
+          },
+          "applies_to_parts": {
+            "$ref": "#/components/schemas/question-answers-update-request-applies-to-parts"
+          },
+          "id": {
+            "description": "The question-answer's ID.",
+            "type": "string"
+          },
+          "owned_by": {
+            "$ref": "#/components/schemas/question-answers-update-request-owned-by"
+          },
+          "question": {
+            "description": "Updated question of the question-answer object, or unchanged if not\nprovided.\n",
+            "type": "string"
+          },
+          "shared_with": {
+            "$ref": "#/components/schemas/question-answers-update-request-shared-with"
+          },
+          "sources": {
+            "$ref": "#/components/schemas/question-answers-update-request-sources"
+          },
+          "status": {
+            "$ref": "#/components/schemas/question-answer-status"
+          },
+          "suggested_answer": {
+            "description": "Updated suggested_answer of the question-answer object, or\nunchanged if not provided.\n",
+            "type": "string"
+          },
+          "suggested_for_deletion": {
+            "description": "Updated suggested_for_deletion of the question-answer object, or\nunchanged if not provided.\n",
+            "type": "boolean"
+          },
+          "tags": {
+            "$ref": "#/components/schemas/question-answers-update-request-tags"
+          },
+          "topic": {
+            "description": "Updated topic of the question-answer object, or unchanged if not\nprovided.\n",
+            "type": "string"
+          },
+          "verified": {
+            "description": "Updates whether the question-answer was verified by a user or not.\n",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "question-answers-update-request",
+        "type": "object"
+      },
+      "question-answers-update-request-applies-to-articles": {
+        "properties": {
+          "set": {
+            "description": "Updates the article that the question-answer applies to.",
+            "example": [
+              "ARTICLE-12345"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "title": "question-answers-update-request-applies-to-articles",
+        "type": "object"
+      },
+      "question-answers-update-request-applies-to-parts": {
+        "properties": {
+          "set": {
+            "description": "Updates the parts that the question-answer applies to.",
+            "example": [
+              "PROD-12345"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "title": "question-answers-update-request-applies-to-parts",
+        "type": "object"
+      },
+      "question-answers-update-request-owned-by": {
+        "properties": {
+          "set": {
+            "description": "Sets the owner IDs to the provided user IDs. This must not be\nempty.\n",
+            "example": [
+              "DEVU-12345"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "title": "question-answers-update-request-owned-by",
+        "type": "object"
+      },
+      "question-answers-update-request-shared-with": {
+        "properties": {
+          "set": {
+            "description": "Sets the field to the provided membership list.",
+            "items": {
+              "$ref": "#/components/schemas/set-shared-with-membership"
+            },
+            "type": "array"
+          }
+        },
+        "title": "question-answers-update-request-shared-with",
+        "type": "object"
+      },
+      "question-answers-update-request-sources": {
+        "properties": {
+          "set": {
+            "description": "Sets the sources that generated the question-answer.",
+            "example": [
+              "ARTICLE-12345"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "title": "question-answers-update-request-sources",
+        "type": "object"
+      },
+      "question-answers-update-request-tags": {
+        "properties": {
+          "set": {
+            "description": "Sets the provided tags on the question-answer.",
+            "items": {
+              "$ref": "#/components/schemas/set-tag-with-value"
+            },
+            "type": "array"
+          }
+        },
+        "title": "question-answers-update-request-tags",
+        "type": "object"
+      },
+      "question-answers-update-response": {
+        "properties": {
+          "question_answer": {
+            "$ref": "#/components/schemas/question-answer"
+          }
+        },
+        "required": [
+          "question_answer"
+        ],
+        "title": "question-answers-update-response",
+        "type": "object",
+        "x-go-name": "QuestionAnswersUpdateResponseBody"
+      },
       "resource": {
         "description": "Resource details.",
         "properties": {
@@ -8078,6 +9688,24 @@
           }
         },
         "title": "resource",
+        "type": "object"
+      },
+      "resource-summary": {
+        "description": "Resource details.",
+        "properties": {
+          "artifacts": {
+            "description": "Ids of the artifacts.",
+            "items": {
+              "$ref": "#/components/schemas/artifact-summary"
+            },
+            "type": "array"
+          },
+          "url": {
+            "description": "URL of the external article.",
+            "type": "string"
+          }
+        },
+        "title": "resource-summary",
         "type": "object"
       },
       "rev-org": {
@@ -8126,6 +9754,10 @@
               "stock_schema_fragment": {
                 "description": "Stock schema fragment.",
                 "example": "don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>",
+                "type": "string"
+              },
+              "subtype": {
+                "description": "Subtype corresponding to the custom type fragment.",
                 "type": "string"
               },
               "tags": {
@@ -8248,6 +9880,7 @@
         "type": "object"
       },
       "rev-orgs-delete-response": {
+        "additionalProperties": false,
         "description": "The response to deleting a Rev organization.",
         "title": "rev-orgs-delete-response",
         "type": "object",
@@ -8321,6 +9954,13 @@
           "custom_fields": {
             "description": "Filters for custom fields.",
             "type": "object"
+          },
+          "display_name": {
+            "description": "Array of display names of Rev orgs to be filtered.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
           },
           "external_ref": {
             "description": "List of external refs to filter Rev organizations for.",
@@ -8525,6 +10165,10 @@
                 "example": "don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>",
                 "type": "string"
               },
+              "subtype": {
+                "description": "Subtype corresponding to the custom type fragment.",
+                "type": "string"
+              },
               "tags": {
                 "description": "Tags associated with the object.",
                 "items": {
@@ -8609,7 +10253,7 @@
             "type": "array"
           },
           "rev_org": {
-            "description": "The ID of Rev organization for which a Rev user is to be created.\n",
+            "description": "The ID of the Rev organization to which the created Rev user is\nassociated.\n",
             "example": "REV-AbCdEfGh",
             "type": "string"
           },
@@ -8653,6 +10297,7 @@
         "type": "object"
       },
       "rev-users-delete-response": {
+        "additionalProperties": false,
         "description": "The response to deleting a Rev user of a Rev organization.",
         "title": "rev-users-delete-response",
         "type": "object",
@@ -9297,6 +10942,10 @@
             "description": "Whether this field is filterable, groupable and sortable.\n",
             "type": "boolean"
           },
+          "is_immutable": {
+            "description": "Whether this field is immutable or not.",
+            "type": "boolean"
+          },
           "is_pii": {
             "description": "Whether this field can hold Personally Identifiable Information\n(PII).\n",
             "type": "boolean"
@@ -9379,6 +11028,7 @@
         "type": "object"
       },
       "schema-field-mfz-metadata": {
+        "additionalProperties": false,
         "description": "The schema of MFZ specific fields.",
         "title": "schema-field-mfz-metadata",
         "type": "object"
@@ -9395,6 +11045,7 @@
         "type": "object"
       },
       "schema-field-uenum-value": {
+        "additionalProperties": false,
         "description": "A unified enum value.",
         "title": "schema-field-uenum-value",
         "type": "object"
@@ -10000,6 +11651,231 @@
         ],
         "title": "schema-unknown-field-descriptor"
       },
+      "search-core-request": {
+        "description": "Search request.",
+        "properties": {
+          "cursor": {
+            "description": "The cursor from where to begin iteration. Start from beginning if\nnot provided.\n",
+            "type": "string"
+          },
+          "limit": {
+            "description": "The maximum number of items to return in a page. The default is\n'10'.\n",
+            "format": "int32",
+            "type": "integer"
+          },
+          "namespaces": {
+            "description": "The namespaces to search in.",
+            "items": {
+              "$ref": "#/components/schemas/search-namespace"
+            },
+            "type": "array"
+          },
+          "query": {
+            "description": "The query string. Search query language:\nhttps://docs.devrev.ai/product/search#fields\n",
+            "type": "string"
+          },
+          "sort_by": {
+            "$ref": "#/components/schemas/search-sort-by-param"
+          },
+          "sort_order": {
+            "$ref": "#/components/schemas/search-sort-order-param"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "title": "search-core-request",
+        "type": "object"
+      },
+      "search-core-response": {
+        "description": "Search response.",
+        "properties": {
+          "cursor": {
+            "description": "The cursor from where to begin iteration. Start from beginning if\nnot provided.\n",
+            "type": "string"
+          },
+          "results": {
+            "description": "The search results.",
+            "items": {
+              "$ref": "#/components/schemas/search-result"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "results"
+        ],
+        "title": "search-core-response",
+        "type": "object",
+        "x-go-name": "SearchCoreResponseBody"
+      },
+      "search-namespace": {
+        "description": "The namespaces to search in.",
+        "enum": [
+          "account",
+          "article",
+          "capability",
+          "component",
+          "conversation",
+          "custom_part",
+          "custom_work",
+          "dashboard",
+          "dev_user",
+          "enhancement",
+          "feature",
+          "group",
+          "issue",
+          "linkable",
+          "microservice",
+          "object_member",
+          "opportunity",
+          "product",
+          "project",
+          "question_answer",
+          "rev_org",
+          "rev_user",
+          "runnable",
+          "service_account",
+          "sys_user",
+          "tag",
+          "task",
+          "ticket",
+          "vista"
+        ],
+        "type": "string"
+      },
+      "search-result": {
+        "discriminator": {
+          "mapping": {
+            "account": "#/components/schemas/account-search-summary",
+            "article": "#/components/schemas/article-search-summary",
+            "artifact": "#/components/schemas/artifact-search-summary",
+            "conversation": "#/components/schemas/conversation-search-summary",
+            "dashboard": "#/components/schemas/dashboard-search-summary",
+            "group": "#/components/schemas/group-search-summary",
+            "link": "#/components/schemas/link-search-summary",
+            "object_member": "#/components/schemas/object-member-search-summary",
+            "org": "#/components/schemas/org-search-summary",
+            "part": "#/components/schemas/part-search-summary",
+            "question_answer": "#/components/schemas/question-answer-search-summary",
+            "tag": "#/components/schemas/tag-search-summary",
+            "user": "#/components/schemas/user-search-summary",
+            "vista": "#/components/schemas/vista-search-summary",
+            "work": "#/components/schemas/work-search-summary"
+          },
+          "propertyName": "type"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/account-search-summary"
+          },
+          {
+            "$ref": "#/components/schemas/article-search-summary"
+          },
+          {
+            "$ref": "#/components/schemas/artifact-search-summary"
+          },
+          {
+            "$ref": "#/components/schemas/conversation-search-summary"
+          },
+          {
+            "$ref": "#/components/schemas/dashboard-search-summary"
+          },
+          {
+            "$ref": "#/components/schemas/group-search-summary"
+          },
+          {
+            "$ref": "#/components/schemas/link-search-summary"
+          },
+          {
+            "$ref": "#/components/schemas/object-member-search-summary"
+          },
+          {
+            "$ref": "#/components/schemas/org-search-summary"
+          },
+          {
+            "$ref": "#/components/schemas/part-search-summary"
+          },
+          {
+            "$ref": "#/components/schemas/question-answer-search-summary"
+          },
+          {
+            "$ref": "#/components/schemas/tag-search-summary"
+          },
+          {
+            "$ref": "#/components/schemas/user-search-summary"
+          },
+          {
+            "$ref": "#/components/schemas/vista-search-summary"
+          },
+          {
+            "$ref": "#/components/schemas/work-search-summary"
+          }
+        ],
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/search-result-type"
+          }
+        },
+        "required": [
+          "type"
+        ],
+        "title": "search-result",
+        "type": "object"
+      },
+      "search-result-type": {
+        "enum": [
+          "account",
+          "article",
+          "artifact",
+          "conversation",
+          "dashboard",
+          "group",
+          "link",
+          "object_member",
+          "org",
+          "part",
+          "question_answer",
+          "tag",
+          "user",
+          "vista",
+          "work"
+        ],
+        "type": "string"
+      },
+      "search-sort-by-param": {
+        "description": "Search sort by parameters.",
+        "enum": [
+          "created_date",
+          "modified_date",
+          "relevance"
+        ],
+        "type": "string"
+      },
+      "search-sort-order-param": {
+        "description": "Search sort order parameters.",
+        "enum": [
+          "asc",
+          "desc"
+        ],
+        "type": "string"
+      },
+      "search-summary-base": {
+        "properties": {
+          "modified_date": {
+            "description": "Timestamp when the object was last modified.",
+            "example": "2023-01-01T12:00:00.000Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "snippet": {
+            "description": "Text snippet where the search hit occurred.",
+            "type": "string"
+          }
+        },
+        "title": "search-summary-base",
+        "type": "object"
+      },
       "service-account": {
         "allOf": [
           {
@@ -10055,6 +11931,12 @@
           "id"
         ],
         "title": "set-org-schedule-fragment-summary",
+        "type": "object"
+      },
+      "set-shared-with-membership": {
+        "additionalProperties": false,
+        "description": "Information about the role the member receives due to the share.\n",
+        "title": "set-shared-with-membership",
         "type": "object"
       },
       "set-sla-policy": {
@@ -10217,12 +12099,8 @@
         "title": "set-weekly-org-schedule",
         "type": "object"
       },
-      "shared-with-membership": {
-        "description": "Information about the role the member receives due to the share.\n",
-        "title": "shared-with-membership",
-        "type": "object"
-      },
       "shared-with-membership-filter": {
+        "additionalProperties": false,
         "description": "Filter on target item based on intended audience.",
         "title": "shared-with-membership-filter",
         "type": "object"
@@ -10284,6 +12162,7 @@
         "type": "object"
       },
       "sla-compensation": {
+        "additionalProperties": false,
         "description": "Describes the compensation to be provided in case of SLA breach. It is\nnot 'self-executing', it is the responsibility of the organization\nproviding the SLA to actually transfer the promised credit, resource or\nother payment.\n",
         "title": "sla-compensation",
         "type": "object"
@@ -10299,6 +12178,7 @@
         "type": "string"
       },
       "sla-policy": {
+        "additionalProperties": false,
         "description": "A policy that represents a promise to your revs.",
         "title": "sla-policy",
         "type": "object"
@@ -10339,6 +12219,30 @@
         ],
         "type": "string"
       },
+      "sla-summary": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/atom-base-summary"
+          },
+          {
+            "properties": {
+              "name": {
+                "description": "Human-readable name.",
+                "type": "string"
+              },
+              "status": {
+                "$ref": "#/components/schemas/sla-status"
+              }
+            },
+            "required": [
+              "name",
+              "status"
+            ],
+            "type": "object"
+          }
+        ],
+        "title": "sla-summary"
+      },
       "sla-summary-filter": {
         "description": "The filter for SLA summary.",
         "properties": {
@@ -10371,9 +12275,77 @@
         "allOf": [
           {
             "$ref": "#/components/schemas/atom-base"
+          },
+          {
+            "properties": {
+              "applies_to_id": {
+                "description": "Details of the object on which the SLA is being tracked.",
+                "type": "string"
+              },
+              "metric_target_summaries": {
+                "description": "Summary of the metrics target being tracked in the SLA tracker.\n",
+                "items": {
+                  "$ref": "#/components/schemas/archetype-metric-target"
+                },
+                "type": "array"
+              },
+              "sla": {
+                "$ref": "#/components/schemas/sla-summary"
+              },
+              "sla_policy_id": {
+                "description": "Details of the applicable SLA policy. Can be omitted if no sla\napplies, or if no policy of the sla applies at the moment.\n",
+                "type": "string"
+              },
+              "stage": {
+                "description": "SLA stage of the object being tracked.",
+                "type": "string"
+              },
+              "status": {
+                "description": "It is an indicator of whether the SLA has ever been breached\n(missed). If not, it shows whether the SLA is completed, in\nprogress, or nil - if no policy is applied.\n",
+                "type": "string"
+              }
+            },
+            "required": [
+              "metric_target_summaries"
+            ],
+            "type": "object"
           }
         ],
         "title": "sla-tracker"
+      },
+      "sla-tracker-summary": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/atom-base-summary"
+          }
+        ],
+        "title": "sla-tracker-summary"
+      },
+      "sla-trackers-get-request": {
+        "properties": {
+          "id": {
+            "description": "The ID of the SLA tracker to get.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "sla-trackers-get-request",
+        "type": "object"
+      },
+      "sla-trackers-get-response": {
+        "properties": {
+          "sla_tracker": {
+            "$ref": "#/components/schemas/sla-tracker"
+          }
+        },
+        "required": [
+          "sla_tracker"
+        ],
+        "title": "sla-trackers-get-response",
+        "type": "object",
+        "x-go-name": "SlaTrackersGetResponseBody"
       },
       "slas-assign-request": {
         "properties": {
@@ -10712,8 +12684,16 @@
       },
       "snap-widget": {
         "discriminator": {
+          "mapping": {
+            "email_preview": "#/components/schemas/email-preview-widget"
+          },
           "propertyName": "type"
         },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/email-preview-widget"
+          }
+        ],
         "properties": {
           "type": {
             "$ref": "#/components/schemas/snap-widget-type"
@@ -10725,8 +12705,108 @@
         "title": "snap-widget",
         "type": "object"
       },
-      "snap-widget-type": {
+      "snap-widget-base": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/atom-base"
+          },
+          {
+            "properties": {
+              "name": {
+                "description": "A human readable name for the snap widget.",
+                "type": "string"
+              },
+              "namespace": {
+                "$ref": "#/components/schemas/snap-widget-namespace"
+              },
+              "status": {
+                "$ref": "#/components/schemas/snap-widget-status"
+              }
+            },
+            "required": [
+              "name",
+              "status"
+            ],
+            "type": "object"
+          }
+        ],
+        "title": "snap-widget-base"
+      },
+      "snap-widget-namespace": {
+        "description": "Logical grouping of snap widgets. Useful for filtering.",
+        "enum": [
+          "email_preview",
+          "link_preview",
+          "plug_nudge"
+        ],
         "type": "string"
+      },
+      "snap-widget-status": {
+        "description": "The status of the snap widget.",
+        "enum": [
+          "draft",
+          "published"
+        ],
+        "type": "string"
+      },
+      "snap-widget-type": {
+        "enum": [
+          "email_preview"
+        ],
+        "type": "string"
+      },
+      "snap-widgets-create-request": {
+        "discriminator": {
+          "mapping": {
+            "email_preview": "#/components/schemas/create-email-preview-widget"
+          },
+          "propertyName": "type"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/create-email-preview-widget"
+          }
+        ],
+        "properties": {
+          "name": {
+            "description": "A human readable name for the snap widget.",
+            "type": "string"
+          },
+          "namespace": {
+            "$ref": "#/components/schemas/snap-widget-namespace"
+          },
+          "status": {
+            "$ref": "#/components/schemas/snap-widget-status"
+          },
+          "type": {
+            "$ref": "#/components/schemas/snap-widgets-create-request-type"
+          }
+        },
+        "required": [
+          "name",
+          "type"
+        ],
+        "title": "snap-widgets-create-request",
+        "type": "object"
+      },
+      "snap-widgets-create-request-type": {
+        "enum": [
+          "email_preview"
+        ],
+        "type": "string"
+      },
+      "snap-widgets-create-response": {
+        "properties": {
+          "snap_widget": {
+            "$ref": "#/components/schemas/snap-widget"
+          }
+        },
+        "required": [
+          "snap_widget"
+        ],
+        "title": "snap-widgets-create-response",
+        "type": "object",
+        "x-go-name": "SnapWidgetsCreateResponseBody"
       },
       "stage-diagram-summary": {
         "allOf": [
@@ -10772,7 +12852,18 @@
         "title": "stage-update",
         "type": "object"
       },
+      "staged-info-filter": {
+        "properties": {
+          "is_staged": {
+            "description": "Filters for issues that are staged.",
+            "type": "boolean"
+          }
+        },
+        "title": "staged-info-filter",
+        "type": "object"
+      },
       "stock-field-override": {
+        "additionalProperties": false,
         "description": "A stock field override.",
         "title": "stock-field-override",
         "type": "object"
@@ -10848,8 +12939,11 @@
       "stock-schema-fragments-list-request": {
         "properties": {
           "cursor": {
-            "description": "The cursor to resume iteration from, otherwise if not provided,\nthen iteration starts from the beginning.\n",
+            "description": "The cursor to resume iteration from. If not provided, then\niteration starts from the beginning.\n",
             "type": "string"
+          },
+          "filter_preset": {
+            "$ref": "#/components/schemas/stock-schema-fragments-list-request-filter-preset"
           },
           "leaf_type": {
             "description": "The list of leaf types.",
@@ -10863,6 +12957,16 @@
             "format": "int32",
             "type": "integer"
           },
+          "mode": {
+            "$ref": "#/components/schemas/list-mode"
+          },
+          "prune": {
+            "description": "List of fields which are not required in the payload and can be\npruned away.\n",
+            "items": {
+              "$ref": "#/components/schemas/stock-schema-fragments-list-request-prune"
+            },
+            "type": "array"
+          },
           "sort_by": {
             "description": "The list of fields to sort the items by and how to sort them.\n",
             "items": {
@@ -10874,10 +12978,28 @@
         "title": "stock-schema-fragments-list-request",
         "type": "object"
       },
+      "stock-schema-fragments-list-request-filter-preset": {
+        "enum": [
+          "customizable_types_preset",
+          "no_preset"
+        ],
+        "type": "string"
+      },
+      "stock-schema-fragments-list-request-prune": {
+        "enum": [
+          "composite_schemas",
+          "fields"
+        ],
+        "type": "string"
+      },
       "stock-schema-fragments-list-response": {
         "properties": {
-          "cursor": {
-            "description": "The cursor to resume iteration from, otherwise if not provided,\nthen iteration starts from the beginning.\n",
+          "next_cursor": {
+            "description": "The cursor used to iterate subsequent results in accordance to the\nsort order. If not set, then no later elements exist.\n",
+            "type": "string"
+          },
+          "prev_cursor": {
+            "description": "The cursor used to iterate preceding results in accordance to the\nsort order. If not set, then no prior elements exist.\n",
             "type": "string"
           },
           "result": {
@@ -10957,10 +13079,458 @@
         "type": "object",
         "x-go-name": "SubtypesListResponseBody"
       },
+      "survey": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/atom-base"
+          },
+          {
+            "properties": {
+              "description": {
+                "description": "Description of the survey.",
+                "type": "string"
+              },
+              "name": {
+                "description": "Survey name associated with schema. This name would be unique per\ndev org.\n",
+                "type": "string"
+              },
+              "schema": {
+                "description": "List of all fields in the schema.",
+                "items": {
+                  "$ref": "#/components/schemas/schema-field-descriptor"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "schema"
+            ],
+            "type": "object"
+          }
+        ],
+        "title": "survey"
+      },
       "survey-aggregation-filter": {
+        "additionalProperties": false,
         "description": "The filter for survey aggregation.",
         "title": "survey-aggregation-filter",
         "type": "object"
+      },
+      "survey-response": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/atom-base"
+          },
+          {
+            "properties": {
+              "dispatch_id": {
+                "description": "The unique ID associated with the dispatched survey.",
+                "type": "string"
+              },
+              "object": {
+                "description": "The ID of the object for which survey is taken.",
+                "type": "string"
+              },
+              "response": {
+                "description": "Response for the survey.",
+                "type": "object"
+              },
+              "survey": {
+                "description": "The ID of the survey for which response is taken.",
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        ],
+        "title": "survey-response",
+        "x-go-name": "SurveyResponseBody"
+      },
+      "surveys-create-request": {
+        "properties": {
+          "description": {
+            "description": "Description about the survey.",
+            "type": "string"
+          },
+          "name": {
+            "description": "The survey's name.",
+            "type": "string"
+          },
+          "schema": {
+            "description": "Schema for the survey.",
+            "items": {
+              "$ref": "#/components/schemas/field-descriptor"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "name",
+          "schema"
+        ],
+        "title": "surveys-create-request",
+        "type": "object"
+      },
+      "surveys-create-response": {
+        "properties": {
+          "survey": {
+            "$ref": "#/components/schemas/survey"
+          }
+        },
+        "required": [
+          "survey"
+        ],
+        "title": "surveys-create-response",
+        "type": "object",
+        "x-go-name": "SurveysCreateResponseBody"
+      },
+      "surveys-delete-request": {
+        "properties": {
+          "id": {
+            "description": "ID of the survey being deleted.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "surveys-delete-request",
+        "type": "object"
+      },
+      "surveys-delete-response": {
+        "additionalProperties": false,
+        "title": "surveys-delete-response",
+        "type": "object",
+        "x-go-name": "SurveysDeleteResponseBody"
+      },
+      "surveys-list-request": {
+        "properties": {
+          "created_by": {
+            "description": "Filters for surveys created by any of these users.",
+            "example": [
+              "DEVU-12345"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "created_date": {
+            "$ref": "#/components/schemas/date-filter"
+          },
+          "cursor": {
+            "description": "The cursor to resume iteration from. If not provided, then\niteration starts from the beginning.\n",
+            "type": "string"
+          },
+          "limit": {
+            "description": "The maximum number of surveys to return. If not set, then the\ndefault is '50'.\n",
+            "format": "int32",
+            "type": "integer"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/list-mode"
+          },
+          "modified_date": {
+            "$ref": "#/components/schemas/date-filter"
+          },
+          "name": {
+            "description": "Filters for surveys by name(s).",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "sort_by": {
+            "description": "Fields to sort the surveys by and the direction to sort them.\n",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "title": "surveys-list-request",
+        "type": "object"
+      },
+      "surveys-list-response": {
+        "properties": {
+          "next_cursor": {
+            "description": "The cursor used to iterate subsequent results in accordance to the\nsort order. If not set, then no later elements exist.\n",
+            "type": "string"
+          },
+          "prev_cursor": {
+            "description": "The cursor used to iterate preceding results in accordance to the\nsort order. If not set, then no prior elements exist.\n",
+            "type": "string"
+          },
+          "surveys": {
+            "description": "The list of the surveys.",
+            "items": {
+              "$ref": "#/components/schemas/survey"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "surveys"
+        ],
+        "title": "surveys-list-response",
+        "type": "object",
+        "x-go-name": "SurveysListResponseBody"
+      },
+      "surveys-responses-list-request": {
+        "properties": {
+          "created_by": {
+            "description": "Filters for survey responses created by any of these users.\n",
+            "example": [
+              "DEVU-12345"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "created_date": {
+            "$ref": "#/components/schemas/date-filter"
+          },
+          "cursor": {
+            "description": "The cursor to resume iteration from. If not provided, then\niteration starts from the beginning.\n",
+            "type": "string"
+          },
+          "limit": {
+            "description": "The maximum number of survey responses to return. If not set, then\nthe default is '50'.\n",
+            "format": "int32",
+            "type": "integer"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/list-mode"
+          },
+          "modified_date": {
+            "$ref": "#/components/schemas/date-filter"
+          },
+          "objects": {
+            "description": "Filters for survey responses created for the objects.",
+            "example": [
+              "ACC-12345"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "sort_by": {
+            "description": "Fields to sort the survey responses by and the direction to sort\nthem.\n",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "surveys": {
+            "description": "Filters for survey responses for the provided survey IDs.\n",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "title": "surveys-responses-list-request",
+        "type": "object"
+      },
+      "surveys-responses-list-response": {
+        "properties": {
+          "next_cursor": {
+            "description": "The cursor used to iterate subsequent results in accordance to the\nsort order. If not set, then no later elements exist.\n",
+            "type": "string"
+          },
+          "prev_cursor": {
+            "description": "The cursor used to iterate preceding results in accordance to the\nsort order. If not set, then no prior elements exist.\n",
+            "type": "string"
+          },
+          "survey_responses": {
+            "description": "The list of the survey responses.",
+            "items": {
+              "$ref": "#/components/schemas/survey-response"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "survey_responses"
+        ],
+        "title": "surveys-responses-list-response",
+        "type": "object",
+        "x-go-name": "SurveysResponsesListResponseBody"
+      },
+      "surveys-send-request": {
+        "properties": {
+          "email": {
+            "$ref": "#/components/schemas/surveys-send-request-email"
+          }
+        },
+        "required": [
+          "email"
+        ],
+        "title": "surveys-send-request",
+        "type": "object"
+      },
+      "surveys-send-request-email": {
+        "properties": {
+          "body": {
+            "description": "Message body for a survey email.",
+            "type": "string"
+          },
+          "recipients": {
+            "description": "Recipients list for a survey email.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "sender": {
+            "description": "Sender email address from which an email is sent.",
+            "type": "string"
+          },
+          "subject": {
+            "description": "Subject for an email where survey is sent.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "body",
+          "recipients",
+          "sender",
+          "subject"
+        ],
+        "title": "surveys-send-request-email",
+        "type": "object"
+      },
+      "surveys-send-response": {
+        "additionalProperties": false,
+        "title": "surveys-send-response",
+        "type": "object",
+        "x-go-name": "SurveysSendResponseBody"
+      },
+      "surveys-submit-request": {
+        "properties": {
+          "dispatch_id": {
+            "description": "The unique ID associated with the dispatched survey.",
+            "type": "string"
+          },
+          "object": {
+            "description": "The ID of the object this survey is on (e.g. ticket, conversation,\netc).\n",
+            "example": "ACC-12345",
+            "type": "string"
+          },
+          "response": {
+            "description": "Survey response submitted for the object.",
+            "type": "object"
+          },
+          "response_score": {
+            "description": "The response score for the survey. Only applicable for CSAT and\nNPS.\n",
+            "format": "int32",
+            "type": "integer"
+          },
+          "source_channel": {
+            "description": "The source channel from which survey response is submitted.\n",
+            "type": "string"
+          },
+          "survey": {
+            "description": "The ID of the survey to submit the response to.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "object",
+          "response",
+          "survey"
+        ],
+        "title": "surveys-submit-request",
+        "type": "object"
+      },
+      "surveys-submit-response": {
+        "additionalProperties": false,
+        "title": "surveys-submit-response",
+        "type": "object",
+        "x-go-name": "SurveysSubmitResponseBody"
+      },
+      "sync-metadata-filter": {
+        "properties": {
+          "last_sync_in": {
+            "$ref": "#/components/schemas/sync-metadata-filter-sync-in-filter"
+          },
+          "last_sync_out": {
+            "$ref": "#/components/schemas/sync-metadata-filter-sync-out-filter"
+          },
+          "origin_system": {
+            "description": "Filters for issues synced from this specific origin system.\n",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "title": "sync-metadata-filter",
+        "type": "object"
+      },
+      "sync-metadata-filter-sync-in-filter": {
+        "properties": {
+          "status": {
+            "description": "Filters for works with selected sync statuses.",
+            "items": {
+              "$ref": "#/components/schemas/sync-metadata-filter-sync-in-filter-status"
+            },
+            "type": "array"
+          },
+          "sync_date": {
+            "$ref": "#/components/schemas/date-filter"
+          },
+          "sync_unit": {
+            "description": "Filters for works modified with selected sync units.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "title": "sync-metadata-filter-sync-in-filter",
+        "type": "object"
+      },
+      "sync-metadata-filter-sync-in-filter-status": {
+        "enum": [
+          "failed",
+          "modified",
+          "staged",
+          "succeeded"
+        ],
+        "type": "string"
+      },
+      "sync-metadata-filter-sync-out-filter": {
+        "properties": {
+          "status": {
+            "description": "Filters for works with selected sync statuses.",
+            "items": {
+              "$ref": "#/components/schemas/sync-metadata-filter-sync-out-filter-status"
+            },
+            "type": "array"
+          },
+          "sync_date": {
+            "$ref": "#/components/schemas/date-filter"
+          },
+          "sync_unit": {
+            "description": "Filters for works modified with selected sync units.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "title": "sync-metadata-filter-sync-out-filter",
+        "type": "object"
+      },
+      "sync-metadata-filter-sync-out-filter-status": {
+        "enum": [
+          "failed",
+          "succeeded"
+        ],
+        "type": "string"
       },
       "sys-user": {
         "allOf": [
@@ -11103,6 +13673,25 @@
         ],
         "title": "tag"
       },
+      "tag-search-summary": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/search-summary-base"
+          },
+          {
+            "properties": {
+              "tag": {
+                "$ref": "#/components/schemas/tag-summary"
+              }
+            },
+            "required": [
+              "tag"
+            ],
+            "type": "object"
+          }
+        ],
+        "title": "tag-search-summary"
+      },
       "tag-summary": {
         "allOf": [
           {
@@ -11209,6 +13798,7 @@
         "type": "object"
       },
       "tags-delete-response": {
+        "additionalProperties": false,
         "description": "The response for deleting a tag.",
         "title": "tags-delete-response",
         "type": "object",
@@ -11421,6 +14011,9 @@
               "severity": {
                 "$ref": "#/components/schemas/ticket-severity"
               },
+              "sla_tracker": {
+                "$ref": "#/components/schemas/sla-tracker-summary"
+              },
               "source_channel": {
                 "description": "Source channel of the ticket.",
                 "type": "string"
@@ -11607,7 +14200,7 @@
             "items": {
               "type": "string"
             },
-            "maxItems": 10,
+            "maxItems": 50,
             "type": "array"
           },
           "body": {
@@ -11629,6 +14222,16 @@
           },
           "snap_kit_body": {
             "$ref": "#/components/schemas/timeline-snap-kit-body"
+          },
+          "snap_widget_body": {
+            "description": "The snap widget body of the comment.",
+            "example": [
+              "don:core:<partition>:devo/<dev-org-id>:snap_widget/<snap-widget-id>"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
           }
         },
         "title": "timeline-entries-create-request-timeline-comment",
@@ -11670,6 +14273,7 @@
         "type": "object"
       },
       "timeline-entries-delete-response": {
+        "additionalProperties": false,
         "description": "The response to deleting a timeline entry from an object.",
         "title": "timeline-entries-delete-response",
         "type": "object",
@@ -11864,7 +14468,7 @@
             "items": {
               "type": "string"
             },
-            "maxItems": 10,
+            "maxItems": 50,
             "type": "array"
           }
         },
@@ -12094,6 +14698,58 @@
         "title": "timeline-thread",
         "type": "object"
       },
+      "track-event": {
+        "properties": {
+          "client_context": {
+            "$ref": "#/components/schemas/client-context"
+          },
+          "event_id": {
+            "description": "Unique ID for the event.",
+            "type": "string"
+          },
+          "event_time": {
+            "description": "The timestamp at which the event occurred.",
+            "example": "2023-01-01T12:00:00.000Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "name": {
+            "description": "Name of the event.",
+            "type": "string"
+          },
+          "payload": {
+            "description": "Payload of the event",
+            "type": "object"
+          }
+        },
+        "required": [
+          "name",
+          "payload"
+        ],
+        "title": "track-event",
+        "type": "object"
+      },
+      "track-events-publish-request": {
+        "properties": {
+          "events_list": {
+            "items": {
+              "$ref": "#/components/schemas/track-event"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "events_list"
+        ],
+        "title": "track-events-publish-request",
+        "type": "object"
+      },
+      "track-events-publish-response": {
+        "additionalProperties": false,
+        "title": "track-events-publish-response",
+        "type": "object",
+        "x-go-name": "TrackEventsPublishResponseBody"
+      },
       "unit": {
         "description": "Unit encapsulates the name of the unit and the type of the unit. For\nexample, '#Number of API calls' where name is 'number_of_api_calls' and\ntype is 'number'.\n",
         "properties": {
@@ -12221,6 +14877,75 @@
           "user"
         ],
         "type": "string"
+      },
+      "uoms-count-request": {
+        "properties": {
+          "aggregation_types": {
+            "description": "List of aggregation types for filtering list of UOMs.",
+            "items": {
+              "$ref": "#/components/schemas/aggregation-detail-aggregation-type"
+            },
+            "type": "array"
+          },
+          "ids": {
+            "description": "List of Unit of Measurement (UOM) DONs to be used in filtering\ncomplete list of UOMs defined in a Dev Org.\n",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "metric_names": {
+            "description": "List of metric names for filtering list of UOMs.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "part_ids": {
+            "description": "List of part IDs for filtering list of UOMs.",
+            "example": [
+              "PROD-12345"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "product_ids": {
+            "description": "List of product IDs for filtering list of UOMs.",
+            "example": [
+              "PROD-12345"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "unit_types": {
+            "description": "List of unit types for filtering list of UOMs.",
+            "items": {
+              "$ref": "#/components/schemas/unit-type"
+            },
+            "type": "array"
+          }
+        },
+        "title": "uoms-count-request",
+        "type": "object"
+      },
+      "uoms-count-response": {
+        "properties": {
+          "count": {
+            "description": "Count of Unit of Measurements matching the filter.",
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "count"
+        ],
+        "title": "uoms-count-response",
+        "type": "object",
+        "x-go-name": "UomsCountResponseBody"
       },
       "uoms-create-request": {
         "properties": {
@@ -12572,6 +15297,25 @@
         ],
         "title": "user-base-summary"
       },
+      "user-search-summary": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/search-summary-base"
+          },
+          {
+            "properties": {
+              "user": {
+                "$ref": "#/components/schemas/user-summary"
+              }
+            },
+            "required": [
+              "user"
+            ],
+            "type": "object"
+          }
+        ],
+        "title": "user-search-summary"
+      },
       "user-state": {
         "description": "State of the user.",
         "enum": [
@@ -12625,6 +15369,86 @@
           "rev_user",
           "service_account",
           "sys_user"
+        ],
+        "type": "string"
+      },
+      "vista-base-summary": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/atom-base-summary"
+          },
+          {
+            "properties": {
+              "name": {
+                "description": "Name of the vista.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "type": "object"
+          }
+        ],
+        "title": "vista-base-summary"
+      },
+      "vista-search-summary": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/search-summary-base"
+          },
+          {
+            "properties": {
+              "vista": {
+                "$ref": "#/components/schemas/vista-summary"
+              }
+            },
+            "required": [
+              "vista"
+            ],
+            "type": "object"
+          }
+        ],
+        "title": "vista-search-summary"
+      },
+      "vista-summary": {
+        "description": "Represents a collection of DevRev objects.",
+        "discriminator": {
+          "mapping": {
+            "curated": "#/components/schemas/curated-vista-summary",
+            "dynamic": "#/components/schemas/dynamic-vista-summary",
+            "grouped": "#/components/schemas/grouped-vista-summary"
+          },
+          "propertyName": "type"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/curated-vista-summary"
+          },
+          {
+            "$ref": "#/components/schemas/dynamic-vista-summary"
+          },
+          {
+            "$ref": "#/components/schemas/grouped-vista-summary"
+          }
+        ],
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/vista-type"
+          }
+        },
+        "required": [
+          "type"
+        ],
+        "title": "vista-summary",
+        "type": "object"
+      },
+      "vista-type": {
+        "description": "Type of vista object.",
+        "enum": [
+          "curated",
+          "dynamic",
+          "grouped"
         ],
         "type": "string"
       },
@@ -12734,6 +15558,15 @@
           "sla_tracker_updated": {
             "$ref": "#/components/schemas/event-sla-tracker-updated"
           },
+          "survey_response_created": {
+            "$ref": "#/components/schemas/event-survey-response-created"
+          },
+          "survey_response_deleted": {
+            "$ref": "#/components/schemas/event-survey-response-deleted"
+          },
+          "survey_response_updated": {
+            "$ref": "#/components/schemas/event-survey-response-updated"
+          },
           "tag_created": {
             "$ref": "#/components/schemas/event-tag-created"
           },
@@ -12828,6 +15661,9 @@
           "rev_user_created",
           "rev_user_deleted",
           "rev_user_updated",
+          "sla_tracker_created",
+          "sla_tracker_deleted",
+          "sla_tracker_updated",
           "tag_created",
           "tag_deleted",
           "tag_updated",
@@ -12931,6 +15767,7 @@
         "type": "object"
       },
       "webhooks-delete-response": {
+        "additionalProperties": false,
         "description": "The response to deleting the webhook.",
         "title": "webhooks-delete-response",
         "type": "object",
@@ -12966,6 +15803,7 @@
         "x-go-name": "WebhooksGetResponseBody"
       },
       "webhooks-list-request": {
+        "additionalProperties": false,
         "description": "The request to list the webhooks.",
         "title": "webhooks-list-request",
         "type": "object"
@@ -13068,6 +15906,7 @@
         "x-go-name": "WebhooksUpdateResponseBody"
       },
       "weekly-org-schedule": {
+        "additionalProperties": false,
         "description": "The schedule for each week.",
         "title": "weekly-org-schedule",
         "type": "object"
@@ -13164,6 +16003,10 @@
                 "example": "don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>",
                 "type": "string"
               },
+              "subtype": {
+                "description": "Subtype corresponding to the custom type fragment.",
+                "type": "string"
+              },
               "tags": {
                 "description": "Tags associated with the object.",
                 "items": {
@@ -13198,18 +16041,83 @@
           },
           {
             "properties": {
+              "owned_by": {
+                "description": "The users that own the work.",
+                "items": {
+                  "$ref": "#/components/schemas/user-summary"
+                },
+                "type": "array"
+              },
+              "stage": {
+                "$ref": "#/components/schemas/legacy-stage-summary"
+              },
               "title": {
                 "description": "Title of the work object.",
                 "type": "string"
               }
             },
             "required": [
+              "owned_by",
               "title"
             ],
             "type": "object"
           }
         ],
         "title": "work-base-summary"
+      },
+      "work-search-summary": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/search-summary-base"
+          },
+          {
+            "properties": {
+              "work": {
+                "$ref": "#/components/schemas/work-summary"
+              }
+            },
+            "required": [
+              "work"
+            ],
+            "type": "object"
+          }
+        ],
+        "title": "work-search-summary"
+      },
+      "work-summary": {
+        "discriminator": {
+          "mapping": {
+            "issue": "#/components/schemas/issue-summary",
+            "opportunity": "#/components/schemas/opportunity-summary",
+            "task": "#/components/schemas/task-summary",
+            "ticket": "#/components/schemas/ticket-summary"
+          },
+          "propertyName": "type"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/issue-summary"
+          },
+          {
+            "$ref": "#/components/schemas/opportunity-summary"
+          },
+          {
+            "$ref": "#/components/schemas/task-summary"
+          },
+          {
+            "$ref": "#/components/schemas/ticket-summary"
+          }
+        ],
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/work-type"
+          }
+        },
+        "required": [
+          "type"
+        ],
+        "title": "work-summary",
+        "type": "object"
       },
       "work-type": {
         "enum": [
@@ -13277,6 +16185,9 @@
               "type": "string"
             },
             "type": "array"
+          },
+          "custom_schema_spec": {
+            "$ref": "#/components/schemas/custom-schema-spec"
           },
           "owned_by": {
             "description": "The users that own the work.",
@@ -13354,6 +16265,12 @@
           },
           "sprint": {
             "description": "The sprint that the issue belongs to.",
+            "type": "string"
+          },
+          "target_start_date": {
+            "description": "Timestamp for when the work is expected to start.",
+            "example": "2023-01-01T12:00:00.000Z",
+            "format": "date-time",
             "type": "string"
           }
         },
@@ -13482,6 +16399,7 @@
         "type": "object"
       },
       "works-delete-response": {
+        "additionalProperties": false,
         "title": "works-delete-response",
         "type": "object",
         "x-go-name": "WorksDeleteResponseBody"
@@ -13562,6 +16480,12 @@
           "stage": {
             "$ref": "#/components/schemas/stage-filter"
           },
+          "staged_info": {
+            "$ref": "#/components/schemas/staged-info-filter"
+          },
+          "sync_metadata": {
+            "$ref": "#/components/schemas/sync-metadata-filter"
+          },
           "tags": {
             "description": "Filters for work with any of the provided tags.",
             "example": [
@@ -13618,6 +16542,9 @@
             },
             "type": "array"
           },
+          "actual_start_date": {
+            "$ref": "#/components/schemas/date-filter"
+          },
           "priority": {
             "description": "Filters for issues with any of the provided priorities.",
             "items": {
@@ -13642,6 +16569,16 @@
               "type": "string"
             },
             "type": "array"
+          },
+          "subtype": {
+            "description": "Filters for issues with any of the provided subtypes.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "target_start_date": {
+            "$ref": "#/components/schemas/date-filter"
           }
         },
         "title": "works-filter-issue",
@@ -13661,6 +16598,13 @@
           },
           "contacts": {
             "description": "Filters for opportunities with any of the provided contacts.\n",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "subtype": {
+            "description": "Filters for opportunity with any of the provided subtypes.\n",
             "items": {
               "type": "string"
             },
@@ -13716,6 +16660,13 @@
           },
           "source_channel": {
             "description": "Filters for tickets with any of the provided source channels.\n",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "subtype": {
+            "description": "Filters for tickets with any of the provided subtypes.",
             "items": {
               "type": "string"
             },
@@ -13838,6 +16789,12 @@
           "stage": {
             "$ref": "#/components/schemas/stage-filter"
           },
+          "staged_info": {
+            "$ref": "#/components/schemas/staged-info-filter"
+          },
+          "sync_metadata": {
+            "$ref": "#/components/schemas/sync-metadata-filter"
+          },
           "tags": {
             "description": "Filters for work with any of the provided tags.",
             "example": [
@@ -13925,7 +16882,7 @@
             "type": "string"
           },
           "artifacts": {
-            "$ref": "#/components/schemas/works-update-request-artifact-ids"
+            "$ref": "#/components/schemas/works-update-request-artifacts"
           },
           "body": {
             "description": "Updated body of the work object, or unchanged if not provided.\n",
@@ -13944,6 +16901,9 @@
               "type": "string"
             },
             "type": "array"
+          },
+          "custom_schema_spec": {
+            "$ref": "#/components/schemas/custom-schema-spec"
           },
           "id": {
             "description": "The work's ID.",
@@ -13986,20 +16946,43 @@
         "title": "works-update-request",
         "type": "object"
       },
-      "works-update-request-artifact-ids": {
+      "works-update-request-artifacts": {
         "properties": {
-          "set": {
-            "description": "Sets the IDs to the provided artifact IDs.",
+          "add": {
+            "description": "Adds the provided artifacts (if not already present) to the field.\n",
             "example": [
               "ARTIFACT-12345"
             ],
             "items": {
               "type": "string"
             },
+            "maxItems": 50,
+            "type": "array"
+          },
+          "remove": {
+            "description": "Removes the provided artifacts (if they exist) from the field.\n",
+            "example": [
+              "ARTIFACT-12345"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 50,
+            "type": "array"
+          },
+          "set": {
+            "description": "Sets the field to the provided artifacts.",
+            "example": [
+              "ARTIFACT-12345"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 50,
             "type": "array"
           }
         },
-        "title": "works-update-request-artifact-ids",
+        "title": "works-update-request-artifacts",
         "type": "object"
       },
       "works-update-request-issue": {
@@ -14017,6 +17000,13 @@
           },
           "sprint": {
             "description": "Updates the sprint that the issue belongs to.",
+            "nullable": true,
+            "type": "string"
+          },
+          "target_start_date": {
+            "description": "Updates the timestamp for when the work is expected to start.\n",
+            "example": "2023-01-01T12:00:00.000Z",
+            "format": "date-time",
             "nullable": true,
             "type": "string"
           }
@@ -14271,6 +17261,9 @@
           },
           "403": {
             "$ref": "#/components/responses/forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/conflict"
           },
           "429": {
             "$ref": "#/components/responses/too-many-requests"
@@ -14999,6 +17992,9 @@
           "404": {
             "$ref": "#/components/responses/not-found"
           },
+          "409": {
+            "$ref": "#/components/responses/conflict"
+          },
           "429": {
             "$ref": "#/components/responses/too-many-requests"
           },
@@ -15717,7 +18713,6 @@
             "explode": false,
             "in": "query",
             "name": "parent_id",
-            "required": true,
             "schema": {
               "type": "string"
             }
@@ -16053,6 +19048,9 @@
           },
           "403": {
             "$ref": "#/components/responses/forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/conflict"
           },
           "429": {
             "$ref": "#/components/responses/too-many-requests"
@@ -16435,7 +19433,7 @@
     },
     "/code-changes.create": {
       "post": {
-        "description": "Create CodeChange object.",
+        "description": "Creates a code change object.",
         "operationId": "code-changes-create",
         "requestBody": {
           "content": {
@@ -16477,13 +19475,13 @@
           }
         },
         "tags": [
-          "works"
+          "code-changes"
         ]
       }
     },
     "/code-changes.delete": {
       "post": {
-        "description": "Delete CodeChange object.",
+        "description": "Deletes a code change object.",
         "operationId": "code-changes-delete",
         "requestBody": {
           "content": {
@@ -16525,13 +19523,13 @@
           }
         },
         "tags": [
-          "works"
+          "code-changes"
         ]
       }
     },
     "/code-changes.get": {
       "get": {
-        "description": "Get CodeChange object.",
+        "description": "Gets a code change object.",
         "operationId": "code-changes-get",
         "parameters": [
           {
@@ -16576,12 +19574,12 @@
           }
         },
         "tags": [
-          "works"
+          "code-changes"
         ],
         "x-request-name": "CodeChangesGetQuery"
       },
       "post": {
-        "description": "Get CodeChange object.",
+        "description": "Gets a code change object.",
         "operationId": "code-changes-get-post",
         "requestBody": {
           "content": {
@@ -16623,13 +19621,13 @@
           }
         },
         "tags": [
-          "works"
+          "code-changes"
         ]
       }
     },
     "/code-changes.list": {
       "get": {
-        "description": "List CodeChange objects.",
+        "description": "Lists code change objects.",
         "operationId": "code-changes-list",
         "parameters": [
           {
@@ -16692,12 +19690,12 @@
           }
         },
         "tags": [
-          "works"
+          "code-changes"
         ],
         "x-request-name": "CodeChangesListQuery"
       },
       "post": {
-        "description": "List CodeChange objects.",
+        "description": "Lists code change objects.",
         "operationId": "code-changes-list-post",
         "requestBody": {
           "content": {
@@ -16739,13 +19737,13 @@
           }
         },
         "tags": [
-          "works"
+          "code-changes"
         ]
       }
     },
     "/code-changes.update": {
       "post": {
-        "description": "Update CodeChange object.",
+        "description": "Updates a code change object.",
         "operationId": "code-changes-update",
         "requestBody": {
           "content": {
@@ -16787,7 +19785,7 @@
           }
         },
         "tags": [
-          "works"
+          "code-changes"
         ]
       }
     },
@@ -20076,6 +23074,15 @@
             }
           },
           {
+            "description": "Whether to include custom metrics in the response. If not set, then\ncustom metrics are excluded.\n",
+            "explode": false,
+            "in": "query",
+            "name": "include_custom_metrics",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
             "description": "The maximum number of records to return. The default is '50'.\n",
             "explode": false,
             "in": "query",
@@ -21309,6 +24316,429 @@
         ]
       }
     },
+    "/question-answers.create": {
+      "post": {
+        "description": "Creates a question-answer.",
+        "operationId": "create-question-answer",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/question-answers-create-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/question-answers-create-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "question-answers"
+        ]
+      }
+    },
+    "/question-answers.delete": {
+      "post": {
+        "description": "Deletes a question-answer.",
+        "operationId": "delete-question-answer",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/question-answers-delete-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/not-found"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "question-answers"
+        ]
+      }
+    },
+    "/question-answers.get": {
+      "get": {
+        "description": "Gets a question-answer.",
+        "operationId": "get-question-answer",
+        "parameters": [
+          {
+            "description": "The ID of the required question-answer.",
+            "explode": false,
+            "in": "query",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/question-answers-get-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/not-found"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "question-answers"
+        ],
+        "x-request-name": "GetQuestionAnswerQuery"
+      },
+      "post": {
+        "description": "Gets a question-answer.",
+        "operationId": "get-question-answer-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/question-answers-get-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/question-answers-get-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/not-found"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "question-answers"
+        ]
+      }
+    },
+    "/question-answers.list": {
+      "get": {
+        "description": "Lists a collection of question-answers.",
+        "operationId": "list-question-answers",
+        "parameters": [
+          {
+            "description": "Filters for question-answer belonging to any of the provided\narticles.\n",
+            "explode": false,
+            "in": "query",
+            "name": "applies_to_articles",
+            "schema": {
+              "example": [
+                "ARTICLE-12345"
+              ],
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Filters for question-answer belonging to any of the provided parts.\n",
+            "explode": false,
+            "in": "query",
+            "name": "applies_to_parts",
+            "schema": {
+              "example": [
+                "PROD-12345"
+              ],
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Filters for question-answers created by any of the provided users.\n",
+            "explode": false,
+            "in": "query",
+            "name": "created_by",
+            "schema": {
+              "example": [
+                "DEVU-12345"
+              ],
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "The cursor to resume iteration from. If not provided, then iteration\nstarts from the beginning.\n",
+            "explode": false,
+            "in": "query",
+            "name": "cursor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The maximum number of question-answers to return. The default is\n'50'.\n",
+            "explode": false,
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "The iteration mode to use, otherwise if not set, then \"after\" is\nused.\n",
+            "explode": false,
+            "in": "query",
+            "name": "mode",
+            "schema": {
+              "$ref": "#/components/schemas/list-mode"
+            }
+          },
+          {
+            "description": "Filters for question-answers owned by any of the provided users.\n",
+            "explode": false,
+            "in": "query",
+            "name": "owned_by",
+            "schema": {
+              "example": [
+                "DEVU-12345"
+              ],
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/question-answers-list-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "question-answers"
+        ],
+        "x-request-name": "ListQuestionAnswersQuery"
+      },
+      "post": {
+        "description": "Lists a collection of question-answers.",
+        "operationId": "list-question-answers-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/question-answers-list-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/question-answers-list-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "question-answers"
+        ]
+      }
+    },
+    "/question-answers.update": {
+      "post": {
+        "description": "Updates a question-answer.",
+        "operationId": "update-question-answer",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/question-answers-update-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/question-answers-update-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/not-found"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "question-answers"
+        ]
+      }
+    },
     "/rev-orgs.create": {
       "post": {
         "description": "Creates a Rev organization in the authenticated user's Dev\norganization.\n",
@@ -21341,6 +24771,9 @@
           },
           "403": {
             "$ref": "#/components/responses/forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/conflict"
           },
           "429": {
             "$ref": "#/components/responses/too-many-requests"
@@ -21607,6 +25040,18 @@
             }
           },
           {
+            "description": "Array of display names of Rev orgs to be filtered.",
+            "explode": false,
+            "in": "query",
+            "name": "display_name",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
             "description": "List of external refs to filter Rev organizations for.",
             "explode": false,
             "in": "query",
@@ -21808,6 +25253,9 @@
           "404": {
             "$ref": "#/components/responses/not-found"
           },
+          "409": {
+            "$ref": "#/components/responses/conflict"
+          },
           "429": {
             "$ref": "#/components/responses/too-many-requests"
           },
@@ -21855,6 +25303,9 @@
           },
           "403": {
             "$ref": "#/components/responses/forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/conflict"
           },
           "429": {
             "$ref": "#/components/responses/too-many-requests"
@@ -22435,6 +25886,9 @@
           "404": {
             "$ref": "#/components/responses/not-found"
           },
+          "409": {
+            "$ref": "#/components/responses/conflict"
+          },
           "429": {
             "$ref": "#/components/responses/too-many-requests"
           },
@@ -22466,6 +25920,15 @@
                 "type": "string"
               },
               "type": "array"
+            }
+          },
+          {
+            "description": "The leaf type. Used for inferring the default stage diagram and\ntenant fragment ID.\n",
+            "explode": false,
+            "in": "query",
+            "name": "leaf_type",
+            "schema": {
+              "type": "string"
             }
           },
           {
@@ -22688,7 +26151,7 @@
             }
           },
           {
-            "description": "The cursor to resume iteration from, otherwise if not provided, then\niteration starts from the beginning.\n",
+            "description": "The cursor to resume iteration from. If not provided, then iteration\nstarts from the beginning.\n",
             "explode": false,
             "in": "query",
             "name": "cursor",
@@ -22725,6 +26188,27 @@
             "schema": {
               "format": "int32",
               "type": "integer"
+            }
+          },
+          {
+            "description": "The iteration mode to use, otherwise if not set, then \"after\" is\nused.\n",
+            "explode": false,
+            "in": "query",
+            "name": "mode",
+            "schema": {
+              "$ref": "#/components/schemas/list-mode"
+            }
+          },
+          {
+            "description": "List of fields which are not required in the payload and can be\npruned away.\n",
+            "explode": false,
+            "in": "query",
+            "name": "prune",
+            "schema": {
+              "items": {
+                "$ref": "#/components/schemas/custom-schema-fragments-list-request-prune"
+              },
+              "type": "array"
             }
           },
           {
@@ -23012,12 +26496,21 @@
         "operationId": "stock-schema-fragments-list",
         "parameters": [
           {
-            "description": "The cursor to resume iteration from, otherwise if not provided, then\niteration starts from the beginning.\n",
+            "description": "The cursor to resume iteration from. If not provided, then iteration\nstarts from the beginning.\n",
             "explode": false,
             "in": "query",
             "name": "cursor",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "description": "Filter preset to specify whether to filter only customization enabled\nleaf types.\n",
+            "explode": false,
+            "in": "query",
+            "name": "filter_preset",
+            "schema": {
+              "$ref": "#/components/schemas/stock-schema-fragments-list-request-filter-preset"
             }
           },
           {
@@ -23040,6 +26533,27 @@
             "schema": {
               "format": "int32",
               "type": "integer"
+            }
+          },
+          {
+            "description": "The iteration mode to use, otherwise if not set, then \"after\" is\nused.\n",
+            "explode": false,
+            "in": "query",
+            "name": "mode",
+            "schema": {
+              "$ref": "#/components/schemas/list-mode"
+            }
+          },
+          {
+            "description": "List of fields which are not required in the payload and can be\npruned away.\n",
+            "explode": false,
+            "in": "query",
+            "name": "prune",
+            "schema": {
+              "items": {
+                "$ref": "#/components/schemas/stock-schema-fragments-list-request-prune"
+              },
+              "type": "array"
             }
           },
           {
@@ -23247,6 +26761,153 @@
         ]
       }
     },
+    "/search.core": {
+      "get": {
+        "description": "Searches for records based on a given query.",
+        "operationId": "search-core",
+        "parameters": [
+          {
+            "description": "The query string. Search query language:\nhttps://docs.devrev.ai/product/search#fields\n",
+            "explode": false,
+            "in": "query",
+            "name": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The cursor from where to begin iteration. Start from beginning if not\nprovided.\n",
+            "explode": false,
+            "in": "query",
+            "name": "cursor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The maximum number of items to return in a page. The default is '10'.\n",
+            "explode": false,
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "The namespaces to search in.",
+            "explode": false,
+            "in": "query",
+            "name": "namespaces",
+            "schema": {
+              "items": {
+                "$ref": "#/components/schemas/search-namespace"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "The property on which to sort the search results. The default is\nRELEVANCE.\n",
+            "explode": false,
+            "in": "query",
+            "name": "sort_by",
+            "schema": {
+              "$ref": "#/components/schemas/search-sort-by-param"
+            }
+          },
+          {
+            "description": "Sorting order. The default is DESCENDING.",
+            "explode": false,
+            "in": "query",
+            "name": "sort_order",
+            "schema": {
+              "$ref": "#/components/schemas/search-sort-order-param"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/search-core-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "search"
+        ],
+        "x-request-name": "SearchCoreQuery"
+      },
+      "post": {
+        "description": "Searches for records based on a given query.",
+        "operationId": "search-core-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/search-core-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/search-core-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "search"
+        ]
+      }
+    },
     "/service-accounts.get": {
       "get": {
         "description": "Gets a service account.",
@@ -23348,6 +27009,110 @@
         },
         "tags": [
           "service-accounts"
+        ]
+      }
+    },
+    "/sla-trackers.get": {
+      "get": {
+        "description": "Gets an SLA tracker.",
+        "operationId": "sla-trackers-get",
+        "parameters": [
+          {
+            "description": "The ID of the SLA tracker to get.",
+            "explode": false,
+            "in": "query",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sla-trackers-get-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/not-found"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "slas"
+        ],
+        "x-request-name": "SlaTrackersGetQuery"
+      },
+      "post": {
+        "description": "Gets an SLA tracker.",
+        "operationId": "sla-trackers-get-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/sla-trackers-get-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sla-trackers-get-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/not-found"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "slas"
         ]
       }
     },
@@ -23889,6 +27654,574 @@
         },
         "tags": [
           "snap-ins"
+        ]
+      }
+    },
+    "/snap-widgets.create": {
+      "post": {
+        "description": "Create a snap widget object.",
+        "operationId": "snap-widgets-create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/snap-widgets-create-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/snap-widgets-create-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "snap-widgets"
+        ]
+      }
+    },
+    "/surveys.create": {
+      "post": {
+        "description": "Creates a schema for survey, which includes name and description of\nschema.\n",
+        "operationId": "surveys-create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/surveys-create-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/surveys-create-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "surveys"
+        ]
+      }
+    },
+    "/surveys.delete": {
+      "post": {
+        "description": "Deletes the specified survey.",
+        "operationId": "surveys-delete",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/surveys-delete-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/surveys-delete-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/not-found"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "surveys"
+        ]
+      }
+    },
+    "/surveys.list": {
+      "get": {
+        "description": "List surveys requested by the user.",
+        "operationId": "surveys-list",
+        "parameters": [
+          {
+            "description": "Filters for surveys created by any of these users.",
+            "explode": false,
+            "in": "query",
+            "name": "created_by",
+            "schema": {
+              "example": [
+                "DEVU-12345"
+              ],
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "The cursor to resume iteration from. If not provided, then iteration\nstarts from the beginning.\n",
+            "explode": false,
+            "in": "query",
+            "name": "cursor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The maximum number of surveys to return. If not set, then the default\nis '50'.\n",
+            "explode": false,
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "The iteration mode to use, otherwise if not set, then \"after\" is\nused.\n",
+            "explode": false,
+            "in": "query",
+            "name": "mode",
+            "schema": {
+              "$ref": "#/components/schemas/list-mode"
+            }
+          },
+          {
+            "description": "Filters for surveys by name(s).",
+            "explode": false,
+            "in": "query",
+            "name": "name",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Fields to sort the surveys by and the direction to sort them.\n",
+            "explode": false,
+            "in": "query",
+            "name": "sort_by",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/surveys-list-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "surveys"
+        ],
+        "x-request-name": "SurveysListQuery"
+      },
+      "post": {
+        "description": "List surveys requested by the user.",
+        "operationId": "surveys-list-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/surveys-list-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/surveys-list-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "surveys"
+        ]
+      }
+    },
+    "/surveys.responses.list": {
+      "get": {
+        "description": "List survey responses requested by the user.",
+        "operationId": "surveys-responses-list",
+        "parameters": [
+          {
+            "description": "Filters for survey responses created by any of these users.\n",
+            "explode": false,
+            "in": "query",
+            "name": "created_by",
+            "schema": {
+              "example": [
+                "DEVU-12345"
+              ],
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "The cursor to resume iteration from. If not provided, then iteration\nstarts from the beginning.\n",
+            "explode": false,
+            "in": "query",
+            "name": "cursor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The maximum number of survey responses to return. If not set, then\nthe default is '50'.\n",
+            "explode": false,
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "The iteration mode to use, otherwise if not set, then \"after\" is\nused.\n",
+            "explode": false,
+            "in": "query",
+            "name": "mode",
+            "schema": {
+              "$ref": "#/components/schemas/list-mode"
+            }
+          },
+          {
+            "description": "Filters for survey responses created for the objects.",
+            "explode": false,
+            "in": "query",
+            "name": "objects",
+            "schema": {
+              "example": [
+                "ACC-12345"
+              ],
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Fields to sort the survey responses by and the direction to sort\nthem.\n",
+            "explode": false,
+            "in": "query",
+            "name": "sort_by",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Filters for survey responses for the provided survey IDs.",
+            "explode": false,
+            "in": "query",
+            "name": "surveys",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/surveys-responses-list-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "surveys"
+        ],
+        "x-request-name": "SurveysResponsesListQuery"
+      },
+      "post": {
+        "description": "List survey responses requested by the user.",
+        "operationId": "surveys-responses-list-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/surveys-responses-list-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/surveys-responses-list-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "surveys"
+        ]
+      }
+    },
+    "/surveys.send": {
+      "post": {
+        "description": "Sends a survey on the specified channels.",
+        "operationId": "surveys-send",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/surveys-send-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/surveys-send-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "surveys"
+        ]
+      }
+    },
+    "/surveys.submit": {
+      "post": {
+        "description": "Submits a user response to a survey, which is defined by the survey ID.\n",
+        "operationId": "surveys-submit",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/surveys-submit-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/surveys-submit-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "surveys"
         ]
       }
     },
@@ -24883,6 +29216,220 @@
         },
         "tags": [
           "timeline-entries"
+        ]
+      }
+    },
+    "/track-events.publish": {
+      "post": {
+        "description": "Allows publishing of events (example from plug widget).",
+        "operationId": "track-events-publish",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/track-events-publish-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/track-events-publish-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "event-source"
+        ]
+      }
+    },
+    "/uoms.count": {
+      "get": {
+        "description": "Counts the number of Unit of Measurements based on the given filters.\n",
+        "operationId": "uoms-count",
+        "parameters": [
+          {
+            "description": "List of aggregation types for filtering list of UOMs.",
+            "explode": false,
+            "in": "query",
+            "name": "aggregation_types",
+            "schema": {
+              "items": {
+                "$ref": "#/components/schemas/aggregation-detail-aggregation-type"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "List of Unit of Measurement (UOM) DONs to be used in filtering\ncomplete list of UOMs defined in a Dev Org.\n",
+            "explode": false,
+            "in": "query",
+            "name": "ids",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "List of metric names for filtering list of UOMs.",
+            "explode": false,
+            "in": "query",
+            "name": "metric_names",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "List of part IDs for filtering list of UOMs.",
+            "explode": false,
+            "in": "query",
+            "name": "part_ids",
+            "schema": {
+              "example": [
+                "PROD-12345"
+              ],
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "List of product IDs for filtering list of UOMs.",
+            "explode": false,
+            "in": "query",
+            "name": "product_ids",
+            "schema": {
+              "example": [
+                "PROD-12345"
+              ],
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "List of unit types for filtering list of UOMs.",
+            "explode": false,
+            "in": "query",
+            "name": "unit_types",
+            "schema": {
+              "items": {
+                "$ref": "#/components/schemas/unit-type"
+              },
+              "type": "array"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/uoms-count-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "product-usage"
+        ],
+        "x-request-name": "UomsCountQuery"
+      },
+      "post": {
+        "description": "Counts the number of Unit of Measurements based on the given filters.\n",
+        "operationId": "uoms-count-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/uoms-count-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/uoms-count-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "product-usage"
         ]
       }
     },
@@ -25889,6 +30436,18 @@
             }
           },
           {
+            "description": "Filters for issues with any of the provided subtypes.",
+            "explode": false,
+            "in": "query",
+            "name": "issue.subtype",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
             "description": "Filters for opportunities belonging to any of the provided accounts.\n",
             "explode": false,
             "in": "query",
@@ -25908,6 +30467,18 @@
             "explode": false,
             "in": "query",
             "name": "opportunity.contacts",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Filters for opportunity with any of the provided subtypes.",
+            "explode": false,
+            "in": "query",
+            "name": "opportunity.subtype",
             "schema": {
               "items": {
                 "type": "string"
@@ -25962,6 +30533,75 @@
             "explode": false,
             "in": "query",
             "name": "stage.name",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Filters for issues that are staged.",
+            "explode": false,
+            "in": "query",
+            "name": "staged_info.is_staged",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Filters for works with selected sync statuses.",
+            "explode": false,
+            "in": "query",
+            "name": "sync_metadata.last_sync_in.status",
+            "schema": {
+              "items": {
+                "$ref": "#/components/schemas/sync-metadata-filter-sync-in-filter-status"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Filters for works modified with selected sync units.",
+            "explode": false,
+            "in": "query",
+            "name": "sync_metadata.last_sync_in.sync_unit",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Filters for works with selected sync statuses.",
+            "explode": false,
+            "in": "query",
+            "name": "sync_metadata.last_sync_out.status",
+            "schema": {
+              "items": {
+                "$ref": "#/components/schemas/sync-metadata-filter-sync-out-filter-status"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Filters for works modified with selected sync units.",
+            "explode": false,
+            "in": "query",
+            "name": "sync_metadata.last_sync_out.sync_unit",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Filters for issues synced from this specific origin system.\n",
+            "explode": false,
+            "in": "query",
+            "name": "sync_metadata.origin_system",
             "schema": {
               "items": {
                 "type": "string"
@@ -26070,6 +30710,18 @@
             "explode": false,
             "in": "query",
             "name": "ticket.source_channel",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Filters for tickets with any of the provided subtypes.",
+            "explode": false,
+            "in": "query",
+            "name": "ticket.subtype",
             "schema": {
               "items": {
                 "type": "string"
@@ -26386,6 +31038,18 @@
             }
           },
           {
+            "description": "Filters for issues with any of the provided subtypes.",
+            "explode": false,
+            "in": "query",
+            "name": "issue.subtype",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
             "description": "The maximum number of works to return. The default is '50'.\n",
             "explode": false,
             "in": "query",
@@ -26424,6 +31088,18 @@
             "explode": false,
             "in": "query",
             "name": "opportunity.contacts",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Filters for opportunity with any of the provided subtypes.",
+            "explode": false,
+            "in": "query",
+            "name": "opportunity.subtype",
             "schema": {
               "items": {
                 "type": "string"
@@ -26478,6 +31154,75 @@
             "explode": false,
             "in": "query",
             "name": "stage.name",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Filters for issues that are staged.",
+            "explode": false,
+            "in": "query",
+            "name": "staged_info.is_staged",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Filters for works with selected sync statuses.",
+            "explode": false,
+            "in": "query",
+            "name": "sync_metadata.last_sync_in.status",
+            "schema": {
+              "items": {
+                "$ref": "#/components/schemas/sync-metadata-filter-sync-in-filter-status"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Filters for works modified with selected sync units.",
+            "explode": false,
+            "in": "query",
+            "name": "sync_metadata.last_sync_in.sync_unit",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Filters for works with selected sync statuses.",
+            "explode": false,
+            "in": "query",
+            "name": "sync_metadata.last_sync_out.status",
+            "schema": {
+              "items": {
+                "$ref": "#/components/schemas/sync-metadata-filter-sync-out-filter-status"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Filters for works modified with selected sync units.",
+            "explode": false,
+            "in": "query",
+            "name": "sync_metadata.last_sync_out.sync_unit",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Filters for issues synced from this specific origin system.\n",
+            "explode": false,
+            "in": "query",
+            "name": "sync_metadata.origin_system",
             "schema": {
               "items": {
                 "type": "string"
@@ -26586,6 +31331,18 @@
             "explode": false,
             "in": "query",
             "name": "ticket.source_channel",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Filters for tickets with any of the provided subtypes.",
+            "explode": false,
+            "in": "query",
+            "name": "ticket.subtype",
             "schema": {
               "items": {
                 "type": "string"
@@ -26783,6 +31540,10 @@
       "name": "auth-tokens"
     },
     {
+      "description": "Code change interactions.",
+      "name": "code-changes"
+    },
+    {
       "description": "DevRev conversation interaction.",
       "name": "conversations"
     },
@@ -26823,6 +31584,10 @@
       "name": "product-usage"
     },
     {
+      "description": "Plug Question-Answer APIs",
+      "name": "question-answers"
+    },
+    {
       "description": "Rev organization interactions.",
       "name": "rev-orgs"
     },
@@ -26835,6 +31600,10 @@
       "name": "schedules"
     },
     {
+      "description": "DevRev search.",
+      "name": "search"
+    },
+    {
       "description": "Service account interactions",
       "name": "service-accounts"
     },
@@ -26845,6 +31614,14 @@
     {
       "description": "DevRev snap-ins interactions.",
       "name": "snap-ins"
+    },
+    {
+      "description": "SnapWidget APIs",
+      "name": "snap-widgets"
+    },
+    {
+      "description": "Surveys",
+      "name": "surveys"
     },
     {
       "description": "System user interactions",

@@ -26,6 +26,235 @@ export type Account = OrgBase & {
   tier?: string;
 };
 
+/**
+ * accounts-create-request
+ * Request object to create a new account in the Dev organization.
+ */
+export interface AccountsCreateRequest {
+  /** Description of the account. */
+  description?: string;
+  /** Name of the account. */
+  display_name: string;
+  /** List of company's domain names. Example - ['devrev.ai']. */
+  domains?: string[];
+  /**
+   * External refs are unique identifiers from your customer system of
+   * records, stored as a list.
+   */
+  external_refs?: string[];
+  /** List of Dev users owning this account. */
+  owned_by?: string[];
+  /** The tier of the account. */
+  tier?: string;
+  /**
+   * List of company websites. Example - ['www.devrev.ai',
+   * 'www.marketplace.devrev.ai'].
+   */
+  websites?: string[];
+}
+
+/**
+ * accounts-create-response
+ * The response to creating a new account.
+ */
+export interface AccountsCreateResponse {
+  account: Account;
+}
+
+/**
+ * accounts-delete-request
+ * Request object to delete an account.
+ */
+export interface AccountsDeleteRequest {
+  /**
+   * The ID of account to delete.
+   * @example "ACC-12345"
+   */
+  id: string;
+}
+
+/**
+ * accounts-delete-response
+ * The response to deleting an account.
+ */
+export type AccountsDeleteResponse = object;
+
+/**
+ * accounts-export-request
+ * The request to export a collection of accounts.
+ */
+export interface AccountsExportRequest {
+  /** Filters for accounts created by the specified user(s). */
+  created_by?: string[];
+  created_date?: DateTimeFilter;
+  /** Array of display names of accounts to be filtered. */
+  display_name?: string[];
+  /** Array of references of accounts to be filtered. */
+  external_refs?: string[];
+  /**
+   * The number of accounts to return. The default is '50'.
+   * @format int32
+   * @min 1
+   * @max 500
+   */
+  first?: number;
+  modified_date?: DateTimeFilter;
+  /** Fields to sort the accounts by and the direction to sort them in. */
+  sort_by?: string[];
+  /** Filters for accounts on specified stages. */
+  stage?: string[];
+}
+
+/**
+ * accounts-export-response
+ * The response to exporting a collection of accounts.
+ */
+export interface AccountsExportResponse {
+  /** The exported accounts. */
+  accounts: Account[];
+}
+
+/**
+ * accounts-get-request
+ * Request object to get an account's information.
+ */
+export interface AccountsGetRequest {
+  /**
+   * The ID of the account to be retrieved.
+   * @example "ACC-12345"
+   */
+  id: string;
+}
+
+/**
+ * accounts-get-response
+ * The returned account.
+ */
+export interface AccountsGetResponse {
+  account: Account;
+}
+
+/**
+ * accounts-list-request
+ * List the accounts.
+ */
+export interface AccountsListRequest {
+  /** Filters for accounts created by the specified user(s). */
+  created_by?: string[];
+  created_date?: DateTimeFilter;
+  /**
+   * The cursor to resume iteration from. If not provided, then
+   * iteration starts from the beginning.
+   */
+  cursor?: string;
+  /** Array of display names of accounts to be filtered. */
+  display_name?: string[];
+  /** Array of references of accounts to be filtered. */
+  external_refs?: string[];
+  /**
+   * The maximum number of accounts to return per page. The default is
+   * '50'.
+   * @format int32
+   */
+  limit?: number;
+  /**
+   * The iteration mode to use. If "after", then entries after the provided
+   * cursor will be returned, or if no cursor is provided, then from the
+   * beginning. If "before", then entries before the provided cursor will be
+   * returned, or if no cursor is provided, then from the end. Entries will
+   * always be returned in the specified sort-by order.
+   */
+  mode?: ListMode;
+  modified_date?: DateTimeFilter;
+  /** Fields to sort the accounts by and the direction to sort them in. */
+  sort_by?: string[];
+  /** Filters for accounts on specified stages. */
+  stage?: string[];
+}
+
+/**
+ * accounts-list-response
+ * The response to listing all accounts matching the filter criteria.
+ */
+export interface AccountsListResponse {
+  /** List containing all the accounts */
+  accounts: Account[];
+  /**
+   * The cursor used to iterate subsequent results in accordance to the
+   * sort order. If not set, then no later elements exist.
+   */
+  next_cursor?: string;
+  /**
+   * The cursor used to iterate preceding results in accordance to the
+   * sort order. If not set, then no prior elements exist.
+   */
+  prev_cursor?: string;
+}
+
+/**
+ * accounts-update-request
+ * Request to update details of the account.
+ */
+export interface AccountsUpdateRequest {
+  /** Updated description of the account. */
+  description?: string;
+  /** Updated display name for the account. */
+  display_name?: string;
+  /** Updated list of company's domain names. Example - ['devrev.ai']. */
+  domains?: string[];
+  /** Updated External Refs of account. */
+  external_refs?: string[];
+  /**
+   * The ID of account to update.
+   * @example "ACC-12345"
+   */
+  id: string;
+  /** Updated list of the users owning this account. */
+  owned_by?: string[];
+  /** Updated tier of the account. */
+  tier?: string | null;
+}
+
+/**
+ * accounts-update-response
+ * Updated account object.
+ */
+export interface AccountsUpdateResponse {
+  account: Account;
+}
+
+/**
+ * archetype-metric-target
+ * Metric with corresponding target values.
+ */
+export interface ArchetypeMetricTarget {
+  /**
+   * If true, the schedule attached to this metric is out of schedule at
+   * the time of the query.
+   */
+  is_out_of_schedule?: boolean;
+  metric_definition: MetricDefinitionSummary;
+  org_schedule?: OrgScheduleSummary;
+  /**
+   * Time in minutes that remains on a paused metric.
+   * @format int32
+   */
+  remaining_time?: number;
+  /**
+   * Time at which the metric would breach SLA if no action taken.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  target_time?: string;
+  /**
+   * Time at which the metric would reach the SLA warning limit if no
+   * action taken.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  warning_target_time?: string;
+}
+
 /** artifact */
 export type Artifact = AtomBase;
 
@@ -78,7 +307,7 @@ export interface ArtifactsGetResponse {
  */
 export interface ArtifactsListRequest {
   /** The ID of the object to filter artifacts. */
-  parent_id: string;
+  parent_id?: string;
 }
 
 /**
@@ -126,6 +355,8 @@ export interface ArtifactsLocateResponse {
 export interface ArtifactsPrepareRequest {
   /** The name of the file that's being uploaded. */
   file_name: string;
+  /** The type of file that's being uploaded. */
+  file_type?: string;
 }
 
 /**
@@ -330,8 +561,10 @@ export enum AuthTokenGrantType {
 /** The type of the requested token. */
 export enum AuthTokenRequestedTokenType {
   UrnDevrevParamsOauthTokenTypeAat = 'urn:devrev:params:oauth:token-type:aat',
+  UrnDevrevParamsOauthTokenTypeAatActAs = 'urn:devrev:params:oauth:token-type:aat:act-as',
   UrnDevrevParamsOauthTokenTypeAatPublic = 'urn:devrev:params:oauth:token-type:aat:public',
   UrnDevrevParamsOauthTokenTypeDev = 'urn:devrev:params:oauth:token-type:dev',
+  UrnDevrevParamsOauthTokenTypeDevConnect = 'urn:devrev:params:oauth:token-type:dev:connect',
   UrnDevrevParamsOauthTokenTypeGat = 'urn:devrev:params:oauth:token-type:gat',
   UrnDevrevParamsOauthTokenTypePat = 'urn:devrev:params:oauth:token-type:pat',
   UrnDevrevParamsOauthTokenTypePatActAs = 'urn:devrev:params:oauth:token-type:pat:act-as',
@@ -376,7 +609,10 @@ export enum AuthTokenTokenType {
  * type.
  */
 export interface AuthTokensCreateRequest {
-  /** The unique ID of the Dev user to impersonate. */
+  /**
+   * The unique ID of the Dev user or the service account to
+   * impersonate.
+   */
   act_as?: string;
   /** The expected audience values with respect to the token. */
   aud?: string[];
@@ -620,6 +856,7 @@ export type Conversation = AtomBase & {
   metadata?: ConversationMetadata;
   /** Owner IDs for the conversation. */
   owned_by?: UserSummary[];
+  sla_tracker?: SlaTrackerSummary;
   /** Describes the current stage of a work item. */
   stage?: LegacyStage;
   /** Tags associated with the object. */
@@ -994,6 +1231,7 @@ export type ErrorBadRequest = ErrorBase &
     | ErrorBadRequestMissingRequiredField
     | ErrorBadRequestParseError
     | ErrorBadRequestStaleSchemaFragments
+    | ErrorBadRequestUnexpectedJsonType
     | ErrorBadRequestValueNotPermitted
   ) & {
     type: ErrorBadRequestType;
@@ -1026,6 +1264,8 @@ export interface ErrorBadRequestInvalidField {
 
 /** error-bad-request-missing-dependency */
 export interface ErrorBadRequestMissingDependency {
+  /** The dependent fields. */
+  dependencies?: ErrorBadRequestMissingDependencyDependency[];
   /** The field on which the value depends. */
   dependent_field_name?: string;
   /** The value which needs to be set of the dependent field. */
@@ -1034,6 +1274,14 @@ export interface ErrorBadRequestMissingDependency {
   provided_field_name?: string;
   /** The value that was received. */
   provided_field_value?: string;
+}
+
+/** error-bad-request-missing-dependency-dependency */
+export interface ErrorBadRequestMissingDependencyDependency {
+  /** The dependent field name. */
+  field_name: string;
+  /** The dependent field value. */
+  field_value: string;
 }
 
 /** error-bad-request-missing-required-field */
@@ -1064,11 +1312,31 @@ export enum ErrorBadRequestType {
   MissingRequiredField = 'missing_required_field',
   ParseError = 'parse_error',
   StaleSchemaFragments = 'stale_schema_fragments',
+  UnexpectedJsonType = 'unexpected_json_type',
   ValueNotPermitted = 'value_not_permitted',
+}
+
+/** error-bad-request-unexpected-json-type */
+export interface ErrorBadRequestUnexpectedJsonType {
+  actual: ErrorBadRequestUnexpectedJsonTypeType;
+  expected: ErrorBadRequestUnexpectedJsonTypeType;
+  /** The field name that's invalid. */
+  field_name: string;
+}
+
+export enum ErrorBadRequestUnexpectedJsonTypeType {
+  Array = 'array',
+  Bool = 'bool',
+  Null = 'null',
+  Number = 'number',
+  Object = 'object',
+  String = 'string',
 }
 
 /** error-bad-request-value-not-permitted */
 export interface ErrorBadRequestValueNotPermitted {
+  /** The allowed values for the field. */
+  allowed_values?: string[];
   /** The field whose value is not permitted. */
   field_name: string;
   /** The reason the value isn't permitted. */
@@ -1081,6 +1349,19 @@ export interface ErrorBase {
   detail?: string;
   /** The message associated with the error. */
   message?: string;
+}
+
+/** error-conflict */
+export type ErrorConflict = ErrorBase &
+  ErrorConflictConflict & {
+    type: ErrorConflictType;
+  };
+
+/** error-conflict-conflict */
+export type ErrorConflictConflict = object;
+
+export enum ErrorConflictType {
+  Conflict = 'conflict',
 }
 
 /** error-forbidden */
@@ -1292,6 +1573,22 @@ export interface EventSlaTrackerUpdated {
   sla_tracker: SlaTracker;
 }
 
+/** event-survey-response-created */
+export interface EventSurveyResponseCreated {
+  survey_response: SurveyResponse;
+}
+
+/** event-survey-response-deleted */
+export interface EventSurveyResponseDeleted {
+  /** The ID of the survey response that was deleted. */
+  id: string;
+}
+
+/** event-survey-response-updated */
+export interface EventSurveyResponseUpdated {
+  survey_response: SurveyResponse;
+}
+
 /** event-tag-created */
 export interface EventTagCreated {
   tag: Tag;
@@ -1389,6 +1686,12 @@ export type Issue = WorkBase & {
   developed_with?: PartSummary[];
   /** Priority of the work based upon impact and criticality. */
   priority?: IssuePriority;
+  /**
+   * Target start date for the object.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  target_start_date?: string;
 };
 
 /** Priority of the work based upon impact and criticality. */
@@ -1420,6 +1723,12 @@ export enum ListMode {
   Before = 'before',
 }
 
+/** metric-definition-summary */
+export type MetricDefinitionSummary = AtomBaseSummary & {
+  /** Human readable name of the metric. */
+  name?: string;
+};
+
 /** org-base */
 export type OrgBase = AtomBase & {
   /** Name of the Organization. */
@@ -1438,6 +1747,44 @@ export enum OrgEnvironment {
   Staging = 'staging',
   Test = 'test',
 }
+
+/**
+ * Status determines how an item can be used. In 'draft' status an item
+ * can be edited but can't be used. When 'published' the item can longer
+ * be edited but can be used. 'Archived' is read-only.
+ */
+export enum OrgScheduleStatus {
+  Archived = 'archived',
+  Draft = 'draft',
+  Published = 'published',
+}
+
+/** org-schedule-summary */
+export type OrgScheduleSummary = AtomBaseSummary & {
+  /** Human-readable name. */
+  name?: string;
+  /**
+   * Status determines how an item can be used. In 'draft' status an item
+   * can be edited but can't be used. When 'published' the item can longer
+   * be edited but can be used. 'Archived' is read-only.
+   */
+  status: OrgScheduleStatus;
+  /**
+   * Timezone in which this is defined. Only organization schedules in
+   * the same timezone can be directly combined.
+   */
+  timezone?: string;
+  /**
+   * Derived field indicating when a valid organization schedule will
+   * become invalid. If omitted, the schedule is already invalid. A
+   * schedule is valid if it has a weekly schedule for all named periods
+   * for all its schedule fragments, and if it has a schedule fragment
+   * for the time period in question.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  valid_until?: string;
+};
 
 /** org-summary */
 export type OrgSummary = RevOrgSummary & {
@@ -1850,6 +2197,8 @@ export interface RevOrgsListRequest {
    * iteration starts from the beginning.
    */
   cursor?: string;
+  /** Array of display names of Rev orgs to be filtered. */
+  display_name?: string[];
   /** List of external refs to filter Rev organizations for. */
   external_ref?: string[];
   /**
@@ -1971,6 +2320,29 @@ export interface SetTagWithValue {
 }
 
 /**
+ * Status determines how an item can be used. In 'draft' status an item
+ * can be edited but can't be used. When 'published' the item can longer
+ * be edited but can be used. 'Archived' is read-only.
+ */
+export enum SlaStatus {
+  Archived = 'archived',
+  Draft = 'draft',
+  Published = 'published',
+}
+
+/** sla-summary */
+export type SlaSummary = AtomBaseSummary & {
+  /** Human-readable name. */
+  name: string;
+  /**
+   * Status determines how an item can be used. In 'draft' status an item
+   * can be edited but can't be used. When 'published' the item can longer
+   * be edited but can be used. 'Archived' is read-only.
+   */
+  status: SlaStatus;
+};
+
+/**
  * sla-summary-filter
  * The filter for SLA summary.
  */
@@ -1994,7 +2366,40 @@ export enum SlaSummaryStage {
 }
 
 /** sla-tracker */
-export type SlaTracker = AtomBase;
+export type SlaTracker = AtomBase & {
+  /** Details of the object on which the SLA is being tracked. */
+  applies_to_id?: string;
+  /** Summary of the metrics target being tracked in the SLA tracker. */
+  metric_target_summaries: ArchetypeMetricTarget[];
+  sla?: SlaSummary;
+  /**
+   * Details of the applicable SLA policy. Can be omitted if no sla
+   * applies, or if no policy of the sla applies at the moment.
+   */
+  sla_policy_id?: string;
+  /** SLA stage of the object being tracked. */
+  stage?: string;
+  /**
+   * It is an indicator of whether the SLA has ever been breached
+   * (missed). If not, it shows whether the SLA is completed, in
+   * progress, or nil - if no policy is applied.
+   */
+  status?: string;
+};
+
+/** sla-tracker-summary */
+export type SlaTrackerSummary = AtomBaseSummary;
+
+/** sla-trackers-get-request */
+export interface SlaTrackersGetRequest {
+  /** The ID of the SLA tracker to get. */
+  id: string;
+}
+
+/** sla-trackers-get-response */
+export interface SlaTrackersGetResponse {
+  sla_tracker: SlaTracker;
+}
 
 /** snap-widget */
 export interface SnapWidget {
@@ -2030,11 +2435,69 @@ export interface StageUpdate {
   name?: string;
 }
 
+/** staged-info-filter */
+export interface StagedInfoFilter {
+  /** Filters for issues that are staged. */
+  is_staged?: boolean;
+}
+
 /**
  * survey-aggregation-filter
  * The filter for survey aggregation.
  */
 export type SurveyAggregationFilter = object;
+
+/** survey-response */
+export type SurveyResponse = AtomBase & {
+  /** The unique ID associated with the dispatched survey. */
+  dispatch_id?: string;
+  /** The ID of the object for which survey is taken. */
+  object?: string;
+  /** Response for the survey. */
+  response?: object;
+  /** The ID of the survey for which response is taken. */
+  survey?: string;
+};
+
+/** sync-metadata-filter */
+export interface SyncMetadataFilter {
+  last_sync_in?: SyncMetadataFilterSyncInFilter;
+  last_sync_out?: SyncMetadataFilterSyncOutFilter;
+  /** Filters for issues synced from this specific origin system. */
+  origin_system?: string[];
+}
+
+/** sync-metadata-filter-sync-in-filter */
+export interface SyncMetadataFilterSyncInFilter {
+  /** Filters for works with selected sync statuses. */
+  status?: SyncMetadataFilterSyncInFilterStatus[];
+  /** Provides ways to specify date ranges on objects. */
+  sync_date?: DateFilter;
+  /** Filters for works modified with selected sync units. */
+  sync_unit?: string[];
+}
+
+export enum SyncMetadataFilterSyncInFilterStatus {
+  Failed = 'failed',
+  Modified = 'modified',
+  Staged = 'staged',
+  Succeeded = 'succeeded',
+}
+
+/** sync-metadata-filter-sync-out-filter */
+export interface SyncMetadataFilterSyncOutFilter {
+  /** Filters for works with selected sync statuses. */
+  status?: SyncMetadataFilterSyncOutFilterStatus[];
+  /** Provides ways to specify date ranges on objects. */
+  sync_date?: DateFilter;
+  /** Filters for works modified with selected sync units. */
+  sync_unit?: string[];
+}
+
+export enum SyncMetadataFilterSyncOutFilterStatus {
+  Failed = 'failed',
+  Succeeded = 'succeeded',
+}
 
 /** sys-user-summary */
 export type SysUserSummary = UserBaseSummary;
@@ -2233,6 +2696,7 @@ export type Ticket = WorkBase & {
   rev_org?: OrgSummary;
   /** Severity of the ticket. */
   severity?: TicketSeverity;
+  sla_tracker?: SlaTrackerSummary;
   /** Source channel of the ticket. */
   source_channel?: string;
 };
@@ -2317,7 +2781,7 @@ export type TimelineEntriesCreateRequest =
 export interface TimelineEntriesCreateRequestTimelineComment {
   /**
    * The IDs of the artifacts attached to the comment.
-   * @maxItems 10
+   * @maxItems 50
    * @example ["ARTIFACT-12345"]
    */
   artifacts?: string[];
@@ -2479,7 +2943,7 @@ export interface TimelineEntriesUpdateRequestTimelineCommentArtifacts {
   remove?: string[];
   /**
    * Sets the field to the provided artifacts.
-   * @maxItems 10
+   * @maxItems 50
    * @example ["ARTIFACT-12345"]
    */
   set?: string[];
@@ -2659,6 +3123,9 @@ export interface WebhookEventRequest {
   sla_tracker_created?: EventSlaTrackerCreated;
   sla_tracker_deleted?: EventSlaTrackerDeleted;
   sla_tracker_updated?: EventSlaTrackerUpdated;
+  survey_response_created?: EventSurveyResponseCreated;
+  survey_response_deleted?: EventSurveyResponseDeleted;
+  survey_response_updated?: EventSurveyResponseUpdated;
   tag_created?: EventTagCreated;
   tag_deleted?: EventTagDeleted;
   tag_updated?: EventTagUpdated;
@@ -2720,6 +3187,9 @@ export enum WebhookEventType {
   RevUserCreated = 'rev_user_created',
   RevUserDeleted = 'rev_user_deleted',
   RevUserUpdated = 'rev_user_updated',
+  SlaTrackerCreated = 'sla_tracker_created',
+  SlaTrackerDeleted = 'sla_tracker_deleted',
+  SlaTrackerUpdated = 'sla_tracker_updated',
   TagCreated = 'tag_created',
   TagDeleted = 'tag_deleted',
   TagUpdated = 'tag_updated',
@@ -2993,6 +3463,12 @@ export interface WorksCreateRequestIssue {
   priority_v2?: number;
   /** The sprint that the issue belongs to. */
   sprint?: string;
+  /**
+   * Timestamp for when the work is expected to start.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  target_start_date?: string;
 }
 
 /** works-create-request-ticket */
@@ -3068,6 +3544,8 @@ export interface WorksExportRequest {
   reported_by?: string[];
   /** The filter for stages. */
   stage?: StageFilter;
+  staged_info?: StagedInfoFilter;
+  sync_metadata?: SyncMetadataFilter;
   /**
    * Filters for work with any of the provided tags.
    * @example ["TAG-12345"]
@@ -3093,6 +3571,8 @@ export interface WorksFilterIssue {
    * @example ["ACC-12345"]
    */
   accounts?: string[];
+  /** Provides ways to specify date ranges on objects. */
+  actual_start_date?: DateFilter;
   /** Filters for issues with any of the provided priorities. */
   priority?: IssuePriority[];
   /** Filters for issues with any of the provided priority enum ids. */
@@ -3102,6 +3582,8 @@ export interface WorksFilterIssue {
    * @example ["REV-AbCdEfGh"]
    */
   rev_orgs?: string[];
+  /** Provides ways to specify date ranges on objects. */
+  target_start_date?: DateFilter;
 }
 
 /** works-filter-ticket */
@@ -3193,6 +3675,8 @@ export interface WorksListRequest {
   reported_by?: string[];
   /** The filter for stages. */
   stage?: StageFilter;
+  staged_info?: StagedInfoFilter;
+  sync_metadata?: SyncMetadataFilter;
   /**
    * Filters for work with any of the provided tags.
    * @example ["TAG-12345"]
@@ -3232,7 +3716,7 @@ export type WorksUpdateRequest = (
    * @example "PROD-12345"
    */
   applies_to_part?: string;
-  artifacts?: WorksUpdateRequestArtifactIds;
+  artifacts?: WorksUpdateRequestArtifacts;
   /** Updated body of the work object, or unchanged if not provided. */
   body?: string;
   /**
@@ -3257,10 +3741,23 @@ export type WorksUpdateRequest = (
   type?: WorkType;
 };
 
-/** works-update-request-artifact-ids */
-export interface WorksUpdateRequestArtifactIds {
+/** works-update-request-artifacts */
+export interface WorksUpdateRequestArtifacts {
   /**
-   * Sets the IDs to the provided artifact IDs.
+   * Adds the provided artifacts (if not already present) to the field.
+   * @maxItems 50
+   * @example ["ARTIFACT-12345"]
+   */
+  add?: string[];
+  /**
+   * Removes the provided artifacts (if they exist) from the field.
+   * @maxItems 50
+   * @example ["ARTIFACT-12345"]
+   */
+  remove?: string[];
+  /**
+   * Sets the field to the provided artifacts.
+   * @maxItems 50
    * @example ["ARTIFACT-12345"]
    */
   set?: string[];
@@ -3278,6 +3775,12 @@ export interface WorksUpdateRequestIssue {
   priority_v2?: number;
   /** Updates the sprint that the issue belongs to. */
   sprint?: string | null;
+  /**
+   * Updates the timestamp for when the work is expected to start.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  target_start_date?: string | null;
 }
 
 /** works-update-request-issue-developed-with */
@@ -3531,6 +4034,369 @@ export class Api<
   SecurityDataType extends unknown
 > extends HttpClient<SecurityDataType> {
   /**
+   * @description Creates an account, which is a record representing a customer or an organization.
+   *
+   * @tags accounts
+   * @name AccountsCreate
+   * @request POST:/accounts.create
+   * @secure
+   */
+  accountsCreate = (data: AccountsCreateRequest, params: RequestParams = {}) =>
+    this.request<
+      AccountsCreateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorConflict
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/accounts.create`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Deletes an account.
+   *
+   * @tags accounts
+   * @name AccountsDelete
+   * @request POST:/accounts.delete
+   * @secure
+   */
+  accountsDelete = (data: AccountsDeleteRequest, params: RequestParams = {}) =>
+    this.request<
+      AccountsDeleteResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/accounts.delete`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Exports a collection of accounts.
+   *
+   * @tags accounts
+   * @name AccountsExport
+   * @request GET:/accounts.export
+   * @secure
+   */
+  accountsExport = (
+    query?: {
+      /** Filters for accounts created by the specified user(s). */
+      created_by?: string[];
+      /**
+       * Filters for objects created after the provided timestamp (inclusive).
+       * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
+       */
+      'created_date.after'?: string;
+      /**
+       * Filters for objects created before the provided timestamp
+       * (inclusive).
+       * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
+       */
+      'created_date.before'?: string;
+      /** Array of display names of accounts to be filtered. */
+      display_name?: string[];
+      /** Array of references of accounts to be filtered. */
+      external_refs?: string[];
+      /**
+       * The number of accounts to return. The default is '50'.
+       * @format int32
+       * @min 1
+       * @max 500
+       */
+      first?: number;
+      /**
+       * Filters for objects created after the provided timestamp (inclusive).
+       * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
+       */
+      'modified_date.after'?: string;
+      /**
+       * Filters for objects created before the provided timestamp
+       * (inclusive).
+       * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
+       */
+      'modified_date.before'?: string;
+      /** Fields to sort the accounts by and the direction to sort them in. */
+      sort_by?: string[];
+      /** Filters for accounts on specified stages. */
+      stage?: string[];
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      AccountsExportResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/accounts.export`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Exports a collection of accounts.
+   *
+   * @tags accounts
+   * @name AccountsExportPost
+   * @request POST:/accounts.export
+   * @secure
+   */
+  accountsExportPost = (
+    data: AccountsExportRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      AccountsExportResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/accounts.export`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Retrieves an account's information.
+   *
+   * @tags accounts
+   * @name AccountsGet
+   * @request GET:/accounts.get
+   * @secure
+   */
+  accountsGet = (
+    query: {
+      /**
+       * The ID of the account to be retrieved.
+       * @example "ACC-12345"
+       */
+      id: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      AccountsGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/accounts.get`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Retrieves an account's information.
+   *
+   * @tags accounts
+   * @name AccountsGetPost
+   * @request POST:/accounts.get
+   * @secure
+   */
+  accountsGetPost = (data: AccountsGetRequest, params: RequestParams = {}) =>
+    this.request<
+      AccountsGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/accounts.get`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets a list of accounts.
+   *
+   * @tags accounts
+   * @name AccountsList
+   * @request GET:/accounts.list
+   * @secure
+   */
+  accountsList = (
+    query?: {
+      /** Filters for accounts created by the specified user(s). */
+      created_by?: string[];
+      /**
+       * Filters for objects created after the provided timestamp (inclusive).
+       * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
+       */
+      'created_date.after'?: string;
+      /**
+       * Filters for objects created before the provided timestamp
+       * (inclusive).
+       * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
+       */
+      'created_date.before'?: string;
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /** Array of display names of accounts to be filtered. */
+      display_name?: string[];
+      /** Array of references of accounts to be filtered. */
+      external_refs?: string[];
+      /**
+       * The maximum number of accounts to return per page. The default is
+       * '50'.
+       * @format int32
+       */
+      limit?: number;
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /**
+       * Filters for objects created after the provided timestamp (inclusive).
+       * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
+       */
+      'modified_date.after'?: string;
+      /**
+       * Filters for objects created before the provided timestamp
+       * (inclusive).
+       * @format date-time
+       * @example "2023-01-01T12:00:00.000Z"
+       */
+      'modified_date.before'?: string;
+      /** Fields to sort the accounts by and the direction to sort them in. */
+      sort_by?: string[];
+      /** Filters for accounts on specified stages. */
+      stage?: string[];
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      AccountsListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/accounts.list`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets a list of accounts.
+   *
+   * @tags accounts
+   * @name AccountsListPost
+   * @request POST:/accounts.list
+   * @secure
+   */
+  accountsListPost = (data: AccountsListRequest, params: RequestParams = {}) =>
+    this.request<
+      AccountsListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/accounts.list`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Updates an account's information.
+   *
+   * @tags accounts
+   * @name AccountsUpdate
+   * @request POST:/accounts.update
+   * @secure
+   */
+  accountsUpdate = (data: AccountsUpdateRequest, params: RequestParams = {}) =>
+    this.request<
+      AccountsUpdateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorConflict
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/accounts.update`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
    * @description Gets the requested artifact's information.
    *
    * @tags artifacts
@@ -3605,9 +4471,9 @@ export class Api<
    * @secure
    */
   artifactsList = (
-    query: {
+    query?: {
       /** The ID of the object to filter artifacts. */
-      parent_id: string;
+      parent_id?: string;
     },
     params: RequestParams = {}
   ) =>
@@ -3776,6 +4642,7 @@ export class Api<
       | ErrorBadRequest
       | ErrorUnauthorized
       | ErrorForbidden
+      | ErrorConflict
       | ErrorTooManyRequests
       | ErrorInternalServerError
       | ErrorServiceUnavailable
@@ -4714,6 +5581,7 @@ export class Api<
       | ErrorBadRequest
       | ErrorUnauthorized
       | ErrorForbidden
+      | ErrorConflict
       | ErrorTooManyRequests
       | ErrorInternalServerError
       | ErrorServiceUnavailable
@@ -4855,6 +5723,8 @@ export class Api<
        * starts from the beginning.
        */
       cursor?: string;
+      /** Array of display names of Rev orgs to be filtered. */
+      display_name?: string[];
       /** List of external refs to filter Rev organizations for. */
       external_ref?: string[];
       /**
@@ -4949,11 +5819,76 @@ export class Api<
       | ErrorUnauthorized
       | ErrorForbidden
       | ErrorNotFound
+      | ErrorConflict
       | ErrorTooManyRequests
       | ErrorInternalServerError
       | ErrorServiceUnavailable
     >({
       path: `/rev-orgs.update`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets an SLA tracker.
+   *
+   * @tags slas
+   * @name SlaTrackersGet
+   * @request GET:/sla-trackers.get
+   * @secure
+   */
+  slaTrackersGet = (
+    query: {
+      /** The ID of the SLA tracker to get. */
+      id: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      SlaTrackersGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/sla-trackers.get`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets an SLA tracker.
+   *
+   * @tags slas
+   * @name SlaTrackersGetPost
+   * @request POST:/sla-trackers.get
+   * @secure
+   */
+  slaTrackersGetPost = (
+    data: SlaTrackersGetRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      SlaTrackersGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/sla-trackers.get`,
       method: 'POST',
       body: data,
       secure: true,
@@ -5737,6 +6672,18 @@ export class Api<
       reported_by?: string[];
       /** Filters for records in the provided stage(s) by name. */
       'stage.name'?: string[];
+      /** Filters for issues that are staged. */
+      'staged_info.is_staged'?: boolean;
+      /** Filters for works with selected sync statuses. */
+      'sync_metadata.last_sync_in.status'?: SyncMetadataFilterSyncInFilterStatus[];
+      /** Filters for works modified with selected sync units. */
+      'sync_metadata.last_sync_in.sync_unit'?: string[];
+      /** Filters for works with selected sync statuses. */
+      'sync_metadata.last_sync_out.status'?: SyncMetadataFilterSyncOutFilterStatus[];
+      /** Filters for works modified with selected sync units. */
+      'sync_metadata.last_sync_out.sync_unit'?: string[];
+      /** Filters for issues synced from this specific origin system. */
+      'sync_metadata.origin_system'?: string[];
       /**
        * Filters for work with any of the provided tags.
        * @example ["TAG-12345"]
@@ -5936,6 +6883,18 @@ export class Api<
       reported_by?: string[];
       /** Filters for records in the provided stage(s) by name. */
       'stage.name'?: string[];
+      /** Filters for issues that are staged. */
+      'staged_info.is_staged'?: boolean;
+      /** Filters for works with selected sync statuses. */
+      'sync_metadata.last_sync_in.status'?: SyncMetadataFilterSyncInFilterStatus[];
+      /** Filters for works modified with selected sync units. */
+      'sync_metadata.last_sync_in.sync_unit'?: string[];
+      /** Filters for works with selected sync statuses. */
+      'sync_metadata.last_sync_out.status'?: SyncMetadataFilterSyncOutFilterStatus[];
+      /** Filters for works modified with selected sync units. */
+      'sync_metadata.last_sync_out.sync_unit'?: string[];
+      /** Filters for issues synced from this specific origin system. */
+      'sync_metadata.origin_system'?: string[];
       /**
        * Filters for work with any of the provided tags.
        * @example ["TAG-12345"]

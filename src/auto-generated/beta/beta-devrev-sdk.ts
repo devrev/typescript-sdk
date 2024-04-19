@@ -44,10 +44,17 @@ export type Account = OrgBase & {
    * @example "don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>"
    */
   stock_schema_fragment?: string;
+  /** Subtype corresponding to the custom type fragment. */
+  subtype?: string;
   /** Tags associated with an object. */
   tags?: TagWithValue[];
   /** The Tier of the corresponding Account. */
   tier?: string;
+};
+
+/** account-search-summary */
+export type AccountSearchSummary = SearchSummaryBase & {
+  account: AccountSummary;
 };
 
 /** account-summary */
@@ -73,8 +80,7 @@ export interface AccountsCreateRequest {
   domains?: string[];
   /**
    * External refs are unique identifiers from your customer system of
-   * records, stored as a list. Currently the length of this field is
-   * limited to 1.
+   * records, stored as a list.
    */
   external_refs?: string[];
   /** List of Dev users owning this account. */
@@ -88,6 +94,11 @@ export interface AccountsCreateRequest {
   tags?: SetTagWithValue[];
   /** The tier of the account. */
   tier?: string;
+  /**
+   * List of company websites. Example - ['www.devrev.ai',
+   * 'www.marketplace.devrev.ai'].
+   */
+  websites?: string[];
 }
 
 /**
@@ -281,10 +292,7 @@ export interface AccountsUpdateRequest {
   display_name?: string;
   /** Updated list of company's domain names. Example - ['devrev.ai']. */
   domains?: string[];
-  /**
-   * Updated External Refs of account. Currently the length of this
-   * field is limited to 1.
-   */
+  /** Updated External Refs of account. */
   external_refs?: string[];
   /**
    * The ID of account to update.
@@ -301,7 +309,7 @@ export interface AccountsUpdateRequest {
   /** Updated tags list associated with the account. */
   tags?: SetTagWithValue[];
   /** Updated tier of the account. */
-  tier?: string;
+  tier?: string | null;
 }
 
 /** accounts-update-request-artifacts */
@@ -331,6 +339,11 @@ export type AggregatedSchema = object;
 export interface AggregatedSchemaGetRequest {
   /** The list of custom schema fragment DONs which are to be aggregated. */
   custom_schema_fragment_ids: string[];
+  /**
+   * The leaf type. Used for inferring the default stage diagram and
+   * tenant fragment ID.
+   */
+  leaf_type?: string;
   /** Per object schema, if associated with the leaf type. */
   per_object_schema?: FieldDescriptor[];
   /** The stock schema fragment which is to be aggregated. */
@@ -420,6 +433,38 @@ export type AppFragment = CustomSchemaFragmentBase & {
 /** app-fragment-summary */
 export type AppFragmentSummary = CustomSchemaFragmentBaseSummary;
 
+/**
+ * archetype-metric-target
+ * Metric with corresponding target values.
+ */
+export interface ArchetypeMetricTarget {
+  /**
+   * If true, the schedule attached to this metric is out of schedule at
+   * the time of the query.
+   */
+  is_out_of_schedule?: boolean;
+  metric_definition: MetricDefinitionSummary;
+  org_schedule?: OrgScheduleSummary;
+  /**
+   * Time in minutes that remains on a paused metric.
+   * @format int32
+   */
+  remaining_time?: number;
+  /**
+   * Time at which the metric would breach SLA if no action taken.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  target_time?: string;
+  /**
+   * Time at which the metric would reach the SLA warning limit if no
+   * action taken.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  warning_target_time?: string;
+}
+
 /** article */
 export type Article = AtomBase & {
   /** Details of the parts relevant to the article. */
@@ -428,6 +473,16 @@ export type Article = AtomBase & {
   description?: string;
   /** Artifacts containing the extracted content. */
   extracted_content?: ArtifactSummary[];
+  /**
+   * Number of downvotes on the article.
+   * @format int32
+   */
+  num_downvotes?: number;
+  /**
+   * Number of upvotes on the article.
+   * @format int32
+   */
+  num_upvotes?: number;
   parent?: DirectorySummary;
   /** Rank of the article. */
   rank?: string;
@@ -437,6 +492,11 @@ export type Article = AtomBase & {
   title?: string;
 };
 
+/** article-search-summary */
+export type ArticleSearchSummary = SearchSummaryBase & {
+  article: ArticleSummary;
+};
+
 /** Status of the article. */
 export enum ArticleStatus {
   Archived = 'archived',
@@ -444,6 +504,14 @@ export enum ArticleStatus {
   Published = 'published',
   ReviewNeeded = 'review_needed',
 }
+
+/** article-summary */
+export type ArticleSummary = AtomBaseSummary & {
+  /** Resource details. */
+  resource?: ResourceSummary;
+  /** Title of the article. */
+  title?: string;
+};
 
 /** articles-count-request */
 export interface ArticlesCountRequest {
@@ -521,7 +589,7 @@ export interface ArticlesCreateRequest {
   published_at?: string;
   resource: ArticlesCreateRequestResource;
   /** Information about the role the member receives due to the share. */
-  shared_with?: SharedWithMembership[];
+  shared_with?: SetSharedWithMembership[];
   /** Status of the article. */
   status?: ArticleStatus;
   /** Tags associated with the article. */
@@ -758,7 +826,7 @@ export interface ArticlesUpdateRequestReorder {
 /** articles-update-request-shared-with */
 export interface ArticlesUpdateRequestSharedWith {
   /** Sets the field to the provided membership list. */
-  set?: SharedWithMembership[];
+  set?: SetSharedWithMembership[];
 }
 
 /** articles-update-request-tags */
@@ -774,6 +842,11 @@ export interface ArticlesUpdateResponse {
 
 /** artifact */
 export type Artifact = AtomBase;
+
+/** artifact-search-summary */
+export type ArtifactSearchSummary = SearchSummaryBase & {
+  artifact: ArtifactSummary;
+};
 
 /** artifact-summary */
 export type ArtifactSummary = AtomBaseSummary;
@@ -824,7 +897,7 @@ export interface ArtifactsGetResponse {
  */
 export interface ArtifactsListRequest {
   /** The ID of the object to filter artifacts. */
-  parent_id: string;
+  parent_id?: string;
 }
 
 /**
@@ -1164,8 +1237,10 @@ export enum AuthTokenGrantType {
 /** The type of the requested token. */
 export enum AuthTokenRequestedTokenType {
   UrnDevrevParamsOauthTokenTypeAat = 'urn:devrev:params:oauth:token-type:aat',
+  UrnDevrevParamsOauthTokenTypeAatActAs = 'urn:devrev:params:oauth:token-type:aat:act-as',
   UrnDevrevParamsOauthTokenTypeAatPublic = 'urn:devrev:params:oauth:token-type:aat:public',
   UrnDevrevParamsOauthTokenTypeDev = 'urn:devrev:params:oauth:token-type:dev',
+  UrnDevrevParamsOauthTokenTypeDevConnect = 'urn:devrev:params:oauth:token-type:dev:connect',
   UrnDevrevParamsOauthTokenTypeGat = 'urn:devrev:params:oauth:token-type:gat',
   UrnDevrevParamsOauthTokenTypePat = 'urn:devrev:params:oauth:token-type:pat',
   UrnDevrevParamsOauthTokenTypePatActAs = 'urn:devrev:params:oauth:token-type:pat:act-as',
@@ -1210,7 +1285,10 @@ export enum AuthTokenTokenType {
  * type.
  */
 export interface AuthTokensCreateRequest {
-  /** The unique ID of the Dev user to impersonate. */
+  /**
+   * The unique ID of the Dev user or the service account to
+   * impersonate.
+   */
   act_as?: string;
   /** The expected audience values with respect to the token. */
   aud?: string[];
@@ -1441,6 +1519,108 @@ export type Capability = PartBase;
 /** capability-summary */
 export type CapabilitySummary = PartBaseSummary;
 
+/**
+ * client-context
+ * Properties of client to be used in track API.
+ */
+export interface ClientContext {
+  /** Properties of client's browser to be used in track API. */
+  browser?: ClientContextBrowser;
+  /** Properties of client's CPU to be used in track API. */
+  cpu?: ClientContextCpu;
+  /** Properties of client's device to be used in track API. */
+  device?: ClientContextDevice;
+  /** Properties of client's engine to be used in track API. */
+  engine?: ClientContextEngine;
+  /** IP address of the client. */
+  ip?: string;
+  /** The client's locale, example: en-US. */
+  locale?: string;
+  /** Properties of client's OS to be used in track API. */
+  os?: ClientContextOs;
+  /** Properties of client's page to be used in track API. */
+  page?: ClientContextPage;
+  /** The client's timezone, example: Asia/Kolkata. */
+  timezone?: string;
+  /**
+   * User agent of the client, example: Mozilla/5.0 (Macintosh; Intel
+   * Mac OS X.
+   */
+  user_agent?: string;
+}
+
+/**
+ * client-context-browser
+ * Properties of client's browser to be used in track API.
+ */
+export interface ClientContextBrowser {
+  /** The browser's name, example: Chrome, Safari. */
+  name?: string;
+  /** The browser's version, example: 53.0.2785.143. */
+  version?: string;
+}
+
+/**
+ * client-context-cpu
+ * Properties of client's CPU to be used in track API.
+ */
+export interface ClientContextCpu {
+  /** CPU architecture, example: amd64. */
+  architecture?: string;
+}
+
+/**
+ * client-context-device
+ * Properties of client's device to be used in track API.
+ */
+export interface ClientContextDevice {
+  /** Device manufacturer, example: Apple. */
+  manufacturer?: string;
+  /** Device model, example: iphone 6s. */
+  model?: string;
+  /** Device type, example: mobile, tablet, desktop. */
+  type?: string;
+}
+
+/**
+ * client-context-engine
+ * Properties of client's engine to be used in track API.
+ */
+export interface ClientContextEngine {
+  /** The engine's name, example: Blink, WebKit. */
+  name?: string;
+  /** The engine's version, example: 537.36. */
+  version?: string;
+}
+
+/**
+ * client-context-os
+ * Properties of client's OS to be used in track API.
+ */
+export interface ClientContextOs {
+  /** The OS's name, example : Windows, Mac OS X. */
+  name?: string;
+  /** The OS's version, example : 10.11.1. */
+  version?: string;
+}
+
+/**
+ * client-context-page
+ * Properties of client's page to be used in track API.
+ */
+export interface ClientContextPage {
+  /** Page domain, example: devrev.ai */
+  domain?: string;
+  /** Page path, example: /pricing */
+  path?: string;
+  /** Page referrer, example: https://devrev.ai */
+  referrer?: string;
+  /** Page title, example: Pricing */
+  title?: string;
+  /** Page URL, example: https://devrev.ai/pricing */
+  url?: string;
+}
+
 /** code-change */
 export type CodeChange = AtomBase & {
   /** Name of the code branch in the repo. */
@@ -1561,6 +1741,7 @@ export type Conversation = AtomBase & {
   metadata?: ConversationMetadata;
   /** Owner IDs for the conversation. */
   owned_by?: UserSummary[];
+  sla_tracker?: SlaTrackerSummary;
   /** Describes the current stage of a work item. */
   stage?: LegacyStage;
   /** Tags associated with the object. */
@@ -1580,6 +1761,11 @@ export interface ConversationMetadata {
    */
   url_context?: string;
 }
+
+/** conversation-search-summary */
+export type ConversationSearchSummary = SearchSummaryBase & {
+  conversation: ConversationSummary;
+};
 
 /** conversation-summary */
 export type ConversationSummary = AtomBaseSummary & {
@@ -1880,6 +2066,75 @@ export interface ConversationsUpdateResponse {
   conversation: Conversation;
 }
 
+/**
+ * create-email-info
+ * Information related to an email.
+ */
+export interface CreateEmailInfo {
+  /** The address of the email address. */
+  address: string;
+  /** The name of the email address. */
+  name?: string;
+  /** The ID of the user associated with the email address. */
+  user?: string;
+}
+
+/**
+ * create-email-inline-attachment
+ * An inline attachment.
+ */
+export interface CreateEmailInlineAttachment {
+  /**
+   * The artifact of the attachment.
+   * @example "ARTIFACT-12345"
+   */
+  artifact?: string;
+  /** The content id of the attachment. */
+  content_id?: string;
+}
+
+/**
+ * create-email-preview-widget
+ * An email preview widget.
+ */
+export interface CreateEmailPreviewWidget {
+  /** The list of bcc addresses. */
+  bcc?: CreateEmailInfo[];
+  /** The list of cc addresses. */
+  cc?: CreateEmailInfo[];
+  /** The list of from addresses. */
+  from?: CreateEmailInfo[];
+  /** The html body of the email. */
+  html_body?: string;
+  /** The in reply to of the email. */
+  in_reply_to?: string;
+  /** The list of inline attachments. */
+  inlines?: CreateEmailInlineAttachment[];
+  /** The message id of the email. */
+  message_id?: string;
+  /**
+   * The raw email artifact.
+   * @example "ARTIFACT-12345"
+   */
+  raw_email_artifact?: string;
+  /** The list of references in the email. */
+  references?: string[];
+  /** The list of reply to addresses. */
+  reply_to?: CreateEmailInfo[];
+  /**
+   * The time the email was sent.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  sent_timestamp?: string;
+  /** The subject of the email. */
+  subject?: string;
+  /** The text body of the email. */
+  text_body?: string;
+  /** The list of to addresses. */
+  to?: CreateEmailInfo[];
+}
+
 /** create-org-schedule-interval */
 export interface CreateOrgScheduleInterval {
   /**
@@ -1923,6 +2178,12 @@ export interface CreateWeeklyOrgScheduleInterval {
    */
   to: number;
 }
+
+/**
+ * curated-vista-summary
+ * Static collection of Devrev objects.
+ */
+export type CuratedVistaSummary = VistaBaseSummary;
 
 /** custom-schema-fragment */
 export type CustomSchemaFragment = (
@@ -2002,8 +2263,8 @@ export interface CustomSchemaFragmentsListRequest {
   /** The list of app names. */
   app?: string[];
   /**
-   * The cursor to resume iteration from, otherwise if not provided,
-   * then iteration starts from the beginning.
+   * The cursor to resume iteration from. If not provided, then
+   * iteration starts from the beginning.
    */
   cursor?: string;
   /** Whether only deprecated fragments should be filtered. */
@@ -2015,6 +2276,19 @@ export interface CustomSchemaFragmentsListRequest {
    * @format int32
    */
   limit?: number;
+  /**
+   * The iteration mode to use. If "after", then entries after the provided
+   * cursor will be returned, or if no cursor is provided, then from the
+   * beginning. If "before", then entries before the provided cursor will be
+   * returned, or if no cursor is provided, then from the end. Entries will
+   * always be returned in the specified sort-by order.
+   */
+  mode?: ListMode;
+  /**
+   * List of fields which are not required in the payload and can be
+   * pruned away.
+   */
+  prune?: CustomSchemaFragmentsListRequestPrune[];
   /** The list of fields to sort the items by and how to sort them. */
   sort_by?: string[];
   /** The list of subtypes. */
@@ -2023,13 +2297,22 @@ export interface CustomSchemaFragmentsListRequest {
   types?: CustomSchemaFragmentType[];
 }
 
+export enum CustomSchemaFragmentsListRequestPrune {
+  Fields = 'fields',
+}
+
 /** custom-schema-fragments-list-response */
 export interface CustomSchemaFragmentsListResponse {
   /**
-   * The cursor to resume iteration from, otherwise if not provided,
-   * then iteration starts from the beginning.
+   * The cursor used to iterate subsequent results in accordance to the
+   * sort order. If not set, then no later elements exist.
    */
-  cursor?: string;
+  next_cursor?: string;
+  /**
+   * The cursor used to iterate preceding results in accordance to the
+   * sort order. If not set, then no prior elements exist.
+   */
+  prev_cursor?: string;
   /** The custom schema fragments. */
   result: CustomSchemaFragment[];
 }
@@ -2050,6 +2333,8 @@ export type CustomSchemaFragmentsSetRequest = (
   description: string;
   /** List of all fields in this fragment. */
   fields?: SchemaFieldDescriptor[];
+  /** Whether the leaf type corresponds to a custom object */
+  is_custom_leaf_type?: boolean;
   /** The leaf type this fragment applies to. */
   leaf_type: string;
   type: CustomSchemaFragmentsSetRequestType;
@@ -2070,6 +2355,8 @@ export interface CustomSchemaFragmentsSetRequestCustomTypeFragment {
   path?: CustomTypePathComponent[];
   /** The ID of the associated custom stage diagram. */
   stage_diagram?: string;
+  /** List of Per-DevOrg stock field overrides. */
+  stock_field_overrides?: StockFieldOverride[];
   /** The string used to populate the subtype in the leaf type. */
   subtype: string;
   /** The display name of the subtype. */
@@ -2078,6 +2365,8 @@ export interface CustomSchemaFragmentsSetRequestCustomTypeFragment {
 
 /** custom-schema-fragments-set-request-tenant-fragment */
 export interface CustomSchemaFragmentsSetRequestTenantFragment {
+  /** The display ID prefix for the custom object. */
+  id_prefix?: string;
   /** List of Per-DevOrg stock field overrides. */
   stock_field_overrides?: StockFieldOverride[];
 }
@@ -2092,6 +2381,25 @@ export enum CustomSchemaFragmentsSetRequestType {
 export interface CustomSchemaFragmentsSetResponse {
   /** The ID of the custom schema fragment. */
   id: string;
+}
+
+/**
+ * custom-schema-spec
+ * Requested custom schemas described abstractly. Every provided schema's
+ * custom field must be specified, otherwise a bad request error is
+ * returned. If a new custom schema specifier is provided, then it will be
+ * added to the work, otherwise if a custom schema is omitted from the
+ * specifier, it remains unmodified.
+ */
+export interface CustomSchemaSpec {
+  /** List of apps that are requested. */
+  apps?: string[];
+  /** Name of the subtype requested. */
+  subtype?: string;
+  /** Whether the tenant schema is requested. */
+  tenant_fragment?: boolean;
+  /** Whether to enforce required fields validation. */
+  validate_required_fields?: boolean;
 }
 
 /** custom-type-fragment */
@@ -2114,6 +2422,14 @@ export type CustomTypeFragmentSummary = CustomSchemaFragmentBaseSummary;
  * Path component for rendering custom type lists in tree form.
  */
 export type CustomTypePathComponent = object;
+
+/** dashboard-search-summary */
+export type DashboardSearchSummary = SearchSummaryBase & {
+  dashboard: DashboardSummary;
+};
+
+/** dashboard-summary */
+export type DashboardSummary = AtomBaseSummary;
 
 /**
  * date-filter
@@ -2458,6 +2774,64 @@ export type DirectorySummary = AtomBaseSummary;
  */
 export type DynamicGroupInfo = object;
 
+/**
+ * dynamic-vista-summary
+ * Dynamic collection of Devrev objects, all adhering to a specific
+ * filter.
+ */
+export type DynamicVistaSummary = VistaBaseSummary;
+
+/** email-info */
+export interface EmailInfo {
+  /** The email address. */
+  address: string;
+  /** The email recipient's name. */
+  name?: string;
+  user?: UserSummary;
+}
+
+/** email-inline-attachment */
+export interface EmailInlineAttachment {
+  artifact?: ArtifactSummary;
+  /** The content id of the attachment. */
+  content_id?: string;
+}
+
+/** email-preview-widget */
+export type EmailPreviewWidget = SnapWidgetBase & {
+  /** The list of bcc addresses. */
+  bcc: EmailInfo[];
+  /** The list of cc addresses. */
+  cc: EmailInfo[];
+  /** The list of from addresses. */
+  from: EmailInfo[];
+  /** The html body of the email. */
+  html_body?: string;
+  /** The in-reply-to header of the email. */
+  in_reply_to?: string;
+  /** The list of inline attachments. */
+  inlines: EmailInlineAttachment[];
+  /** The message id of the email. */
+  message_id?: string;
+  raw_email_artifact?: ArtifactSummary;
+  /** The references header in the email. */
+  references: string[];
+  /** The list of reply to addresses. */
+  reply_to: EmailInfo[];
+  /**
+   * The time the email was sent.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  sent_timestamp?: string;
+  /** The subject of the email. */
+  subject?: string;
+  /** The text body of the email. */
+  text_body?: string;
+  /** The list of to addresses. */
+  to: EmailInfo[];
+};
+
 /** empty */
 export type Empty = object;
 
@@ -2526,9 +2900,10 @@ export interface EngagementsCreateRequest {
   /**
    * IDs of the users that were part of the engagement.
    * @maxItems 50
+   * @minItems 1
    * @example ["DEVU-12345"]
    */
-  members?: string[];
+  members: string[];
   /**
    * The parent object ID in which the engagement was created.
    * Currently, only accounts and opportunities are supported.
@@ -2540,7 +2915,7 @@ export interface EngagementsCreateRequest {
    * @format date-time
    * @example "2023-01-01T12:00:00.000Z"
    */
-  scheduled_date?: string;
+  scheduled_date: string;
   /** Tags associated with the engagement. */
   tags?: SetTagWithValue[];
   /** The title of the engagement. */
@@ -2719,6 +3094,7 @@ export type ErrorBadRequest = ErrorBase &
     | ErrorBadRequestMissingRequiredField
     | ErrorBadRequestParseError
     | ErrorBadRequestStaleSchemaFragments
+    | ErrorBadRequestUnexpectedJsonType
     | ErrorBadRequestValueNotPermitted
   ) & {
     type: ErrorBadRequestType;
@@ -2751,6 +3127,8 @@ export interface ErrorBadRequestInvalidField {
 
 /** error-bad-request-missing-dependency */
 export interface ErrorBadRequestMissingDependency {
+  /** The dependent fields. */
+  dependencies?: ErrorBadRequestMissingDependencyDependency[];
   /** The field on which the value depends. */
   dependent_field_name?: string;
   /** The value which needs to be set of the dependent field. */
@@ -2759,6 +3137,14 @@ export interface ErrorBadRequestMissingDependency {
   provided_field_name?: string;
   /** The value that was received. */
   provided_field_value?: string;
+}
+
+/** error-bad-request-missing-dependency-dependency */
+export interface ErrorBadRequestMissingDependencyDependency {
+  /** The dependent field name. */
+  field_name: string;
+  /** The dependent field value. */
+  field_value: string;
 }
 
 /** error-bad-request-missing-required-field */
@@ -2789,11 +3175,31 @@ export enum ErrorBadRequestType {
   MissingRequiredField = 'missing_required_field',
   ParseError = 'parse_error',
   StaleSchemaFragments = 'stale_schema_fragments',
+  UnexpectedJsonType = 'unexpected_json_type',
   ValueNotPermitted = 'value_not_permitted',
+}
+
+/** error-bad-request-unexpected-json-type */
+export interface ErrorBadRequestUnexpectedJsonType {
+  actual: ErrorBadRequestUnexpectedJsonTypeType;
+  expected: ErrorBadRequestUnexpectedJsonTypeType;
+  /** The field name that's invalid. */
+  field_name: string;
+}
+
+export enum ErrorBadRequestUnexpectedJsonTypeType {
+  Array = 'array',
+  Bool = 'bool',
+  Null = 'null',
+  Number = 'number',
+  Object = 'object',
+  String = 'string',
 }
 
 /** error-bad-request-value-not-permitted */
 export interface ErrorBadRequestValueNotPermitted {
+  /** The allowed values for the field. */
+  allowed_values?: string[];
   /** The field whose value is not permitted. */
   field_name: string;
   /** The reason the value isn't permitted. */
@@ -2806,6 +3212,19 @@ export interface ErrorBase {
   detail?: string;
   /** The message associated with the error. */
   message?: string;
+}
+
+/** error-conflict */
+export type ErrorConflict = ErrorBase &
+  ErrorConflictConflict & {
+    type: ErrorConflictType;
+  };
+
+/** error-conflict-conflict */
+export type ErrorConflictConflict = object;
+
+export enum ErrorConflictType {
+  Conflict = 'conflict',
 }
 
 /** error-forbidden */
@@ -3120,6 +3539,22 @@ export interface EventSourcesScheduleEventResponse {
   event_key?: string;
 }
 
+/** event-survey-response-created */
+export interface EventSurveyResponseCreated {
+  survey_response: SurveyResponse;
+}
+
+/** event-survey-response-deleted */
+export interface EventSurveyResponseDeleted {
+  /** The ID of the survey response that was deleted. */
+  id: string;
+}
+
+/** event-survey-response-updated */
+export interface EventSurveyResponseUpdated {
+  survey_response: SurveyResponse;
+}
+
 /** event-tag-created */
 export interface EventTagCreated {
   tag: Tag;
@@ -3322,6 +3757,11 @@ export interface GroupMembersRemoveRequest {
 /** group-members-remove-response */
 export type GroupMembersRemoveResponse = object;
 
+/** group-search-summary */
+export type GroupSearchSummary = SearchSummaryBase & {
+  group: GroupSummary;
+};
+
 /** group-summary */
 export type GroupSummary = AtomBaseSummary & {
   /** Name of the group. */
@@ -3333,6 +3773,22 @@ export enum GroupType {
   Dynamic = 'dynamic',
   Static = 'static',
 }
+
+/** Denotes the use case of the grouped vista. */
+export enum GroupedVistaFlavor {
+  Nnl = 'nnl',
+  SprintBoard = 'sprint_board',
+  SupportInbox = 'support_inbox',
+}
+
+/**
+ * grouped-vista-summary
+ * Represents a group of multiple vistas as a single unit.
+ */
+export type GroupedVistaSummary = VistaBaseSummary & {
+  /** Denotes the use case of the grouped vista. */
+  flavor?: GroupedVistaFlavor;
+};
 
 /**
  * groups-create-request
@@ -3457,6 +3913,12 @@ export type Issue = WorkBase & {
   developed_with?: PartSummary[];
   /** Priority of the work based upon impact and criticality. */
   priority?: IssuePriority;
+  /**
+   * Target start date for the object.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  target_start_date?: string;
 };
 
 /** Priority of the work based upon impact and criticality. */
@@ -3478,6 +3940,15 @@ export type IssueSummary = WorkBaseSummary & {
  * Describes the current stage of a work item.
  */
 export interface LegacyStage {
+  /** Current stage name of the work item. */
+  name: string;
+}
+
+/**
+ * legacy-stage-summary
+ * Describes the current stage of a work item.
+ */
+export interface LegacyStageSummary {
   /** Current stage name of the work item. */
   name: string;
 }
@@ -3565,6 +4036,19 @@ export interface LinkRevUserToRevOrgRequest {
 export interface LinkRevUserToRevOrgResponse {
   rev_user: RevUser;
 }
+
+/** link-search-summary */
+export type LinkSearchSummary = SearchSummaryBase & {
+  link: LinkSummary;
+};
+
+/** link-summary */
+export type LinkSummary = AtomBaseSummary & {
+  /** Type of link used to define the relationship. */
+  link_type: LinkType;
+  source: LinkEndpointSummary;
+  target: LinkEndpointSummary;
+};
 
 /** Type of link used to define the relationship. */
 export enum LinkType {
@@ -3782,7 +4266,10 @@ export interface MetricDataPointDimension {
 }
 
 /** metric-definition */
-export type MetricDefinition = AtomBase;
+export type MetricDefinition = AtomBase & {
+  /** Human readable name of the metric. */
+  name?: string;
+};
 
 /** The list of item types on which the metric might be applied. */
 export enum MetricDefinitionAppliesTo {
@@ -3801,6 +4288,12 @@ export enum MetricDefinitionMetricType {
   Value = 'value',
 }
 
+/** metric-definition-summary */
+export type MetricDefinitionSummary = AtomBaseSummary & {
+  /** Human readable name of the metric. */
+  name?: string;
+};
+
 /** metric-definitions-list-request */
 export interface MetricDefinitionsListRequest {
   /** The type of objects the metric definition applies to. */
@@ -3810,6 +4303,11 @@ export interface MetricDefinitionsListRequest {
    * iteration starts from the beginning.
    */
   cursor?: string;
+  /**
+   * Whether to include custom metrics in the response. If not set, then
+   * custom metrics are excluded.
+   */
+  include_custom_metrics?: boolean;
   /**
    * The maximum number of records to return. The default is '50'.
    * @format int32
@@ -3879,6 +4377,14 @@ export interface MetricsDataIngestRequest {
    */
   metrics: MetricsData[];
 }
+
+/** object-member-search-summary */
+export type ObjectMemberSearchSummary = SearchSummaryBase & {
+  object_member: ObjectMemberSummary;
+};
+
+/** object-member-summary */
+export type ObjectMemberSummary = AtomBaseSummary;
 
 /** opportunity */
 export type Opportunity = WorkBase;
@@ -4106,6 +4612,33 @@ export enum OrgScheduleStatus {
   Published = 'published',
 }
 
+/** org-schedule-summary */
+export type OrgScheduleSummary = AtomBaseSummary & {
+  /** Human-readable name. */
+  name?: string;
+  /**
+   * Status determines how an item can be used. In 'draft' status an item
+   * can be edited but can't be used. When 'published' the item can longer
+   * be edited but can be used. 'Archived' is read-only.
+   */
+  status: OrgScheduleStatus;
+  /**
+   * Timezone in which this is defined. Only organization schedules in
+   * the same timezone can be directly combined.
+   */
+  timezone?: string;
+  /**
+   * Derived field indicating when a valid organization schedule will
+   * become invalid. If omitted, the schedule is already invalid. A
+   * schedule is valid if it has a weekly schedule for all named periods
+   * for all its schedule fragments, and if it has a schedule fragment
+   * for the time period in question.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  valid_until?: string;
+};
+
 /** org-schedules-create-request */
 export interface OrgSchedulesCreateRequest {
   default_weekly_org_schedule?: SetWeeklyOrgSchedule;
@@ -4258,6 +4791,11 @@ export interface OrgSchedulesUpdateResponse {
   org_schedule: OrgSchedule;
 }
 
+/** org-search-summary */
+export type OrgSearchSummary = SearchSummaryBase & {
+  org: OrgSummary;
+};
+
 /** org-summary */
 export type OrgSummary = (AccountSummary | RevOrgSummary) & {
   type: OrgType;
@@ -4314,6 +4852,8 @@ export type PartBase = AtomBase & {
    * @example "don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>"
    */
   stock_schema_fragment?: string;
+  /** Subtype corresponding to the custom type fragment. */
+  subtype?: string;
   /** Tags associated with the object. */
   tags?: TagWithValue[];
 };
@@ -4322,6 +4862,11 @@ export type PartBase = AtomBase & {
 export type PartBaseSummary = AtomBaseSummary & {
   /** Name of the part. */
   name: string;
+};
+
+/** part-search-summary */
+export type PartSearchSummary = SearchSummaryBase & {
+  part: PartSummary;
 };
 
 /** part-summary */
@@ -4588,11 +5133,322 @@ export type Product = PartBase;
 /** product-summary */
 export type ProductSummary = PartBaseSummary;
 
+/** question-answer */
+export type QuestionAnswer = AtomBase & {
+  /** The Answer. */
+  answer?: string;
+  /** The Question. */
+  question?: string;
+  /** An alternative answer suggested by the Q/A generation algorithm. */
+  suggested_answer?: string;
+  /**
+   * Whether the Q/A was marked for deletion by the Q/A generation
+   * algorithm.
+   */
+  suggested_for_deletion?: boolean;
+  /** The topic to which the QA belongs. */
+  topic?: string;
+  /** Whether the Q/A was verified. */
+  verified?: boolean;
+};
+
+/** question-answer-search-summary */
+export type QuestionAnswerSearchSummary = SearchSummaryBase & {
+  question_answer: QuestionAnswerSummary;
+};
+
+/** Status of the question answer. */
+export enum QuestionAnswerStatus {
+  Archived = 'archived',
+  Draft = 'draft',
+  Published = 'published',
+  ReviewNeeded = 'review_needed',
+}
+
+/** question-answer-summary */
+export type QuestionAnswerSummary = AtomBaseSummary & {
+  /** The Question. */
+  question?: string;
+};
+
+/**
+ * question-answers-create-request
+ * The request to create a question-answer.
+ */
+export interface QuestionAnswersCreateRequest {
+  access_level?: AccessLevel;
+  /** Answer of the question-answer. */
+  answer: string;
+  /**
+   * The articles that the question-answer applies to.
+   * @example ["ARTICLE-12345"]
+   */
+  applies_to_articles?: string[];
+  /**
+   * The parts that the question-answer applies to.
+   * @minItems 1
+   * @example ["PROD-12345"]
+   */
+  applies_to_parts: string[];
+  /**
+   * The users that own the question-answer.
+   * @example ["DEVU-12345"]
+   */
+  owned_by: string[];
+  /** Question of the question-answer. */
+  question: string;
+  /** Information about the role the member receives due to the share. */
+  shared_with?: SetSharedWithMembership[];
+  /**
+   * The source of the question-answer.
+   * @example ["ARTICLE-12345"]
+   */
+  sources?: string[];
+  /** Status of the question answer. */
+  status: QuestionAnswerStatus;
+  /**
+   * Alternative answer for the question-answer sugested by Q/A
+   * Discovery.
+   */
+  suggested_answer?: string;
+  /**
+   * Whether the question-answer was suggeste to be deleted by Q/A
+   * Discovery.
+   */
+  suggested_for_deletion?: boolean;
+  /** Tags associated with the question-answer. */
+  tags?: SetTagWithValue[];
+  /** Topic of the question-answer. */
+  topic?: string;
+  /** Whether the question-answer was verified by a user or not. */
+  verified?: boolean;
+}
+
+/**
+ * question-answers-create-response
+ * Create question-answer response.
+ */
+export interface QuestionAnswersCreateResponse {
+  question_answer: QuestionAnswer;
+}
+
+/**
+ * question-answers-delete-request
+ * The request to delete a question-answer.
+ */
+export interface QuestionAnswersDeleteRequest {
+  /** The ID of the question-answer. */
+  id: string;
+  /**
+   * The ID of the question-answer.
+   * @deprecated
+   */
+  question_answer_id?: string;
+}
+
+/**
+ * question-answers-get-request
+ * The request to get a question-answer.
+ */
+export interface QuestionAnswersGetRequest {
+  /** The ID of the required question-answer. */
+  id: string;
+}
+
+/**
+ * question-answers-get-response
+ * Get question-answer response.
+ */
+export interface QuestionAnswersGetResponse {
+  question_answer: QuestionAnswer;
+}
+
+/**
+ * question-answers-list-request
+ * The request to list question-answers.
+ */
+export interface QuestionAnswersListRequest {
+  /**
+   * Filters for question-answer belonging to any of the provided
+   * articles.
+   * @example ["ARTICLE-12345"]
+   */
+  applies_to_articles?: string[];
+  /**
+   * Filters for question-answer belonging to any of the provided parts.
+   * @example ["PROD-12345"]
+   */
+  applies_to_parts?: string[];
+  /**
+   * Filters for question-answers created by any of the provided users.
+   * @example ["DEVU-12345"]
+   */
+  created_by?: string[];
+  /**
+   * The cursor to resume iteration from. If not provided, then
+   * iteration starts from the beginning.
+   */
+  cursor?: string;
+  /**
+   * The maximum number of question-answers to return. The default is
+   * '50'.
+   * @format int32
+   */
+  limit?: number;
+  /**
+   * The iteration mode to use. If "after", then entries after the provided
+   * cursor will be returned, or if no cursor is provided, then from the
+   * beginning. If "before", then entries before the provided cursor will be
+   * returned, or if no cursor is provided, then from the end. Entries will
+   * always be returned in the specified sort-by order.
+   */
+  mode?: ListMode;
+  /**
+   * Filters for question-answers owned by any of the provided users.
+   * @example ["DEVU-12345"]
+   */
+  owned_by?: string[];
+}
+
+/**
+ * question-answers-list-response
+ * List question-answers response.
+ */
+export interface QuestionAnswersListResponse {
+  /**
+   * The cursor used to iterate subsequent results in accordance to the
+   * sort order. If not set, then no later elements exist.
+   */
+  next_cursor?: string;
+  /**
+   * The cursor used to iterate preceding results in accordance to the
+   * sort order. If not set, then no prior elements exist.
+   */
+  prev_cursor?: string;
+  /** The question-answers entries matching the request. */
+  question_answers: QuestionAnswer[];
+  /**
+   * Total number of question-answer items for the request.
+   * @format int32
+   */
+  total: number;
+}
+
+/**
+ * question-answers-update-request
+ * The request to update a question-answer.
+ */
+export interface QuestionAnswersUpdateRequest {
+  access_level?: AccessLevel;
+  /**
+   * Updated answer of the question-answer object, or unchanged if not
+   * provided.
+   */
+  answer?: string;
+  applies_to_articles?: QuestionAnswersUpdateRequestAppliesToArticles;
+  applies_to_parts?: QuestionAnswersUpdateRequestAppliesToParts;
+  /** The question-answer's ID. */
+  id: string;
+  owned_by?: QuestionAnswersUpdateRequestOwnedBy;
+  /**
+   * Updated question of the question-answer object, or unchanged if not
+   * provided.
+   */
+  question?: string;
+  shared_with?: QuestionAnswersUpdateRequestSharedWith;
+  sources?: QuestionAnswersUpdateRequestSources;
+  /** Status of the question answer. */
+  status?: QuestionAnswerStatus;
+  /**
+   * Updated suggested_answer of the question-answer object, or
+   * unchanged if not provided.
+   */
+  suggested_answer?: string;
+  /**
+   * Updated suggested_for_deletion of the question-answer object, or
+   * unchanged if not provided.
+   */
+  suggested_for_deletion?: boolean;
+  tags?: QuestionAnswersUpdateRequestTags;
+  /**
+   * Updated topic of the question-answer object, or unchanged if not
+   * provided.
+   */
+  topic?: string;
+  /** Updates whether the question-answer was verified by a user or not. */
+  verified?: boolean;
+}
+
+/** question-answers-update-request-applies-to-articles */
+export interface QuestionAnswersUpdateRequestAppliesToArticles {
+  /**
+   * Updates the article that the question-answer applies to.
+   * @example ["ARTICLE-12345"]
+   */
+  set?: string[];
+}
+
+/** question-answers-update-request-applies-to-parts */
+export interface QuestionAnswersUpdateRequestAppliesToParts {
+  /**
+   * Updates the parts that the question-answer applies to.
+   * @example ["PROD-12345"]
+   */
+  set?: string[];
+}
+
+/** question-answers-update-request-owned-by */
+export interface QuestionAnswersUpdateRequestOwnedBy {
+  /**
+   * Sets the owner IDs to the provided user IDs. This must not be
+   * empty.
+   * @example ["DEVU-12345"]
+   */
+  set?: string[];
+}
+
+/** question-answers-update-request-shared-with */
+export interface QuestionAnswersUpdateRequestSharedWith {
+  /** Sets the field to the provided membership list. */
+  set?: SetSharedWithMembership[];
+}
+
+/** question-answers-update-request-sources */
+export interface QuestionAnswersUpdateRequestSources {
+  /**
+   * Sets the sources that generated the question-answer.
+   * @example ["ARTICLE-12345"]
+   */
+  set?: string[];
+}
+
+/** question-answers-update-request-tags */
+export interface QuestionAnswersUpdateRequestTags {
+  /** Sets the provided tags on the question-answer. */
+  set?: SetTagWithValue[];
+}
+
+/** question-answers-update-response */
+export interface QuestionAnswersUpdateResponse {
+  question_answer: QuestionAnswer;
+}
+
 /**
  * resource
  * Resource details.
  */
 export interface Resource {
+  /** Ids of the artifacts. */
+  artifacts?: ArtifactSummary[];
+  /** URL of the external article. */
+  url?: string;
+}
+
+/**
+ * resource-summary
+ * Resource details.
+ */
+export interface ResourceSummary {
   /** Ids of the artifacts. */
   artifacts?: ArtifactSummary[];
   /** URL of the external article. */
@@ -4627,6 +5483,8 @@ export type RevOrg = OrgBase & {
    * @example "don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>"
    */
   stock_schema_fragment?: string;
+  /** Subtype corresponding to the custom type fragment. */
+  subtype?: string;
   /** Tags associated with an object. */
   tags?: TagWithValue[];
 };
@@ -4755,6 +5613,8 @@ export interface RevOrgsListRequest {
   custom_field_filter?: string[];
   /** Filters for custom fields. */
   custom_fields?: object;
+  /** Array of display names of Rev orgs to be filtered. */
+  display_name?: string[];
   /** List of external refs to filter Rev organizations for. */
   external_ref?: string[];
   /**
@@ -4886,6 +5746,8 @@ export type RevUser = UserBase & {
    * @example "don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>"
    */
   stock_schema_fragment?: string;
+  /** Subtype corresponding to the custom type fragment. */
+  subtype?: string;
   /** Tags associated with the object. */
   tags?: TagWithValue[];
 };
@@ -4937,7 +5799,8 @@ export interface RevUsersCreateRequest {
   /** Phone numbers, in E.164 format, of the Rev user. */
   phone_numbers?: string[];
   /**
-   * The ID of Rev organization for which a Rev user is to be created.
+   * The ID of the Rev organization to which the created Rev user is
+   * associated.
    * @example "REV-AbCdEfGh"
    */
   rev_org?: string;
@@ -5257,6 +6120,8 @@ export interface SchemaFieldDescriptorBase {
   description?: string;
   /** Whether this field is filterable, groupable and sortable. */
   is_filterable?: boolean;
+  /** Whether this field is immutable or not. */
+  is_immutable?: boolean;
   /**
    * Whether this field can hold Personally Identifiable Information
    * (PII).
@@ -5659,6 +6524,146 @@ export type SchemaUenumListFieldDescriptor = SchemaFieldDescriptorBase & {
 /** schema-unknown-field-descriptor */
 export type SchemaUnknownFieldDescriptor = SchemaFieldDescriptorBase;
 
+/**
+ * search-core-request
+ * Search request.
+ */
+export interface SearchCoreRequest {
+  /**
+   * The cursor from where to begin iteration. Start from beginning if
+   * not provided.
+   */
+  cursor?: string;
+  /**
+   * The maximum number of items to return in a page. The default is
+   * '10'.
+   * @format int32
+   */
+  limit?: number;
+  /** The namespaces to search in. */
+  namespaces?: SearchNamespace[];
+  /**
+   * The query string. Search query language:
+   * https://docs.devrev.ai/product/search#fields
+   */
+  query: string;
+  /** Search sort by parameters. */
+  sort_by?: SearchSortByParam;
+  /** Search sort order parameters. */
+  sort_order?: SearchSortOrderParam;
+}
+
+/**
+ * search-core-response
+ * Search response.
+ */
+export interface SearchCoreResponse {
+  /**
+   * The cursor from where to begin iteration. Start from beginning if
+   * not provided.
+   */
+  cursor?: string;
+  /** The search results. */
+  results: SearchResult[];
+}
+
+/** The namespaces to search in. */
+export enum SearchNamespace {
+  Account = 'account',
+  Article = 'article',
+  Capability = 'capability',
+  Component = 'component',
+  Conversation = 'conversation',
+  CustomPart = 'custom_part',
+  CustomWork = 'custom_work',
+  Dashboard = 'dashboard',
+  DevUser = 'dev_user',
+  Enhancement = 'enhancement',
+  Feature = 'feature',
+  Group = 'group',
+  Issue = 'issue',
+  Linkable = 'linkable',
+  Microservice = 'microservice',
+  ObjectMember = 'object_member',
+  Opportunity = 'opportunity',
+  Product = 'product',
+  Project = 'project',
+  QuestionAnswer = 'question_answer',
+  RevOrg = 'rev_org',
+  RevUser = 'rev_user',
+  Runnable = 'runnable',
+  ServiceAccount = 'service_account',
+  SysUser = 'sys_user',
+  Tag = 'tag',
+  Task = 'task',
+  Ticket = 'ticket',
+  Vista = 'vista',
+}
+
+/** search-result */
+export type SearchResult = (
+  | AccountSearchSummary
+  | ArticleSearchSummary
+  | ArtifactSearchSummary
+  | ConversationSearchSummary
+  | DashboardSearchSummary
+  | GroupSearchSummary
+  | LinkSearchSummary
+  | ObjectMemberSearchSummary
+  | OrgSearchSummary
+  | PartSearchSummary
+  | QuestionAnswerSearchSummary
+  | TagSearchSummary
+  | UserSearchSummary
+  | VistaSearchSummary
+  | WorkSearchSummary
+) & {
+  type: SearchResultType;
+};
+
+export enum SearchResultType {
+  Account = 'account',
+  Article = 'article',
+  Artifact = 'artifact',
+  Conversation = 'conversation',
+  Dashboard = 'dashboard',
+  Group = 'group',
+  Link = 'link',
+  ObjectMember = 'object_member',
+  Org = 'org',
+  Part = 'part',
+  QuestionAnswer = 'question_answer',
+  Tag = 'tag',
+  User = 'user',
+  Vista = 'vista',
+  Work = 'work',
+}
+
+/** Search sort by parameters. */
+export enum SearchSortByParam {
+  CreatedDate = 'created_date',
+  ModifiedDate = 'modified_date',
+  Relevance = 'relevance',
+}
+
+/** Search sort order parameters. */
+export enum SearchSortOrderParam {
+  Asc = 'asc',
+  Desc = 'desc',
+}
+
+/** search-summary-base */
+export interface SearchSummaryBase {
+  /**
+   * Timestamp when the object was last modified.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  modified_date?: string;
+  /** Text snippet where the search hit occurred. */
+  snippet?: string;
+}
+
 /** service-account */
 export type ServiceAccount = UserBase;
 
@@ -5688,6 +6693,12 @@ export interface SetOrgScheduleFragmentSummary {
   /** Organization schedule fragment ID. */
   id: string;
 }
+
+/**
+ * set-shared-with-membership
+ * Information about the role the member receives due to the share.
+ */
+export type SetSharedWithMembership = object;
 
 /** set-sla-policy */
 export interface SetSlaPolicy {
@@ -5784,12 +6795,6 @@ export interface SetWeeklyOrgSchedule {
    */
   period_name: string;
 }
-
-/**
- * shared-with-membership
- * Information about the role the member receives due to the share.
- */
-export type SharedWithMembership = object;
 
 /**
  * shared-with-membership-filter
@@ -5900,6 +6905,18 @@ export enum SlaStatus {
   Published = 'published',
 }
 
+/** sla-summary */
+export type SlaSummary = AtomBaseSummary & {
+  /** Human-readable name. */
+  name: string;
+  /**
+   * Status determines how an item can be used. In 'draft' status an item
+   * can be edited but can't be used. When 'published' the item can longer
+   * be edited but can be used. 'Archived' is read-only.
+   */
+  status: SlaStatus;
+};
+
 /**
  * sla-summary-filter
  * The filter for SLA summary.
@@ -5924,7 +6941,40 @@ export enum SlaSummaryStage {
 }
 
 /** sla-tracker */
-export type SlaTracker = AtomBase;
+export type SlaTracker = AtomBase & {
+  /** Details of the object on which the SLA is being tracked. */
+  applies_to_id?: string;
+  /** Summary of the metrics target being tracked in the SLA tracker. */
+  metric_target_summaries: ArchetypeMetricTarget[];
+  sla?: SlaSummary;
+  /**
+   * Details of the applicable SLA policy. Can be omitted if no sla
+   * applies, or if no policy of the sla applies at the moment.
+   */
+  sla_policy_id?: string;
+  /** SLA stage of the object being tracked. */
+  stage?: string;
+  /**
+   * It is an indicator of whether the SLA has ever been breached
+   * (missed). If not, it shows whether the SLA is completed, in
+   * progress, or nil - if no policy is applied.
+   */
+  status?: string;
+};
+
+/** sla-tracker-summary */
+export type SlaTrackerSummary = AtomBaseSummary;
+
+/** sla-trackers-get-request */
+export interface SlaTrackersGetRequest {
+  /** The ID of the SLA tracker to get. */
+  id: string;
+}
+
+/** sla-trackers-get-response */
+export interface SlaTrackersGetResponse {
+  sla_tracker: SlaTracker;
+}
 
 /** slas-assign-request */
 export interface SlasAssignRequest {
@@ -6115,11 +7165,56 @@ export interface SnapInsResourcesResponseKeyringsEntry {
 }
 
 /** snap-widget */
-export interface SnapWidget {
+export type SnapWidget = EmailPreviewWidget & {
   type: SnapWidgetType;
+};
+
+/** snap-widget-base */
+export type SnapWidgetBase = AtomBase & {
+  /** A human readable name for the snap widget. */
+  name: string;
+  /** Logical grouping of snap widgets. Useful for filtering. */
+  namespace?: SnapWidgetNamespace;
+  /** The status of the snap widget. */
+  status: SnapWidgetStatus;
+};
+
+/** Logical grouping of snap widgets. Useful for filtering. */
+export enum SnapWidgetNamespace {
+  EmailPreview = 'email_preview',
+  LinkPreview = 'link_preview',
+  PlugNudge = 'plug_nudge',
 }
 
-export type SnapWidgetType = string;
+/** The status of the snap widget. */
+export enum SnapWidgetStatus {
+  Draft = 'draft',
+  Published = 'published',
+}
+
+export enum SnapWidgetType {
+  EmailPreview = 'email_preview',
+}
+
+/** snap-widgets-create-request */
+export type SnapWidgetsCreateRequest = CreateEmailPreviewWidget & {
+  /** A human readable name for the snap widget. */
+  name: string;
+  /** Logical grouping of snap widgets. Useful for filtering. */
+  namespace?: SnapWidgetNamespace;
+  /** The status of the snap widget. */
+  status?: SnapWidgetStatus;
+  type: SnapWidgetsCreateRequestType;
+};
+
+export enum SnapWidgetsCreateRequestType {
+  EmailPreview = 'email_preview',
+}
+
+/** snap-widgets-create-response */
+export interface SnapWidgetsCreateResponse {
+  snap_widget: SnapWidget;
+}
 
 /** stage-diagram-summary */
 export type StageDiagramSummary = AtomBaseSummary;
@@ -6149,6 +7244,12 @@ export interface StageInit {
 export interface StageUpdate {
   /** The updated name of the stage, otherwise unchanged if not set. */
   name?: string;
+}
+
+/** staged-info-filter */
+export interface StagedInfoFilter {
+  /** Filters for issues that are staged. */
+  is_staged?: boolean;
 }
 
 /**
@@ -6187,10 +7288,11 @@ export interface StockSchemaFragmentsGetResponse {
 /** stock-schema-fragments-list-request */
 export interface StockSchemaFragmentsListRequest {
   /**
-   * The cursor to resume iteration from, otherwise if not provided,
-   * then iteration starts from the beginning.
+   * The cursor to resume iteration from. If not provided, then
+   * iteration starts from the beginning.
    */
   cursor?: string;
+  filter_preset?: StockSchemaFragmentsListRequestFilterPreset;
   /** The list of leaf types. */
   leaf_type?: string[];
   /**
@@ -6198,17 +7300,45 @@ export interface StockSchemaFragmentsListRequest {
    * @format int32
    */
   limit?: number;
+  /**
+   * The iteration mode to use. If "after", then entries after the provided
+   * cursor will be returned, or if no cursor is provided, then from the
+   * beginning. If "before", then entries before the provided cursor will be
+   * returned, or if no cursor is provided, then from the end. Entries will
+   * always be returned in the specified sort-by order.
+   */
+  mode?: ListMode;
+  /**
+   * List of fields which are not required in the payload and can be
+   * pruned away.
+   */
+  prune?: StockSchemaFragmentsListRequestPrune[];
   /** The list of fields to sort the items by and how to sort them. */
   sort_by?: string[];
+}
+
+export enum StockSchemaFragmentsListRequestFilterPreset {
+  CustomizableTypesPreset = 'customizable_types_preset',
+  NoPreset = 'no_preset',
+}
+
+export enum StockSchemaFragmentsListRequestPrune {
+  CompositeSchemas = 'composite_schemas',
+  Fields = 'fields',
 }
 
 /** stock-schema-fragments-list-response */
 export interface StockSchemaFragmentsListResponse {
   /**
-   * The cursor to resume iteration from, otherwise if not provided,
-   * then iteration starts from the beginning.
+   * The cursor used to iterate subsequent results in accordance to the
+   * sort order. If not set, then no later elements exist.
    */
-  cursor?: string;
+  next_cursor?: string;
+  /**
+   * The cursor used to iterate preceding results in accordance to the
+   * sort order. If not set, then no prior elements exist.
+   */
+  prev_cursor?: string;
   /** The stock schema fragments. */
   result: StockSchemaFragment[];
 }
@@ -6242,11 +7372,259 @@ export interface SubtypesListResponse {
   subtypes: Subtype[];
 }
 
+/** survey */
+export type Survey = AtomBase & {
+  /** Description of the survey. */
+  description?: string;
+  /**
+   * Survey name associated with schema. This name would be unique per
+   * dev org.
+   */
+  name?: string;
+  /** List of all fields in the schema. */
+  schema: SchemaFieldDescriptor[];
+};
+
 /**
  * survey-aggregation-filter
  * The filter for survey aggregation.
  */
 export type SurveyAggregationFilter = object;
+
+/** survey-response */
+export type SurveyResponse = AtomBase & {
+  /** The unique ID associated with the dispatched survey. */
+  dispatch_id?: string;
+  /** The ID of the object for which survey is taken. */
+  object?: string;
+  /** Response for the survey. */
+  response?: object;
+  /** The ID of the survey for which response is taken. */
+  survey?: string;
+};
+
+/** surveys-create-request */
+export interface SurveysCreateRequest {
+  /** Description about the survey. */
+  description?: string;
+  /** The survey's name. */
+  name: string;
+  /** Schema for the survey. */
+  schema: FieldDescriptor[];
+}
+
+/** surveys-create-response */
+export interface SurveysCreateResponse {
+  survey: Survey;
+}
+
+/** surveys-delete-request */
+export interface SurveysDeleteRequest {
+  /** ID of the survey being deleted. */
+  id: string;
+}
+
+/** surveys-delete-response */
+export type SurveysDeleteResponse = object;
+
+/** surveys-list-request */
+export interface SurveysListRequest {
+  /**
+   * Filters for surveys created by any of these users.
+   * @example ["DEVU-12345"]
+   */
+  created_by?: string[];
+  /** Provides ways to specify date ranges on objects. */
+  created_date?: DateFilter;
+  /**
+   * The cursor to resume iteration from. If not provided, then
+   * iteration starts from the beginning.
+   */
+  cursor?: string;
+  /**
+   * The maximum number of surveys to return. If not set, then the
+   * default is '50'.
+   * @format int32
+   */
+  limit?: number;
+  /**
+   * The iteration mode to use. If "after", then entries after the provided
+   * cursor will be returned, or if no cursor is provided, then from the
+   * beginning. If "before", then entries before the provided cursor will be
+   * returned, or if no cursor is provided, then from the end. Entries will
+   * always be returned in the specified sort-by order.
+   */
+  mode?: ListMode;
+  /** Provides ways to specify date ranges on objects. */
+  modified_date?: DateFilter;
+  /** Filters for surveys by name(s). */
+  name?: string[];
+  /** Fields to sort the surveys by and the direction to sort them. */
+  sort_by?: string[];
+}
+
+/** surveys-list-response */
+export interface SurveysListResponse {
+  /**
+   * The cursor used to iterate subsequent results in accordance to the
+   * sort order. If not set, then no later elements exist.
+   */
+  next_cursor?: string;
+  /**
+   * The cursor used to iterate preceding results in accordance to the
+   * sort order. If not set, then no prior elements exist.
+   */
+  prev_cursor?: string;
+  /** The list of the surveys. */
+  surveys: Survey[];
+}
+
+/** surveys-responses-list-request */
+export interface SurveysResponsesListRequest {
+  /**
+   * Filters for survey responses created by any of these users.
+   * @example ["DEVU-12345"]
+   */
+  created_by?: string[];
+  /** Provides ways to specify date ranges on objects. */
+  created_date?: DateFilter;
+  /**
+   * The cursor to resume iteration from. If not provided, then
+   * iteration starts from the beginning.
+   */
+  cursor?: string;
+  /**
+   * The maximum number of survey responses to return. If not set, then
+   * the default is '50'.
+   * @format int32
+   */
+  limit?: number;
+  /**
+   * The iteration mode to use. If "after", then entries after the provided
+   * cursor will be returned, or if no cursor is provided, then from the
+   * beginning. If "before", then entries before the provided cursor will be
+   * returned, or if no cursor is provided, then from the end. Entries will
+   * always be returned in the specified sort-by order.
+   */
+  mode?: ListMode;
+  /** Provides ways to specify date ranges on objects. */
+  modified_date?: DateFilter;
+  /**
+   * Filters for survey responses created for the objects.
+   * @example ["ACC-12345"]
+   */
+  objects?: string[];
+  /**
+   * Fields to sort the survey responses by and the direction to sort
+   * them.
+   */
+  sort_by?: string[];
+  /** Filters for survey responses for the provided survey IDs. */
+  surveys?: string[];
+}
+
+/** surveys-responses-list-response */
+export interface SurveysResponsesListResponse {
+  /**
+   * The cursor used to iterate subsequent results in accordance to the
+   * sort order. If not set, then no later elements exist.
+   */
+  next_cursor?: string;
+  /**
+   * The cursor used to iterate preceding results in accordance to the
+   * sort order. If not set, then no prior elements exist.
+   */
+  prev_cursor?: string;
+  /** The list of the survey responses. */
+  survey_responses: SurveyResponse[];
+}
+
+/** surveys-send-request */
+export interface SurveysSendRequest {
+  email: SurveysSendRequestEmail;
+}
+
+/** surveys-send-request-email */
+export interface SurveysSendRequestEmail {
+  /** Message body for a survey email. */
+  body: string;
+  /** Recipients list for a survey email. */
+  recipients: string[];
+  /** Sender email address from which an email is sent. */
+  sender: string;
+  /** Subject for an email where survey is sent. */
+  subject: string;
+}
+
+/** surveys-send-response */
+export type SurveysSendResponse = object;
+
+/** surveys-submit-request */
+export interface SurveysSubmitRequest {
+  /** The unique ID associated with the dispatched survey. */
+  dispatch_id?: string;
+  /**
+   * The ID of the object this survey is on (e.g. ticket, conversation,
+   * etc).
+   * @example "ACC-12345"
+   */
+  object: string;
+  /** Survey response submitted for the object. */
+  response: object;
+  /**
+   * The response score for the survey. Only applicable for CSAT and
+   * NPS.
+   * @format int32
+   */
+  response_score?: number;
+  /** The source channel from which survey response is submitted. */
+  source_channel?: string;
+  /** The ID of the survey to submit the response to. */
+  survey: string;
+}
+
+/** surveys-submit-response */
+export type SurveysSubmitResponse = object;
+
+/** sync-metadata-filter */
+export interface SyncMetadataFilter {
+  last_sync_in?: SyncMetadataFilterSyncInFilter;
+  last_sync_out?: SyncMetadataFilterSyncOutFilter;
+  /** Filters for issues synced from this specific origin system. */
+  origin_system?: string[];
+}
+
+/** sync-metadata-filter-sync-in-filter */
+export interface SyncMetadataFilterSyncInFilter {
+  /** Filters for works with selected sync statuses. */
+  status?: SyncMetadataFilterSyncInFilterStatus[];
+  /** Provides ways to specify date ranges on objects. */
+  sync_date?: DateFilter;
+  /** Filters for works modified with selected sync units. */
+  sync_unit?: string[];
+}
+
+export enum SyncMetadataFilterSyncInFilterStatus {
+  Failed = 'failed',
+  Modified = 'modified',
+  Staged = 'staged',
+  Succeeded = 'succeeded',
+}
+
+/** sync-metadata-filter-sync-out-filter */
+export interface SyncMetadataFilterSyncOutFilter {
+  /** Filters for works with selected sync statuses. */
+  status?: SyncMetadataFilterSyncOutFilterStatus[];
+  /** Provides ways to specify date ranges on objects. */
+  sync_date?: DateFilter;
+  /** Filters for works modified with selected sync units. */
+  sync_unit?: string[];
+}
+
+export enum SyncMetadataFilterSyncOutFilterStatus {
+  Failed = 'failed',
+  Succeeded = 'succeeded',
+}
 
 /** sys-user */
 export type SysUser = UserBase;
@@ -6346,6 +7724,11 @@ export type Tag = AtomBase & {
    * unique.
    */
   name: string;
+};
+
+/** tag-search-summary */
+export type TagSearchSummary = SearchSummaryBase & {
+  tag: TagSummary;
 };
 
 /** tag-summary */
@@ -6555,6 +7938,7 @@ export type Ticket = WorkBase & {
   rev_org?: OrgSummary;
   /** Severity of the ticket. */
   severity?: TicketSeverity;
+  sla_tracker?: SlaTrackerSummary;
   /** Source channel of the ticket. */
   source_channel?: string;
 };
@@ -6667,7 +8051,7 @@ export type TimelineEntriesCreateRequest =
 export interface TimelineEntriesCreateRequestTimelineComment {
   /**
    * The IDs of the artifacts attached to the comment.
-   * @maxItems 10
+   * @maxItems 50
    * @example ["ARTIFACT-12345"]
    */
   artifacts?: string[];
@@ -6682,6 +8066,11 @@ export interface TimelineEntriesCreateRequestTimelineComment {
   link_previews?: string[];
   /** Snap Kit Body of the comment. */
   snap_kit_body?: TimelineSnapKitBody;
+  /**
+   * The snap widget body of the comment.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:snap_widget/<snap-widget-id>"]
+   */
+  snap_widget_body?: string[];
 }
 
 export enum TimelineEntriesCreateRequestType {
@@ -6848,7 +8237,7 @@ export interface TimelineEntriesUpdateRequestTimelineCommentArtifacts {
   remove?: string[];
   /**
    * Sets the field to the provided artifacts.
-   * @maxItems 10
+   * @maxItems 50
    * @example ["ARTIFACT-12345"]
    */
   set?: string[];
@@ -7004,6 +8393,32 @@ export interface TimelineThread {
   total_replies?: number;
 }
 
+/** track-event */
+export interface TrackEvent {
+  /** Properties of client to be used in track API. */
+  client_context?: ClientContext;
+  /** Unique ID for the event. */
+  event_id?: string;
+  /**
+   * The timestamp at which the event occurred.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  event_time?: string;
+  /** Name of the event. */
+  name: string;
+  /** Payload of the event */
+  payload: object;
+}
+
+/** track-events-publish-request */
+export interface TrackEventsPublishRequest {
+  events_list: TrackEvent[];
+}
+
+/** track-events-publish-response */
+export type TrackEventsPublishResponse = object;
+
 /**
  * unit
  * Unit encapsulates the name of the unit and the type of the unit. For
@@ -7097,6 +8512,40 @@ export type Uom = AtomBase & {
 export enum UomMetricScope {
   Org = 'org',
   User = 'user',
+}
+
+/** uoms-count-request */
+export interface UomsCountRequest {
+  /** List of aggregation types for filtering list of UOMs. */
+  aggregation_types?: AggregationDetailAggregationType[];
+  /**
+   * List of Unit of Measurement (UOM) DONs to be used in filtering
+   * complete list of UOMs defined in a Dev Org.
+   */
+  ids?: string[];
+  /** List of metric names for filtering list of UOMs. */
+  metric_names?: string[];
+  /**
+   * List of part IDs for filtering list of UOMs.
+   * @example ["PROD-12345"]
+   */
+  part_ids?: string[];
+  /**
+   * List of product IDs for filtering list of UOMs.
+   * @example ["PROD-12345"]
+   */
+  product_ids?: string[];
+  /** List of unit types for filtering list of UOMs. */
+  unit_types?: UnitType[];
+}
+
+/** uoms-count-response */
+export interface UomsCountResponse {
+  /**
+   * Count of Unit of Measurements matching the filter.
+   * @format int32
+   */
+  count: number;
 }
 
 /** uoms-create-request */
@@ -7338,6 +8787,11 @@ export type UserBaseSummary = AtomBaseSummary & {
   state?: UserState;
 };
 
+/** user-search-summary */
+export type UserSearchSummary = SearchSummaryBase & {
+  user: UserSummary;
+};
+
 /** State of the user. */
 export enum UserState {
   Active = 'active',
@@ -7363,6 +8817,38 @@ export enum UserType {
   RevUser = 'rev_user',
   ServiceAccount = 'service_account',
   SysUser = 'sys_user',
+}
+
+/** vista-base-summary */
+export type VistaBaseSummary = AtomBaseSummary & {
+  /** Name of the vista. */
+  name: string;
+};
+
+/** vista-search-summary */
+export type VistaSearchSummary = SearchSummaryBase & {
+  /** Represents a collection of DevRev objects. */
+  vista: VistaSummary;
+};
+
+/**
+ * vista-summary
+ * Represents a collection of DevRev objects.
+ */
+export type VistaSummary = (
+  | CuratedVistaSummary
+  | DynamicVistaSummary
+  | GroupedVistaSummary
+) & {
+  /** Type of vista object. */
+  type: VistaType;
+};
+
+/** Type of vista object. */
+export enum VistaType {
+  Curated = 'curated',
+  Dynamic = 'dynamic',
+  Grouped = 'grouped',
 }
 
 /** webhook */
@@ -7405,6 +8891,9 @@ export interface WebhookEventRequest {
   sla_tracker_created?: EventSlaTrackerCreated;
   sla_tracker_deleted?: EventSlaTrackerDeleted;
   sla_tracker_updated?: EventSlaTrackerUpdated;
+  survey_response_created?: EventSurveyResponseCreated;
+  survey_response_deleted?: EventSurveyResponseDeleted;
+  survey_response_updated?: EventSurveyResponseUpdated;
   tag_created?: EventTagCreated;
   tag_deleted?: EventTagDeleted;
   tag_updated?: EventTagUpdated;
@@ -7466,6 +8955,9 @@ export enum WebhookEventType {
   RevUserCreated = 'rev_user_created',
   RevUserDeleted = 'rev_user_deleted',
   RevUserUpdated = 'rev_user_updated',
+  SlaTrackerCreated = 'sla_tracker_created',
+  SlaTrackerDeleted = 'sla_tracker_deleted',
+  SlaTrackerUpdated = 'sla_tracker_updated',
   TagCreated = 'tag_created',
   TagDeleted = 'tag_deleted',
   TagUpdated = 'tag_updated',
@@ -7682,6 +9174,8 @@ export type WorkBase = AtomBase & {
    * @example "don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>"
    */
   stock_schema_fragment?: string;
+  /** Subtype corresponding to the custom type fragment. */
+  subtype?: string;
   /** Tags associated with the object. */
   tags?: TagWithValue[];
   /**
@@ -7696,8 +9190,27 @@ export type WorkBase = AtomBase & {
 
 /** work-base-summary */
 export type WorkBaseSummary = AtomBaseSummary & {
+  /** The users that own the work. */
+  owned_by: UserSummary[];
+  /** Describes the current stage of a work item. */
+  stage?: LegacyStageSummary;
   /** Title of the work object. */
   title: string;
+};
+
+/** work-search-summary */
+export type WorkSearchSummary = SearchSummaryBase & {
+  work: WorkSummary;
+};
+
+/** work-summary */
+export type WorkSummary = (
+  | IssueSummary
+  | OpportunitySummary
+  | TaskSummary
+  | TicketSummary
+) & {
+  type: WorkType;
 };
 
 export enum WorkType {
@@ -7735,6 +9248,14 @@ export type WorksCreateRequest = (
    * @example ["don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>"]
    */
   custom_schema_fragments?: string[];
+  /**
+   * Requested custom schemas described abstractly. Every provided schema's
+   * custom field must be specified, otherwise a bad request error is
+   * returned. If a new custom schema specifier is provided, then it will be
+   * added to the work, otherwise if a custom schema is omitted from the
+   * specifier, it remains unmodified.
+   */
+  custom_schema_spec?: CustomSchemaSpec;
   /**
    * The users that own the work.
    * @example ["DEVU-12345"]
@@ -7777,6 +9298,12 @@ export interface WorksCreateRequestIssue {
   priority_v2?: number;
   /** The sprint that the issue belongs to. */
   sprint?: string;
+  /**
+   * Timestamp for when the work is expected to start.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  target_start_date?: string;
 }
 
 /** works-create-request-opportunity */
@@ -7901,6 +9428,8 @@ export interface WorksExportRequest {
   sort_by?: string[];
   /** The filter for stages. */
   stage?: StageFilter;
+  staged_info?: StagedInfoFilter;
+  sync_metadata?: SyncMetadataFilter;
   /**
    * Filters for work with any of the provided tags.
    * @example ["TAG-12345"]
@@ -7926,6 +9455,8 @@ export interface WorksFilterIssue {
    * @example ["ACC-12345"]
    */
   accounts?: string[];
+  /** Provides ways to specify date ranges on objects. */
+  actual_start_date?: DateFilter;
   /** Filters for issues with any of the provided priorities. */
   priority?: IssuePriority[];
   /** Filters for issues with any of the provided priority enum ids. */
@@ -7935,6 +9466,10 @@ export interface WorksFilterIssue {
    * @example ["REV-AbCdEfGh"]
    */
   rev_orgs?: string[];
+  /** Filters for issues with any of the provided subtypes. */
+  subtype?: string[];
+  /** Provides ways to specify date ranges on objects. */
+  target_start_date?: DateFilter;
 }
 
 /** works-filter-opportunity */
@@ -7947,6 +9482,8 @@ export interface WorksFilterOpportunity {
   account?: string[];
   /** Filters for opportunities with any of the provided contacts. */
   contacts?: string[];
+  /** Filters for opportunity with any of the provided subtypes. */
+  subtype?: string[];
 }
 
 /** works-filter-ticket */
@@ -7971,6 +9508,8 @@ export interface WorksFilterTicket {
   sla_summary?: SlaSummaryFilter;
   /** Filters for tickets with any of the provided source channels. */
   source_channel?: string[];
+  /** Filters for tickets with any of the provided subtypes. */
+  subtype?: string[];
   /** The filter for survey aggregation. */
   surveys?: SurveyAggregationFilter;
 }
@@ -8043,6 +9582,8 @@ export interface WorksListRequest {
   sort_by?: string[];
   /** The filter for stages. */
   stage?: StageFilter;
+  staged_info?: StagedInfoFilter;
+  sync_metadata?: SyncMetadataFilter;
   /**
    * Filters for work with any of the provided tags.
    * @example ["TAG-12345"]
@@ -8084,7 +9625,7 @@ export type WorksUpdateRequest = (
    * @example "PROD-12345"
    */
   applies_to_part?: string;
-  artifacts?: WorksUpdateRequestArtifactIds;
+  artifacts?: WorksUpdateRequestArtifacts;
   /** Updated body of the work object, or unchanged if not provided. */
   body?: string;
   /** Custom fields. */
@@ -8094,6 +9635,14 @@ export type WorksUpdateRequest = (
    * @example ["don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>"]
    */
   custom_schema_fragments?: string[];
+  /**
+   * Requested custom schemas described abstractly. Every provided schema's
+   * custom field must be specified, otherwise a bad request error is
+   * returned. If a new custom schema specifier is provided, then it will be
+   * added to the work, otherwise if a custom schema is omitted from the
+   * specifier, it remains unmodified.
+   */
+  custom_schema_spec?: CustomSchemaSpec;
   /**
    * The work's ID.
    * @example "ISS-12345"
@@ -8116,10 +9665,23 @@ export type WorksUpdateRequest = (
   type?: WorkType;
 };
 
-/** works-update-request-artifact-ids */
-export interface WorksUpdateRequestArtifactIds {
+/** works-update-request-artifacts */
+export interface WorksUpdateRequestArtifacts {
   /**
-   * Sets the IDs to the provided artifact IDs.
+   * Adds the provided artifacts (if not already present) to the field.
+   * @maxItems 50
+   * @example ["ARTIFACT-12345"]
+   */
+  add?: string[];
+  /**
+   * Removes the provided artifacts (if they exist) from the field.
+   * @maxItems 50
+   * @example ["ARTIFACT-12345"]
+   */
+  remove?: string[];
+  /**
+   * Sets the field to the provided artifacts.
+   * @maxItems 50
    * @example ["ARTIFACT-12345"]
    */
   set?: string[];
@@ -8137,6 +9699,12 @@ export interface WorksUpdateRequestIssue {
   priority_v2?: number;
   /** Updates the sprint that the issue belongs to. */
   sprint?: string | null;
+  /**
+   * Updates the timestamp for when the work is expected to start.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  target_start_date?: string | null;
 }
 
 /** works-update-request-issue-developed-with */
@@ -8449,6 +10017,7 @@ export class Api<
       | ErrorBadRequest
       | ErrorUnauthorized
       | ErrorForbidden
+      | ErrorConflict
       | ErrorTooManyRequests
       | ErrorInternalServerError
       | ErrorServiceUnavailable
@@ -8799,6 +10368,7 @@ export class Api<
       | ErrorUnauthorized
       | ErrorForbidden
       | ErrorNotFound
+      | ErrorConflict
       | ErrorTooManyRequests
       | ErrorInternalServerError
       | ErrorServiceUnavailable
@@ -9206,9 +10776,9 @@ export class Api<
    * @secure
    */
   artifactsList = (
-    query: {
+    query?: {
       /** The ID of the object to filter artifacts. */
-      parent_id: string;
+      parent_id?: string;
     },
     params: RequestParams = {}
   ) =>
@@ -9407,6 +10977,7 @@ export class Api<
       | ErrorBadRequest
       | ErrorUnauthorized
       | ErrorForbidden
+      | ErrorConflict
       | ErrorTooManyRequests
       | ErrorInternalServerError
       | ErrorServiceUnavailable
@@ -9654,9 +11225,9 @@ export class Api<
     });
 
   /**
-   * @description Create CodeChange object.
+   * @description Creates a code change object.
    *
-   * @tags works
+   * @tags code-changes
    * @name CodeChangesCreate
    * @request POST:/code-changes.create
    * @secure
@@ -9684,9 +11255,9 @@ export class Api<
     });
 
   /**
-   * @description Delete CodeChange object.
+   * @description Deletes a code change object.
    *
-   * @tags works
+   * @tags code-changes
    * @name CodeChangesDelete
    * @request POST:/code-changes.delete
    * @secure
@@ -9714,9 +11285,9 @@ export class Api<
     });
 
   /**
-   * @description Get CodeChange object.
+   * @description Gets a code change object.
    *
-   * @tags works
+   * @tags code-changes
    * @name CodeChangesGet
    * @request GET:/code-changes.get
    * @secure
@@ -9746,9 +11317,9 @@ export class Api<
     });
 
   /**
-   * @description Get CodeChange object.
+   * @description Gets a code change object.
    *
-   * @tags works
+   * @tags code-changes
    * @name CodeChangesGetPost
    * @request POST:/code-changes.get
    * @secure
@@ -9776,9 +11347,9 @@ export class Api<
     });
 
   /**
-   * @description List CodeChange objects.
+   * @description Lists code change objects.
    *
-   * @tags works
+   * @tags code-changes
    * @name CodeChangesList
    * @request GET:/code-changes.list
    * @secure
@@ -9822,9 +11393,9 @@ export class Api<
     });
 
   /**
-   * @description List CodeChange objects.
+   * @description Lists code change objects.
    *
-   * @tags works
+   * @tags code-changes
    * @name CodeChangesListPost
    * @request POST:/code-changes.list
    * @secure
@@ -9852,9 +11423,9 @@ export class Api<
     });
 
   /**
-   * @description Update CodeChange object.
+   * @description Updates a code change object.
    *
-   * @tags works
+   * @tags code-changes
    * @name CodeChangesUpdate
    * @request POST:/code-changes.update
    * @secure
@@ -11713,6 +13284,11 @@ export class Api<
        */
       cursor?: string;
       /**
+       * Whether to include custom metrics in the response. If not set, then
+       * custom metrics are excluded.
+       */
+      include_custom_metrics?: boolean;
+      /**
        * The maximum number of records to return. The default is '50'.
        * @format int32
        */
@@ -12435,6 +14011,258 @@ export class Api<
     });
 
   /**
+   * @description Creates a question-answer.
+   *
+   * @tags question-answers
+   * @name CreateQuestionAnswer
+   * @request POST:/question-answers.create
+   * @secure
+   */
+  createQuestionAnswer = (
+    data: QuestionAnswersCreateRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      QuestionAnswersCreateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/question-answers.create`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Deletes a question-answer.
+   *
+   * @tags question-answers
+   * @name DeleteQuestionAnswer
+   * @request POST:/question-answers.delete
+   * @secure
+   */
+  deleteQuestionAnswer = (
+    data: QuestionAnswersDeleteRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      void,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/question-answers.delete`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      ...params,
+    });
+
+  /**
+   * @description Gets a question-answer.
+   *
+   * @tags question-answers
+   * @name GetQuestionAnswer
+   * @request GET:/question-answers.get
+   * @secure
+   */
+  getQuestionAnswer = (
+    query: {
+      /** The ID of the required question-answer. */
+      id: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      QuestionAnswersGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/question-answers.get`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets a question-answer.
+   *
+   * @tags question-answers
+   * @name GetQuestionAnswerPost
+   * @request POST:/question-answers.get
+   * @secure
+   */
+  getQuestionAnswerPost = (
+    data: QuestionAnswersGetRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      QuestionAnswersGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/question-answers.get`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Lists a collection of question-answers.
+   *
+   * @tags question-answers
+   * @name ListQuestionAnswers
+   * @request GET:/question-answers.list
+   * @secure
+   */
+  listQuestionAnswers = (
+    query?: {
+      /**
+       * Filters for question-answer belonging to any of the provided
+       * articles.
+       * @example ["ARTICLE-12345"]
+       */
+      applies_to_articles?: string[];
+      /**
+       * Filters for question-answer belonging to any of the provided parts.
+       * @example ["PROD-12345"]
+       */
+      applies_to_parts?: string[];
+      /**
+       * Filters for question-answers created by any of the provided users.
+       * @example ["DEVU-12345"]
+       */
+      created_by?: string[];
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /**
+       * The maximum number of question-answers to return. The default is
+       * '50'.
+       * @format int32
+       */
+      limit?: number;
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /**
+       * Filters for question-answers owned by any of the provided users.
+       * @example ["DEVU-12345"]
+       */
+      owned_by?: string[];
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      QuestionAnswersListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/question-answers.list`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Lists a collection of question-answers.
+   *
+   * @tags question-answers
+   * @name ListQuestionAnswersPost
+   * @request POST:/question-answers.list
+   * @secure
+   */
+  listQuestionAnswersPost = (
+    data: QuestionAnswersListRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      QuestionAnswersListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/question-answers.list`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Updates a question-answer.
+   *
+   * @tags question-answers
+   * @name UpdateQuestionAnswer
+   * @request POST:/question-answers.update
+   * @secure
+   */
+  updateQuestionAnswer = (
+    data: QuestionAnswersUpdateRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      QuestionAnswersUpdateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/question-answers.update`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
    * @description Creates a Rev organization in the authenticated user's Dev organization.
    *
    * @tags rev-orgs
@@ -12448,6 +14276,7 @@ export class Api<
       | ErrorBadRequest
       | ErrorUnauthorized
       | ErrorForbidden
+      | ErrorConflict
       | ErrorTooManyRequests
       | ErrorInternalServerError
       | ErrorServiceUnavailable
@@ -12601,6 +14430,8 @@ export class Api<
       custom_field_filter?: string[];
       /** Filters for custom fields. */
       custom_fields?: object;
+      /** Array of display names of Rev orgs to be filtered. */
+      display_name?: string[];
       /** List of external refs to filter Rev organizations for. */
       external_ref?: string[];
       /**
@@ -12697,6 +14528,7 @@ export class Api<
       | ErrorUnauthorized
       | ErrorForbidden
       | ErrorNotFound
+      | ErrorConflict
       | ErrorTooManyRequests
       | ErrorInternalServerError
       | ErrorServiceUnavailable
@@ -12724,6 +14556,7 @@ export class Api<
       | ErrorBadRequest
       | ErrorUnauthorized
       | ErrorForbidden
+      | ErrorConflict
       | ErrorTooManyRequests
       | ErrorInternalServerError
       | ErrorServiceUnavailable
@@ -13024,6 +14857,7 @@ export class Api<
       | ErrorUnauthorized
       | ErrorForbidden
       | ErrorNotFound
+      | ErrorConflict
       | ErrorTooManyRequests
       | ErrorInternalServerError
       | ErrorServiceUnavailable
@@ -13049,6 +14883,11 @@ export class Api<
     query: {
       /** The list of custom schema fragment DONs which are to be aggregated. */
       custom_schema_fragment_ids: string[];
+      /**
+       * The leaf type. Used for inferring the default stage diagram and
+       * tenant fragment ID.
+       */
+      leaf_type?: string;
       /** The stock schema fragment which is to be aggregated. */
       stock_schema_fragment_id?: string;
     },
@@ -13180,8 +15019,8 @@ export class Api<
       /** The list of app names. */
       app?: string[];
       /**
-       * The cursor to resume iteration from, otherwise if not provided, then
-       * iteration starts from the beginning.
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
        */
       cursor?: string;
       /** Whether only deprecated fragments should be filtered. */
@@ -13193,6 +15032,16 @@ export class Api<
        * @format int32
        */
       limit?: number;
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /**
+       * List of fields which are not required in the payload and can be
+       * pruned away.
+       */
+      prune?: CustomSchemaFragmentsListRequestPrune[];
       /** The list of fields to sort the items by and how to sort them. */
       sort_by?: string[];
       /** The list of subtypes. */
@@ -13356,10 +15205,15 @@ export class Api<
   stockSchemaFragmentsList = (
     query?: {
       /**
-       * The cursor to resume iteration from, otherwise if not provided, then
-       * iteration starts from the beginning.
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
        */
       cursor?: string;
+      /**
+       * Filter preset to specify whether to filter only customization enabled
+       * leaf types.
+       */
+      filter_preset?: StockSchemaFragmentsListRequestFilterPreset;
       /** The list of leaf types. */
       leaf_type?: string[];
       /**
@@ -13367,6 +15221,16 @@ export class Api<
        * @format int32
        */
       limit?: number;
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /**
+       * List of fields which are not required in the payload and can be
+       * pruned away.
+       */
+      prune?: StockSchemaFragmentsListRequestPrune[];
       /** The list of fields to sort the items by and how to sort them. */
       sort_by?: string[];
     },
@@ -13484,6 +15348,87 @@ export class Api<
     });
 
   /**
+   * @description Searches for records based on a given query.
+   *
+   * @tags search
+   * @name SearchCore
+   * @request GET:/search.core
+   * @secure
+   */
+  searchCore = (
+    query: {
+      /**
+       * The query string. Search query language:
+       * https://docs.devrev.ai/product/search#fields
+       */
+      query: string;
+      /**
+       * The cursor from where to begin iteration. Start from beginning if not
+       * provided.
+       */
+      cursor?: string;
+      /**
+       * The maximum number of items to return in a page. The default is '10'.
+       * @format int32
+       */
+      limit?: number;
+      /** The namespaces to search in. */
+      namespaces?: SearchNamespace[];
+      /**
+       * The property on which to sort the search results. The default is
+       * RELEVANCE.
+       */
+      sort_by?: SearchSortByParam;
+      /** Sorting order. The default is DESCENDING. */
+      sort_order?: SearchSortOrderParam;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      SearchCoreResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/search.core`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Searches for records based on a given query.
+   *
+   * @tags search
+   * @name SearchCorePost
+   * @request POST:/search.core
+   * @secure
+   */
+  searchCorePost = (data: SearchCoreRequest, params: RequestParams = {}) =>
+    this.request<
+      SearchCoreResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/search.core`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
    * @description Gets a service account.
    *
    * @tags service-accounts
@@ -13539,6 +15484,70 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/service-accounts.get`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets an SLA tracker.
+   *
+   * @tags slas
+   * @name SlaTrackersGet
+   * @request GET:/sla-trackers.get
+   * @secure
+   */
+  slaTrackersGet = (
+    query: {
+      /** The ID of the SLA tracker to get. */
+      id: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      SlaTrackersGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/sla-trackers.get`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets an SLA tracker.
+   *
+   * @tags slas
+   * @name SlaTrackersGetPost
+   * @request POST:/sla-trackers.get
+   * @secure
+   */
+  slaTrackersGetPost = (
+    data: SlaTrackersGetRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      SlaTrackersGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/sla-trackers.get`,
       method: 'POST',
       body: data,
       secure: true,
@@ -13849,6 +15858,320 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/snap-ins.resources`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Create a snap widget object.
+   *
+   * @tags snap-widgets
+   * @name SnapWidgetsCreate
+   * @request POST:/snap-widgets.create
+   * @secure
+   */
+  snapWidgetsCreate = (
+    data: SnapWidgetsCreateRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      SnapWidgetsCreateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/snap-widgets.create`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Creates a schema for survey, which includes name and description of schema.
+   *
+   * @tags surveys
+   * @name SurveysCreate
+   * @request POST:/surveys.create
+   * @secure
+   */
+  surveysCreate = (data: SurveysCreateRequest, params: RequestParams = {}) =>
+    this.request<
+      SurveysCreateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/surveys.create`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Deletes the specified survey.
+   *
+   * @tags surveys
+   * @name SurveysDelete
+   * @request POST:/surveys.delete
+   * @secure
+   */
+  surveysDelete = (data: SurveysDeleteRequest, params: RequestParams = {}) =>
+    this.request<
+      SurveysDeleteResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/surveys.delete`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description List surveys requested by the user.
+   *
+   * @tags surveys
+   * @name SurveysList
+   * @request GET:/surveys.list
+   * @secure
+   */
+  surveysList = (
+    query?: {
+      /**
+       * Filters for surveys created by any of these users.
+       * @example ["DEVU-12345"]
+       */
+      created_by?: string[];
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /**
+       * The maximum number of surveys to return. If not set, then the default
+       * is '50'.
+       * @format int32
+       */
+      limit?: number;
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /** Filters for surveys by name(s). */
+      name?: string[];
+      /** Fields to sort the surveys by and the direction to sort them. */
+      sort_by?: string[];
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      SurveysListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/surveys.list`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description List surveys requested by the user.
+   *
+   * @tags surveys
+   * @name SurveysListPost
+   * @request POST:/surveys.list
+   * @secure
+   */
+  surveysListPost = (data: SurveysListRequest, params: RequestParams = {}) =>
+    this.request<
+      SurveysListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/surveys.list`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description List survey responses requested by the user.
+   *
+   * @tags surveys
+   * @name SurveysResponsesList
+   * @request GET:/surveys.responses.list
+   * @secure
+   */
+  surveysResponsesList = (
+    query?: {
+      /**
+       * Filters for survey responses created by any of these users.
+       * @example ["DEVU-12345"]
+       */
+      created_by?: string[];
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /**
+       * The maximum number of survey responses to return. If not set, then
+       * the default is '50'.
+       * @format int32
+       */
+      limit?: number;
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /**
+       * Filters for survey responses created for the objects.
+       * @example ["ACC-12345"]
+       */
+      objects?: string[];
+      /**
+       * Fields to sort the survey responses by and the direction to sort
+       * them.
+       */
+      sort_by?: string[];
+      /** Filters for survey responses for the provided survey IDs. */
+      surveys?: string[];
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      SurveysResponsesListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/surveys.responses.list`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description List survey responses requested by the user.
+   *
+   * @tags surveys
+   * @name SurveysResponsesListPost
+   * @request POST:/surveys.responses.list
+   * @secure
+   */
+  surveysResponsesListPost = (
+    data: SurveysResponsesListRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      SurveysResponsesListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/surveys.responses.list`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Sends a survey on the specified channels.
+   *
+   * @tags surveys
+   * @name SurveysSend
+   * @request POST:/surveys.send
+   * @secure
+   */
+  surveysSend = (data: SurveysSendRequest, params: RequestParams = {}) =>
+    this.request<
+      SurveysSendResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/surveys.send`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Submits a user response to a survey, which is defined by the survey ID.
+   *
+   * @tags surveys
+   * @name SurveysSubmit
+   * @request POST:/surveys.submit
+   * @secure
+   */
+  surveysSubmit = (data: SurveysSubmitRequest, params: RequestParams = {}) =>
+    this.request<
+      SurveysSubmitResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/surveys.submit`,
       method: 'POST',
       body: data,
       secure: true,
@@ -14442,6 +16765,114 @@ export class Api<
     });
 
   /**
+   * @description Allows publishing of events (example from plug widget).
+   *
+   * @tags event-source
+   * @name TrackEventsPublish
+   * @request POST:/track-events.publish
+   * @secure
+   */
+  trackEventsPublish = (
+    data: TrackEventsPublishRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      TrackEventsPublishResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/track-events.publish`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Counts the number of Unit of Measurements based on the given filters.
+   *
+   * @tags product-usage
+   * @name UomsCount
+   * @request GET:/uoms.count
+   * @secure
+   */
+  uomsCount = (
+    query?: {
+      /** List of aggregation types for filtering list of UOMs. */
+      aggregation_types?: AggregationDetailAggregationType[];
+      /**
+       * List of Unit of Measurement (UOM) DONs to be used in filtering
+       * complete list of UOMs defined in a Dev Org.
+       */
+      ids?: string[];
+      /** List of metric names for filtering list of UOMs. */
+      metric_names?: string[];
+      /**
+       * List of part IDs for filtering list of UOMs.
+       * @example ["PROD-12345"]
+       */
+      part_ids?: string[];
+      /**
+       * List of product IDs for filtering list of UOMs.
+       * @example ["PROD-12345"]
+       */
+      product_ids?: string[];
+      /** List of unit types for filtering list of UOMs. */
+      unit_types?: UnitType[];
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      UomsCountResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/uoms.count`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Counts the number of Unit of Measurements based on the given filters.
+   *
+   * @tags product-usage
+   * @name UomsCountPost
+   * @request POST:/uoms.count
+   * @secure
+   */
+  uomsCountPost = (data: UomsCountRequest, params: RequestParams = {}) =>
+    this.request<
+      UomsCountResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/uoms.count`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
    * @description Creates a Unit of Measurement on a part.
    *
    * @tags product-usage
@@ -14979,6 +17410,8 @@ export class Api<
        * @example ["REV-AbCdEfGh"]
        */
       'issue.rev_orgs'?: string[];
+      /** Filters for issues with any of the provided subtypes. */
+      'issue.subtype'?: string[];
       /**
        * Filters for opportunities belonging to any of the provided accounts.
        * @example ["ACC-12345"]
@@ -14986,6 +17419,8 @@ export class Api<
       'opportunity.account'?: string[];
       /** Filters for opportunities with any of the provided contacts. */
       'opportunity.contacts'?: string[];
+      /** Filters for opportunity with any of the provided subtypes. */
+      'opportunity.subtype'?: string[];
       /**
        * Filters for work owned by any of these users.
        * @example ["DEVU-12345"]
@@ -15000,6 +17435,18 @@ export class Api<
       sort_by?: string[];
       /** Filters for records in the provided stage(s) by name. */
       'stage.name'?: string[];
+      /** Filters for issues that are staged. */
+      'staged_info.is_staged'?: boolean;
+      /** Filters for works with selected sync statuses. */
+      'sync_metadata.last_sync_in.status'?: SyncMetadataFilterSyncInFilterStatus[];
+      /** Filters for works modified with selected sync units. */
+      'sync_metadata.last_sync_in.sync_unit'?: string[];
+      /** Filters for works with selected sync statuses. */
+      'sync_metadata.last_sync_out.status'?: SyncMetadataFilterSyncOutFilterStatus[];
+      /** Filters for works modified with selected sync units. */
+      'sync_metadata.last_sync_out.sync_unit'?: string[];
+      /** Filters for issues synced from this specific origin system. */
+      'sync_metadata.origin_system'?: string[];
       /**
        * Filters for work with any of the provided tags.
        * @example ["TAG-12345"]
@@ -15025,6 +17472,8 @@ export class Api<
       'ticket.sla_summary.stage'?: SlaSummaryStage[];
       /** Filters for tickets with any of the provided source channels. */
       'ticket.source_channel'?: string[];
+      /** Filters for tickets with any of the provided subtypes. */
+      'ticket.subtype'?: string[];
       /** Filters for work of the provided types. */
       type?: WorkType[];
     },
@@ -15179,6 +17628,8 @@ export class Api<
        * @example ["REV-AbCdEfGh"]
        */
       'issue.rev_orgs'?: string[];
+      /** Filters for issues with any of the provided subtypes. */
+      'issue.subtype'?: string[];
       /**
        * The maximum number of works to return. The default is '50'.
        * @format int32
@@ -15196,6 +17647,8 @@ export class Api<
       'opportunity.account'?: string[];
       /** Filters for opportunities with any of the provided contacts. */
       'opportunity.contacts'?: string[];
+      /** Filters for opportunity with any of the provided subtypes. */
+      'opportunity.subtype'?: string[];
       /**
        * Filters for work owned by any of these users.
        * @example ["DEVU-12345"]
@@ -15210,6 +17663,18 @@ export class Api<
       sort_by?: string[];
       /** Filters for records in the provided stage(s) by name. */
       'stage.name'?: string[];
+      /** Filters for issues that are staged. */
+      'staged_info.is_staged'?: boolean;
+      /** Filters for works with selected sync statuses. */
+      'sync_metadata.last_sync_in.status'?: SyncMetadataFilterSyncInFilterStatus[];
+      /** Filters for works modified with selected sync units. */
+      'sync_metadata.last_sync_in.sync_unit'?: string[];
+      /** Filters for works with selected sync statuses. */
+      'sync_metadata.last_sync_out.status'?: SyncMetadataFilterSyncOutFilterStatus[];
+      /** Filters for works modified with selected sync units. */
+      'sync_metadata.last_sync_out.sync_unit'?: string[];
+      /** Filters for issues synced from this specific origin system. */
+      'sync_metadata.origin_system'?: string[];
       /**
        * Filters for work with any of the provided tags.
        * @example ["TAG-12345"]
@@ -15235,6 +17700,8 @@ export class Api<
       'ticket.sla_summary.stage'?: SlaSummaryStage[];
       /** Filters for tickets with any of the provided source channels. */
       'ticket.source_channel'?: string[];
+      /** Filters for tickets with any of the provided subtypes. */
+      'ticket.subtype'?: string[];
       /** Filters for work of the provided types. */
       type?: WorkType[];
     },
