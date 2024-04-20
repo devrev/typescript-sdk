@@ -573,6 +573,7 @@ export enum AuthTokenRequestedTokenType {
   UrnDevrevParamsOauthTokenTypeSession = 'urn:devrev:params:oauth:token-type:session',
   UrnDevrevParamsOauthTokenTypeSessionDev0 = 'urn:devrev:params:oauth:token-type:session:dev0',
   UrnDevrevParamsOauthTokenTypeSessionOnetime = 'urn:devrev:params:oauth:token-type:session:onetime',
+  UrnDevrevParamsOauthTokenTypeSessionRevActAs = 'urn:devrev:params:oauth:token-type:session:rev:act-as',
   UrnDevrevParamsOauthTokenTypeSuper = 'urn:devrev:params:oauth:token-type:super',
   UrnDevrevParamsOauthTokenTypeSys = 'urn:devrev:params:oauth:token-type:sys',
   UrnIetfParamsOauthTokenTypeJwt = 'urn:ietf:params:oauth:token-type:jwt',
@@ -3479,6 +3480,8 @@ export interface WorksCreateRequestTicket {
   group?: string;
   /** Whether the ticket is spam. */
   is_spam?: boolean;
+  /** Whether the ticket needs a response. */
+  needs_response?: boolean;
   /**
    * The Rev organization that the ticket is associated with.
    * @example "REV-AbCdEfGh"
@@ -3831,6 +3834,8 @@ export interface WorksUpdateRequestTicket {
   group?: string | null;
   /** Updates whether the ticket is spam. */
   is_spam?: boolean;
+  /** Updates whether the ticket needs a response. */
+  needs_response?: boolean;
   /**
    * Updates the Rev organization that the ticket is associated with.
    * @example "REV-AbCdEfGh"

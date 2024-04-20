@@ -760,6 +760,7 @@ components:
       - urn:devrev:params:oauth:token-type:session
       - urn:devrev:params:oauth:token-type:session:dev0
       - urn:devrev:params:oauth:token-type:session:onetime
+      - urn:devrev:params:oauth:token-type:session:rev:act-as
       - urn:devrev:params:oauth:token-type:super
       - urn:devrev:params:oauth:token-type:sys
       - urn:ietf:params:oauth:token-type:jwt
@@ -791,6 +792,8 @@ components:
           name: urn-devrev-params-oauth-token-type-session-dev0
         urn:devrev:params:oauth:token-type:session:onetime:
           name: urn-devrev-params-oauth-token-type-session-onetime
+        urn:devrev:params:oauth:token-type:session:rev:act-as:
+          name: urn-devrev-params-oauth-token-type-session-rev-act-as
         urn:devrev:params:oauth:token-type:super:
           name: urn-devrev-params-oauth-token-type-super
         urn:devrev:params:oauth:token-type:sys:
@@ -4535,6 +4538,9 @@ components:
         is_spam:
           description: Whether the ticket is spam.
           type: boolean
+        needs_response:
+          description: Whether the ticket needs a response.
+          type: boolean
         rev_org:
           description: The Rev organization that the ticket is associated with.
           example: REV-AbCdEfGh
@@ -5018,6 +5024,9 @@ components:
           type: string
         is_spam:
           description: Updates whether the ticket is spam.
+          type: boolean
+        needs_response:
+          description: Updates whether the ticket needs a response.
           type: boolean
         rev_org:
           description: |
