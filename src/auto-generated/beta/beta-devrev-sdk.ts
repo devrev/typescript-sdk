@@ -7184,6 +7184,7 @@ export type SnapWidgetBase = AtomBase & {
 
 /** Logical grouping of snap widgets. Useful for filtering. */
 export enum SnapWidgetNamespace {
+  CommentSuggestionReplies = 'comment_suggestion_replies',
   EmailPreview = 'email_preview',
   LinkPreview = 'link_preview',
   PlugNudge = 'plug_nudge',

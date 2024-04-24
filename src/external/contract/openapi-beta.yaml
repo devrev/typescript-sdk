@@ -9397,6 +9397,7 @@ components:
     snap-widget-namespace:
       description: Logical grouping of snap widgets. Useful for filtering.
       enum:
+      - comment_suggestion_replies
       - email_preview
       - link_preview
       - plug_nudge
