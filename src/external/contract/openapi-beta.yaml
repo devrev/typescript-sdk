@@ -2012,6 +2012,70 @@ components:
           type: array
       title: auth-tokens-user-traits
       type: object
+    boolean-expression:
+      description: Boolean expression.
+      discriminator:
+        mapping:
+          and: '#/components/schemas/boolean-expression-and-expression'
+          not: '#/components/schemas/boolean-expression-not-expression'
+          or: '#/components/schemas/boolean-expression-or-expression'
+          primitive: '#/components/schemas/boolean-expression-primitive-expression'
+        propertyName: type
+      oneOf:
+      - $ref: '#/components/schemas/boolean-expression-and-expression'
+      - $ref: '#/components/schemas/boolean-expression-not-expression'
+      - $ref: '#/components/schemas/boolean-expression-or-expression'
+      - $ref: '#/components/schemas/boolean-expression-primitive-expression'
+      properties:
+        type:
+          $ref: '#/components/schemas/boolean-expression-type'
+      required:
+      - type
+      title: boolean-expression
+      type: object
+    boolean-expression-and-expression:
+      description: All the expressions would be 'and'ed together.
+      properties:
+        expressions:
+          items:
+            $ref: '#/components/schemas/boolean-expression'
+          type: array
+      required:
+      - expressions
+      title: boolean-expression-and-expression
+      type: object
+    boolean-expression-not-expression:
+      description: The expression would be negated.
+      properties:
+        expression:
+          $ref: '#/components/schemas/boolean-expression'
+      required:
+      - expression
+      title: boolean-expression-not-expression
+      type: object
+    boolean-expression-or-expression:
+      description: All the expressions would be 'or'ed together.
+      properties:
+        expressions:
+          items:
+            $ref: '#/components/schemas/boolean-expression'
+          type: array
+      required:
+      - expressions
+      title: boolean-expression-or-expression
+      type: object
+    boolean-expression-primitive-expression:
+      additionalProperties: false
+      description: The primitive expression type.
+      title: boolean-expression-primitive-expression
+      type: object
+    boolean-expression-type:
+      enum:
+      - and
+      - not
+      - or
+      - primitive
+      type: string
     capability:
       allOf:
       - $ref: '#/components/schemas/part-base'
@@ -5187,6 +5251,8 @@ components:
         description:
           description: The updated group's description.
           type: string
+        dynamic_group_info:
+          $ref: '#/components/schemas/groups-update-request-dynamic-group-info'
         id:
           description: The ID of the group to update.
           type: string
@@ -5199,6 +5265,14 @@ components:
       required:
       - id
       title: groups-update-request
+      type: object
+    groups-update-request-dynamic-group-info:
+      properties:
+        membership_expression:
+          $ref: '#/components/schemas/boolean-expression'
+      required:
+      - membership_expression
+      title: groups-update-request-dynamic-group-info
       type: object
     groups-update-response:
       description: The response to group update.

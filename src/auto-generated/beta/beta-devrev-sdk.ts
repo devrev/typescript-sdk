@@ -1516,6 +1516,57 @@ export interface AuthTokensUserTraits {
   phone_numbers?: string[];
 }
 
+/**
+ * boolean-expression
+ * Boolean expression.
+ */
+export type BooleanExpression = (
+  | BooleanExpressionAndExpression
+  | BooleanExpressionNotExpression
+  | BooleanExpressionOrExpression
+  | BooleanExpressionPrimitiveExpression
+) & {
+  type: BooleanExpressionType;
+};
+
+/**
+ * boolean-expression-and-expression
+ * All the expressions would be 'and'ed together.
+ */
+export interface BooleanExpressionAndExpression {
+  expressions: BooleanExpression[];
+}
+
+/**
+ * boolean-expression-not-expression
+ * The expression would be negated.
+ */
+export interface BooleanExpressionNotExpression {
+  /** Boolean expression. */
+  expression: BooleanExpression;
+}
+
+/**
+ * boolean-expression-or-expression
+ * All the expressions would be 'or'ed together.
+ */
+export interface BooleanExpressionOrExpression {
+  expressions: BooleanExpression[];
+}
+
+/**
+ * boolean-expression-primitive-expression
+ * The primitive expression type.
+ */
+export type BooleanExpressionPrimitiveExpression = object;
+
+export enum BooleanExpressionType {
+  And = 'and',
+  Not = 'not',
+  Or = 'or',
+  Primitive = 'primitive',
+}
+
 /** capability */
 export type Capability = PartBase;
 
@@ -3894,12 +3945,19 @@ export interface GroupsListResponse {
 export interface GroupsUpdateRequest {
   /** The updated group's description. */
   description?: string;
+  dynamic_group_info?: GroupsUpdateRequestDynamicGroupInfo;
   /** The ID of the group to update. */
   id: string;
   /** The updated group's name. */
   name?: string;
   /** The updated group's owner. */
   owner?: string;
+}
+
+/** groups-update-request-dynamic-group-info */
+export interface GroupsUpdateRequestDynamicGroupInfo {
+  /** Boolean expression. */
+  membership_expression: BooleanExpression;
 }
 
 /**
