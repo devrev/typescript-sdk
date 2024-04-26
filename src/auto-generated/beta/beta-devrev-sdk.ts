@@ -4078,21 +4078,34 @@ export enum LinkEndpointType {
 
 /**
  * link-rev-user-to-rev-org-request
- * A request to link a rev user to a rev org.
+ * Request to link a Rev user to an existing Rev organization.
  */
 export interface LinkRevUserToRevOrgRequest {
+  /** The ID of the Rev user. */
+  id?: string;
   /**
-   * The don of the rev org to link the rev user to.
+   * The ID of the Rev organization to link the Rev user to.
    * @example "REV-AbCdEfGh"
    */
-  rev_org_don: string;
-  /** The don of the rev user to link. */
-  user_don: string;
+  rev_org?: string;
+  /**
+   * The don of the rev org to link the rev user to. This is deprecated,
+   * use rev_org instead.
+   * @deprecated
+   * @example "REV-AbCdEfGh"
+   */
+  rev_org_don?: string;
+  /**
+   * The don of the rev user to link. This is deprecated, use id
+   * instead.
+   * @deprecated
+   */
+  user_don?: string;
 }
 
 /**
  * link-rev-user-to-rev-org-response
- * The response to link a rev user to a rev org.
+ * Response for linking a Rev user to an existing Rev organization.
  */
 export interface LinkRevUserToRevOrgResponse {
   rev_user: RevUser;
@@ -6194,6 +6207,8 @@ export interface SchemaFieldDescriptorBase {
   mfz?: SchemaFieldMfzMetadata;
   /** Name of the field. */
   name: string;
+  /** The schema of oasis specific fields. */
+  oasis?: SchemaFieldOasisMetadata;
   /** Type this field is from. */
   origin?: string;
   /** The schema of ui specific fields. */
@@ -6249,6 +6264,12 @@ export interface SchemaFieldListViewUiMetadata {
  * The schema of MFZ specific fields.
  */
 export type SchemaFieldMfzMetadata = object;
+
+/**
+ * schema-field-oasis-metadata
+ * The schema of oasis specific fields.
+ */
+export type SchemaFieldOasisMetadata = object;
 
 /**
  * schema-field-summary-view-ui-metadata
@@ -8511,21 +8532,34 @@ export enum UnitType {
 
 /**
  * unlink-rev-user-from-rev-org-request
- * A request to unlink a rev user from a rev org.
+ * Request to unlink/remove a Rev user from a Rev organization.
  */
 export interface UnlinkRevUserFromRevOrgRequest {
+  /** The ID of the Rev user. */
+  id?: string;
   /**
-   * The don of the rev org to unlink the rev user from.
+   * The ID of the Rev organization to unlink the Rev user from.
    * @example "REV-AbCdEfGh"
    */
-  rev_org_don: string;
-  /** The don of the rev user to unlink. */
-  user_don: string;
+  rev_org?: string;
+  /**
+   * The don of the rev org to unlink the rev user from. This is
+   * deprecated, use rev_org instead.
+   * @deprecated
+   * @example "REV-AbCdEfGh"
+   */
+  rev_org_don?: string;
+  /**
+   * The don of the rev user to unlink. This is deprecated, use id
+   * instead.
+   * @deprecated
+   */
+  user_don?: string;
 }
 
 /**
  * unlink-rev-user-from-rev-org-response
- * The response to unlink a rev user from a rev org.
+ * Response for unlinking/removing a Rev user from a Rev organization.
  */
 export interface UnlinkRevUserFromRevOrgResponse {
   rev_user: RevUser;
