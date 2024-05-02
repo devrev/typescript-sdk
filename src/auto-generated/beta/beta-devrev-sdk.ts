@@ -2456,6 +2456,179 @@ export interface CustomSchemaSpec {
   validate_required_fields?: boolean;
 }
 
+/** custom-stage */
+export type CustomStage = AtomBase;
+
+/** custom-stages-create-request */
+export interface CustomStagesCreateRequest {
+  /**
+   * A reference to the marketplace item from which this stage was
+   * imported.
+   */
+  marketplace_ref?: string;
+  /** The name of the custom stage. */
+  name: string;
+  /**
+   * The ordinal of the custom stage used for ordering.
+   * @format int32
+   */
+  ordinal: number;
+  /** The state ID. */
+  state: string;
+}
+
+/** custom-stages-create-response */
+export interface CustomStagesCreateResponse {
+  custom_stage: CustomStage;
+}
+
+/** custom-stages-get-request */
+export interface CustomStagesGetRequest {
+  /** The ID of the custom stage to get. */
+  id: string;
+}
+
+/** custom-stages-get-response */
+export interface CustomStagesGetResponse {
+  custom_stage: CustomStage;
+}
+
+/** custom-stages-list-request */
+export interface CustomStagesListRequest {
+  /**
+   * The cursor to resume iteration from, otherwise if not provided,
+   * then iteration starts from the beginning.
+   */
+  cursor?: string;
+  /**
+   * The maximum number of items.
+   * @format int32
+   */
+  limit?: number;
+  /** The list of stage names. */
+  name?: string[];
+  /** The list of stage ordinals. */
+  ordinal?: number[];
+  /** The list of fields to sort the items by and how to sort them. */
+  sort_by?: string[];
+}
+
+/** custom-stages-list-response */
+export interface CustomStagesListResponse {
+  /**
+   * The cursor to resume iteration from, otherwise if not provided,
+   * then iteration starts from the beginning.
+   */
+  cursor?: string;
+  /** The custom stages. */
+  result: CustomStage[];
+}
+
+/** custom-stages-update-request */
+export interface CustomStagesUpdateRequest {
+  /** The ID of the custom stage to update. */
+  id: string;
+  /** The updated name of the custom stage. */
+  name?: string;
+  /**
+   * The ordinal of the custom stage.
+   * @format int32
+   */
+  ordinal?: number;
+  /** The state ID. */
+  state_id?: string;
+}
+
+/** custom-stages-update-response */
+export interface CustomStagesUpdateResponse {
+  custom_stage: CustomStage;
+}
+
+/** custom-state */
+export type CustomState = AtomBase;
+
+/** custom-states-create-request */
+export interface CustomStatesCreateRequest {
+  /** Whether this is a final state. */
+  is_final?: boolean;
+  /** The name of the custom state. */
+  name: string;
+  /**
+   * Ordinal of the custom state used to identify system states.
+   * @format int32
+   */
+  ordinal: number;
+}
+
+/** custom-states-create-response */
+export interface CustomStatesCreateResponse {
+  custom_state: CustomState;
+}
+
+/** custom-states-get-request */
+export interface CustomStatesGetRequest {
+  /** The ID of the custom state to get. */
+  id: string;
+}
+
+/** custom-states-get-response */
+export interface CustomStatesGetResponse {
+  custom_state: CustomState;
+}
+
+/** custom-states-list-request */
+export interface CustomStatesListRequest {
+  /**
+   * The cursor to resume iteration from, otherwise if not provided,
+   * then iteration starts from the beginning.
+   */
+  cursor?: string;
+  /** Whether only final states should be filtered. */
+  is_final?: boolean;
+  /**
+   * The maximum number of items.
+   * @format int32
+   */
+  limit?: number;
+  /** The list of state names. */
+  name?: string[];
+  /** The list of state ordinals. */
+  ordinal?: number[];
+  /** The list of fields to sort the items by and how to sort them. */
+  sort_by?: string[];
+}
+
+/** custom-states-list-response */
+export interface CustomStatesListResponse {
+  /**
+   * The cursor to resume iteration from, otherwise if not provided,
+   * then iteration starts from the beginning.
+   */
+  cursor?: string;
+  /** The custom states. */
+  result: CustomState[];
+}
+
+/** custom-states-update-request */
+export interface CustomStatesUpdateRequest {
+  /** The ID of the custom state to update. */
+  id: string;
+  /** Whether this is a final state. */
+  is_final?: boolean;
+  /** The name of the custom state. */
+  name?: string;
+  /**
+   * Ordinal of the custom state used to identify system states.
+   * @format int32
+   */
+  ordinal?: number;
+}
+
+/** custom-states-update-response */
+export interface CustomStatesUpdateResponse {
+  custom_state: CustomState;
+}
+
 /** custom-type-fragment */
 export type CustomTypeFragment = CustomSchemaFragmentBase & {
   stage_diagram?: StageDiagramSummary;
@@ -15990,6 +16163,410 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/snap-widgets.create`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Creates a custom stage.
+   *
+   * @tags customization
+   * @name CustomStagesCreate
+   * @request POST:/stages.custom.create
+   * @secure
+   */
+  customStagesCreate = (
+    data: CustomStagesCreateRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      CustomStagesCreateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/stages.custom.create`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets a custom stage.
+   *
+   * @tags customization
+   * @name CustomStagesGet
+   * @request GET:/stages.custom.get
+   * @secure
+   */
+  customStagesGet = (
+    query: {
+      /** The ID of the custom stage to get. */
+      id: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      CustomStagesGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/stages.custom.get`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets a custom stage.
+   *
+   * @tags customization
+   * @name CustomStagesGetPost
+   * @request POST:/stages.custom.get
+   * @secure
+   */
+  customStagesGetPost = (
+    data: CustomStagesGetRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      CustomStagesGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/stages.custom.get`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Lists custom stages.
+   *
+   * @tags customization
+   * @name CustomStagesList
+   * @request GET:/stages.custom.list
+   * @secure
+   */
+  customStagesList = (
+    query?: {
+      /**
+       * The cursor to resume iteration from, otherwise if not provided, then
+       * iteration starts from the beginning.
+       */
+      cursor?: string;
+      /**
+       * The maximum number of items.
+       * @format int32
+       */
+      limit?: number;
+      /** The list of stage names. */
+      name?: string[];
+      /** The list of stage ordinals. */
+      ordinal?: number[];
+      /** The list of fields to sort the items by and how to sort them. */
+      sort_by?: string[];
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      CustomStagesListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/stages.custom.list`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Lists custom stages.
+   *
+   * @tags customization
+   * @name CustomStagesListPost
+   * @request POST:/stages.custom.list
+   * @secure
+   */
+  customStagesListPost = (
+    data: CustomStagesListRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      CustomStagesListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/stages.custom.list`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Updates a custom stage.
+   *
+   * @tags customization
+   * @name CustomStagesUpdate
+   * @request POST:/stages.custom.update
+   * @secure
+   */
+  customStagesUpdate = (
+    data: CustomStagesUpdateRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      CustomStagesUpdateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/stages.custom.update`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Creates a custom state.
+   *
+   * @tags customization
+   * @name CustomStatesCreate
+   * @request POST:/states.custom.create
+   * @secure
+   */
+  customStatesCreate = (
+    data: CustomStatesCreateRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      CustomStatesCreateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/states.custom.create`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets a custom state.
+   *
+   * @tags customization
+   * @name CustomStatesGet
+   * @request GET:/states.custom.get
+   * @secure
+   */
+  customStatesGet = (
+    query: {
+      /** The ID of the custom state to get. */
+      id: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      CustomStatesGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/states.custom.get`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets a custom state.
+   *
+   * @tags customization
+   * @name CustomStatesGetPost
+   * @request POST:/states.custom.get
+   * @secure
+   */
+  customStatesGetPost = (
+    data: CustomStatesGetRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      CustomStatesGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/states.custom.get`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Lists custom states.
+   *
+   * @tags customization
+   * @name CustomStatesList
+   * @request GET:/states.custom.list
+   * @secure
+   */
+  customStatesList = (
+    query?: {
+      /**
+       * The cursor to resume iteration from, otherwise if not provided, then
+       * iteration starts from the beginning.
+       */
+      cursor?: string;
+      /** Whether only final states should be filtered. */
+      is_final?: boolean;
+      /**
+       * The maximum number of items.
+       * @format int32
+       */
+      limit?: number;
+      /** The list of state names. */
+      name?: string[];
+      /** The list of state ordinals. */
+      ordinal?: number[];
+      /** The list of fields to sort the items by and how to sort them. */
+      sort_by?: string[];
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      CustomStatesListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/states.custom.list`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Lists custom states.
+   *
+   * @tags customization
+   * @name CustomStatesListPost
+   * @request POST:/states.custom.list
+   * @secure
+   */
+  customStatesListPost = (
+    data: CustomStatesListRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      CustomStatesListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/states.custom.list`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Updates a custom state.
+   *
+   * @tags customization
+   * @name CustomStatesUpdate
+   * @request POST:/states.custom.update
+   * @secure
+   */
+  customStatesUpdate = (
+    data: CustomStatesUpdateRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      CustomStatesUpdateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/states.custom.update`,
       method: 'POST',
       body: data,
       secure: true,

@@ -3273,6 +3273,263 @@ components:
           type: boolean
       title: custom-schema-spec
       type: object
+    custom-stage:
+      allOf:
+      - $ref: '#/components/schemas/atom-base'
+      title: custom-stage
+    custom-stages-create-request:
+      properties:
+        marketplace_ref:
+          description: |
+            A reference to the marketplace item from which this stage was
+            imported.
+          type: string
+        name:
+          description: The name of the custom stage.
+          type: string
+        ordinal:
+          description: The ordinal of the custom stage used for ordering.
+          format: int32
+          type: integer
+        state:
+          description: The state ID.
+          type: string
+      required:
+      - name
+      - ordinal
+      - state
+      title: custom-stages-create-request
+      type: object
+    custom-stages-create-response:
+      properties:
+        custom_stage:
+          $ref: '#/components/schemas/custom-stage'
+      required:
+      - custom_stage
+      title: custom-stages-create-response
+      type: object
+      x-go-name: CustomStagesCreateResponseBody
+    custom-stages-get-request:
+      properties:
+        id:
+          description: The ID of the custom stage to get.
+          type: string
+      required:
+      - id
+      title: custom-stages-get-request
+      type: object
+    custom-stages-get-response:
+      properties:
+        custom_stage:
+          $ref: '#/components/schemas/custom-stage'
+      required:
+      - custom_stage
+      title: custom-stages-get-response
+      type: object
+      x-go-name: CustomStagesGetResponseBody
+    custom-stages-list-request:
+      properties:
+        cursor:
+          description: |
+            The cursor to resume iteration from, otherwise if not provided,
+            then iteration starts from the beginning.
+          type: string
+        limit:
+          description: The maximum number of items.
+          format: int32
+          type: integer
+        name:
+          description: The list of stage names.
+          items:
+            type: string
+          type: array
+        ordinal:
+          description: The list of stage ordinals.
+          items:
+            format: int32
+            type: integer
+          type: array
+        sort_by:
+          description: |
+            The list of fields to sort the items by and how to sort them.
+          items:
+            type: string
+          type: array
+      title: custom-stages-list-request
+      type: object
+    custom-stages-list-response:
+      properties:
+        cursor:
+          description: |
+            The cursor to resume iteration from, otherwise if not provided,
+            then iteration starts from the beginning.
+          type: string
+        result:
+          description: The custom stages.
+          items:
+            $ref: '#/components/schemas/custom-stage'
+          type: array
+      required:
+      - result
+      title: custom-stages-list-response
+      type: object
+      x-go-name: CustomStagesListResponseBody
+    custom-stages-update-request:
+      properties:
+        id:
+          description: The ID of the custom stage to update.
+          type: string
+        name:
+          description: The updated name of the custom stage.
+          type: string
+        ordinal:
+          description: The ordinal of the custom stage.
+          format: int32
+          type: integer
+        state_id:
+          description: The state ID.
+          type: string
+      required:
+      - id
+      title: custom-stages-update-request
+      type: object
+    custom-stages-update-response:
+      properties:
+        custom_stage:
+          $ref: '#/components/schemas/custom-stage'
+      required:
+      - custom_stage
+      title: custom-stages-update-response
+      type: object
+      x-go-name: CustomStagesUpdateResponseBody
+    custom-state:
+      allOf:
+      - $ref: '#/components/schemas/atom-base'
+      title: custom-state
+    custom-states-create-request:
+      properties:
+        is_final:
+          description: Whether this is a final state.
+          type: boolean
+        name:
+          description: The name of the custom state.
+          type: string
+        ordinal:
+          description: |
+            Ordinal of the custom state used to identify system states.
+          format: int32
+          type: integer
+      required:
+      - name
+      - ordinal
+      title: custom-states-create-request
+      type: object
+    custom-states-create-response:
+      properties:
+        custom_state:
+          $ref: '#/components/schemas/custom-state'
+      required:
+      - custom_state
+      title: custom-states-create-response
+      type: object
+      x-go-name: CustomStatesCreateResponseBody
+    custom-states-get-request:
+      properties:
+        id:
+          description: The ID of the custom state to get.
+          type: string
+      required:
+      - id
+      title: custom-states-get-request
+      type: object
+    custom-states-get-response:
+      properties:
+        custom_state:
+          $ref: '#/components/schemas/custom-state'
+      required:
+      - custom_state
+      title: custom-states-get-response
+      type: object
+      x-go-name: CustomStatesGetResponseBody
+    custom-states-list-request:
+      properties:
+        cursor:
+          description: |
+            The cursor to resume iteration from, otherwise if not provided,
+            then iteration starts from the beginning.
+          type: string
+        is_final:
+          description: Whether only final states should be filtered.
+          type: boolean
+        limit:
+          description: The maximum number of items.
+          format: int32
+          type: integer
+        name:
+          description: The list of state names.
+          items:
+            type: string
+          type: array
+        ordinal:
+          description: The list of state ordinals.
+          items:
+            format: int32
+            type: integer
+          type: array
+        sort_by:
+          description: |
+            The list of fields to sort the items by and how to sort them.
+          items:
+            type: string
+          type: array
+      title: custom-states-list-request
+      type: object
+    custom-states-list-response:
+      properties:
+        cursor:
+          description: |
+            The cursor to resume iteration from, otherwise if not provided,
+            then iteration starts from the beginning.
+          type: string
+        result:
+          description: The custom states.
+          items:
+            $ref: '#/components/schemas/custom-state'
+          type: array
+      required:
+      - result
+      title: custom-states-list-response
+      type: object
+      x-go-name: CustomStatesListResponseBody
+    custom-states-update-request:
+      properties:
+        id:
+          description: The ID of the custom state to update.
+          type: string
+        is_final:
+          description: Whether this is a final state.
+          type: boolean
+        name:
+          description: The name of the custom state.
+          type: string
+        ordinal:
+          description: |
+            Ordinal of the custom state used to identify system states.
+          format: int32
+          type: integer
+      required:
+      - id
+      title: custom-states-update-request
+      type: object
+    custom-states-update-response:
+      properties:
+        custom_state:
+          $ref: '#/components/schemas/custom-state'
+      required:
+      - custom_state
+      title: custom-states-update-response
+      type: object
+      x-go-name: CustomStatesUpdateResponseBody
     custom-type-fragment:
       allOf:
       - $ref: '#/components/schemas/custom-schema-fragment-base'
@@ -19921,6 +20178,464 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
       - snap-widgets
+  /stages.custom.create:
+    post:
+      description: Creates a custom stage.
+      operationId: custom-stages-create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-stages-create-request'
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-stages-create-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - customization
+  /stages.custom.get:
+    get:
+      description: Gets a custom stage.
+      operationId: custom-stages-get
+      parameters:
+      - description: The ID of the custom stage to get.
+        explode: false
+        in: query
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-stages-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - customization
+      x-request-name: CustomStagesGetQuery
+    post:
+      description: Gets a custom stage.
+      operationId: custom-stages-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-stages-get-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-stages-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - customization
+  /stages.custom.list:
+    get:
+      description: Lists custom stages.
+      operationId: custom-stages-list
+      parameters:
+      - description: |
+          The cursor to resume iteration from, otherwise if not provided, then
+          iteration starts from the beginning.
+        explode: false
+        in: query
+        name: cursor
+        schema:
+          type: string
+      - description: The maximum number of items.
+        explode: false
+        in: query
+        name: limit
+        schema:
+          format: int32
+          type: integer
+      - description: The list of stage names.
+        explode: false
+        in: query
+        name: name
+        schema:
+          items:
+            type: string
+          type: array
+      - description: The list of stage ordinals.
+        explode: false
+        in: query
+        name: ordinal
+        schema:
+          items:
+            format: int32
+            type: integer
+          type: array
+      - description: |
+          The list of fields to sort the items by and how to sort them.
+        explode: false
+        in: query
+        name: sort_by
+        schema:
+          items:
+            type: string
+          type: array
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-stages-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - customization
+      x-request-name: CustomStagesListQuery
+    post:
+      description: Lists custom stages.
+      operationId: custom-stages-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-stages-list-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-stages-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - customization
+  /stages.custom.update:
+    post:
+      description: Updates a custom stage.
+      operationId: custom-stages-update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-stages-update-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-stages-update-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - customization
+  /states.custom.create:
+    post:
+      description: Creates a custom state.
+      operationId: custom-states-create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-states-create-request'
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-states-create-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - customization
+  /states.custom.get:
+    get:
+      description: Gets a custom state.
+      operationId: custom-states-get
+      parameters:
+      - description: The ID of the custom state to get.
+        explode: false
+        in: query
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-states-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - customization
+      x-request-name: CustomStatesGetQuery
+    post:
+      description: Gets a custom state.
+      operationId: custom-states-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-states-get-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-states-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - customization
+  /states.custom.list:
+    get:
+      description: Lists custom states.
+      operationId: custom-states-list
+      parameters:
+      - description: |
+          The cursor to resume iteration from, otherwise if not provided, then
+          iteration starts from the beginning.
+        explode: false
+        in: query
+        name: cursor
+        schema:
+          type: string
+      - description: Whether only final states should be filtered.
+        explode: false
+        in: query
+        name: is_final
+        schema:
+          type: boolean
+      - description: The maximum number of items.
+        explode: false
+        in: query
+        name: limit
+        schema:
+          format: int32
+          type: integer
+      - description: The list of state names.
+        explode: false
+        in: query
+        name: name
+        schema:
+          items:
+            type: string
+          type: array
+      - description: The list of state ordinals.
+        explode: false
+        in: query
+        name: ordinal
+        schema:
+          items:
+            format: int32
+            type: integer
+          type: array
+      - description: |
+          The list of fields to sort the items by and how to sort them.
+        explode: false
+        in: query
+        name: sort_by
+        schema:
+          items:
+            type: string
+          type: array
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-states-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - customization
+      x-request-name: CustomStatesListQuery
+    post:
+      description: Lists custom states.
+      operationId: custom-states-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-states-list-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-states-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - customization
+  /states.custom.update:
+    post:
+      description: Updates a custom state.
+      operationId: custom-states-update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/custom-states-update-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/custom-states-update-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - customization
   /surveys.create:
     post:
       description: |
