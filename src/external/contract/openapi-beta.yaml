@@ -9664,12 +9664,18 @@ components:
     snap-ins-resources-response:
       properties:
         event_sources:
-          $ref: '#/components/schemas/snap-ins-resources-response-event-sources-entry'
+          additionalProperties:
+            type: string
+          description: The event sources for the snap-in.
+          type: object
         inputs:
           description: The inputs for the snap-in.
           type: object
         keyrings:
-          $ref: '#/components/schemas/snap-ins-resources-response-keyrings-entry'
+          additionalProperties:
+            $ref: '#/components/schemas/snap-ins-resources-response-keyring-data'
+          description: Map of keyring names and its data.
+          type: object
         snap_in_version:
           $ref: '#/components/schemas/snap-in-version-summary'
       required:
@@ -9677,17 +9683,6 @@ components:
       title: snap-ins-resources-response
       type: object
       x-go-name: SnapInsResourcesResponseBody
-    snap-ins-resources-response-event-sources-entry:
-      properties:
-        key:
-          type: string
-        value:
-          type: string
-      required:
-      - key
-      - value
-      title: snap-ins-resources-response-event-sources-entry
-      type: object
     snap-ins-resources-response-keyring-data:
       properties:
         id:
@@ -9701,17 +9696,6 @@ components:
       - id
       - secret
       title: snap-ins-resources-response-keyring-data
-      type: object
-    snap-ins-resources-response-keyrings-entry:
-      properties:
-        key:
-          type: string
-        value:
-          $ref: '#/components/schemas/snap-ins-resources-response-keyring-data'
-      required:
-      - key
-      - value
-      title: snap-ins-resources-response-keyrings-entry
       type: object
     snap-widget:
       discriminator:

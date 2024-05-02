@@ -7392,17 +7392,13 @@ export interface SnapInsResourcesRequest {
 
 /** snap-ins-resources-response */
 export interface SnapInsResourcesResponse {
-  event_sources?: SnapInsResourcesResponseEventSourcesEntry;
+  /** The event sources for the snap-in. */
+  event_sources?: Record<string, string>;
   /** The inputs for the snap-in. */
   inputs?: object;
-  keyrings?: SnapInsResourcesResponseKeyringsEntry;
+  /** Map of keyring names and its data. */
+  keyrings?: Record<string, SnapInsResourcesResponseKeyringData>;
   snap_in_version: SnapInVersionSummary;
-}
-
-/** snap-ins-resources-response-event-sources-entry */
-export interface SnapInsResourcesResponseEventSourcesEntry {
-  key: string;
-  value: string;
 }
 
 /** snap-ins-resources-response-keyring-data */
@@ -7411,12 +7407,6 @@ export interface SnapInsResourcesResponseKeyringData {
   id: string;
   /** The secret value of the keyring. This must be handled with caution. */
   secret: string;
-}
-
-/** snap-ins-resources-response-keyrings-entry */
-export interface SnapInsResourcesResponseKeyringsEntry {
-  key: string;
-  value: SnapInsResourcesResponseKeyringData;
 }
 
 /** snap-widget */
