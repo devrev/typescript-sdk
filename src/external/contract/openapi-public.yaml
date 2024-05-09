@@ -3233,6 +3233,17 @@ components:
           type: string
       title: stage-update
       type: object
+    stage-validation-option-for-create:
+      description: Type of stage validation options when creating an object.
+      enum:
+      - allow_non_start
+      type: string
+    stage-validation-option-for-update:
+      description: |
+        Type of state validation options when updating the stage of an object.
+      enum:
+      - allow_invalid_transition
+      type: string
     staged-info-filter:
       properties:
         is_staged:
@@ -4476,6 +4487,12 @@ components:
           type: array
         stage:
           $ref: '#/components/schemas/stage-init'
+        stage_validation_options:
+          description: |
+            The type of stage validations options when creating a work item.
+          items:
+            $ref: '#/components/schemas/stage-validation-option-for-create'
+          type: array
         tags:
           description: Tags associated with the work item.
           items:
@@ -4882,6 +4899,13 @@ components:
           $ref: '#/components/schemas/works-update-request-reported-by'
         stage:
           $ref: '#/components/schemas/stage-update'
+        stage_validation_options:
+          description: |
+            The type of stage validations options when updating the stage of an
+            object.
+          items:
+            $ref: '#/components/schemas/stage-validation-option-for-update'
+          type: array
         staged_info:
           $ref: '#/components/schemas/works-update-request-staged-info-staged-info-update'
         tags:

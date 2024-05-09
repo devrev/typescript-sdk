@@ -2436,6 +2436,16 @@ export interface StageUpdate {
   name?: string;
 }
 
+/** Type of stage validation options when creating an object. */
+export enum StageValidationOptionForCreate {
+  AllowNonStart = 'allow_non_start',
+}
+
+/** Type of state validation options when updating the stage of an object. */
+export enum StageValidationOptionForUpdate {
+  AllowInvalidTransition = 'allow_invalid_transition',
+}
+
 /** staged-info-filter */
 export interface StagedInfoFilter {
   /** Filters for issues that are staged. */
@@ -3434,6 +3444,8 @@ export type WorksCreateRequest = (
   reported_by?: string[];
   /** Sets an object's initial stage. */
   stage?: StageInit;
+  /** The type of stage validations options when creating a work item. */
+  stage_validation_options?: StageValidationOptionForCreate[];
   /** Tags associated with the work item. */
   tags?: SetTagWithValue[];
   /**
@@ -3731,6 +3743,11 @@ export type WorksUpdateRequest = (
   reported_by?: WorksUpdateRequestReportedBy;
   /** Updates an object's stage. */
   stage?: StageUpdate;
+  /**
+   * The type of stage validations options when updating the stage of an
+   * object.
+   */
+  stage_validation_options?: StageValidationOptionForUpdate[];
   staged_info?: WorksUpdateRequestStagedInfoStagedInfoUpdate;
   tags?: WorksUpdateRequestTags;
   /**

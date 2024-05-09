@@ -12187,6 +12187,71 @@
         "type": "object",
         "x-go-name": "SearchCoreResponseBody"
       },
+      "search-hybrid-namespace": {
+        "description": "The namespaces for hybrid search.",
+        "enum": [
+          "article",
+          "conversation",
+          "issue",
+          "part",
+          "question_answer",
+          "ticket",
+          "work"
+        ],
+        "type": "string"
+      },
+      "search-hybrid-request": {
+        "description": "Request for search with exact, prefix and infix matches.",
+        "properties": {
+          "limit": {
+            "description": "The maximum number of items to return in a page. The default is\n'10'.\n",
+            "format": "int32",
+            "maximum": 50,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "namespace": {
+            "$ref": "#/components/schemas/search-hybrid-namespace"
+          },
+          "query": {
+            "description": "The query string.",
+            "maxLength": 400,
+            "minLength": 1,
+            "type": "string"
+          },
+          "semantic_weight": {
+            "description": "The weightage for semantic search. Values between 0 and 1 are\naccepted.\n",
+            "format": "float",
+            "maximum": 1,
+            "minimum": 0,
+            "type": "number"
+          }
+        },
+        "required": [
+          "namespace",
+          "query"
+        ],
+        "title": "search-hybrid-request",
+        "type": "object"
+      },
+      "search-hybrid-response": {
+        "description": "Hybrid search response.",
+        "properties": {
+          "results": {
+            "description": "The search results.",
+            "items": {
+              "$ref": "#/components/schemas/search-result"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "results"
+        ],
+        "title": "search-hybrid-response",
+        "type": "object",
+        "x-go-name": "SearchHybridResponseBody"
+      },
       "search-namespace": {
         "description": "The namespaces to search in.",
         "enum": [
@@ -13306,6 +13371,20 @@
         },
         "title": "stage-update",
         "type": "object"
+      },
+      "stage-validation-option-for-create": {
+        "description": "Type of stage validation options when creating an object.",
+        "enum": [
+          "allow_non_start"
+        ],
+        "type": "string"
+      },
+      "stage-validation-option-for-update": {
+        "description": "Type of state validation options when updating the stage of an object.\n",
+        "enum": [
+          "allow_invalid_transition"
+        ],
+        "type": "string"
       },
       "staged-info-filter": {
         "properties": {
@@ -16674,6 +16753,13 @@
           "stage": {
             "$ref": "#/components/schemas/stage-init"
           },
+          "stage_validation_options": {
+            "description": "The type of stage validations options when creating a work item.\n",
+            "items": {
+              "$ref": "#/components/schemas/stage-validation-option-for-create"
+            },
+            "type": "array"
+          },
           "tags": {
             "description": "Tags associated with the work item.",
             "items": {
@@ -17384,6 +17470,13 @@
           },
           "stage": {
             "$ref": "#/components/schemas/stage-update"
+          },
+          "stage_validation_options": {
+            "description": "The type of stage validations options when updating the stage of an\nobject.\n",
+            "items": {
+              "$ref": "#/components/schemas/stage-validation-option-for-update"
+            },
+            "type": "array"
           },
           "staged_info": {
             "$ref": "#/components/schemas/works-update-request-staged-info-staged-info-update"
@@ -27358,6 +27451,140 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/search-core-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "search"
+        ]
+      }
+    },
+    "/search.hybrid": {
+      "get": {
+        "description": "Performs search, using a combination of syntactic and semantic search.\n",
+        "operationId": "search-hybrid",
+        "parameters": [
+          {
+            "description": "The hybrid namespace to search in.",
+            "explode": false,
+            "in": "query",
+            "name": "namespace",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/search-hybrid-namespace"
+            }
+          },
+          {
+            "description": "The query string.",
+            "explode": false,
+            "in": "query",
+            "name": "query",
+            "required": true,
+            "schema": {
+              "maxLength": 400,
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          {
+            "description": "The maximum number of items to return in a page. The default is '10'.\n",
+            "explode": false,
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "format": "int32",
+              "maximum": 50,
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "The weightage for semantic search. Values between 0 and 1 are\naccepted.\n",
+            "explode": false,
+            "in": "query",
+            "name": "semantic_weight",
+            "schema": {
+              "format": "float",
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/search-hybrid-response"
+                }
+              }
+            },
+            "description": "Success."
+          },
+          "400": {
+            "$ref": "#/components/responses/bad-request"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/too-many-requests"
+          },
+          "500": {
+            "$ref": "#/components/responses/internal-server-error"
+          },
+          "503": {
+            "$ref": "#/components/responses/service-unavailable"
+          }
+        },
+        "tags": [
+          "search"
+        ],
+        "x-request-name": "SearchHybridQuery"
+      },
+      "post": {
+        "description": "Performs search, using a combination of syntactic and semantic search.\n",
+        "operationId": "search-hybrid-post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/search-hybrid-request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/search-hybrid-response"
                 }
               }
             },

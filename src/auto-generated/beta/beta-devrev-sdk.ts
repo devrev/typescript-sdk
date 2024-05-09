@@ -6822,6 +6822,57 @@ export interface SearchCoreResponse {
   results: SearchResult[];
 }
 
+/** The namespaces for hybrid search. */
+export enum SearchHybridNamespace {
+  Article = 'article',
+  Conversation = 'conversation',
+  Issue = 'issue',
+  Part = 'part',
+  QuestionAnswer = 'question_answer',
+  Ticket = 'ticket',
+  Work = 'work',
+}
+
+/**
+ * search-hybrid-request
+ * Request for search with exact, prefix and infix matches.
+ */
+export interface SearchHybridRequest {
+  /**
+   * The maximum number of items to return in a page. The default is
+   * '10'.
+   * @format int32
+   * @min 0
+   * @max 50
+   */
+  limit?: number;
+  /** The namespaces for hybrid search. */
+  namespace: SearchHybridNamespace;
+  /**
+   * The query string.
+   * @minLength 1
+   * @maxLength 400
+   */
+  query: string;
+  /**
+   * The weightage for semantic search. Values between 0 and 1 are
+   * accepted.
+   * @format float
+   * @min 0
+   * @max 1
+   */
+  semantic_weight?: number;
+}
+
+/**
+ * search-hybrid-response
+ * Hybrid search response.
+ */
+export interface SearchHybridResponse {
+  /** The search results. */
+  results: SearchResult[];
+}
+
 /** The namespaces to search in. */
 export enum SearchNamespace {
   Account = 'account',
@@ -7490,6 +7541,16 @@ export interface StageInit {
 export interface StageUpdate {
   /** The updated name of the stage, otherwise unchanged if not set. */
   name?: string;
+}
+
+/** Type of stage validation options when creating an object. */
+export enum StageValidationOptionForCreate {
+  AllowNonStart = 'allow_non_start',
+}
+
+/** Type of state validation options when updating the stage of an object. */
+export enum StageValidationOptionForUpdate {
+  AllowInvalidTransition = 'allow_invalid_transition',
 }
 
 /** staged-info-filter */
@@ -9527,6 +9588,8 @@ export type WorksCreateRequest = (
   reported_by?: string[];
   /** Sets an object's initial stage. */
   stage?: StageInit;
+  /** The type of stage validations options when creating a work item. */
+  stage_validation_options?: StageValidationOptionForCreate[];
   /** Tags associated with the work item. */
   tags?: SetTagWithValue[];
   /**
@@ -9913,6 +9976,11 @@ export type WorksUpdateRequest = (
   reported_by?: WorksUpdateRequestReportedBy;
   /** Updates an object's stage. */
   stage?: StageUpdate;
+  /**
+   * The type of stage validations options when updating the stage of an
+   * object.
+   */
+  stage_validation_options?: StageValidationOptionForUpdate[];
   staged_info?: WorksUpdateRequestStagedInfoStagedInfoUpdate;
   tags?: WorksUpdateRequestTags;
   /**
@@ -15685,6 +15753,86 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/search.core`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Performs search, using a combination of syntactic and semantic search.
+   *
+   * @tags search
+   * @name SearchHybrid
+   * @request GET:/search.hybrid
+   * @secure
+   */
+  searchHybrid = (
+    query: {
+      /** The hybrid namespace to search in. */
+      namespace: SearchHybridNamespace;
+      /**
+       * The query string.
+       * @minLength 1
+       * @maxLength 400
+       */
+      query: string;
+      /**
+       * The maximum number of items to return in a page. The default is '10'.
+       * @format int32
+       * @min 0
+       * @max 50
+       */
+      limit?: number;
+      /**
+       * The weightage for semantic search. Values between 0 and 1 are
+       * accepted.
+       * @format float
+       * @min 0
+       * @max 1
+       */
+      semantic_weight?: number;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      SearchHybridResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/search.hybrid`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Performs search, using a combination of syntactic and semantic search.
+   *
+   * @tags search
+   * @name SearchHybridPost
+   * @request POST:/search.hybrid
+   * @secure
+   */
+  searchHybridPost = (data: SearchHybridRequest, params: RequestParams = {}) =>
+    this.request<
+      SearchHybridResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/search.hybrid`,
       method: 'POST',
       body: data,
       secure: true,
