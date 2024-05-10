@@ -2906,6 +2906,22 @@ export interface DevUserExternalIdentityFilter {
   issuer?: string;
 }
 
+/** Job title of the Dev User. */
+export enum DevUserJobTitle {
+  CustomerSuccessManager = 'customer_success_manager',
+  Cxo = 'cxo',
+  Designer = 'designer',
+  Developer = 'developer',
+  HeadOfSupport = 'head_of_support',
+  Operations = 'operations',
+  Others = 'others',
+  ProductManager = 'product_manager',
+  Qa = 'qa',
+  RevenueLeader = 'revenue_leader',
+  Support = 'support',
+  TechLead = 'tech_lead',
+}
+
 /** dev-user-summary */
 export type DevUserSummary = UserBaseSummary;
 
@@ -2989,6 +3005,44 @@ export type DevUsersSelfRequest = object;
  * The response to getting the information for the authenticated user.
  */
 export interface DevUsersSelfResponse {
+  dev_user: DevUser;
+}
+
+/**
+ * dev-users-self-update-request
+ * A request to update the user's information for the authenticated Dev
+ * user.
+ */
+export interface DevUsersSelfUpdateRequest {
+  /** The updated display name of the Dev user. */
+  display_name?: string;
+  /** The updated full name of the Dev user. */
+  full_name?: string;
+  /** Job title of the Dev User. */
+  job_title?: DevUserJobTitle;
+}
+
+/**
+ * dev-users-update-request
+ * A request to update the user's information corresponding to the
+ * provided Dev user.
+ */
+export interface DevUsersUpdateRequest {
+  /** The updated display name of the Dev user. */
+  display_name?: string;
+  /** The updated full name of the Dev user. */
+  full_name?: string;
+  /** The ID for the Dev user to be updated. */
+  id: string;
+  /** Job title of the Dev User. */
+  job_title?: DevUserJobTitle;
+}
+
+/**
+ * dev-users-update-response
+ * The response to update a Dev user.
+ */
+export interface DevUsersUpdateResponse {
   dev_user: DevUser;
 }
 
@@ -12604,6 +12658,63 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/dev-users.self`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Updates the authenticated user.
+   *
+   * @tags dev-users
+   * @name DevUsersSelfUpdate
+   * @request POST:/dev-users.self.update
+   * @secure
+   */
+  devUsersSelfUpdate = (
+    data: DevUsersSelfUpdateRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      DevUsersUpdateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/dev-users.self.update`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Updates the user corresponding to the input Id.
+   *
+   * @tags dev-users
+   * @name DevUsersUpdate
+   * @request POST:/dev-users.update
+   * @secure
+   */
+  devUsersUpdate = (data: DevUsersUpdateRequest, params: RequestParams = {}) =>
+    this.request<
+      DevUsersUpdateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/dev-users.update`,
       method: 'POST',
       body: data,
       secure: true,

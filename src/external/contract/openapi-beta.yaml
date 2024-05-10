@@ -3860,6 +3860,22 @@ components:
           type: string
       title: dev-user-external-identity-filter
       type: object
+    dev-user-job-title:
+      description: Job title of the Dev User.
+      enum:
+      - customer_success_manager
+      - cxo
+      - designer
+      - developer
+      - head_of_support
+      - operations
+      - others
+      - product_manager
+      - qa
+      - revenue_leader
+      - support
+      - tech_lead
+      type: string
     dev-user-summary:
       allOf:
       - $ref: '#/components/schemas/user-base-summary'
@@ -3961,6 +3977,51 @@ components:
       title: dev-users-self-response
       type: object
       x-go-name: DevUsersSelfResponseBody
+    dev-users-self-update-request:
+      description: |
+        A request to update the user's information for the authenticated Dev
+        user.
+      properties:
+        display_name:
+          description: The updated display name of the Dev user.
+          type: string
+        full_name:
+          description: The updated full name of the Dev user.
+          type: string
+        job_title:
+          $ref: '#/components/schemas/dev-user-job-title'
+      title: dev-users-self-update-request
+      type: object
+    dev-users-update-request:
+      description: |
+        A request to update the user's information corresponding to the
+        provided Dev user.
+      properties:
+        display_name:
+          description: The updated display name of the Dev user.
+          type: string
+        full_name:
+          description: The updated full name of the Dev user.
+          type: string
+        id:
+          description: The ID for the Dev user to be updated.
+          type: string
+        job_title:
+          $ref: '#/components/schemas/dev-user-job-title'
+      required:
+      - id
+      title: dev-users-update-request
+      type: object
+    dev-users-update-response:
+      description: The response to update a Dev user.
+      properties:
+        dev_user:
+          $ref: '#/components/schemas/dev-user'
+      required:
+      - dev_user
+      title: dev-users-update-response
+      type: object
+      x-go-name: DevUsersUpdateResponseBody
     directory-summary:
       allOf:
       - $ref: '#/components/schemas/atom-base-summary'
@@ -15970,6 +16031,66 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/dev-users-self-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - dev-users
+  /dev-users.self.update:
+    post:
+      description: Updates the authenticated user.
+      operationId: dev-users-self-update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dev-users-self-update-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dev-users-update-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+      - dev-users
+  /dev-users.update:
+    post:
+      description: Updates the user corresponding to the input Id.
+      operationId: dev-users-update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dev-users-update-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/dev-users-update-response'
           description: Success.
         "400":
           $ref: '#/components/responses/bad-request'
