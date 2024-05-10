@@ -14819,6 +14819,10 @@
           "body_type": {
             "$ref": "#/components/schemas/timeline-comment-body-type"
           },
+          "external_ref": {
+            "description": "The external reference for the comment. This must be unique within\nthe object's timeline.\n",
+            "type": "string"
+          },
           "link_previews": {
             "description": "The IDs of the previews of the links posted in the comment.\n",
             "example": [
@@ -14891,6 +14895,10 @@
       "timeline-entries-get-request": {
         "description": "The request to get a timeline entry.",
         "properties": {
+          "external_ref": {
+            "description": "If set, then gets the entry with the given external reference for\nthe provided entry ID's timeline.\n",
+            "type": "string"
+          },
           "id": {
             "description": "The ID of the timeline entry to get.",
             "example": "don:core:<partition>:devo/<dev-org-id>:ticket/123:timeline_event/<timeline-event-id>",
@@ -15170,6 +15178,10 @@
           },
           {
             "properties": {
+              "external_ref": {
+                "description": "An external reference that's associated with the Timeline entry\nthat's guaranteed to be unique among its siblings.\n",
+                "type": "string"
+              },
               "labels": {
                 "description": "Labels that are associated with the Timeline entry.",
                 "items": {
@@ -30488,6 +30500,15 @@
             "required": true,
             "schema": {
               "example": "don:core:<partition>:devo/<dev-org-id>:ticket/123:timeline_event/<timeline-event-id>",
+              "type": "string"
+            }
+          },
+          {
+            "description": "If set, then gets the entry with the given external reference for the\nprovided entry ID's timeline.\n",
+            "explode": false,
+            "in": "query",
+            "name": "external_ref",
+            "schema": {
               "type": "string"
             }
           }

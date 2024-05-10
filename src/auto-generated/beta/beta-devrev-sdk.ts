@@ -8421,6 +8421,11 @@ export interface TimelineEntriesCreateRequestTimelineComment {
   /** The type of the body to use for the comment. */
   body_type?: TimelineCommentBodyType;
   /**
+   * The external reference for the comment. This must be unique within
+   * the object's timeline.
+   */
+  external_ref?: string;
+  /**
    * The IDs of the previews of the links posted in the comment.
    * @example ["don:core:<partition>:devo/<dev-org-id>:snap_widget/<snap-widget-id>"]
    */
@@ -8469,6 +8474,11 @@ export type TimelineEntriesDeleteResponse = object;
  * The request to get a timeline entry.
  */
 export interface TimelineEntriesGetRequest {
+  /**
+   * If set, then gets the entry with the given external reference for
+   * the provided entry ID's timeline.
+   */
+  external_ref?: string;
   /**
    * The ID of the timeline entry to get.
    * @example "don:core:<partition>:devo/<dev-org-id>:ticket/123:timeline_event/<timeline-event-id>"
@@ -8646,6 +8656,11 @@ export type TimelineEntry = TimelineComment & {
 
 /** timeline-entry-base */
 export type TimelineEntryBase = AtomBase & {
+  /**
+   * An external reference that's associated with the Timeline entry
+   * that's guaranteed to be unique among its siblings.
+   */
+  external_ref?: string;
   /** Labels that are associated with the Timeline entry. */
   labels?: string[];
   /** The object that the Timeline entry belongs to. */
@@ -17509,6 +17524,11 @@ export class Api<
        * @example "don:core:<partition>:devo/<dev-org-id>:ticket/123:timeline_event/<timeline-event-id>"
        */
       id: string;
+      /**
+       * If set, then gets the entry with the given external reference for the
+       * provided entry ID's timeline.
+       */
+      external_ref?: string;
     },
     params: RequestParams = {}
   ) =>

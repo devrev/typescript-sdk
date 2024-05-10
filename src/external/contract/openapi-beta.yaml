@@ -10961,6 +10961,11 @@ components:
           type: string
         body_type:
           $ref: '#/components/schemas/timeline-comment-body-type'
+        external_ref:
+          description: |
+            The external reference for the comment. This must be unique within
+            the object's timeline.
+          type: string
         link_previews:
           description: |
             The IDs of the previews of the links posted in the comment.
@@ -11014,6 +11019,11 @@ components:
     timeline-entries-get-request:
       description: The request to get a timeline entry.
       properties:
+        external_ref:
+          description: |
+            If set, then gets the entry with the given external reference for
+            the provided entry ID's timeline.
+          type: string
         id:
           description: The ID of the timeline entry to get.
           example: don:core:<partition>:devo/<dev-org-id>:ticket/123:timeline_event/<timeline-event-id>
@@ -11235,6 +11245,11 @@ components:
       allOf:
       - $ref: '#/components/schemas/atom-base'
       - properties:
+          external_ref:
+            description: |
+              An external reference that's associated with the Timeline entry
+              that's guaranteed to be unique among its siblings.
+            type: string
           labels:
             description: Labels that are associated with the Timeline entry.
             items:
@@ -21721,6 +21736,14 @@ paths:
         required: true
         schema:
           example: don:core:<partition>:devo/<dev-org-id>:ticket/123:timeline_event/<timeline-event-id>
+          type: string
+      - description: |
+          If set, then gets the entry with the given external reference for the
+          provided entry ID's timeline.
+        explode: false
+        in: query
+        name: external_ref
+        schema:
           type: string
       responses:
         "200":
