@@ -2894,8 +2894,18 @@ export interface DevOrgAuthConnectionsUpdateResponse {
 
 /** dev-user */
 export type DevUser = UserBase & {
+  /**
+   * Start date of the user's employment.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  experience_start_date?: string;
   /** IDs of the Dev User outside the DevRev SOR. */
   external_identities?: ExternalIdentity[];
+  /** Job history of the user. */
+  job_history?: JobHistoryItem[];
+  /** Array of skills of the user. */
+  skills?: UserSkill[];
 };
 
 /** dev-user-external-identity-filter */
@@ -3350,6 +3360,25 @@ export type Enhancement = PartBase;
 
 /** enhancement-summary */
 export type EnhancementSummary = PartBaseSummary;
+
+/**
+ * enum-value
+ * Enum Value defines the structure for an enum.
+ */
+export interface EnumValue {
+  /**
+   * Unique ID of the enum value. This is immutable.
+   * @format int64
+   */
+  id: number;
+  /** Display label of the enum value. This is mutable. */
+  label: string;
+  /**
+   * Order number of the enum value. This is mutable.
+   * @format int64
+   */
+  ordinal: number;
+}
 
 /** error */
 export interface Error {
@@ -4222,6 +4251,33 @@ export type IssueSummary = WorkBaseSummary & {
   /** Priority of the work based upon impact and criticality. */
   priority?: IssuePriority;
 };
+
+/**
+ * job-history-item
+ * Defines a job history line item.
+ */
+export interface JobHistoryItem {
+  /** Enum Value defines the structure for an enum. */
+  employment_status?: EnumValue;
+  /**
+   * The end date of the job, or not specified if current.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  end_date?: string;
+  /** Is this the current active job for the user. */
+  is_current?: boolean;
+  /** The job location for the user. */
+  location?: string;
+  /**
+   * The start date of the job.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  start_date?: string;
+  /** The job title for the user. */
+  title?: string;
+}
 
 /**
  * legacy-stage
@@ -9180,6 +9236,15 @@ export type UserBaseSummary = AtomBaseSummary & {
 export type UserSearchSummary = SearchSummaryBase & {
   user: UserSummary;
 };
+
+/**
+ * user-skill
+ * Skill associated with the user.
+ */
+export interface UserSkill {
+  /** Name of the skill. */
+  name?: string;
+}
 
 /** State of the user. */
 export enum UserState {
