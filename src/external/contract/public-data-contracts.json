@@ -4945,7 +4945,8 @@
         "enum": [
           "email",
           "plug",
-          "slack"
+          "slack",
+          "twilio"
         ],
         "type": "string"
       },

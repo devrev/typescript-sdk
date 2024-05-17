@@ -9857,6 +9857,7 @@
         "description": "Status of the question answer.",
         "enum": [
           "archived",
+          "discarded",
           "draft",
           "published",
           "review_needed"
@@ -14718,7 +14719,8 @@
         "enum": [
           "email",
           "plug",
-          "slack"
+          "slack",
+          "twilio"
         ],
         "type": "string"
       },

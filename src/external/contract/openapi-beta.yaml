@@ -7291,6 +7291,7 @@ components:
       description: Status of the question answer.
       enum:
       - archived
+      - discarded
       - draft
       - published
       - review_needed
@@ -10891,6 +10892,7 @@ components:
       - email
       - plug
       - slack
+      - twilio
       type: string
     ticket-severity:
       description: Severity of the ticket.

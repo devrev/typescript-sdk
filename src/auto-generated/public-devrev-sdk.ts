@@ -2773,6 +2773,7 @@ export enum TicketChannels {
   Email = 'email',
   Plug = 'plug',
   Slack = 'slack',
+  Twilio = 'twilio',
 }
 
 /** Severity of the ticket. */

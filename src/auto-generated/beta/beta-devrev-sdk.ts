@@ -5517,6 +5517,7 @@ export type QuestionAnswerSearchSummary = SearchSummaryBase & {
 /** Status of the question answer. */
 export enum QuestionAnswerStatus {
   Archived = 'archived',
+  Discarded = 'discarded',
   Draft = 'draft',
   Published = 'published',
   ReviewNeeded = 'review_needed',
@@ -8365,6 +8366,7 @@ export enum TicketChannels {
   Email = 'email',
   Plug = 'plug',
   Slack = 'slack',
+  Twilio = 'twilio',
 }
 
 /** Severity of the ticket. */

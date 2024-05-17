@@ -3638,6 +3638,7 @@ components:
       - email
       - plug
       - slack
+      - twilio
       type: string
     ticket-severity:
       description: Severity of the ticket.
