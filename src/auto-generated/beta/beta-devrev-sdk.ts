@@ -4074,6 +4074,8 @@ export type GroupSearchSummary = SearchSummaryBase & {
 
 /** group-summary */
 export type GroupSummary = AtomBaseSummary & {
+  /** Type of the members in the group. */
+  member_type?: GroupMemberType;
   /** Name of the group. */
   name?: string;
 };

@@ -5463,6 +5463,8 @@ components:
       allOf:
       - $ref: '#/components/schemas/atom-base-summary'
       - properties:
+          member_type:
+            $ref: '#/components/schemas/group-member-type'
           name:
             description: Name of the group.
             type: string
