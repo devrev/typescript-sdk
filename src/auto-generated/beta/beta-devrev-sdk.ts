@@ -533,6 +533,11 @@ export interface ArticlesCountRequest {
    */
   created_by?: string[];
   /**
+   * Filters for articles modified by any of the provided users.
+   * @example ["DEVU-12345"]
+   */
+  modified_by?: string[];
+  /**
    * Filters for articles owned by any of the provided users.
    * @example ["DEVU-12345"]
    */
@@ -694,6 +699,11 @@ export interface ArticlesListRequest {
    * always be returned in the specified sort-by order.
    */
   mode?: ListMode;
+  /**
+   * Filters for articles modified by any of the provided users.
+   * @example ["DEVU-12345"]
+   */
+  modified_by?: string[];
   /**
    * Filters for articles owned by any of the provided users.
    * @example ["DEVU-12345"]
@@ -4633,6 +4643,7 @@ export type MetricDefinition = AtomBase & {
 /** The list of item types on which the metric might be applied. */
 export enum MetricDefinitionAppliesTo {
   Conversation = 'conversation',
+  Issue = 'issue',
   Ticket = 'ticket',
 }
 
@@ -4645,6 +4656,16 @@ export enum MetricDefinitionAppliesTo {
 export enum MetricDefinitionMetricType {
   Time = 'time',
   Value = 'value',
+}
+
+/**
+ * The status of the metric. 'active' metrics can be used to create new
+ * SLAs, while 'inactive' metrics can not be used in new SLAs. Metrics can
+ * be updated between 'active' and 'inactive' states.
+ */
+export enum MetricDefinitionStatus {
+  Active = 'active',
+  Inactive = 'inactive',
 }
 
 /** metric-definition-summary */
@@ -4680,6 +4701,8 @@ export interface MetricDefinitionsListRequest {
    * always be returned in the specified sort-by order.
    */
   mode?: ListMode;
+  /** The status of the metric definition. */
+  status?: MetricDefinitionStatus[];
   /** The type of metric definitions sought. */
   type?: MetricDefinitionMetricType[];
 }
@@ -7248,6 +7271,8 @@ export type Sla = AtomBase & {
    * priority.
    */
   policies?: SlaPolicy[];
+  /** Type of the SLA. */
+  sla_type?: SlaType;
   /**
    * Status determines how an item can be used. In 'draft' status an item
    * can be edited but can't be used. When 'published' the item can longer
@@ -7255,6 +7280,17 @@ export type Sla = AtomBase & {
    */
   status: SlaStatus;
 };
+
+/**
+ * The object types on which the SLA applies. An external SLA can apply to
+ * multiple object types, but an internal SLA can apply to only one object
+ * type.
+ */
+export enum SlaAppliesTo {
+  Conversation = 'conversation',
+  Issue = 'issue',
+  Ticket = 'ticket',
+}
 
 /** sla-assign-result */
 export interface SlaAssignResult {
@@ -7295,10 +7331,11 @@ export type SlaPolicy = object;
 /** The item type for which the SLA policy applies. */
 export enum SlaSelectorAppliesTo {
   Conversation = 'conversation',
+  Issue = 'issue',
   Ticket = 'ticket',
 }
 
-/** Th SLA policy applies to conversations with these priorities. */
+/** The SLA policy applies to conversations with these priorities. */
 export enum SlaSelectorPriority {
   P0 = 'p0',
   P1 = 'p1',
@@ -7395,6 +7432,12 @@ export interface SlaTrackersGetResponse {
   sla_tracker: SlaTracker;
 }
 
+/** Type of the SLA. */
+export enum SlaType {
+  External = 'external',
+  Internal = 'internal',
+}
+
 /** slas-assign-request */
 export interface SlasAssignRequest {
   /**
@@ -7419,6 +7462,8 @@ export interface SlasAssignResponse {
 /** slas-create-request */
 export interface SlasCreateRequest {
   account_selector?: AccountsFilters;
+  /** The object types this SLA can apply to. */
+  applies_to?: SlaAppliesTo[];
   /** Description of the purpose and capabilities of the SLA. */
   description?: string;
   /**
@@ -7437,11 +7482,18 @@ export interface SlasCreateRequest {
    * priority.
    */
   policies?: SetSlaPolicy[];
+  /** Type of the SLA. */
+  sla_type?: SlaType;
 }
 
 /** slas-create-response */
 export interface SlasCreateResponse {
   sla: Sla;
+}
+
+export enum SlasFilterAppliesToOperatorType {
+  All = 'all',
+  Any = 'any',
 }
 
 /** slas-get-request */
@@ -7457,6 +7509,9 @@ export interface SlasGetResponse {
 
 /** slas-list-request */
 export interface SlasListRequest {
+  /** The object types the SLA applies to. */
+  applies_to?: SlaAppliesTo[];
+  applies_to_op?: SlasFilterAppliesToOperatorType;
   /**
    * The cursor to resume iteration from. If not provided, then
    * iteration starts from the beginning.
@@ -7475,6 +7530,8 @@ export interface SlasListRequest {
    * always be returned in the specified sort-by order.
    */
   mode?: ListMode;
+  /** The SLA types the filter matches. */
+  sla_type?: SlaType[];
   /** The SLA statuses the filter matches. */
   status?: SlaStatus[];
 }
@@ -7817,6 +7874,7 @@ export type SurveyResponse = AtomBase & {
   dispatch_id?: string;
   /** The ID of the object for which survey is taken. */
   object?: string;
+  recipient?: UserSummary;
   /** Response for the survey. */
   response?: object;
   /** The ID of the survey for which response is taken. */
@@ -7939,6 +7997,8 @@ export interface SurveysResponsesListRequest {
    * them.
    */
   sort_by?: string[];
+  /** Filters for survey response stages. */
+  stages?: number[];
   /** Filters for survey responses for the provided survey IDs. */
   surveys?: string[];
 }
@@ -7983,14 +8043,21 @@ export type SurveysSendResponse = object;
 export interface SurveysSubmitRequest {
   /** The unique ID associated with the dispatched survey. */
   dispatch_id?: string;
+  /** The ordinals of the source channels on which the survey is sent. */
+  dispatched_channels?: number[];
   /**
    * The ID of the object this survey is on (e.g. ticket, conversation,
    * etc).
    * @example "ACC-12345"
    */
   object: string;
+  /**
+   * The unique ID associated with the recipient of the survey.
+   * @example "DEVU-12345"
+   */
+  recipient?: string;
   /** Survey response submitted for the object. */
-  response: object;
+  response?: object;
   /**
    * The response score for the survey. Only applicable for CSAT and
    * NPS.
@@ -7999,6 +8066,11 @@ export interface SurveysSubmitRequest {
   response_score?: number;
   /** The source channel from which survey response is submitted. */
   source_channel?: string;
+  /**
+   * The stage ordinal of the survey response object.
+   * @format int64
+   */
+  stage?: number;
   /** The ID of the survey to submit the response to. */
   survey: string;
 }
@@ -9928,6 +10000,8 @@ export interface WorksFilterIssue {
    * @example ["REV-AbCdEfGh"]
    */
   rev_orgs?: string[];
+  /** Filters for issues with any of the sprint. */
+  sprint?: string[];
   /** Filters for issues with any of the provided subtypes. */
   subtype?: string[];
   /** Provides ways to specify date ranges on objects. */
@@ -10879,6 +10953,11 @@ export class Api<
        */
       created_by?: string[];
       /**
+       * Filters for articles modified by any of the provided users.
+       * @example ["DEVU-12345"]
+       */
+      modified_by?: string[];
+      /**
        * Filters for articles owned by any of the provided users.
        * @example ["DEVU-12345"]
        */
@@ -11092,6 +11171,11 @@ export class Api<
        * used.
        */
       mode?: ListMode;
+      /**
+       * Filters for articles modified by any of the provided users.
+       * @example ["DEVU-12345"]
+       */
+      modified_by?: string[];
       /**
        * Filters for articles owned by any of the provided users.
        * @example ["DEVU-12345"]
@@ -13826,6 +13910,8 @@ export class Api<
        * used.
        */
       mode?: ListMode;
+      /** The status of the metric definition. */
+      status?: MetricDefinitionStatus[];
       /** The type of metric definitions sought. */
       type?: MetricDefinitionMetricType[];
     },
@@ -16290,6 +16376,13 @@ export class Api<
    */
   slasList = (
     query?: {
+      /** The object types the SLA applies to. */
+      applies_to?: SlaAppliesTo[];
+      /**
+       * The Filter operator to be applied on the applies to object types
+       * filter.
+       */
+      applies_to_op?: SlasFilterAppliesToOperatorType;
       /**
        * The cursor to resume iteration from. If not provided, then iteration
        * starts from the beginning.
@@ -16305,6 +16398,8 @@ export class Api<
        * used.
        */
       mode?: ListMode;
+      /** The SLA types the filter matches. */
+      sla_type?: SlaType[];
       /** The SLA statuses the filter matches. */
       status?: SlaStatus[];
     },
@@ -17086,6 +17181,8 @@ export class Api<
        * them.
        */
       sort_by?: string[];
+      /** Filters for survey response stages. */
+      stages?: number[];
       /** Filters for survey responses for the provided survey IDs. */
       surveys?: string[];
     },
@@ -18427,6 +18524,8 @@ export class Api<
        * @example ["REV-AbCdEfGh"]
        */
       'issue.rev_orgs'?: string[];
+      /** Filters for issues with any of the sprint. */
+      'issue.sprint'?: string[];
       /** Filters for issues with any of the provided subtypes. */
       'issue.subtype'?: string[];
       /**
@@ -18645,6 +18744,8 @@ export class Api<
        * @example ["REV-AbCdEfGh"]
        */
       'issue.rev_orgs'?: string[];
+      /** Filters for issues with any of the sprint. */
+      'issue.sprint'?: string[];
       /** Filters for issues with any of the provided subtypes. */
       'issue.subtype'?: string[];
       /**

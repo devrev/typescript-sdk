@@ -760,6 +760,14 @@ components:
           items:
             type: string
           type: array
+        modified_by:
+          description: |
+            Filters for articles modified by any of the provided users.
+          example:
+          - DEVU-12345
+          items:
+            type: string
+          type: array
         owned_by:
           description: Filters for articles owned by any of the provided users.
           example:
@@ -961,6 +969,14 @@ components:
           type: integer
         mode:
           $ref: '#/components/schemas/list-mode'
+        modified_by:
+          description: |
+            Filters for articles modified by any of the provided users.
+          example:
+          - DEVU-12345
+          items:
+            type: string
+          type: array
         owned_by:
           description: Filters for articles owned by any of the provided users.
           example:
@@ -6111,6 +6127,7 @@ components:
       description: The list of item types on which the metric might be applied.
       enum:
       - conversation
+      - issue
       - ticket
       type: string
     metric-definition-metric-type:
@@ -6122,6 +6139,15 @@ components:
       enum:
       - time
       - value
+      type: string
+    metric-definition-status:
+      description: |
+        The status of the metric. 'active' metrics can be used to create new
+        SLAs, while 'inactive' metrics can not be used in new SLAs. Metrics can
+        be updated between 'active' and 'inactive' states.
+      enum:
+      - active
+      - inactive
       type: string
     metric-definition-summary:
       allOf:
@@ -6156,6 +6182,11 @@ components:
           type: integer
         mode:
           $ref: '#/components/schemas/list-mode'
+        status:
+          description: The status of the metric definition.
+          items:
+            $ref: '#/components/schemas/metric-definition-status'
+          type: array
         type:
           description: The type of metric definitions sought.
           items:
@@ -9474,6 +9505,8 @@ components:
             items:
               $ref: '#/components/schemas/sla-policy'
             type: array
+          sla_type:
+            $ref: '#/components/schemas/sla-type'
           status:
             $ref: '#/components/schemas/sla-status'
         required:
@@ -9481,6 +9514,16 @@ components:
         - status
         type: object
       title: sla
+    sla-applies-to:
+      description: |
+        The object types on which the SLA applies. An external SLA can apply to
+        multiple object types, but an internal SLA can apply to only one object
+        type.
+      enum:
+      - conversation
+      - issue
+      - ticket
+      type: string
     sla-assign-result:
       properties:
         error:
@@ -9523,11 +9566,12 @@ components:
       description: The item type for which the SLA policy applies.
       enum:
       - conversation
+      - issue
       - ticket
       type: string
     sla-selector-priority:
       description: |
-        Th SLA policy applies to conversations with these priorities.
+        The SLA policy applies to conversations with these priorities.
       enum:
       - p0
       - p1
@@ -9643,6 +9687,12 @@ components:
       title: sla-trackers-get-response
       type: object
       x-go-name: SlaTrackersGetResponseBody
+    sla-type:
+      description: Type of the SLA.
+      enum:
+      - external
+      - internal
+      type: string
     slas-assign-request:
       properties:
         id:
@@ -9678,6 +9728,11 @@ components:
       properties:
         account_selector:
           $ref: '#/components/schemas/accounts-filters'
+        applies_to:
+          description: The object types this SLA can apply to.
+          items:
+            $ref: '#/components/schemas/sla-applies-to'
+          type: array
         description:
           description: Description of the purpose and capabilities of the SLA.
           type: string
@@ -9693,6 +9748,8 @@ components:
           items:
             $ref: '#/components/schemas/set-sla-policy'
           type: array
+        sla_type:
+          $ref: '#/components/schemas/sla-type'
       required:
       - name
       title: slas-create-request
@@ -9706,6 +9763,11 @@ components:
       title: slas-create-response
       type: object
       x-go-name: SlasCreateResponseBody
+    slas-filter-applies-to-operator-type:
+      enum:
+      - all
+      - any
+      type: string
     slas-get-request:
       properties:
         id:
@@ -9726,6 +9788,13 @@ components:
       x-go-name: SlasGetResponseBody
     slas-list-request:
       properties:
+        applies_to:
+          description: The object types the SLA applies to.
+          items:
+            $ref: '#/components/schemas/sla-applies-to'
+          type: array
+        applies_to_op:
+          $ref: '#/components/schemas/slas-filter-applies-to-operator-type'
         cursor:
           description: |
             The cursor to resume iteration from. If not provided, then
@@ -9738,6 +9807,11 @@ components:
           type: integer
         mode:
           $ref: '#/components/schemas/list-mode'
+        sla_type:
+          description: The SLA types the filter matches.
+          items:
+            $ref: '#/components/schemas/sla-type'
+          type: array
         status:
           description: The SLA statuses the filter matches.
           items:
@@ -10207,6 +10281,8 @@ components:
           object:
             description: The ID of the object for which survey is taken.
             type: string
+          recipient:
+            $ref: '#/components/schemas/user-summary'
           response:
             description: Response for the survey.
             type: object
@@ -10359,6 +10435,12 @@ components:
           items:
             type: string
           type: array
+        stages:
+          description: Filters for survey response stages.
+          items:
+            format: int64
+            type: integer
+          type: array
         surveys:
           description: |
             Filters for survey responses for the provided survey IDs.
@@ -10430,11 +10512,23 @@ components:
         dispatch_id:
           description: The unique ID associated with the dispatched survey.
           type: string
+        dispatched_channels:
+          description: |
+            The ordinals of the source channels on which the survey is sent.
+          items:
+            format: int64
+            type: integer
+          type: array
         object:
           description: |
             The ID of the object this survey is on (e.g. ticket, conversation,
             etc).
           example: ACC-12345
+          type: string
+        recipient:
+          description: |
+            The unique ID associated with the recipient of the survey.
+          example: DEVU-12345
           type: string
         response:
           description: Survey response submitted for the object.
@@ -10449,12 +10543,15 @@ components:
           description: |
             The source channel from which survey response is submitted.
           type: string
+        stage:
+          description: The stage ordinal of the survey response object.
+          format: int64
+          type: integer
         survey:
           description: The ID of the survey to submit the response to.
           type: string
       required:
       - object
-      - response
       - survey
       title: surveys-submit-request
       type: object
@@ -12855,6 +12952,11 @@ components:
           items:
             type: string
           type: array
+        sprint:
+          description: Filters for issues with any of the sprint.
+          items:
+            type: string
+          type: array
         subtype:
           description: Filters for issues with any of the provided subtypes.
           items:
@@ -13939,6 +14041,17 @@ paths:
           items:
             type: string
           type: array
+      - description: |
+          Filters for articles modified by any of the provided users.
+        explode: false
+        in: query
+        name: modified_by
+        schema:
+          example:
+          - DEVU-12345
+          items:
+            type: string
+          type: array
       - description: Filters for articles owned by any of the provided users.
         explode: false
         in: query
@@ -14194,6 +14307,17 @@ paths:
         name: mode
         schema:
           $ref: '#/components/schemas/list-mode'
+      - description: |
+          Filters for articles modified by any of the provided users.
+        explode: false
+        in: query
+        name: modified_by
+        schema:
+          example:
+          - DEVU-12345
+          items:
+            type: string
+          type: array
       - description: Filters for articles owned by any of the provided users.
         explode: false
         in: query
@@ -17376,6 +17500,14 @@ paths:
         name: mode
         schema:
           $ref: '#/components/schemas/list-mode'
+      - description: The status of the metric definition.
+        explode: false
+        in: query
+        name: status
+        schema:
+          items:
+            $ref: '#/components/schemas/metric-definition-status'
+          type: array
       - description: The type of metric definitions sought.
         explode: false
         in: query
@@ -20299,6 +20431,22 @@ paths:
       description: Lists SLAs matching a filter.
       operationId: slas-list
       parameters:
+      - description: The object types the SLA applies to.
+        explode: false
+        in: query
+        name: applies_to
+        schema:
+          items:
+            $ref: '#/components/schemas/sla-applies-to'
+          type: array
+      - description: |
+          The Filter operator to be applied on the applies to object types
+          filter.
+        explode: false
+        in: query
+        name: applies_to_op
+        schema:
+          $ref: '#/components/schemas/slas-filter-applies-to-operator-type'
       - description: |
           The cursor to resume iteration from. If not provided, then iteration
           starts from the beginning.
@@ -20322,6 +20470,14 @@ paths:
         name: mode
         schema:
           $ref: '#/components/schemas/list-mode'
+      - description: The SLA types the filter matches.
+        explode: false
+        in: query
+        name: sla_type
+        schema:
+          items:
+            $ref: '#/components/schemas/sla-type'
+          type: array
       - description: The SLA statuses the filter matches.
         explode: false
         in: query
@@ -21235,6 +21391,15 @@ paths:
         schema:
           items:
             type: string
+          type: array
+      - description: Filters for survey response stages.
+        explode: false
+        in: query
+        name: stages
+        schema:
+          items:
+            format: int64
+            type: integer
           type: array
       - description: Filters for survey responses for the provided survey IDs.
         explode: false
@@ -22835,6 +23000,14 @@ paths:
           items:
             type: string
           type: array
+      - description: Filters for issues with any of the sprint.
+        explode: false
+        in: query
+        name: issue.sprint
+        schema:
+          items:
+            type: string
+          type: array
       - description: Filters for issues with any of the provided subtypes.
         explode: false
         in: query
@@ -23240,6 +23413,14 @@ paths:
         schema:
           example:
           - REV-AbCdEfGh
+          items:
+            type: string
+          type: array
+      - description: Filters for issues with any of the sprint.
+        explode: false
+        in: query
+        name: issue.sprint
+        schema:
           items:
             type: string
           type: array

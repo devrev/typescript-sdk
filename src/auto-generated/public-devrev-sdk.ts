@@ -2520,6 +2520,7 @@ export type SurveyResponse = AtomBase & {
   dispatch_id?: string;
   /** The ID of the object for which survey is taken. */
   object?: string;
+  recipient?: UserSummary;
   /** Response for the survey. */
   response?: object;
   /** The ID of the survey for which response is taken. */
@@ -3663,6 +3664,8 @@ export interface WorksFilterIssue {
    * @example ["REV-AbCdEfGh"]
    */
   rev_orgs?: string[];
+  /** Filters for issues with any of the sprint. */
+  sprint?: string[];
   /** Provides ways to specify date ranges on objects. */
   target_start_date?: DateFilter;
 }
@@ -6748,6 +6751,8 @@ export class Api<
        * @example ["REV-AbCdEfGh"]
        */
       'issue.rev_orgs'?: string[];
+      /** Filters for issues with any of the sprint. */
+      'issue.sprint'?: string[];
       /**
        * Filters for work owned by any of these users.
        * @example ["DEVU-12345"]
@@ -6949,6 +6954,8 @@ export class Api<
        * @example ["REV-AbCdEfGh"]
        */
       'issue.rev_orgs'?: string[];
+      /** Filters for issues with any of the sprint. */
+      'issue.sprint'?: string[];
       /**
        * The maximum number of works to return. The default is '50'.
        * @format int32

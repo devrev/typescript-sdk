@@ -3327,6 +3327,8 @@ components:
           object:
             description: The ID of the object for which survey is taken.
             type: string
+          recipient:
+            $ref: '#/components/schemas/user-summary'
           response:
             description: Response for the survey.
             type: object
@@ -4771,6 +4773,11 @@ components:
             Filters for issues with any of the provided Rev organizations.
           example:
           - REV-AbCdEfGh
+          items:
+            type: string
+          type: array
+        sprint:
+          description: Filters for issues with any of the sprint.
           items:
             type: string
           type: array
@@ -8269,6 +8276,14 @@ paths:
           items:
             type: string
           type: array
+      - description: Filters for issues with any of the sprint.
+        explode: false
+        in: query
+        name: issue.sprint
+        schema:
+          items:
+            type: string
+          type: array
       - description: Filters for work owned by any of these users.
         explode: false
         in: query
@@ -8615,6 +8630,14 @@ paths:
         schema:
           example:
           - REV-AbCdEfGh
+          items:
+            type: string
+          type: array
+      - description: Filters for issues with any of the sprint.
+        explode: false
+        in: query
+        name: issue.sprint
+        schema:
           items:
             type: string
           type: array

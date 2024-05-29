@@ -1024,6 +1024,16 @@
             },
             "type": "array"
           },
+          "modified_by": {
+            "description": "Filters for articles modified by any of the provided users.\n",
+            "example": [
+              "DEVU-12345"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
           "owned_by": {
             "description": "Filters for articles owned by any of the provided users.",
             "example": [
@@ -1291,6 +1301,16 @@
           },
           "mode": {
             "$ref": "#/components/schemas/list-mode"
+          },
+          "modified_by": {
+            "description": "Filters for articles modified by any of the provided users.\n",
+            "example": [
+              "DEVU-12345"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
           },
           "owned_by": {
             "description": "Filters for articles owned by any of the provided users.",
@@ -8291,6 +8311,7 @@
         "description": "The list of item types on which the metric might be applied.",
         "enum": [
           "conversation",
+          "issue",
           "ticket"
         ],
         "type": "string"
@@ -8300,6 +8321,14 @@
         "enum": [
           "time",
           "value"
+        ],
+        "type": "string"
+      },
+      "metric-definition-status": {
+        "description": "The status of the metric. 'active' metrics can be used to create new\nSLAs, while 'inactive' metrics can not be used in new SLAs. Metrics can\nbe updated between 'active' and 'inactive' states.\n",
+        "enum": [
+          "active",
+          "inactive"
         ],
         "type": "string"
       },
@@ -8344,6 +8373,13 @@
           },
           "mode": {
             "$ref": "#/components/schemas/list-mode"
+          },
+          "status": {
+            "description": "The status of the metric definition.",
+            "items": {
+              "$ref": "#/components/schemas/metric-definition-status"
+            },
+            "type": "array"
           },
           "type": {
             "description": "The type of metric definitions sought.",
@@ -12835,6 +12871,9 @@
                 },
                 "type": "array"
               },
+              "sla_type": {
+                "$ref": "#/components/schemas/sla-type"
+              },
               "status": {
                 "$ref": "#/components/schemas/sla-status"
               }
@@ -12847,6 +12886,15 @@
           }
         ],
         "title": "sla"
+      },
+      "sla-applies-to": {
+        "description": "The object types on which the SLA applies. An external SLA can apply to\nmultiple object types, but an internal SLA can apply to only one object\ntype.\n",
+        "enum": [
+          "conversation",
+          "issue",
+          "ticket"
+        ],
+        "type": "string"
       },
       "sla-assign-result": {
         "properties": {
@@ -12889,12 +12937,13 @@
         "description": "The item type for which the SLA policy applies.",
         "enum": [
           "conversation",
+          "issue",
           "ticket"
         ],
         "type": "string"
       },
       "sla-selector-priority": {
-        "description": "Th SLA policy applies to conversations with these priorities.\n",
+        "description": "The SLA policy applies to conversations with these priorities.\n",
         "enum": [
           "p0",
           "p1",
@@ -13049,6 +13098,14 @@
         "type": "object",
         "x-go-name": "SlaTrackersGetResponseBody"
       },
+      "sla-type": {
+        "description": "Type of the SLA.",
+        "enum": [
+          "external",
+          "internal"
+        ],
+        "type": "string"
+      },
       "slas-assign-request": {
         "properties": {
           "id": {
@@ -13094,6 +13151,13 @@
           "account_selector": {
             "$ref": "#/components/schemas/accounts-filters"
           },
+          "applies_to": {
+            "description": "The object types this SLA can apply to.",
+            "items": {
+              "$ref": "#/components/schemas/sla-applies-to"
+            },
+            "type": "array"
+          },
           "description": {
             "description": "Description of the purpose and capabilities of the SLA.",
             "type": "string"
@@ -13111,6 +13175,9 @@
               "$ref": "#/components/schemas/set-sla-policy"
             },
             "type": "array"
+          },
+          "sla_type": {
+            "$ref": "#/components/schemas/sla-type"
           }
         },
         "required": [
@@ -13131,6 +13198,13 @@
         "title": "slas-create-response",
         "type": "object",
         "x-go-name": "SlasCreateResponseBody"
+      },
+      "slas-filter-applies-to-operator-type": {
+        "enum": [
+          "all",
+          "any"
+        ],
+        "type": "string"
       },
       "slas-get-request": {
         "properties": {
@@ -13160,6 +13234,16 @@
       },
       "slas-list-request": {
         "properties": {
+          "applies_to": {
+            "description": "The object types the SLA applies to.",
+            "items": {
+              "$ref": "#/components/schemas/sla-applies-to"
+            },
+            "type": "array"
+          },
+          "applies_to_op": {
+            "$ref": "#/components/schemas/slas-filter-applies-to-operator-type"
+          },
           "cursor": {
             "description": "The cursor to resume iteration from. If not provided, then\niteration starts from the beginning.\n",
             "type": "string"
@@ -13171,6 +13255,13 @@
           },
           "mode": {
             "$ref": "#/components/schemas/list-mode"
+          },
+          "sla_type": {
+            "description": "The SLA types the filter matches.",
+            "items": {
+              "$ref": "#/components/schemas/sla-type"
+            },
+            "type": "array"
           },
           "status": {
             "description": "The SLA statuses the filter matches.",
@@ -13824,6 +13915,9 @@
                 "description": "The ID of the object for which survey is taken.",
                 "type": "string"
               },
+              "recipient": {
+                "$ref": "#/components/schemas/user-summary"
+              },
               "response": {
                 "description": "Response for the survey.",
                 "type": "object"
@@ -14016,6 +14110,14 @@
             },
             "type": "array"
           },
+          "stages": {
+            "description": "Filters for survey response stages.",
+            "items": {
+              "format": "int64",
+              "type": "integer"
+            },
+            "type": "array"
+          },
           "surveys": {
             "description": "Filters for survey responses for the provided survey IDs.\n",
             "items": {
@@ -14107,9 +14209,22 @@
             "description": "The unique ID associated with the dispatched survey.",
             "type": "string"
           },
+          "dispatched_channels": {
+            "description": "The ordinals of the source channels on which the survey is sent.\n",
+            "items": {
+              "format": "int64",
+              "type": "integer"
+            },
+            "type": "array"
+          },
           "object": {
             "description": "The ID of the object this survey is on (e.g. ticket, conversation,\netc).\n",
             "example": "ACC-12345",
+            "type": "string"
+          },
+          "recipient": {
+            "description": "The unique ID associated with the recipient of the survey.\n",
+            "example": "DEVU-12345",
             "type": "string"
           },
           "response": {
@@ -14125,6 +14240,11 @@
             "description": "The source channel from which survey response is submitted.\n",
             "type": "string"
           },
+          "stage": {
+            "description": "The stage ordinal of the survey response object.",
+            "format": "int64",
+            "type": "integer"
+          },
           "survey": {
             "description": "The ID of the survey to submit the response to.",
             "type": "string"
@@ -14132,7 +14252,6 @@
         },
         "required": [
           "object",
-          "response",
           "survey"
         ],
         "title": "surveys-submit-request",
@@ -17305,6 +17424,13 @@
             },
             "type": "array"
           },
+          "sprint": {
+            "description": "Filters for issues with any of the sprint.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
           "subtype": {
             "description": "Filters for issues with any of the provided subtypes.",
             "items": {
@@ -18816,6 +18942,21 @@
             }
           },
           {
+            "description": "Filters for articles modified by any of the provided users.\n",
+            "explode": false,
+            "in": "query",
+            "name": "modified_by",
+            "schema": {
+              "example": [
+                "DEVU-12345"
+              ],
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
             "description": "Filters for articles owned by any of the provided users.",
             "explode": false,
             "in": "query",
@@ -19193,6 +19334,21 @@
             "name": "mode",
             "schema": {
               "$ref": "#/components/schemas/list-mode"
+            }
+          },
+          {
+            "description": "Filters for articles modified by any of the provided users.\n",
+            "explode": false,
+            "in": "query",
+            "name": "modified_by",
+            "schema": {
+              "example": [
+                "DEVU-12345"
+              ],
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
             }
           },
           {
@@ -23953,6 +24109,18 @@
             }
           },
           {
+            "description": "The status of the metric definition.",
+            "explode": false,
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "items": {
+                "$ref": "#/components/schemas/metric-definition-status"
+              },
+              "type": "array"
+            }
+          },
+          {
             "description": "The type of metric definitions sought.",
             "explode": false,
             "in": "query",
@@ -28310,6 +28478,27 @@
         "operationId": "slas-list",
         "parameters": [
           {
+            "description": "The object types the SLA applies to.",
+            "explode": false,
+            "in": "query",
+            "name": "applies_to",
+            "schema": {
+              "items": {
+                "$ref": "#/components/schemas/sla-applies-to"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "The Filter operator to be applied on the applies to object types\nfilter.\n",
+            "explode": false,
+            "in": "query",
+            "name": "applies_to_op",
+            "schema": {
+              "$ref": "#/components/schemas/slas-filter-applies-to-operator-type"
+            }
+          },
+          {
             "description": "The cursor to resume iteration from. If not provided, then iteration\nstarts from the beginning.\n",
             "explode": false,
             "in": "query",
@@ -28335,6 +28524,18 @@
             "name": "mode",
             "schema": {
               "$ref": "#/components/schemas/list-mode"
+            }
+          },
+          {
+            "description": "The SLA types the filter matches.",
+            "explode": false,
+            "in": "query",
+            "name": "sla_type",
+            "schema": {
+              "items": {
+                "$ref": "#/components/schemas/sla-type"
+              },
+              "type": "array"
             }
           },
           {
@@ -29718,6 +29919,19 @@
             "schema": {
               "items": {
                 "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Filters for survey response stages.",
+            "explode": false,
+            "in": "query",
+            "name": "stages",
+            "schema": {
+              "items": {
+                "format": "int64",
+                "type": "integer"
               },
               "type": "array"
             }
@@ -32133,6 +32347,18 @@
             }
           },
           {
+            "description": "Filters for issues with any of the sprint.",
+            "explode": false,
+            "in": "query",
+            "name": "issue.sprint",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
             "description": "Filters for issues with any of the provided subtypes.",
             "explode": false,
             "in": "query",
@@ -32728,6 +32954,18 @@
               "example": [
                 "REV-AbCdEfGh"
               ],
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Filters for issues with any of the sprint.",
+            "explode": false,
+            "in": "query",
+            "name": "issue.sprint",
+            "schema": {
               "items": {
                 "type": "string"
               },
