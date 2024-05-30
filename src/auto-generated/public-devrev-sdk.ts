@@ -1716,6 +1716,8 @@ export type Issue = WorkBase & {
   developed_with?: PartSummary[];
   /** Priority of the work based upon impact and criticality. */
   priority?: IssuePriority;
+  /** Vista group item. */
+  sprint?: VistaGroupItemSummary;
   /**
    * Target start date for the object.
    * @format date-time
@@ -3160,6 +3162,12 @@ export enum UserType {
   RevUser = 'rev_user',
   SysUser = 'sys_user',
 }
+
+/**
+ * vista-group-item-summary
+ * Vista group item.
+ */
+export type VistaGroupItemSummary = object;
 
 /** webhook */
 export type Webhook = AtomBase & {

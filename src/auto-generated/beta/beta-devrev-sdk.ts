@@ -4242,6 +4242,8 @@ export type Issue = WorkBase & {
   developed_with?: PartSummary[];
   /** Priority of the work based upon impact and criticality. */
   priority?: IssuePriority;
+  /** Vista group item. */
+  sprint?: VistaGroupItemSummary;
   /**
    * Target start date for the object.
    * @format date-time
@@ -7130,6 +7132,37 @@ export interface ServiceAccountsGetResponse {
   service_account: ServiceAccount;
 }
 
+/** set-issue-selector */
+export interface SetIssueSelector {
+  /**
+   * Custom fields on the issue with their fully qualified names and the
+   * associated with their exact allowed values. The SLA policy applies
+   * to issues where all named custom fields have exactly the specified
+   * values.
+   */
+  custom_fields?: object;
+  /**
+   * The SLA policy applies to the issues of these parts.
+   * @example ["PROD-12345"]
+   */
+  parts?: string[];
+  /**
+   * The SLA policy applies to the issues of these revorgs.
+   * @example ["REV-AbCdEfGh"]
+   */
+  rev_orgs?: string[];
+  /** The SLA policy applies to issues with these stages. */
+  stage_name?: string[];
+  /** The issue subtype for which the SLA policy applies. */
+  subtype?: string[];
+  /**
+   * The SLA policy applies to issues with these tags. If empty, the tag
+   * filter isn't applied.
+   * @example ["TAG-12345"]
+   */
+  tags?: string[];
+}
+
 /** set-org-schedule-fragment-summary */
 export interface SetOrgScheduleFragmentSummary {
   /** Organization schedule fragment ID. */
@@ -7162,6 +7195,7 @@ export interface SetSlaSelector {
    * value is null, the field must have null value or not be present.
    */
   custom_fields?: object;
+  issue_selector?: SetIssueSelector;
   /**
    * The SLA policy applies to the tickets of these parts.
    * @example ["PROD-12345"]
@@ -9354,6 +9388,12 @@ export type VistaBaseSummary = AtomBaseSummary & {
   /** Name of the vista. */
   name: string;
 };
+
+/**
+ * vista-group-item-summary
+ * Vista group item.
+ */
+export type VistaGroupItemSummary = object;
 
 /** vista-search-summary */
 export type VistaSearchSummary = SearchSummaryBase & {

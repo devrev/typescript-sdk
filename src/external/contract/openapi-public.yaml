@@ -2312,6 +2312,8 @@ components:
             type: array
           priority:
             $ref: '#/components/schemas/issue-priority'
+          sprint:
+            $ref: '#/components/schemas/vista-group-item-summary'
           target_start_date:
             description: Target start date for the object.
             example: "2023-01-01T12:00:00.000Z"
@@ -4098,6 +4100,11 @@ components:
       - rev_user
       - sys_user
       type: string
+    vista-group-item-summary:
+      additionalProperties: false
+      description: Vista group item.
+      title: vista-group-item-summary
+      type: object
     webhook:
       allOf:
       - $ref: '#/components/schemas/atom-base'
