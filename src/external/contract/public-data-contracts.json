@@ -2088,6 +2088,7 @@
           {
             "discriminator": {
               "mapping": {
+                "artifact_already_attached_to_a_parent": "#/components/schemas/error-bad-request-artifact-already-attached-to-a-parent",
                 "bad_request": "#/components/schemas/error-bad-request-bad-request",
                 "invalid_api_version": "#/components/schemas/error-bad-request-invalid-api-version",
                 "invalid_enum_value": "#/components/schemas/error-bad-request-invalid-enum-value",
@@ -2102,6 +2103,9 @@
               "propertyName": "type"
             },
             "oneOf": [
+              {
+                "$ref": "#/components/schemas/error-bad-request-artifact-already-attached-to-a-parent"
+              },
               {
                 "$ref": "#/components/schemas/error-bad-request-bad-request"
               },
@@ -2145,6 +2149,24 @@
           }
         ],
         "title": "error-bad-request"
+      },
+      "error-bad-request-artifact-already-attached-to-a-parent": {
+        "properties": {
+          "existing_parent": {
+            "description": "The existing parent attached to the artifact.",
+            "type": "string"
+          },
+          "is_same": {
+            "description": "Whether the existing parent is the same as the new parent.\n",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "existing_parent",
+          "is_same"
+        ],
+        "title": "error-bad-request-artifact-already-attached-to-a-parent",
+        "type": "object"
       },
       "error-bad-request-bad-request": {
         "additionalProperties": false,
@@ -2276,6 +2298,7 @@
       },
       "error-bad-request-type": {
         "enum": [
+          "artifact_already_attached_to_a_parent",
           "bad_request",
           "invalid_api_version",
           "invalid_enum_value",

@@ -2963,6 +2963,45 @@ export interface DevUsersGetResponse {
 }
 
 /**
+ * dev-users-identities-link-request
+ * Request to link external identity to a Dev user.
+ */
+export interface DevUsersIdentitiesLinkRequest {
+  /** Display name of the Dev user in the external source. */
+  display_name?: string;
+  /** Unique ID of the Dev user in the external source. */
+  id: string;
+  /** Issuer of the external identity of the Dev user. */
+  issuer: string;
+}
+
+/**
+ * dev-users-identities-link-response
+ * Response for the request to link an external identity to a Dev user.
+ */
+export interface DevUsersIdentitiesLinkResponse {
+  dev_user: DevUser;
+}
+
+/**
+ * dev-users-identities-unlink-request
+ * Request to unlink an external identity from a Dev user.
+ */
+export interface DevUsersIdentitiesUnlinkRequest {
+  /** Issuer that needs to be unlinked from a Dev user. */
+  issuer: string;
+}
+
+/**
+ * dev-users-identities-unlink-response
+ * Response for the request to unlink an external identity from a Dev
+ * user.
+ */
+export interface DevUsersIdentitiesUnlinkResponse {
+  dev_user: DevUser;
+}
+
+/**
  * dev-users-list-request
  * A request to get the list of Dev user's information.
  */
@@ -3406,6 +3445,7 @@ export interface Error {
 /** error-bad-request */
 export type ErrorBadRequest = ErrorBase &
   (
+    | ErrorBadRequestArtifactAlreadyAttachedToAParent
     | ErrorBadRequestBadRequest
     | ErrorBadRequestInvalidApiVersion
     | ErrorBadRequestInvalidEnumValue
@@ -3419,6 +3459,14 @@ export type ErrorBadRequest = ErrorBase &
   ) & {
     type: ErrorBadRequestType;
   };
+
+/** error-bad-request-artifact-already-attached-to-a-parent */
+export interface ErrorBadRequestArtifactAlreadyAttachedToAParent {
+  /** The existing parent attached to the artifact. */
+  existing_parent: string;
+  /** Whether the existing parent is the same as the new parent. */
+  is_same: boolean;
+}
 
 /** error-bad-request-bad-request */
 export type ErrorBadRequestBadRequest = object;
@@ -3487,6 +3535,7 @@ export type ErrorBadRequestParseError = object;
 export type ErrorBadRequestStaleSchemaFragments = object;
 
 export enum ErrorBadRequestType {
+  ArtifactAlreadyAttachedToAParent = 'artifact_already_attached_to_a_parent',
   BadRequest = 'bad_request',
   InvalidApiVersion = 'invalid_api_version',
   InvalidEnumValue = 'invalid_enum_value',
@@ -12732,6 +12781,68 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/dev-users.get`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Links an external/secondary identity to the Dev user.
+   *
+   * @tags dev-users
+   * @name DevUsersIdentitiesLink
+   * @request POST:/dev-users.identities.link
+   * @secure
+   */
+  devUsersIdentitiesLink = (
+    data: DevUsersIdentitiesLinkRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      DevUsersIdentitiesLinkResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/dev-users.identities.link`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Unlinks an external/secondary identity from the Dev user.
+   *
+   * @tags dev-users
+   * @name DevUsersIdentitiesUnlink
+   * @request POST:/dev-users.identities.unlink
+   * @secure
+   */
+  devUsersIdentitiesUnlink = (
+    data: DevUsersIdentitiesUnlinkRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      DevUsersIdentitiesUnlinkResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/dev-users.identities.unlink`,
       method: 'POST',
       body: data,
       secure: true,

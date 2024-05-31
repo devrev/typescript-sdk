@@ -1253,6 +1253,7 @@ export interface EnumValue {
 /** error-bad-request */
 export type ErrorBadRequest = ErrorBase &
   (
+    | ErrorBadRequestArtifactAlreadyAttachedToAParent
     | ErrorBadRequestBadRequest
     | ErrorBadRequestInvalidApiVersion
     | ErrorBadRequestInvalidEnumValue
@@ -1266,6 +1267,14 @@ export type ErrorBadRequest = ErrorBase &
   ) & {
     type: ErrorBadRequestType;
   };
+
+/** error-bad-request-artifact-already-attached-to-a-parent */
+export interface ErrorBadRequestArtifactAlreadyAttachedToAParent {
+  /** The existing parent attached to the artifact. */
+  existing_parent: string;
+  /** Whether the existing parent is the same as the new parent. */
+  is_same: boolean;
+}
 
 /** error-bad-request-bad-request */
 export type ErrorBadRequestBadRequest = object;
@@ -1334,6 +1343,7 @@ export type ErrorBadRequestParseError = object;
 export type ErrorBadRequestStaleSchemaFragments = object;
 
 export enum ErrorBadRequestType {
+  ArtifactAlreadyAttachedToAParent = 'artifact_already_attached_to_a_parent',
   BadRequest = 'bad_request',
   InvalidApiVersion = 'invalid_api_version',
   InvalidEnumValue = 'invalid_enum_value',
