@@ -6,7 +6,7 @@
 
 /* eslint-disable */
 import * as _m0 from 'protobufjs/minimal';
-import { Struct, Value } from './google/protobuf/struct.pb';
+import { Struct, Value } from './struct.pb';
 
 export const protobufPackage = 'devrev.operation';
 
