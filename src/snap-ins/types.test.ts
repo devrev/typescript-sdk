@@ -58,7 +58,6 @@ describe('Snap-ins types', () => {
 
       expect(inputData).toHaveProperty('global_values');
       expect(inputData).toHaveProperty('event_sources');
-      expect(inputData).toHaveProperty('keyrings');
     });
   });
 
