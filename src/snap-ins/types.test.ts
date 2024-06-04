@@ -56,7 +56,6 @@ describe('Snap-ins types', () => {
       const inputData: InputData = {
         global_values: { key1: 'value1', key2: 'value2' },
         event_sources: { source1: 'source1', source2: 'source2' },
-        keyrings: { keyring1: 'keyring1', keyring2: 'keyring2' },
       };
 
       expect(inputData).toHaveProperty('global_values');
@@ -87,7 +86,6 @@ describe('Snap-ins types', () => {
         input_data: {
           global_values: { key1: 'value1', key2: 'value2' },
           event_sources: { source1: 'source1', source2: 'source2' },
-          keyrings: { keyring1: 'keyring1', keyring2: 'keyring2' },
         },
       };
 
