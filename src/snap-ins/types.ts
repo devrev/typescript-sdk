@@ -75,11 +75,6 @@ export type InputData = {
    * These could be used to schedule events on a schedule based event source.
    */
   event_sources: Record<string, string>;
-  /**
-   * Map of secrets stored in the Snap-ins including developer connections.
-   * The key is the secret name defined in manifest and value is the secret value.
-   */
-  keyrings: Record<string, string>;
 
   /**
    * Map of resources stored in the Snap-in. The resources include keyrings and tags.
@@ -168,7 +163,7 @@ export type OperationMap = {
 };
 
 /**
- * Error class to be thrown when an error occurs in the snap-in. The
+ * Error instance type to be thrown when an error occurs in the snap-in. The
  * error type is used to determine if the event should be retried or not.
  */
 export class FunctionExecutionError extends Error {
