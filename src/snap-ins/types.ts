@@ -10,10 +10,6 @@ export type Context = {
    */
   dev_oid: string;
   /**
-   * DEPRECATED: Use `source_id` below. The ID of the automation which triggered the function.
-   */
-  automation_id: string;
-  /**
    * ID of the Automation/Command/SnapKit Action/Event Source for which the function is being invoked.
    */
   source_id: string;

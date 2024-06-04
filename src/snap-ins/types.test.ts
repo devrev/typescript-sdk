@@ -17,7 +17,6 @@ describe('Snap-ins types', () => {
     test('should have the required properties', () => {
       const context: Context = {
         dev_oid: DEVORG_OID,
-        automation_id: AUTOMATION_ID,
         source_id: SOURCE_ID,
         snap_in_id: SNAP_IN_ID,
         snap_in_version_id: SNAP_IN_VERSION_ID,
@@ -26,7 +25,6 @@ describe('Snap-ins types', () => {
       };
 
       expect(context).toHaveProperty('dev_oid');
-      expect(context).toHaveProperty('automation_id');
       expect(context).toHaveProperty('source_id');
       expect(context).toHaveProperty('snap_in_id');
       expect(context).toHaveProperty('snap_in_version_id');
@@ -70,7 +68,6 @@ describe('Snap-ins types', () => {
         payload: { key1: 'value1', key2: 'value2' },
         context: {
           dev_oid: DEVORG_OID,
-          automation_id: AUTOMATION_ID,
           source_id: SOURCE_ID,
           snap_in_id: SNAP_IN_ID,
           snap_in_version_id: SNAP_IN_VERSION_ID,
