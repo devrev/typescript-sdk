@@ -2965,6 +2965,20 @@ components:
       - $ref: '#/components/schemas/vista-base-summary'
       description: Static collection of Devrev objects.
       title: curated-vista-summary
+    custom-object-search-summary:
+      allOf:
+      - $ref: '#/components/schemas/search-summary-base'
+      - properties:
+          custom_object:
+            $ref: '#/components/schemas/custom-object-summary'
+        required:
+        - custom_object
+        type: object
+      title: custom-object-search-summary
+    custom-object-summary:
+      allOf:
+      - $ref: '#/components/schemas/atom-base-summary'
+      title: custom-object-summary
     custom-schema-fragment:
       discriminator:
         mapping:
@@ -7304,6 +7318,7 @@ components:
           description: Updates the target close date of the enhancement.
           example: "2023-01-01T12:00:00.000Z"
           format: date-time
+          nullable: true
           type: string
         target_start_date:
           description: |
@@ -7311,6 +7326,7 @@ components:
             Format: 2000-11-01T01:01:01Z
           example: "2023-01-01T12:00:00.000Z"
           format: date-time
+          nullable: true
           type: string
       title: parts-update-request-enhancement
       type: object
@@ -9258,6 +9274,7 @@ components:
       - capability
       - component
       - conversation
+      - custom_object
       - custom_part
       - custom_work
       - dashboard
@@ -9290,6 +9307,7 @@ components:
           article: '#/components/schemas/article-search-summary'
           artifact: '#/components/schemas/artifact-search-summary'
           conversation: '#/components/schemas/conversation-search-summary'
+          custom_object: '#/components/schemas/custom-object-search-summary'
           dashboard: '#/components/schemas/dashboard-search-summary'
           group: '#/components/schemas/group-search-summary'
           link: '#/components/schemas/link-search-summary'
@@ -9307,6 +9325,7 @@ components:
       - $ref: '#/components/schemas/article-search-summary'
       - $ref: '#/components/schemas/artifact-search-summary'
       - $ref: '#/components/schemas/conversation-search-summary'
+      - $ref: '#/components/schemas/custom-object-search-summary'
       - $ref: '#/components/schemas/dashboard-search-summary'
       - $ref: '#/components/schemas/group-search-summary'
       - $ref: '#/components/schemas/link-search-summary'
@@ -9331,6 +9350,7 @@ components:
       - article
       - artifact
       - conversation
+      - custom_object
       - dashboard
       - group
       - link

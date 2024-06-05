@@ -2858,6 +2858,7 @@ components:
           description: Updates the target close date of the enhancement.
           example: "2023-01-01T12:00:00.000Z"
           format: date-time
+          nullable: true
           type: string
         target_start_date:
           description: |
@@ -2865,6 +2866,7 @@ components:
             Format: 2000-11-01T01:01:01Z
           example: "2023-01-01T12:00:00.000Z"
           format: date-time
+          nullable: true
           type: string
       title: parts-update-request-enhancement
       type: object

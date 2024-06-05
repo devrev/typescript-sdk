@@ -2249,6 +2249,14 @@ export interface CreateWeeklyOrgScheduleInterval {
  */
 export type CuratedVistaSummary = VistaBaseSummary;
 
+/** custom-object-search-summary */
+export type CustomObjectSearchSummary = SearchSummaryBase & {
+  custom_object: CustomObjectSummary;
+};
+
+/** custom-object-summary */
+export type CustomObjectSummary = AtomBaseSummary;
+
 /** custom-schema-fragment */
 export type CustomSchemaFragment = (
   | AppFragment
@@ -5529,14 +5537,14 @@ export interface PartsUpdateRequestEnhancement {
    * @format date-time
    * @example "2023-01-01T12:00:00.000Z"
    */
-  target_close_date?: string;
+  target_close_date?: string | null;
   /**
    * Updates the target start date of the enhancement. Example Date
    * Format: 2000-11-01T01:01:01Z
    * @format date-time
    * @example "2023-01-01T12:00:00.000Z"
    */
-  target_start_date?: string;
+  target_start_date?: string | null;
 }
 
 /** parts-update-request-feature */
@@ -7067,6 +7075,7 @@ export enum SearchNamespace {
   Capability = 'capability',
   Component = 'component',
   Conversation = 'conversation',
+  CustomObject = 'custom_object',
   CustomPart = 'custom_part',
   CustomWork = 'custom_work',
   Dashboard = 'dashboard',
@@ -7099,6 +7108,7 @@ export type SearchResult = (
   | ArticleSearchSummary
   | ArtifactSearchSummary
   | ConversationSearchSummary
+  | CustomObjectSearchSummary
   | DashboardSearchSummary
   | GroupSearchSummary
   | LinkSearchSummary
@@ -7119,6 +7129,7 @@ export enum SearchResultType {
   Article = 'article',
   Artifact = 'artifact',
   Conversation = 'conversation',
+  CustomObject = 'custom_object',
   Dashboard = 'dashboard',
   Group = 'group',
   Link = 'link',

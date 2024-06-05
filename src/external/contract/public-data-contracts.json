@@ -3927,12 +3927,14 @@
             "description": "Updates the target close date of the enhancement.",
             "example": "2023-01-01T12:00:00.000Z",
             "format": "date-time",
+            "nullable": true,
             "type": "string"
           },
           "target_start_date": {
             "description": "Updates the target start date of the enhancement. Example Date\nFormat: 2000-11-01T01:01:01Z\n",
             "example": "2023-01-01T12:00:00.000Z",
             "format": "date-time",
+            "nullable": true,
             "type": "string"
           }
         },

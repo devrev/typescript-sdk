@@ -2121,14 +2121,14 @@ export interface PartsUpdateRequestEnhancement {
    * @format date-time
    * @example "2023-01-01T12:00:00.000Z"
    */
-  target_close_date?: string;
+  target_close_date?: string | null;
   /**
    * Updates the target start date of the enhancement. Example Date
    * Format: 2000-11-01T01:01:01Z
    * @format date-time
    * @example "2023-01-01T12:00:00.000Z"
    */
-  target_start_date?: string;
+  target_start_date?: string | null;
 }
 
 /** parts-update-request-feature */
