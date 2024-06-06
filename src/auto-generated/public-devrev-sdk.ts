@@ -605,6 +605,15 @@ export enum AuthTokenTokenType {
 }
 
 /**
+ * auth-tokens-account-traits
+ * Carries account info.
+ */
+export interface AuthTokensAccountTraits {
+  /** The display name of the account. */
+  display_name?: string;
+}
+
+/**
  * auth-tokens-create-request
  * A request to create a new token corresponding to the requested token
  * type.
@@ -775,6 +784,10 @@ export interface AuthTokensOrgTraits {
  * issue a Rev session token.
  */
 export interface AuthTokensRevInfo {
+  /** An identifier which uniquely identifies an account. */
+  account_ref?: string;
+  /** Carries account info. */
+  account_traits?: AuthTokensAccountTraits;
   /** An identifier which uniquely identifies a Rev org. */
   org_ref?: string;
   /** Carries Rev org info. */
@@ -785,6 +798,10 @@ export interface AuthTokensRevInfo {
   user_ref?: string;
   /** Carries Rev user info. */
   user_traits?: AuthTokensUserTraits;
+  /** An identifier which uniquely identifies a workspace. */
+  workspace_ref?: string;
+  /** Carries Rev org info. */
+  workspace_traits?: AuthTokensOrgTraits;
 }
 
 /**

@@ -845,6 +845,14 @@ components:
       enum:
       - bearer
       type: string
+    auth-tokens-account-traits:
+      description: Carries account info.
+      properties:
+        display_name:
+          description: The display name of the account.
+          type: string
+      title: auth-tokens-account-traits
+      type: object
     auth-tokens-create-request:
       description: |
         A request to create a new token corresponding to the requested token
@@ -1030,6 +1038,11 @@ components:
         Carries info corresponding to the Rev user to be provisioned and/or
         issue a Rev session token.
       properties:
+        account_ref:
+          description: An identifier which uniquely identifies an account.
+          type: string
+        account_traits:
+          $ref: '#/components/schemas/auth-tokens-account-traits'
         org_ref:
           description: An identifier which uniquely identifies a Rev org.
           type: string
@@ -1043,6 +1056,11 @@ components:
           type: string
         user_traits:
           $ref: '#/components/schemas/auth-tokens-user-traits'
+        workspace_ref:
+          description: An identifier which uniquely identifies a workspace.
+          type: string
+        workspace_traits:
+          $ref: '#/components/schemas/auth-tokens-org-traits'
       title: auth-tokens-rev-info
       type: object
     auth-tokens-self-delete-request:
