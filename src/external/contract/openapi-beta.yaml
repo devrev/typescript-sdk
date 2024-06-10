@@ -3966,6 +3966,9 @@ components:
     dev-users-identities-link-request:
       description: Request to link external identity to a Dev user.
       properties:
+        dev_user:
+          description: The ID of the Dev user to link the external identity to.
+          type: string
         display_name:
           description: Display name of the Dev user in the external source.
           type: string
@@ -3976,6 +3979,7 @@ components:
           description: Issuer of the external identity of the Dev user.
           type: string
       required:
+      - dev_user
       - id
       - issuer
       title: dev-users-identities-link-request
@@ -3994,10 +3998,15 @@ components:
     dev-users-identities-unlink-request:
       description: Request to unlink an external identity from a Dev user.
       properties:
+        dev_user:
+          description: |
+            The ID of the Dev user to unlink the external identity from.
+          type: string
         issuer:
           description: Issuer that needs to be unlinked from a Dev user.
           type: string
       required:
+      - dev_user
       - issuer
       title: dev-users-identities-unlink-request
       type: object

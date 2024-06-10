@@ -2992,6 +2992,8 @@ export interface DevUsersGetResponse {
  * Request to link external identity to a Dev user.
  */
 export interface DevUsersIdentitiesLinkRequest {
+  /** The ID of the Dev user to link the external identity to. */
+  dev_user: string;
   /** Display name of the Dev user in the external source. */
   display_name?: string;
   /** Unique ID of the Dev user in the external source. */
@@ -3013,6 +3015,8 @@ export interface DevUsersIdentitiesLinkResponse {
  * Request to unlink an external identity from a Dev user.
  */
 export interface DevUsersIdentitiesUnlinkRequest {
+  /** The ID of the Dev user to unlink the external identity from. */
+  dev_user: string;
   /** Issuer that needs to be unlinked from a Dev user. */
   issuer: string;
 }
