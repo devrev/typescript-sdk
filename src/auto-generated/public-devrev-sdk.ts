@@ -1178,6 +1178,8 @@ export interface DevUsersGetResponse {
  * A request to get the list of Dev user's information.
  */
 export interface DevUsersListRequest {
+  /** Provides ways to specify date ranges on objects. */
+  created_date?: DateFilter;
   /**
    * The cursor to resume iteration from. If not provided, then
    * iteration starts from the beginning.
@@ -1200,6 +1202,8 @@ export interface DevUsersListRequest {
    * always be returned in the specified sort-by order.
    */
   mode?: ListMode;
+  /** Provides ways to specify date ranges on objects. */
+  modified_date?: DateFilter;
   /** Fields to sort the Dev users by and the direction to sort them. */
   sort_by?: string[];
   /** Filters Dev users based on state. */
@@ -1726,7 +1730,16 @@ export interface EventWorkUpdated {
  * external-identity
  * External identity of a user.
  */
-export type ExternalIdentity = object;
+export interface ExternalIdentity {
+  /** Display name of the user in the external source. */
+  display_name?: string;
+  /** Unique ID of the user in the external source. */
+  id?: string;
+  /** Whether the external identity is verified or not. */
+  is_verified?: boolean;
+  /** Issuer of the external identity of the user. */
+  issuer?: string;
+}
 
 /** feature */
 export type Feature = PartBase;
@@ -2420,6 +2433,8 @@ export enum SlaStatus {
 export type SlaSummary = AtomBaseSummary & {
   /** Human-readable name. */
   name: string;
+  /** Type of the SLA. */
+  sla_type?: SlaType;
   /**
    * Status determines how an item can be used. In 'draft' status an item
    * can be edited but can't be used. When 'published' the item can longer
@@ -2485,6 +2500,12 @@ export interface SlaTrackersGetRequest {
 /** sla-trackers-get-response */
 export interface SlaTrackersGetResponse {
   sla_tracker: SlaTracker;
+}
+
+/** Type of the SLA. */
+export enum SlaType {
+  External = 'external',
+  Internal = 'internal',
 }
 
 /** snap-widget */

@@ -5377,6 +5377,9 @@
       "dev-users-list-request": {
         "description": "A request to get the list of Dev user's information.",
         "properties": {
+          "created_date": {
+            "$ref": "#/components/schemas/date-filter"
+          },
           "cursor": {
             "description": "The cursor to resume iteration from. If not provided, then\niteration starts from the beginning.\n",
             "type": "string"
@@ -5402,6 +5405,9 @@
           },
           "mode": {
             "$ref": "#/components/schemas/list-mode"
+          },
+          "modified_date": {
+            "$ref": "#/components/schemas/date-filter"
           },
           "sort_by": {
             "description": "Fields to sort the Dev users by and the direction to sort them.\n",
@@ -7365,8 +7371,25 @@
         "type": "object"
       },
       "external-identity": {
-        "additionalProperties": false,
         "description": "External identity of a user.",
+        "properties": {
+          "display_name": {
+            "description": "Display name of the user in the external source.",
+            "type": "string"
+          },
+          "id": {
+            "description": "Unique ID of the user in the external source.",
+            "type": "string"
+          },
+          "is_verified": {
+            "description": "Whether the external identity is verified or not.",
+            "type": "boolean"
+          },
+          "issuer": {
+            "description": "Issuer of the external identity of the user.",
+            "type": "string"
+          }
+        },
         "title": "external-identity",
         "type": "object"
       },
@@ -13188,6 +13211,9 @@
               "name": {
                 "description": "Human-readable name.",
                 "type": "string"
+              },
+              "sla_type": {
+                "$ref": "#/components/schemas/sla-type"
               },
               "status": {
                 "$ref": "#/components/schemas/sla-status"
