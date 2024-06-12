@@ -1279,10 +1279,12 @@ export type ErrorBadRequest = ErrorBase &
     | ErrorBadRequestInvalidApiVersion
     | ErrorBadRequestInvalidEnumValue
     | ErrorBadRequestInvalidField
+    | ErrorBadRequestInvalidId
     | ErrorBadRequestMissingDependency
     | ErrorBadRequestMissingRequiredField
     | ErrorBadRequestParseError
     | ErrorBadRequestStaleSchemaFragments
+    | ErrorBadRequestUnexpectedIdType
     | ErrorBadRequestUnexpectedJsonType
     | ErrorBadRequestValueNotPermitted
   ) & {
@@ -1319,6 +1321,12 @@ export interface ErrorBadRequestInvalidEnumValue {
 /** error-bad-request-invalid-field */
 export interface ErrorBadRequestInvalidField {
   /** The field name that's invalid. */
+  field_name: string;
+}
+
+/** error-bad-request-invalid-id */
+export interface ErrorBadRequestInvalidId {
+  /** The field whose ID is invalid. */
   field_name: string;
 }
 
@@ -1369,12 +1377,20 @@ export enum ErrorBadRequestType {
   InvalidApiVersion = 'invalid_api_version',
   InvalidEnumValue = 'invalid_enum_value',
   InvalidField = 'invalid_field',
+  InvalidId = 'invalid_id',
   MissingDependency = 'missing_dependency',
   MissingRequiredField = 'missing_required_field',
   ParseError = 'parse_error',
   StaleSchemaFragments = 'stale_schema_fragments',
+  UnexpectedIdType = 'unexpected_id_type',
   UnexpectedJsonType = 'unexpected_json_type',
   ValueNotPermitted = 'value_not_permitted',
+}
+
+/** error-bad-request-unexpected-id-type */
+export interface ErrorBadRequestUnexpectedIdType {
+  /** The field whose ID type is unexpected. */
+  field_name: string;
 }
 
 /** error-bad-request-unexpected-json-type */
@@ -2568,11 +2584,17 @@ export type SurveyAggregationFilter = object;
 export type SurveyResponse = AtomBase & {
   /** The unique ID associated with the dispatched survey. */
   dispatch_id?: string;
+  /** Source channels on which the survey is sent. */
+  dispatched_channels?: EnumValue[];
   /** The ID of the object for which survey is taken. */
   object?: string;
   recipient?: UserSummary;
   /** Response for the survey. */
   response?: object;
+  /** Enum Value defines the structure for an enum. */
+  response_channel?: EnumValue;
+  /** Enum Value defines the structure for an enum. */
+  stage?: EnumValue;
   /** The ID of the survey for which response is taken. */
   survey?: string;
 };

@@ -55,6 +55,11 @@ export type Account = OrgBase & {
 /** account-search-summary */
 export type AccountSearchSummary = SearchSummaryBase & {
   account: AccountSummary;
+  /**
+   * Comments on the work.
+   * @maxItems 5
+   */
+  comments?: CommentSearchSummary[];
 };
 
 /** account-summary */
@@ -1809,6 +1814,13 @@ export interface CodeChangesUpdateResponse {
   code_change: CodeChange;
 }
 
+/** comment-search-summary */
+export interface CommentSearchSummary {
+  comment?: TimelineCommentSummary;
+  /** Text snippet where the search hit occurred. */
+  snippet?: string;
+}
+
 /** conversation */
 export type Conversation = AtomBase & {
   /** Description of the conversation object. */
@@ -1845,6 +1857,11 @@ export interface ConversationMetadata {
 
 /** conversation-search-summary */
 export type ConversationSearchSummary = SearchSummaryBase & {
+  /**
+   * Comments on the work.
+   * @maxItems 5
+   */
+  comments?: CommentSearchSummary[];
   conversation: ConversationSummary;
 };
 
@@ -2191,6 +2208,8 @@ export interface CreateEmailPreviewWidget {
   in_reply_to?: string;
   /** The list of inline attachments. */
   inlines?: CreateEmailInlineAttachment[];
+  /** Whether the email is spam. */
+  is_spam?: boolean;
   /** The message id of the email. */
   message_id?: string;
   /**
@@ -3184,6 +3203,8 @@ export type EmailPreviewWidget = SnapWidgetBase & {
   in_reply_to?: string;
   /** The list of inline attachments. */
   inlines: EmailInlineAttachment[];
+  /** Whether the email is spam. */
+  is_spam?: boolean;
   /** The message id of the email. */
   message_id?: string;
   raw_email_artifact?: ArtifactSummary;
@@ -3483,10 +3504,12 @@ export type ErrorBadRequest = ErrorBase &
     | ErrorBadRequestInvalidApiVersion
     | ErrorBadRequestInvalidEnumValue
     | ErrorBadRequestInvalidField
+    | ErrorBadRequestInvalidId
     | ErrorBadRequestMissingDependency
     | ErrorBadRequestMissingRequiredField
     | ErrorBadRequestParseError
     | ErrorBadRequestStaleSchemaFragments
+    | ErrorBadRequestUnexpectedIdType
     | ErrorBadRequestUnexpectedJsonType
     | ErrorBadRequestValueNotPermitted
   ) & {
@@ -3523,6 +3546,12 @@ export interface ErrorBadRequestInvalidEnumValue {
 /** error-bad-request-invalid-field */
 export interface ErrorBadRequestInvalidField {
   /** The field name that's invalid. */
+  field_name: string;
+}
+
+/** error-bad-request-invalid-id */
+export interface ErrorBadRequestInvalidId {
+  /** The field whose ID is invalid. */
   field_name: string;
 }
 
@@ -3573,12 +3602,20 @@ export enum ErrorBadRequestType {
   InvalidApiVersion = 'invalid_api_version',
   InvalidEnumValue = 'invalid_enum_value',
   InvalidField = 'invalid_field',
+  InvalidId = 'invalid_id',
   MissingDependency = 'missing_dependency',
   MissingRequiredField = 'missing_required_field',
   ParseError = 'parse_error',
   StaleSchemaFragments = 'stale_schema_fragments',
+  UnexpectedIdType = 'unexpected_id_type',
   UnexpectedJsonType = 'unexpected_json_type',
   ValueNotPermitted = 'value_not_permitted',
+}
+
+/** error-bad-request-unexpected-id-type */
+export interface ErrorBadRequestUnexpectedIdType {
+  /** The field whose ID type is unexpected. */
+  field_name: string;
 }
 
 /** error-bad-request-unexpected-json-type */
@@ -5341,6 +5378,11 @@ export type PartBaseSummary = AtomBaseSummary & {
 
 /** part-search-summary */
 export type PartSearchSummary = SearchSummaryBase & {
+  /**
+   * Comments on the work.
+   * @maxItems 5
+   */
+  comments?: CommentSearchSummary[];
   part: PartSummary;
 };
 
@@ -7983,13 +8025,19 @@ export interface SubtypesListResponse {
 export type Survey = AtomBase & {
   /** Description of the survey. */
   description?: string;
+  /** Text posted when introducing the survey to the responder. */
+  introductory_text?: string;
   /**
    * Survey name associated with schema. This name would be unique per
    * dev org.
    */
   name?: string;
+  /** Text posted after the response is collected. */
+  response_text?: string;
   /** List of all fields in the schema. */
-  schema: SchemaFieldDescriptor[];
+  schema?: SchemaFieldDescriptor[];
+  /** List of all the fields and their respective metadata in the schema. */
+  schema_with_metadata?: SurveyFieldWithMetadata[];
 };
 
 /**
@@ -7998,15 +8046,34 @@ export type Survey = AtomBase & {
  */
 export type SurveyAggregationFilter = object;
 
+/**
+ * survey-field-with-metadata
+ * Field descriptors with additional metadata for surveys.
+ */
+export interface SurveyFieldWithMetadata {
+  /** Set of field attributes. */
+  field?: SchemaFieldDescriptor;
+  /** Additional metadata for the input field. */
+  metadata?: object;
+  /** The question linked to the input field. */
+  question?: string;
+}
+
 /** survey-response */
 export type SurveyResponse = AtomBase & {
   /** The unique ID associated with the dispatched survey. */
   dispatch_id?: string;
+  /** Source channels on which the survey is sent. */
+  dispatched_channels?: EnumValue[];
   /** The ID of the object for which survey is taken. */
   object?: string;
   recipient?: UserSummary;
   /** Response for the survey. */
   response?: object;
+  /** Enum Value defines the structure for an enum. */
+  response_channel?: EnumValue;
+  /** Enum Value defines the structure for an enum. */
+  stage?: EnumValue;
   /** The ID of the survey for which response is taken. */
   survey?: string;
 };
@@ -8015,10 +8082,16 @@ export type SurveyResponse = AtomBase & {
 export interface SurveysCreateRequest {
   /** Description about the survey. */
   description?: string;
+  /** Text posted when introducing the survey to the responder. */
+  introductory_text?: string;
   /** The survey's name. */
   name: string;
+  /** Text posted after the response is collected. */
+  response_text?: string;
   /** Schema for the survey. */
-  schema: FieldDescriptor[];
+  schema?: FieldDescriptor[];
+  /** The schema with metadata for the survey. */
+  schema_with_metadata?: SurveyFieldWithMetadata[];
 }
 
 /** surveys-create-response */
@@ -9440,6 +9513,11 @@ export type UserBaseSummary = AtomBaseSummary & {
 
 /** user-search-summary */
 export type UserSearchSummary = SearchSummaryBase & {
+  /**
+   * Comments on the work.
+   * @maxItems 5
+   */
+  comments?: CommentSearchSummary[];
   user: UserSummary;
 };
 
@@ -9866,6 +9944,11 @@ export type WorkBaseSummary = AtomBaseSummary & {
 
 /** work-search-summary */
 export type WorkSearchSummary = SearchSummaryBase & {
+  /**
+   * Comments on the work.
+   * @maxItems 5
+   */
+  comments?: CommentSearchSummary[];
   work: WorkSummary;
 };
 

@@ -127,6 +127,12 @@ components:
       - properties:
           account:
             $ref: '#/components/schemas/account-summary'
+          comments:
+            description: Comments on the work.
+            items:
+              $ref: '#/components/schemas/comment-search-summary'
+            maxItems: 5
+            type: array
         required:
         - account
         type: object
@@ -2363,6 +2369,15 @@ components:
       title: code-changes-update-response
       type: object
       x-go-name: CodeChangesUpdateResponseBody
+    comment-search-summary:
+      properties:
+        comment:
+          $ref: '#/components/schemas/timeline-comment-summary'
+        snippet:
+          description: Text snippet where the search hit occurred.
+          type: string
+      title: comment-search-summary
+      type: object
     conversation:
       allOf:
       - $ref: '#/components/schemas/atom-base'
@@ -2419,6 +2434,12 @@ components:
       allOf:
       - $ref: '#/components/schemas/search-summary-base'
       - properties:
+          comments:
+            description: Comments on the work.
+            items:
+              $ref: '#/components/schemas/comment-search-summary'
+            maxItems: 5
+            type: array
           conversation:
             $ref: '#/components/schemas/conversation-summary'
         required:
@@ -2894,6 +2915,9 @@ components:
           items:
             $ref: '#/components/schemas/create-email-inline-attachment'
           type: array
+        is_spam:
+          description: Whether the email is spam.
+          type: boolean
         message_id:
           description: The message id of the email.
           type: string
@@ -4217,6 +4241,9 @@ components:
             items:
               $ref: '#/components/schemas/email-inline-attachment'
             type: array
+          is_spam:
+            description: Whether the email is spam.
+            type: boolean
           message_id:
             description: The message id of the email.
             type: string
@@ -4630,10 +4657,12 @@ components:
             invalid_api_version: '#/components/schemas/error-bad-request-invalid-api-version'
             invalid_enum_value: '#/components/schemas/error-bad-request-invalid-enum-value'
             invalid_field: '#/components/schemas/error-bad-request-invalid-field'
+            invalid_id: '#/components/schemas/error-bad-request-invalid-id'
             missing_dependency: '#/components/schemas/error-bad-request-missing-dependency'
             missing_required_field: '#/components/schemas/error-bad-request-missing-required-field'
             parse_error: '#/components/schemas/error-bad-request-parse-error'
             stale_schema_fragments: '#/components/schemas/error-bad-request-stale-schema-fragments'
+            unexpected_id_type: '#/components/schemas/error-bad-request-unexpected-id-type'
             unexpected_json_type: '#/components/schemas/error-bad-request-unexpected-json-type'
             value_not_permitted: '#/components/schemas/error-bad-request-value-not-permitted'
           propertyName: type
@@ -4643,10 +4672,12 @@ components:
         - $ref: '#/components/schemas/error-bad-request-invalid-api-version'
         - $ref: '#/components/schemas/error-bad-request-invalid-enum-value'
         - $ref: '#/components/schemas/error-bad-request-invalid-field'
+        - $ref: '#/components/schemas/error-bad-request-invalid-id'
         - $ref: '#/components/schemas/error-bad-request-missing-dependency'
         - $ref: '#/components/schemas/error-bad-request-missing-required-field'
         - $ref: '#/components/schemas/error-bad-request-parse-error'
         - $ref: '#/components/schemas/error-bad-request-stale-schema-fragments'
+        - $ref: '#/components/schemas/error-bad-request-unexpected-id-type'
         - $ref: '#/components/schemas/error-bad-request-unexpected-json-type'
         - $ref: '#/components/schemas/error-bad-request-value-not-permitted'
         properties:
@@ -4710,6 +4741,15 @@ components:
       required:
       - field_name
       title: error-bad-request-invalid-field
+      type: object
+    error-bad-request-invalid-id:
+      properties:
+        field_name:
+          description: The field whose ID is invalid.
+          type: string
+      required:
+      - field_name
+      title: error-bad-request-invalid-id
       type: object
     error-bad-request-missing-dependency:
       properties:
@@ -4775,13 +4815,24 @@ components:
       - invalid_api_version
       - invalid_enum_value
       - invalid_field
+      - invalid_id
       - missing_dependency
       - missing_required_field
       - parse_error
       - stale_schema_fragments
+      - unexpected_id_type
       - unexpected_json_type
       - value_not_permitted
       type: string
+    error-bad-request-unexpected-id-type:
+      properties:
+        field_name:
+          description: The field whose ID type is unexpected.
+          type: string
+      required:
+      - field_name
+      title: error-bad-request-unexpected-id-type
+      type: object
     error-bad-request-unexpected-json-type:
       properties:
         actual:
@@ -7042,6 +7093,12 @@ components:
       allOf:
       - $ref: '#/components/schemas/search-summary-base'
       - properties:
+          comments:
+            description: Comments on the work.
+            items:
+              $ref: '#/components/schemas/comment-search-summary'
+            maxItems: 5
+            type: array
           part:
             $ref: '#/components/schemas/part-summary'
         required:
@@ -10432,24 +10489,48 @@ components:
           description:
             description: Description of the survey.
             type: string
+          introductory_text:
+            description: |
+              Text posted when introducing the survey to the responder.
+            type: string
           name:
             description: |
               Survey name associated with schema. This name would be unique per
               dev org.
+            type: string
+          response_text:
+            description: Text posted after the response is collected.
             type: string
           schema:
             description: List of all fields in the schema.
             items:
               $ref: '#/components/schemas/schema-field-descriptor'
             type: array
-        required:
-        - schema
+          schema_with_metadata:
+            description: |
+              List of all the fields and their respective metadata in the schema.
+            items:
+              $ref: '#/components/schemas/survey-field-with-metadata'
+            type: array
         type: object
       title: survey
     survey-aggregation-filter:
       additionalProperties: false
       description: The filter for survey aggregation.
       title: survey-aggregation-filter
+      type: object
+    survey-field-with-metadata:
+      description: Field descriptors with additional metadata for surveys.
+      properties:
+        field:
+          $ref: '#/components/schemas/schema-field-descriptor'
+        metadata:
+          description: Additional metadata for the input field.
+          type: object
+        question:
+          description: The question linked to the input field.
+          type: string
+      title: survey-field-with-metadata
       type: object
     survey-response:
       allOf:
@@ -10458,6 +10539,11 @@ components:
           dispatch_id:
             description: The unique ID associated with the dispatched survey.
             type: string
+          dispatched_channels:
+            description: Source channels on which the survey is sent.
+            items:
+              $ref: '#/components/schemas/enum-value'
+            type: array
           object:
             description: The ID of the object for which survey is taken.
             type: string
@@ -10466,6 +10552,10 @@ components:
           response:
             description: Response for the survey.
             type: object
+          response_channel:
+            $ref: '#/components/schemas/enum-value'
+          stage:
+            $ref: '#/components/schemas/enum-value'
           survey:
             description: The ID of the survey for which response is taken.
             type: string
@@ -10477,17 +10567,28 @@ components:
         description:
           description: Description about the survey.
           type: string
+        introductory_text:
+          description: |
+            Text posted when introducing the survey to the responder.
+          type: string
         name:
           description: The survey's name.
+          type: string
+        response_text:
+          description: Text posted after the response is collected.
           type: string
         schema:
           description: Schema for the survey.
           items:
             $ref: '#/components/schemas/field-descriptor'
           type: array
+        schema_with_metadata:
+          description: The schema with metadata for the survey.
+          items:
+            $ref: '#/components/schemas/survey-field-with-metadata'
+          type: array
       required:
       - name
-      - schema
       title: surveys-create-request
       type: object
     surveys-create-response:
@@ -12201,6 +12302,12 @@ components:
       allOf:
       - $ref: '#/components/schemas/search-summary-base'
       - properties:
+          comments:
+            description: Comments on the work.
+            items:
+              $ref: '#/components/schemas/comment-search-summary'
+            maxItems: 5
+            type: array
           user:
             $ref: '#/components/schemas/user-summary'
         required:
@@ -12769,6 +12876,12 @@ components:
       allOf:
       - $ref: '#/components/schemas/search-summary-base'
       - properties:
+          comments:
+            description: Comments on the work.
+            items:
+              $ref: '#/components/schemas/comment-search-summary'
+            maxItems: 5
+            type: array
           work:
             $ref: '#/components/schemas/work-summary'
         required:
