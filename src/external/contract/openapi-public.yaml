@@ -4194,11 +4194,48 @@ components:
       - rev_user
       - sys_user
       type: string
+    vista-group-item-state:
+      description: Defines the state of the group item.
+      enum:
+      - active
+      - completed
+      - planned
+      type: string
     vista-group-item-summary:
-      additionalProperties: false
       description: Vista group item.
+      properties:
+        end_date:
+          description: Timestamp when the vista ends.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+          type: string
+        id:
+          description: ID of the group item in don v2 format.
+          type: string
+        name:
+          description: Name of the group.
+          type: string
+        start_date:
+          description: Timestamp when the vista starts.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+          type: string
+        state:
+          $ref: '#/components/schemas/vista-group-item-state'
+        type:
+          $ref: '#/components/schemas/vista-group-item-type'
+      required:
+      - id
+      - name
+      - type
       title: vista-group-item-summary
       type: object
+    vista-group-item-type:
+      description: Type of the group object.
+      enum:
+      - curated
+      - dynamic
+      type: string
     webhook:
       allOf:
       - $ref: '#/components/schemas/atom-base'

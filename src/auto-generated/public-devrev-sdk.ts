@@ -3233,11 +3233,45 @@ export enum UserType {
   SysUser = 'sys_user',
 }
 
+/** Defines the state of the group item. */
+export enum VistaGroupItemState {
+  Active = 'active',
+  Completed = 'completed',
+  Planned = 'planned',
+}
+
 /**
  * vista-group-item-summary
  * Vista group item.
  */
-export type VistaGroupItemSummary = object;
+export interface VistaGroupItemSummary {
+  /**
+   * Timestamp when the vista ends.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  end_date?: string;
+  /** ID of the group item in don v2 format. */
+  id: string;
+  /** Name of the group. */
+  name: string;
+  /**
+   * Timestamp when the vista starts.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  start_date?: string;
+  /** Defines the state of the group item. */
+  state?: VistaGroupItemState;
+  /** Type of the group object. */
+  type: VistaGroupItemType;
+}
+
+/** Type of the group object. */
+export enum VistaGroupItemType {
+  Curated = 'curated',
+  Dynamic = 'dynamic',
+}
 
 /** webhook */
 export type Webhook = AtomBase & {
