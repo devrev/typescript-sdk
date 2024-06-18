@@ -2261,6 +2261,7 @@ components:
     code-change-source:
       description: Source of the code change object.
       enum:
+      - bitbucket
       - github
       type: string
     code-changes-create-request:
@@ -11255,6 +11256,9 @@ components:
             type: array
           group:
             $ref: '#/components/schemas/group-summary'
+          needs_response:
+            description: Whether the ticket needs a response.
+            type: boolean
           rev_org:
             $ref: '#/components/schemas/org-summary'
           severity:

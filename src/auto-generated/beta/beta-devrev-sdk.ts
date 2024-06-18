@@ -1729,6 +1729,7 @@ export type CodeChange = AtomBase & {
 
 /** Source of the code change object. */
 export enum CodeChangeSource {
+  Bitbucket = 'bitbucket',
   Github = 'github',
 }
 
@@ -8630,6 +8631,8 @@ export type Ticket = WorkBase & {
   /** Channels of the ticket. */
   channels?: TicketChannels[];
   group?: GroupSummary;
+  /** Whether the ticket needs a response. */
+  needs_response?: boolean;
   rev_org?: OrgSummary;
   /** Severity of the ticket. */
   severity?: TicketSeverity;
