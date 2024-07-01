@@ -11,6 +11,8 @@ const SNAP_IN_VERSION_ID =
   'don:integration:dvrv-us-1:devo/TEST-DEVORG:snap_in_package/00000000-0000-0000-0000-000000000000';
 const SERVICE_ACCOUNT_ID =
   'don:identity:dvrv-us-1:devo/TEST-DEVORG:svcacc/00000000-0000-0000-0000-000000000000';
+const USER_ID =
+  'don:identity:dvrv-us-1:devo/TEST-DEVORG:devu/123';
 
 describe('Snap-ins types', () => {
   describe('Context', () => {
@@ -22,6 +24,7 @@ describe('Snap-ins types', () => {
         snap_in_version_id: SNAP_IN_VERSION_ID,
         service_account_id: SERVICE_ACCOUNT_ID,
         secrets: { secret1: 'value1', secret2: 'value2' },
+        user_id: USER_ID,
       };
 
       expect(context).toHaveProperty('dev_oid');
@@ -30,6 +33,7 @@ describe('Snap-ins types', () => {
       expect(context).toHaveProperty('snap_in_version_id');
       expect(context).toHaveProperty('service_account_id');
       expect(context).toHaveProperty('secrets');
+      expect(context).toHaveProperty('user_id');
     });
   });
 
@@ -72,6 +76,7 @@ describe('Snap-ins types', () => {
           snap_in_version_id: SNAP_IN_VERSION_ID,
           service_account_id: SERVICE_ACCOUNT_ID,
           secrets: { secret1: 'value1', secret2: 'value2' },
+          user_id: USER_ID,
         },
         execution_metadata: {
           request_id: 'request-123',
