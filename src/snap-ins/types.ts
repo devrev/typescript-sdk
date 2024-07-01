@@ -31,6 +31,10 @@ export type Context = {
    * `actor_session_token`: For commands, and snap-kits, where the user is performing some action, this is the token of the user who is performing the action.
    */
   secrets: Record<string, string>;
+  /**
+   * The ID of the user on whose behalf the function is being invoked.
+   */
+  user_id?: string;
 };
 
 /**
