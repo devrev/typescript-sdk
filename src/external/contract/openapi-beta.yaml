@@ -704,6 +704,8 @@ components:
           title:
             description: Title of the article.
             type: string
+          type:
+            $ref: '#/components/schemas/article-type'
         required:
         - applies_to_parts
         type: object
@@ -737,6 +739,12 @@ components:
             type: string
         type: object
       title: article-summary
+    article-type:
+      description: Type of the article.
+      enum:
+      - article
+      - content_block
+      type: string
     articles-count-request:
       properties:
         ancestor:
@@ -2374,6 +2382,13 @@ components:
       properties:
         comment:
           $ref: '#/components/schemas/timeline-comment-summary'
+        created_by:
+          $ref: '#/components/schemas/user-summary'
+        created_date:
+          description: Timestamp when the comment was created.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+          type: string
         snippet:
           description: Text snippet where the search hit occurred.
           type: string
@@ -3350,6 +3365,10 @@ components:
       allOf:
       - $ref: '#/components/schemas/atom-base'
       title: custom-stage
+    custom-stage-summary:
+      allOf:
+      - $ref: '#/components/schemas/atom-base-summary'
+      title: custom-stage-summary
     custom-stages-create-request:
       properties:
         marketplace_ref:
@@ -5139,6 +5158,31 @@ components:
       - dev_user
       title: event-dev-user-updated
       type: object
+    event-group-created:
+      properties:
+        group:
+          $ref: '#/components/schemas/group'
+      required:
+      - group
+      title: event-group-created
+      type: object
+    event-group-deleted:
+      properties:
+        id:
+          description: The ID of the group that was deleted.
+          type: string
+      required:
+      - id
+      title: event-group-deleted
+      type: object
+    event-group-updated:
+      properties:
+        group:
+          $ref: '#/components/schemas/group'
+      required:
+      - group
+      title: event-group-updated
+      type: object
     event-part-created:
       properties:
         part:
@@ -5750,6 +5794,9 @@ components:
           items:
             $ref: '#/components/schemas/group-type'
           type: array
+        is_default:
+          description: Whether to fetch default or custom groups.
+          type: boolean
         limit:
           description: |
             The maximum number of groups to return. The default is '50'.
@@ -5842,6 +5889,8 @@ components:
             type: array
           priority:
             $ref: '#/components/schemas/issue-priority'
+          sla_tracker:
+            $ref: '#/components/schemas/sla-tracker-summary'
           sprint:
             $ref: '#/components/schemas/vista-group-item-summary'
           target_start_date:
@@ -5899,6 +5948,8 @@ components:
         name:
           description: Current stage name of the work item.
           type: string
+        stage:
+          $ref: '#/components/schemas/custom-stage-summary'
       required:
       - name
       title: legacy-stage
@@ -6061,6 +6112,7 @@ components:
       - imports
       - is_dependent_on
       - is_duplicate_of
+      - is_merged_into
       - is_parent_of
       - is_part_of
       - is_related_to
@@ -8672,6 +8724,7 @@ components:
           id: '#/components/schemas/schema-id-field-descriptor'
           int: '#/components/schemas/schema-int-field-descriptor'
           rich_text: '#/components/schemas/schema-rich-text-field-descriptor'
+          struct: '#/components/schemas/schema-struct-field-descriptor'
           text: '#/components/schemas/schema-text-field-descriptor'
           timestamp: '#/components/schemas/schema-timestamp-field-descriptor'
           tokens: '#/components/schemas/schema-tokens-field-descriptor'
@@ -8688,6 +8741,7 @@ components:
       - $ref: '#/components/schemas/schema-id-field-descriptor'
       - $ref: '#/components/schemas/schema-int-field-descriptor'
       - $ref: '#/components/schemas/schema-rich-text-field-descriptor'
+      - $ref: '#/components/schemas/schema-struct-field-descriptor'
       - $ref: '#/components/schemas/schema-text-field-descriptor'
       - $ref: '#/components/schemas/schema-timestamp-field-descriptor'
       - $ref: '#/components/schemas/schema-tokens-field-descriptor'
@@ -8711,6 +8765,7 @@ components:
           id: '#/components/schemas/schema-id-list-field-descriptor'
           int: '#/components/schemas/schema-int-list-field-descriptor'
           rich_text: '#/components/schemas/schema-rich-text-list-field-descriptor'
+          struct: '#/components/schemas/schema-struct-list-field-descriptor'
           text: '#/components/schemas/schema-text-list-field-descriptor'
           timestamp: '#/components/schemas/schema-timestamp-list-field-descriptor'
           tokens: '#/components/schemas/schema-tokens-list-field-descriptor'
@@ -8725,6 +8780,7 @@ components:
       - $ref: '#/components/schemas/schema-id-list-field-descriptor'
       - $ref: '#/components/schemas/schema-int-list-field-descriptor'
       - $ref: '#/components/schemas/schema-rich-text-list-field-descriptor'
+      - $ref: '#/components/schemas/schema-struct-list-field-descriptor'
       - $ref: '#/components/schemas/schema-text-list-field-descriptor'
       - $ref: '#/components/schemas/schema-timestamp-list-field-descriptor'
       - $ref: '#/components/schemas/schema-tokens-list-field-descriptor'
@@ -8758,6 +8814,7 @@ components:
       - id
       - int
       - rich_text
+      - struct
       - text
       - timestamp
       - tokens
@@ -8810,6 +8867,7 @@ components:
       - id
       - int
       - rich_text
+      - struct
       - text
       - timestamp
       - tokens
@@ -8895,6 +8953,9 @@ components:
           type: boolean
         is_read_only:
           description: Whether the field is read-only in the UI.
+          type: boolean
+        is_required:
+          description: Whether the field is mandatory in the UI.
           type: boolean
         is_shown_in_summary:
           description: Whether the field is shown in the UI summary view.
@@ -9066,6 +9127,26 @@ components:
             type: string
         type: object
       title: schema-rich-text-list-field-descriptor
+    schema-struct-field-descriptor:
+      allOf:
+      - $ref: '#/components/schemas/schema-field-descriptor-base'
+      - properties:
+          default_value:
+            description: Default value.
+            type: object
+        type: object
+      title: schema-struct-field-descriptor
+    schema-struct-list-field-descriptor:
+      allOf:
+      - $ref: '#/components/schemas/schema-field-descriptor-base'
+      - properties:
+          default_value:
+            description: Default value.
+            items:
+              type: object
+            type: array
+        type: object
+      title: schema-struct-list-field-descriptor
     schema-text-field-descriptor:
       allOf:
       - $ref: '#/components/schemas/schema-field-descriptor-base'
@@ -10289,6 +10370,11 @@ components:
     stage-init:
       description: Sets an object's initial stage.
       properties:
+        id:
+          description: |
+            The ID of the custom stage. If this is set, the name field is
+            ignored.
+          type: string
         name:
           description: The name of the stage.
           type: string
@@ -10300,6 +10386,11 @@ components:
         name:
           description: |
             The updated name of the stage, otherwise unchanged if not set.
+          type: string
+        stage:
+          description: |
+            The ID of the updated custom stage, otherwise unchanged if not set.
+            If this is set, the name field is ignored.
           type: string
       title: stage-update
       type: object
@@ -12496,6 +12587,12 @@ components:
           $ref: '#/components/schemas/event-dev-user-deleted'
         dev_user_updated:
           $ref: '#/components/schemas/event-dev-user-updated'
+        group_created:
+          $ref: '#/components/schemas/event-group-created'
+        group_deleted:
+          $ref: '#/components/schemas/event-group-deleted'
+        group_updated:
+          $ref: '#/components/schemas/event-group-updated'
         id:
           description: The event's ID.
           type: string
@@ -12598,6 +12695,9 @@ components:
       - dev_user_created
       - dev_user_deleted
       - dev_user_updated
+      - group_created
+      - group_deleted
+      - group_updated
       - part_created
       - part_deleted
       - part_updated
@@ -13291,6 +13391,8 @@ components:
           items:
             type: string
           type: array
+        sla_summary:
+          $ref: '#/components/schemas/sla-summary-filter'
         sprint:
           description: Filters for issues with any of the sprint.
           items:
@@ -17344,6 +17446,12 @@ paths:
           items:
             $ref: '#/components/schemas/group-type'
           type: array
+      - description: Whether to fetch default or custom groups.
+        explode: false
+        in: query
+        name: is_default
+        schema:
+          type: boolean
       - description: |
           The maximum number of groups to return. The default is '50'.
         explode: false
@@ -23403,6 +23511,14 @@ paths:
           items:
             type: string
           type: array
+      - description: Filters for records with any of the provided SLA stages.
+        explode: false
+        in: query
+        name: issue.sla_summary.stage
+        schema:
+          items:
+            $ref: '#/components/schemas/sla-summary-stage'
+          type: array
       - description: Filters for issues with any of the sprint.
         explode: false
         in: query
@@ -23818,6 +23934,14 @@ paths:
           - REV-AbCdEfGh
           items:
             type: string
+          type: array
+      - description: Filters for records with any of the provided SLA stages.
+        explode: false
+        in: query
+        name: issue.sla_summary.stage
+        schema:
+          items:
+            $ref: '#/components/schemas/sla-summary-stage'
           type: array
       - description: Filters for issues with any of the sprint.
         explode: false

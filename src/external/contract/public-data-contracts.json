@@ -2857,6 +2857,43 @@
         "title": "event-dev-user-updated",
         "type": "object"
       },
+      "event-group-created": {
+        "properties": {
+          "group": {
+            "$ref": "#/components/schemas/group"
+          }
+        },
+        "required": [
+          "group"
+        ],
+        "title": "event-group-created",
+        "type": "object"
+      },
+      "event-group-deleted": {
+        "properties": {
+          "id": {
+            "description": "The ID of the group that was deleted.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "event-group-deleted",
+        "type": "object"
+      },
+      "event-group-updated": {
+        "properties": {
+          "group": {
+            "$ref": "#/components/schemas/group"
+          }
+        },
+        "required": [
+          "group"
+        ],
+        "title": "event-group-updated",
+        "type": "object"
+      },
       "event-part-created": {
         "properties": {
           "part": {
@@ -3235,6 +3272,14 @@
         ],
         "title": "feature-summary"
       },
+      "group": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/atom-base"
+          }
+        ],
+        "title": "group"
+      },
       "group-summary": {
         "allOf": [
           {
@@ -3259,6 +3304,9 @@
               },
               "priority": {
                 "$ref": "#/components/schemas/issue-priority"
+              },
+              "sla_tracker": {
+                "$ref": "#/components/schemas/sla-tracker-summary"
               },
               "sprint": {
                 "$ref": "#/components/schemas/vista-group-item-summary"
@@ -5821,6 +5869,15 @@
           "dev_user_updated": {
             "$ref": "#/components/schemas/event-dev-user-updated"
           },
+          "group_created": {
+            "$ref": "#/components/schemas/event-group-created"
+          },
+          "group_deleted": {
+            "$ref": "#/components/schemas/event-group-deleted"
+          },
+          "group_updated": {
+            "$ref": "#/components/schemas/event-group-updated"
+          },
           "id": {
             "description": "The event's ID.",
             "type": "string"
@@ -5955,6 +6012,9 @@
           "dev_user_created",
           "dev_user_deleted",
           "dev_user_updated",
+          "group_created",
+          "group_deleted",
+          "group_updated",
           "part_created",
           "part_deleted",
           "part_updated",
@@ -6651,6 +6711,9 @@
               "type": "string"
             },
             "type": "array"
+          },
+          "sla_summary": {
+            "$ref": "#/components/schemas/sla-summary-filter"
           },
           "sprint": {
             "description": "Filters for issues with any of the sprint.",
@@ -11779,6 +11842,18 @@
             }
           },
           {
+            "description": "Filters for records with any of the provided SLA stages.",
+            "explode": false,
+            "in": "query",
+            "name": "issue.sla_summary.stage",
+            "schema": {
+              "items": {
+                "$ref": "#/components/schemas/sla-summary-stage"
+              },
+              "type": "array"
+            }
+          },
+          {
             "description": "Filters for issues with any of the sprint.",
             "explode": false,
             "in": "query",
@@ -12304,6 +12379,18 @@
               ],
               "items": {
                 "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "description": "Filters for records with any of the provided SLA stages.",
+            "explode": false,
+            "in": "query",
+            "name": "issue.sla_summary.stage",
+            "schema": {
+              "items": {
+                "$ref": "#/components/schemas/sla-summary-stage"
               },
               "type": "array"
             }

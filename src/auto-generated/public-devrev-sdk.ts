@@ -1580,6 +1580,22 @@ export interface EventDevUserUpdated {
   dev_user: DevUser;
 }
 
+/** event-group-created */
+export interface EventGroupCreated {
+  group: Group;
+}
+
+/** event-group-deleted */
+export interface EventGroupDeleted {
+  /** The ID of the group that was deleted. */
+  id: string;
+}
+
+/** event-group-updated */
+export interface EventGroupUpdated {
+  group: Group;
+}
+
 /** event-part-created */
 export interface EventPartCreated {
   part: Part;
@@ -1763,6 +1779,9 @@ export type Feature = PartBase;
 /** feature-summary */
 export type FeatureSummary = PartBaseSummary;
 
+/** group */
+export type Group = AtomBase;
+
 /** group-summary */
 export type GroupSummary = AtomBaseSummary;
 
@@ -1772,6 +1791,7 @@ export type Issue = WorkBase & {
   developed_with?: PartSummary[];
   /** Priority of the work based upon impact and criticality. */
   priority?: IssuePriority;
+  sla_tracker?: SlaTrackerSummary;
   /** Vista group item. */
   sprint?: VistaGroupItemSummary;
   /**
@@ -3301,6 +3321,9 @@ export interface WebhookEventRequest {
   dev_user_created?: EventDevUserCreated;
   dev_user_deleted?: EventDevUserDeleted;
   dev_user_updated?: EventDevUserUpdated;
+  group_created?: EventGroupCreated;
+  group_deleted?: EventGroupDeleted;
+  group_updated?: EventGroupUpdated;
   /** The event's ID. */
   id: string;
   part_created?: EventPartCreated;
@@ -3370,6 +3393,9 @@ export enum WebhookEventType {
   DevUserCreated = 'dev_user_created',
   DevUserDeleted = 'dev_user_deleted',
   DevUserUpdated = 'dev_user_updated',
+  GroupCreated = 'group_created',
+  GroupDeleted = 'group_deleted',
+  GroupUpdated = 'group_updated',
   PartCreated = 'part_created',
   PartDeleted = 'part_deleted',
   PartUpdated = 'part_updated',
@@ -3778,6 +3804,8 @@ export interface WorksFilterIssue {
    * @example ["REV-AbCdEfGh"]
    */
   rev_orgs?: string[];
+  /** The filter for SLA summary. */
+  sla_summary?: SlaSummaryFilter;
   /** Filters for issues with any of the sprint. */
   sprint?: string[];
   /** Provides ways to specify date ranges on objects. */
@@ -6865,6 +6893,8 @@ export class Api<
        * @example ["REV-AbCdEfGh"]
        */
       'issue.rev_orgs'?: string[];
+      /** Filters for records with any of the provided SLA stages. */
+      'issue.sla_summary.stage'?: SlaSummaryStage[];
       /** Filters for issues with any of the sprint. */
       'issue.sprint'?: string[];
       /**
@@ -7068,6 +7098,8 @@ export class Api<
        * @example ["REV-AbCdEfGh"]
        */
       'issue.rev_orgs'?: string[];
+      /** Filters for records with any of the provided SLA stages. */
+      'issue.sla_summary.stage'?: SlaSummaryStage[];
       /** Filters for issues with any of the sprint. */
       'issue.sprint'?: string[];
       /**

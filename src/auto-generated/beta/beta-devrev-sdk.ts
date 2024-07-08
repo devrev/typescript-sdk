@@ -495,6 +495,8 @@ export type Article = AtomBase & {
   resource?: Resource;
   /** Title of the article. */
   title?: string;
+  /** Type of the article. */
+  type?: ArticleType;
 };
 
 /** article-search-summary */
@@ -517,6 +519,12 @@ export type ArticleSummary = AtomBaseSummary & {
   /** Title of the article. */
   title?: string;
 };
+
+/** Type of the article. */
+export enum ArticleType {
+  Article = 'article',
+  ContentBlock = 'content_block',
+}
 
 /** articles-count-request */
 export interface ArticlesCountRequest {
@@ -1818,6 +1826,13 @@ export interface CodeChangesUpdateResponse {
 /** comment-search-summary */
 export interface CommentSearchSummary {
   comment?: TimelineCommentSummary;
+  created_by?: UserSummary;
+  /**
+   * Timestamp when the comment was created.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  created_date?: string;
   /** Text snippet where the search hit occurred. */
   snippet?: string;
 }
@@ -2513,6 +2528,9 @@ export interface CustomSchemaSpec {
 
 /** custom-stage */
 export type CustomStage = AtomBase;
+
+/** custom-stage-summary */
+export type CustomStageSummary = AtomBaseSummary;
 
 /** custom-stages-create-request */
 export interface CustomStagesCreateRequest {
@@ -3806,6 +3824,22 @@ export interface EventDevUserUpdated {
   dev_user: DevUser;
 }
 
+/** event-group-created */
+export interface EventGroupCreated {
+  group: Group;
+}
+
+/** event-group-deleted */
+export interface EventGroupDeleted {
+  /** The ID of the group that was deleted. */
+  id: string;
+}
+
+/** event-group-updated */
+export interface EventGroupUpdated {
+  group: Group;
+}
+
 /** event-part-created */
 export interface EventPartCreated {
   part: Part;
@@ -4297,6 +4331,8 @@ export interface GroupsListRequest {
   cursor?: string;
   /** Filters the groups based on the group type. */
   group_type?: GroupType[];
+  /** Whether to fetch default or custom groups. */
+  is_default?: boolean;
   /**
    * The maximum number of groups to return. The default is '50'.
    * @format int32
@@ -4371,6 +4407,7 @@ export type Issue = WorkBase & {
   developed_with?: PartSummary[];
   /** Priority of the work based upon impact and criticality. */
   priority?: IssuePriority;
+  sla_tracker?: SlaTrackerSummary;
   /** Vista group item. */
   sprint?: VistaGroupItemSummary;
   /**
@@ -4429,6 +4466,7 @@ export interface JobHistoryItem {
 export interface LegacyStage {
   /** Current stage name of the work item. */
   name: string;
+  stage?: CustomStageSummary;
 }
 
 /**
@@ -4556,6 +4594,7 @@ export enum LinkType {
   Imports = 'imports',
   IsDependentOn = 'is_dependent_on',
   IsDuplicateOf = 'is_duplicate_of',
+  IsMergedInto = 'is_merged_into',
   IsParentOf = 'is_parent_of',
   IsPartOf = 'is_part_of',
   IsRelatedTo = 'is_related_to',
@@ -6576,6 +6615,7 @@ export type SchemaFieldDescriptor = (
   | SchemaIdFieldDescriptor
   | SchemaIntFieldDescriptor
   | SchemaRichTextFieldDescriptor
+  | SchemaStructFieldDescriptor
   | SchemaTextFieldDescriptor
   | SchemaTimestampFieldDescriptor
   | SchemaTokensFieldDescriptor
@@ -6595,6 +6635,7 @@ export type SchemaFieldDescriptorArrayType = (
   | SchemaIdListFieldDescriptor
   | SchemaIntListFieldDescriptor
   | SchemaRichTextListFieldDescriptor
+  | SchemaStructListFieldDescriptor
   | SchemaTextListFieldDescriptor
   | SchemaTimestampListFieldDescriptor
   | SchemaTokensListFieldDescriptor
@@ -6627,6 +6668,7 @@ export enum SchemaFieldDescriptorArrayTypeBaseType {
   Id = 'id',
   Int = 'int',
   RichText = 'rich_text',
+  Struct = 'struct',
   Text = 'text',
   Timestamp = 'timestamp',
   Tokens = 'tokens',
@@ -6670,6 +6712,7 @@ export enum SchemaFieldDescriptorFieldType {
   Id = 'id',
   Int = 'int',
   RichText = 'rich_text',
+  Struct = 'struct',
   Text = 'text',
   Timestamp = 'timestamp',
   Tokens = 'tokens',
@@ -6758,6 +6801,8 @@ export interface SchemaFieldUiMetadata {
   is_hidden_during_create?: boolean;
   /** Whether the field is read-only in the UI. */
   is_read_only?: boolean;
+  /** Whether the field is mandatory in the UI. */
+  is_required?: boolean;
   /** Whether the field is shown in the UI summary view. */
   is_shown_in_summary?: boolean;
   /** Whether the field is sortable in the UI. */
@@ -6899,6 +6944,18 @@ export type SchemaRichTextListFieldDescriptor = SchemaFieldDescriptorBase & {
   prefix?: string;
   /** The string suffix. */
   suffix?: string;
+};
+
+/** schema-struct-field-descriptor */
+export type SchemaStructFieldDescriptor = SchemaFieldDescriptorBase & {
+  /** Default value. */
+  default_value?: object;
+};
+
+/** schema-struct-list-field-descriptor */
+export type SchemaStructListFieldDescriptor = SchemaFieldDescriptorBase & {
+  /** Default value. */
+  default_value?: object[];
 };
 
 /** schema-text-field-descriptor */
@@ -7873,6 +7930,11 @@ export interface StageFilter {
  * Sets an object's initial stage.
  */
 export interface StageInit {
+  /**
+   * The ID of the custom stage. If this is set, the name field is
+   * ignored.
+   */
+  id?: string;
   /** The name of the stage. */
   name?: string;
 }
@@ -7884,6 +7946,11 @@ export interface StageInit {
 export interface StageUpdate {
   /** The updated name of the stage, otherwise unchanged if not set. */
   name?: string;
+  /**
+   * The ID of the updated custom stage, otherwise unchanged if not set.
+   * If this is set, the name field is ignored.
+   */
+  stage?: string;
 }
 
 /** Type of stage validation options when creating an object. */
@@ -9658,6 +9725,9 @@ export interface WebhookEventRequest {
   dev_user_created?: EventDevUserCreated;
   dev_user_deleted?: EventDevUserDeleted;
   dev_user_updated?: EventDevUserUpdated;
+  group_created?: EventGroupCreated;
+  group_deleted?: EventGroupDeleted;
+  group_updated?: EventGroupUpdated;
   /** The event's ID. */
   id: string;
   part_created?: EventPartCreated;
@@ -9727,6 +9797,9 @@ export enum WebhookEventType {
   DevUserCreated = 'dev_user_created',
   DevUserDeleted = 'dev_user_deleted',
   DevUserUpdated = 'dev_user_updated',
+  GroupCreated = 'group_created',
+  GroupDeleted = 'group_deleted',
+  GroupUpdated = 'group_updated',
   PartCreated = 'part_created',
   PartDeleted = 'part_deleted',
   PartUpdated = 'part_updated',
@@ -10256,6 +10329,8 @@ export interface WorksFilterIssue {
    * @example ["REV-AbCdEfGh"]
    */
   rev_orgs?: string[];
+  /** The filter for SLA summary. */
+  sla_summary?: SlaSummaryFilter;
   /** Filters for issues with any of the sprint. */
   sprint?: string[];
   /** Filters for issues with any of the provided subtypes. */
@@ -13760,6 +13835,8 @@ export class Api<
       cursor?: string;
       /** Filters the groups based on the group type. */
       group_type?: GroupType[];
+      /** Whether to fetch default or custom groups. */
+      is_default?: boolean;
       /**
        * The maximum number of groups to return. The default is '50'.
        * @format int32
@@ -18842,6 +18919,8 @@ export class Api<
        * @example ["REV-AbCdEfGh"]
        */
       'issue.rev_orgs'?: string[];
+      /** Filters for records with any of the provided SLA stages. */
+      'issue.sla_summary.stage'?: SlaSummaryStage[];
       /** Filters for issues with any of the sprint. */
       'issue.sprint'?: string[];
       /** Filters for issues with any of the provided subtypes. */
@@ -19062,6 +19141,8 @@ export class Api<
        * @example ["REV-AbCdEfGh"]
        */
       'issue.rev_orgs'?: string[];
+      /** Filters for records with any of the provided SLA stages. */
+      'issue.sla_summary.stage'?: SlaSummaryStage[];
       /** Filters for issues with any of the sprint. */
       'issue.sprint'?: string[];
       /** Filters for issues with any of the provided subtypes. */
