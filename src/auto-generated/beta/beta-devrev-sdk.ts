@@ -474,6 +474,10 @@ export interface ArchetypeMetricTarget {
 export type Article = AtomBase & {
   /** Details of the parts relevant to the article. */
   applies_to_parts: PartSummary[];
+  /** Type of the article. */
+  article_type?: ArticleType;
+  /** Users that authored the article. */
+  authored_by?: UserSummary[];
   /** Description of the article. */
   description?: string;
   /** Artifacts containing the extracted content. */
@@ -488,15 +492,17 @@ export type Article = AtomBase & {
    * @format int32
    */
   num_upvotes?: number;
+  /** The users that own the article. */
+  owned_by: UserSummary[];
   parent?: DirectorySummary;
   /** Rank of the article. */
   rank?: string;
   /** Resource details. */
   resource?: Resource;
+  /** The properties of an enum value. */
+  scope?: EnumValue;
   /** Title of the article. */
   title?: string;
-  /** Type of the article. */
-  type?: ArticleType;
 };
 
 /** article-search-summary */
@@ -536,6 +542,11 @@ export interface ArticlesCountRequest {
    */
   applies_to_parts?: string[];
   /**
+   * Filter for the type of articles. If this is not provided, then
+   * articles that are not content blocks are returned.
+   */
+  article_type?: ArticleType[];
+  /**
    * Filters for articles authored by any of the provided users.
    * @example ["DEVU-12345"]
    */
@@ -555,6 +566,11 @@ export interface ArticlesCountRequest {
    * @example ["DEVU-12345"]
    */
   owned_by?: string[];
+  /**
+   * Filter for the scope of the articles. If this is not provided, then
+   * only external articles are returned.
+   */
+  scope?: number[];
   /** Filter for articles based on intended audience. */
   shared_with?: SharedWithMembershipFilter[];
 }
@@ -580,6 +596,8 @@ export interface ArticlesCreateRequest {
    * @example ["PROD-12345"]
    */
   applies_to_parts: string[];
+  /** Type of the article. */
+  article_type?: ArticleType;
   /**
    * The authors of the article.
    * @example ["DEVU-12345"]
@@ -608,6 +626,11 @@ export interface ArticlesCreateRequest {
    */
   published_at?: string;
   resource: ArticlesCreateRequestResource;
+  /**
+   * The scope of the article.
+   * @format int64
+   */
+  scope?: number;
   /** Information about the role the member receives due to the share. */
   shared_with?: SetSharedWithMembership[];
   /** Status of the article. */
@@ -685,6 +708,11 @@ export interface ArticlesListRequest {
    */
   applies_to_parts?: string[];
   /**
+   * Filter for the type of articles. If this is not provided, then
+   * articles that are not content blocks are returned.
+   */
+  article_type?: ArticleType[];
+  /**
    * Filters for articles authored by any of the provided users.
    * @example ["DEVU-12345"]
    */
@@ -722,6 +750,11 @@ export interface ArticlesListRequest {
    * @example ["DEVU-12345"]
    */
   owned_by?: string[];
+  /**
+   * Filter for the scope of the articles. If this is not provided, then
+   * only external articles are returned.
+   */
+  scope?: number[];
   /** Filter for articles based on intended audience. */
   shared_with?: SharedWithMembershipFilter[];
 }
@@ -1127,6 +1160,11 @@ export type AuthConnection = (
   | AuthConnectionOptionsSocial
 ) & {
   /**
+   * Defines the type for the authentication connection. The configuration
+   * for each authentication connection will depend on the type value.
+   */
+  type: AuthConnectionType;
+  /**
    * Display name of the authentication connection. This name will be
    * visible to all the users when they sign in to this Dev
    * organization. For example, if the display_name is 'abclogin', then
@@ -1141,11 +1179,6 @@ export type AuthConnection = (
   enabled?: boolean;
   /** ID of the authentication connection. */
   id: string;
-  /**
-   * Defines the type for the authentication connection. The configuration
-   * for each authentication connection will depend on the type value.
-   */
-  type: AuthConnectionType;
 };
 
 /**
@@ -1292,11 +1325,11 @@ export enum AuthTokenSubjectTokenType {
   UrnDevrevParamsOauthTokenTypeJwtAuth0 = 'urn:devrev:params:oauth:token-type:jwt:auth0',
   UrnDevrevParamsOauthTokenTypeJwtDev = 'urn:devrev:params:oauth:token-type:jwt:dev',
   UrnDevrevParamsOauthTokenTypeRat = 'urn:devrev:params:oauth:token-type:rat',
+  UrnDevrevParamsOauthTokenTypeRev = 'urn:devrev:params:oauth:token-type:rev',
   UrnDevrevParamsOauthTokenTypeRevinfo = 'urn:devrev:params:oauth:token-type:revinfo',
   UrnDevrevParamsOauthTokenTypeSession = 'urn:devrev:params:oauth:token-type:session',
   UrnDevrevParamsOauthTokenTypeSysu = 'urn:devrev:params:oauth:token-type:sysu',
   UrnDevrevParamsOauthTokenTypeUserinfo = 'urn:devrev:params:oauth:token-type:userinfo',
-  UrnDevrevParamsOauthTokenTypeUserinfoProfile = 'urn:devrev:params:oauth:token-type:userinfo:profile',
   UrnIetfParamsOauthTokenTypeJwt = 'urn:ietf:params:oauth:token-type:jwt',
 }
 
@@ -1489,7 +1522,10 @@ export interface AuthTokensRevInfo {
   account_ref?: string;
   /** Carries account info. */
   account_traits?: AuthTokensAccountTraits;
-  /** An identifier which uniquely identifies a Rev org. */
+  /**
+   * An identifier which uniquely identifies a Rev org.
+   * @deprecated
+   */
   org_ref?: string;
   /** Carries Rev org info. */
   org_traits?: AuthTokensOrgTraits;
@@ -1668,12 +1704,12 @@ export interface ClientContextCpu {
  * Properties of client's device to be used in track API.
  */
 export interface ClientContextDevice {
+  /** Device type, example: mobile, tablet, desktop. */
+  type?: string;
   /** Device manufacturer, example: Apple. */
   manufacturer?: string;
   /** Device model, example: iphone 6s. */
   model?: string;
-  /** Device type, example: mobile, tablet, desktop. */
-  type?: string;
 }
 
 /**
@@ -1719,6 +1755,16 @@ export interface ClientContextPage {
 export type CodeChange = AtomBase & {
   /** Name of the code branch in the repo. */
   branch?: string;
+  /**
+   * Time at which the code change corresponding to this object reached
+   * a closed or merged stage. For example, the time at which a Pull
+   * Request was either closed without merging or successfully merged.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  closed_date?: string;
+  /** Commit ID of the merged commit in the target branch. */
+  commit_id?: string;
   /** Detailed description of the contents of this change. */
   description?: string;
   /** Unique external identifier for this change.e.g Pull Request URL. */
@@ -1729,6 +1775,8 @@ export type CodeChange = AtomBase & {
   repo_url?: string;
   /** Source of the code change object. */
   source?: CodeChangeSource;
+  /** Name of the target branch in the repo. */
+  target_branch?: string;
   /** Title describing in brief the contents of this change. */
   title?: string;
   /** Details of lines of code in this code change. */
@@ -1833,6 +1881,12 @@ export interface CommentSearchSummary {
    * @example "2023-01-01T12:00:00.000Z"
    */
   created_date?: string;
+  /** The object that the Timeline entry belongs to. */
+  object?: string;
+  /** Display panels for the comment entry. */
+  panels?: TimelineEntryPanel[];
+  /** The objects referenced in the comment. */
+  references?: AtomSummary[];
   /** Text snippet where the search hit occurred. */
   snippet?: string;
 }
@@ -1892,6 +1946,7 @@ export type ConversationSummary = AtomBaseSummary & {
  * The request to create a new conversation.
  */
 export interface ConversationsCreateRequest {
+  type: ConversationsCreateRequestTypeValue;
   /** Description for the conversation. */
   description?: string;
   /** The group that the conversation is associated with. */
@@ -1914,7 +1969,6 @@ export interface ConversationsCreateRequest {
   tags?: SetTagWithValue[];
   /** The title for the conversation. */
   title?: string;
-  type: ConversationsCreateRequestTypeValue;
   /** The IDs of user sessions associated with the conversation. */
   user_sessions?: string[];
 }
@@ -2447,6 +2501,7 @@ export type CustomSchemaFragmentsSetRequest = (
   | CustomSchemaFragmentsSetRequestCustomTypeFragment
   | CustomSchemaFragmentsSetRequestTenantFragment
 ) & {
+  type: CustomSchemaFragmentsSetRequestType;
   /** List of conditions for this fragment. */
   conditions?: CustomSchemaFragmentCondition[];
   /** List of field names which are being dropped. */
@@ -2461,7 +2516,6 @@ export type CustomSchemaFragmentsSetRequest = (
   is_custom_leaf_type?: boolean;
   /** The leaf type this fragment applies to. */
   leaf_type: string;
-  type: CustomSchemaFragmentsSetRequestType;
 };
 
 /** custom-schema-fragments-set-request-app-fragment */
@@ -2815,17 +2869,17 @@ export type DevOrgAuthConnectionsCreateRequest = (
   | AuthConnectionOptionsSaml
 ) & {
   /**
+   * Defines the type for the authentication connection. Different types of
+   * authentication connections have different configuration parameters.
+   */
+  type: DevOrgAuthConnectionsCreateRequestType;
+  /**
    * Display name of the authentication connection. This name will be
    * visible to all the users when they sign in to this Dev
    * organization. For example, if the display_name is 'abclogin', then
    * it would appear on the login button as 'Log in to abclogin'.
    */
   display_name?: string;
-  /**
-   * Defines the type for the authentication connection. Different types of
-   * authentication connections have different configuration parameters.
-   */
-  type: DevOrgAuthConnectionsCreateRequestType;
 };
 
 /**
@@ -2923,6 +2977,12 @@ export type DevOrgAuthConnectionsUpdateRequest = (
   | Empty
 ) & {
   /**
+   * Specifies the type for the authentication connection. Different types
+   * of authentication connections have different configuration parameters
+   * that can be updated.
+   */
+  type?: DevOrgAuthConnectionsUpdateRequestType;
+  /**
    * New display name of the authentication connection. This name will
    * be visible to all the users when they sign in to this Dev
    * organization. For example, if the display_name is 'abclogin', then
@@ -2931,12 +2991,6 @@ export type DevOrgAuthConnectionsUpdateRequest = (
   display_name?: string;
   /** ID of the authentication connection which is to be updated. */
   id: string;
-  /**
-   * Specifies the type for the authentication connection. Different types
-   * of authentication connections have different configuration parameters
-   * that can be updated.
-   */
-  type?: DevOrgAuthConnectionsUpdateRequestType;
 };
 
 /**
@@ -3270,6 +3324,8 @@ export enum EngagementType {
 
 /** engagements-count-request */
 export interface EngagementsCountRequest {
+  /** Filters for engagement of the provided types. */
+  type?: EngagementType[];
   /** Filters for meetings with the provided external_refs. */
   external_ref?: string[];
   /**
@@ -3282,8 +3338,6 @@ export interface EngagementsCountRequest {
    * @example ["ACC-12345"]
    */
   parent?: string[];
-  /** Filters for engagement of the provided types. */
-  type?: EngagementType[];
 }
 
 /** engagements-count-response */
@@ -3371,6 +3425,8 @@ export interface EngagementsGetResponse {
 
 /** engagements-list-request */
 export interface EngagementsListRequest {
+  /** Filters for engagement of the provided types. */
+  type?: EngagementType[];
   /**
    * The cursor to resume iteration from. If not provided, then
    * iteration starts from the beginning.
@@ -3403,8 +3459,6 @@ export interface EngagementsListRequest {
   parent?: string[];
   /** Fields to sort the engagements by and the direction to sort them. */
   sort_by?: string[];
-  /** Filters for engagement of the provided types. */
-  type?: EngagementType[];
 }
 
 /** engagements-list-response */
@@ -3485,18 +3539,18 @@ export type EnhancementSummary = PartBaseSummary;
 
 /**
  * enum-value
- * Enum Value defines the structure for an enum.
+ * The properties of an enum value.
  */
 export interface EnumValue {
   /**
-   * Unique ID of the enum value. This is immutable.
+   * The uiique ID of the enum value.
    * @format int64
    */
   id: number;
-  /** Display label of the enum value. This is mutable. */
+  /** The display label of the enum value. */
   label: string;
   /**
-   * Order number of the enum value. This is mutable.
+   * Used for determining the relative order of the enum value.
    * @format int64
    */
   ordinal: number;
@@ -3504,6 +3558,8 @@ export interface EnumValue {
 
 /** error */
 export interface Error {
+  /** The error type. */
+  type?: string;
   /** Information about the error. */
   message: string;
   /**
@@ -3511,8 +3567,6 @@ export interface Error {
    * @format int32
    */
   status: number;
-  /** The error type. */
-  type?: string;
 }
 
 /** error-bad-request */
@@ -3524,6 +3578,7 @@ export type ErrorBadRequest = ErrorBase &
     | ErrorBadRequestInvalidEnumValue
     | ErrorBadRequestInvalidField
     | ErrorBadRequestInvalidId
+    | ErrorBadRequestMergeWorksError
     | ErrorBadRequestMissingDependency
     | ErrorBadRequestMissingRequiredField
     | ErrorBadRequestParseError
@@ -3574,6 +3629,54 @@ export interface ErrorBadRequestInvalidId {
   field_name: string;
 }
 
+/** error-bad-request-merge-works-error */
+export interface ErrorBadRequestMergeWorksError {
+  /** The errors encountered during the validation of the merge. */
+  errors?: ErrorBadRequestMergeWorksErrorError[];
+}
+
+/** error-bad-request-merge-works-error-error */
+export interface ErrorBadRequestMergeWorksErrorError {
+  already_merged?: ErrorBadRequestMergeWorksErrorErrorAlreadyMerged;
+  closed?: ErrorBadRequestMergeWorksErrorErrorClosed;
+  /** The details of the error. */
+  details: string;
+  different_workspace?: ErrorBadRequestMergeWorksErrorErrorDifferentWorkspace;
+  invalid_stage_transition?: ErrorBadRequestMergeWorksErrorErrorInvalidStageTransition;
+  subtype?:
+    | 'already_merged'
+    | 'closed'
+    | 'different_workspace'
+    | 'invalid_stage_transition';
+  /** The ID of the work which failed the validation. */
+  work: string;
+}
+
+/** error-bad-request-merge-works-error-error-already-merged */
+export interface ErrorBadRequestMergeWorksErrorErrorAlreadyMerged {
+  /** ID of the work into which the work was merged. */
+  merged_into: string;
+}
+
+/** error-bad-request-merge-works-error-error-closed */
+export type ErrorBadRequestMergeWorksErrorErrorClosed = object;
+
+/** error-bad-request-merge-works-error-error-different-workspace */
+export interface ErrorBadRequestMergeWorksErrorErrorDifferentWorkspace {
+  /** The workspace of the primary work. */
+  primary_workspace: string;
+  /** The workspace of the secondary work. */
+  secondary_workspace: string;
+}
+
+/** error-bad-request-merge-works-error-error-invalid-stage-transition */
+export interface ErrorBadRequestMergeWorksErrorErrorInvalidStageTransition {
+  /** The current stage of the work. */
+  current_stage: string;
+  /** The stage to which the transition isn't allowed. */
+  requested_stage: string;
+}
+
 /** error-bad-request-missing-dependency */
 export interface ErrorBadRequestMissingDependency {
   /** The dependent fields. */
@@ -3622,6 +3725,7 @@ export enum ErrorBadRequestType {
   InvalidEnumValue = 'invalid_enum_value',
   InvalidField = 'invalid_field',
   InvalidId = 'invalid_id',
+  MergeWorksError = 'merge_works_error',
   MissingDependency = 'missing_dependency',
   MissingRequiredField = 'missing_required_field',
   ParseError = 'parse_error',
@@ -3701,12 +3805,12 @@ export enum ErrorForbiddenType {
 /** error-internal-server-error */
 export type ErrorInternalServerError = ErrorBase &
   ErrorInternalServerErrorInternalError & {
+    type: ErrorInternalServerErrorType;
     /**
      * A unique ID that's generated for the error that can be used for
      * inquiry.
      */
     reference_id?: string;
-    type: ErrorInternalServerErrorType;
   };
 
 /** error-internal-server-error-internal-error */
@@ -3745,12 +3849,12 @@ export enum ErrorServiceUnavailableType {
 /** error-too-many-requests */
 export type ErrorTooManyRequests = ErrorBase &
   ErrorTooManyRequestsTooManyRequests & {
+    type: ErrorTooManyRequestsType;
     /**
      * The number of seconds after which the client should retry.
      * @format int64
      */
     retry_after?: number;
-    type: ErrorTooManyRequestsType;
   };
 
 /** error-too-many-requests-too-many-requests */
@@ -3785,11 +3889,13 @@ export interface EventAccountDeleted {
    * @example "ACC-12345"
    */
   id: string;
+  old_account?: Account;
 }
 
 /** event-account-updated */
 export interface EventAccountUpdated {
   account: Account;
+  old_account?: Account;
 }
 
 /** event-conversation-created */
@@ -3817,11 +3923,13 @@ export interface EventDevUserCreated {
 export interface EventDevUserDeleted {
   /** The ID of the Dev user that was deleted. */
   id: string;
+  old_dev_user?: DevUser;
 }
 
 /** event-dev-user-updated */
 export interface EventDevUserUpdated {
   dev_user: DevUser;
+  old_dev_user?: DevUser;
 }
 
 /** event-group-created */
@@ -3852,10 +3960,12 @@ export interface EventPartDeleted {
    * @example "PROD-12345"
    */
   id: string;
+  old_part?: Part;
 }
 
 /** event-part-updated */
 export interface EventPartUpdated {
+  old_part?: Part;
   part: Part;
 }
 
@@ -3871,10 +3981,12 @@ export interface EventRevOrgDeleted {
    * @example "REV-AbCdEfGh"
    */
   id: string;
+  old_rev_org?: RevOrg;
 }
 
 /** event-rev-org-updated */
 export interface EventRevOrgUpdated {
+  old_rev_org?: RevOrg;
   rev_org: RevOrg;
 }
 
@@ -3887,10 +3999,12 @@ export interface EventRevUserCreated {
 export interface EventRevUserDeleted {
   /** The ID of the Rev user that was deleted. */
   id: string;
+  old_rev_user?: RevUser;
 }
 
 /** event-rev-user-updated */
 export interface EventRevUserUpdated {
+  old_rev_user?: RevUser;
   rev_user: RevUser;
 }
 
@@ -4098,10 +4212,12 @@ export interface EventWorkDeleted {
    * @example "ISS-12345"
    */
   id: string;
+  old_work?: Work;
 }
 
 /** event-work-updated */
 export interface EventWorkUpdated {
+  old_work?: Work;
   work: Work;
 }
 
@@ -4131,6 +4247,15 @@ export type FeatureSummary = PartBaseSummary;
  * Set of field attributes.
  */
 export type FieldDescriptor = object;
+
+/** Event type of the notification. */
+export enum GenericNotificationEventType {
+  Alert = 'alert',
+  Assignment = 'assignment',
+  Mention = 'mention',
+  Reminder = 'reminder',
+  Update = 'update',
+}
 
 /** group */
 export type Group = AtomBase & {
@@ -4280,6 +4405,8 @@ export type GroupedVistaSummary = VistaBaseSummary & {
  * A request to create a new group.
  */
 export interface GroupsCreateRequest {
+  /** Type of the group. */
+  type?: GroupType;
   /** Description of the group. */
   description: string;
   /** Information to define dynamic groups. */
@@ -4290,8 +4417,6 @@ export interface GroupsCreateRequest {
   name: string;
   /** Owner of the group. */
   owner?: string;
-  /** Type of the group. */
-  type?: GroupType;
 }
 
 /**
@@ -4437,7 +4562,7 @@ export type IssueSummary = WorkBaseSummary & {
  * Defines a job history line item.
  */
 export interface JobHistoryItem {
-  /** Enum Value defines the structure for an enum. */
+  /** The properties of an enum value. */
   employment_status?: EnumValue;
   /**
    * The end date of the job, or not specified if current.
@@ -4457,6 +4582,14 @@ export interface JobHistoryItem {
   start_date?: string;
   /** The job title for the user. */
   title?: string;
+}
+
+/** keyrings-create-callback-request */
+export interface KeyringsCreateCallbackRequest {
+  /** Code to exchange for an access token. */
+  code: string;
+  /** State value given to the authorization request. */
+  state: string;
 }
 
 /**
@@ -4590,6 +4723,7 @@ export type LinkSummary = AtomBaseSummary & {
 
 /** Type of link used to define the relationship. */
 export enum LinkType {
+  CustomLink = 'custom_link',
   DevelopedWith = 'developed_with',
   Imports = 'imports',
   IsDependentOn = 'is_dependent_on',
@@ -4701,6 +4835,11 @@ export interface LinksListRequest {
   mode?: ListMode;
   /** The ID of the object to list the links for. */
   object: string;
+  /**
+   * The object types to filter for, otherwise if not present, all
+   * object types are included.
+   */
+  object_types?: LinkEndpointType[];
   /**
    * The link types to filter for, otherwise if not present, all link
    * types are included.
@@ -4846,6 +4985,8 @@ export type MetricDefinitionSummary = AtomBaseSummary & {
 
 /** metric-definitions-list-request */
 export interface MetricDefinitionsListRequest {
+  /** The type of metric definitions sought. */
+  type?: MetricDefinitionMetricType[];
   /** The type of objects the metric definition applies to. */
   applies_to_type?: MetricDefinitionAppliesTo[];
   /**
@@ -4873,8 +5014,6 @@ export interface MetricDefinitionsListRequest {
   mode?: ListMode;
   /** The status of the metric definition. */
   status?: MetricDefinitionStatus[];
-  /** The type of metric definitions sought. */
-  type?: MetricDefinitionMetricType[];
 }
 
 /** metric-definitions-list-response */
@@ -4896,6 +5035,16 @@ export interface MetricDefinitionsListResponse {
 /** metrics-data */
 export interface MetricsData {
   /**
+   * Account ID or external_ref of the account for which metric is being
+   * published. Account ID is DevRev DON ID. For example,
+   * don:identity:dvrv-us-1:devo/0:account/156. External_ref is the
+   * identification of DevRev customer's customers. Devrev will
+   * internally resolve external_ref to Account ID and use it for
+   * further processing. For example, external_ref=customer_1 may
+   * resolve to don:identity:dvrv-us-1:devo/0:account/155.
+   */
+  account_ref: string;
+  /**
    * One or more data points collected for a given metric such as object
    * usage, object state etc.
    * @minItems 1
@@ -4916,7 +5065,7 @@ export interface MetricsData {
    * external_ref=org_customer_1 may resolve to
    * don:identity:dvrv-us-1:devo/0:revo/155.
    */
-  org_ref: string;
+  org_ref?: string;
   /** Rev User ID or user ref for which metric is being published. */
   user_ref?: string;
 }
@@ -4929,6 +5078,19 @@ export interface MetricsDataIngestRequest {
    */
   metrics: MetricsData[];
 }
+
+/** notifications-send-request */
+export interface NotificationsSendRequest {
+  /**
+   * The list of notifications to send.
+   * @maxItems 10
+   * @minItems 1
+   */
+  notifications: SendNotification[];
+}
+
+/** notifications-send-response */
+export type NotificationsSendResponse = object;
 
 /** object-member-search-summary */
 export type ObjectMemberSearchSummary = SearchSummaryBase & {
@@ -5450,6 +5612,7 @@ export type PartsCreateRequest = (
   | PartsCreateRequestFeature
   | PartsCreateRequestProduct
 ) & {
+  type: PartType;
   /**
    * The IDs of the artifacts.
    * @example ["ARTIFACT-12345"]
@@ -5471,7 +5634,6 @@ export type PartsCreateRequest = (
    * @example ["DEVU-12345"]
    */
   owned_by: string[];
-  type: PartType;
 };
 
 /** parts-create-request-capability */
@@ -5553,6 +5715,8 @@ export interface PartsGetResponse {
 
 /** parts-list-request */
 export interface PartsListRequest {
+  /** Filters for parts of the provided type(s). */
+  type?: PartType[];
   /**
    * Filters for parts created by any of these users.
    * @example ["DEVU-12345"]
@@ -5585,8 +5749,6 @@ export interface PartsListRequest {
   owned_by?: string[];
   /** The filter for specifying parent part. */
   parent_part?: ParentPartFilter;
-  /** Filters for parts of the provided type(s). */
-  type?: PartType[];
 }
 
 /** parts-list-response */
@@ -5613,6 +5775,7 @@ export type PartsUpdateRequest = (
   | PartsUpdateRequestFeature
   | PartsUpdateRequestProduct
 ) & {
+  type?: PartType;
   artifacts?: PartsUpdateRequestArtifacts;
   /** Custom fields. */
   custom_fields?: object;
@@ -5631,7 +5794,6 @@ export type PartsUpdateRequest = (
   /** The updated name of the part. */
   name?: string;
   owned_by?: PartsUpdateRequestOwnedBy;
-  type?: PartType;
 };
 
 /** parts-update-request-artifacts */
@@ -6328,6 +6490,11 @@ export type RevUserSummary = UserBaseSummary & {
  * Request object to create a new Rev user for a Rev organization.
  */
 export interface RevUsersCreateRequest {
+  /**
+   * The ID of the account to which the created Rev user is associated.
+   * @example "ACC-12345"
+   */
+  account?: string;
   /**
    * The IDs of the artifacts to associate with the Rev user.
    * @example ["ARTIFACT-12345"]
@@ -7155,10 +7322,13 @@ export interface SearchCoreResponse {
 export enum SearchHybridNamespace {
   Article = 'article',
   Conversation = 'conversation',
+  Dataset = 'dataset',
+  Incident = 'incident',
   Issue = 'issue',
   Part = 'part',
   QuestionAnswer = 'question_answer',
   Ticket = 'ticket',
+  Widget = 'widget',
   Work = 'work',
 }
 
@@ -7300,6 +7470,62 @@ export interface SearchSummaryBase {
   modified_date?: string;
   /** Text snippet where the search hit occurred. */
   snippet?: string;
+}
+
+/** send-notification */
+export type SendNotification = SendNotificationGenericNotificationEntry & {
+  type: SendNotificationType;
+  /** The ID of the parent object associated with the notification. */
+  parent?: string;
+  /** The ID of the user for whom the notification was generated. */
+  receiver: string;
+  /**
+   * Timestamp of the event that triggered the notification.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  timestamp?: string;
+};
+
+/** send-notification-generic-notification-entry */
+export interface SendNotificationGenericNotificationEntry {
+  /** ID used to group notifications in the inbox for the same parent. */
+  event_id?: string;
+  /** Event type of the notification. */
+  event_type: GenericNotificationEventType;
+  /** Metadata for the objects that triggered the notification. */
+  metadata: SendNotificationGenericNotificationEntryMetadata[];
+}
+
+/** send-notification-generic-notification-entry-metadata */
+export interface SendNotificationGenericNotificationEntryMetadata {
+  action?: SendNotificationGenericNotificationEntryNotificationAction;
+  /** The ID of the content template for the content of the notification. */
+  content_template: string;
+  /** Inputs required for the template. */
+  inputs?: object;
+}
+
+/** send-notification-generic-notification-entry-notification-action */
+export interface SendNotificationGenericNotificationEntryNotificationAction {
+  type?: 'clickable_action';
+  clickable_action?: SendNotificationGenericNotificationEntryNotificationActionClickableAction;
+}
+
+/** send-notification-generic-notification-entry-notification-action-clickable-action */
+export interface SendNotificationGenericNotificationEntryNotificationActionClickableAction {
+  type?: 'object' | 'url';
+  /**
+   * The ID of the object that the notification should redirect the user
+   * to when selected.
+   */
+  object?: string;
+  /** The URL to redirect the user to. */
+  url?: string;
+}
+
+export enum SendNotificationType {
+  GenericNotification = 'generic_notification',
 }
 
 /** service-account */
@@ -7895,13 +8121,13 @@ export enum SnapWidgetType {
 
 /** snap-widgets-create-request */
 export type SnapWidgetsCreateRequest = CreateEmailPreviewWidget & {
+  type: SnapWidgetsCreateRequestType;
   /** A human readable name for the snap widget. */
   name: string;
   /** Logical grouping of snap widgets. Useful for filtering. */
   namespace?: SnapWidgetNamespace;
   /** The status of the snap widget. */
   status?: SnapWidgetStatus;
-  type: SnapWidgetsCreateRequestType;
 };
 
 export enum SnapWidgetsCreateRequestType {
@@ -8138,9 +8364,9 @@ export type SurveyResponse = AtomBase & {
   recipient?: UserSummary;
   /** Response for the survey. */
   response?: object;
-  /** Enum Value defines the structure for an enum. */
+  /** The properties of an enum value. */
   response_channel?: EnumValue;
-  /** Enum Value defines the structure for an enum. */
+  /** The properties of an enum value. */
   stage?: EnumValue;
   /** The ID of the survey for which response is taken. */
   survey?: string;
@@ -8263,6 +8489,11 @@ export interface SurveysResponsesListRequest {
    * @example ["ACC-12345"]
    */
   objects?: string[];
+  /**
+   * Filters for survey responses dispatched to any of these users.
+   * @example ["DEVU-12345"]
+   */
+  recipient?: string[];
   /**
    * Fields to sort the survey responses by and the direction to sort
    * them.
@@ -8701,6 +8932,8 @@ export type Ticket = WorkBase & {
   /** Whether the ticket needs a response. */
   needs_response?: boolean;
   rev_org?: OrgSummary;
+  /** The properties of an enum value. */
+  sentiment?: EnumValue;
   /** Severity of the ticket. */
   severity?: TicketSeverity;
   sla_tracker?: SlaTrackerSummary;
@@ -8770,6 +9003,7 @@ export enum TimelineEntriesCollection {
  */
 export type TimelineEntriesCreateRequest =
   TimelineEntriesCreateRequestTimelineComment & {
+    type: TimelineEntriesCreateRequestType;
     /**
      * The collection(s) that the entry belongs to, otherwise if not
      * provided, then the entry's default collection is used.
@@ -8802,7 +9036,6 @@ export type TimelineEntriesCreateRequest =
      * @example ["DEVU-12345"]
      */
     private_to?: string[];
-    type: TimelineEntriesCreateRequestType;
     /**
      * The visibility of the entry. If 'private', then the entry is only
      * visible to the creator, 'internal' is visible with the Dev
@@ -8974,12 +9207,12 @@ export interface TimelineEntriesListResponse {
  */
 export type TimelineEntriesUpdateRequest =
   TimelineEntriesUpdateRequestTimelineComment & {
+    type: TimelineEntriesUpdateRequestType;
     /**
      * The ID of the timeline entry to update.
      * @example "don:core:<partition>:devo/<dev-org-id>:ticket/123:timeline_event/<timeline-event-id>"
      */
     id: string;
-    type: TimelineEntriesUpdateRequestType;
   };
 
 /** timeline-entries-update-request-timeline-comment */
@@ -9110,6 +9343,13 @@ export enum TimelineEntryObjectType {
   TimelineComment = 'timeline_comment',
 }
 
+/** Display panels for the Timeline entry. */
+export enum TimelineEntryPanel {
+  CustomerChat = 'customer_chat',
+  Discussions = 'discussions',
+  Events = 'events',
+}
+
 export enum TimelineEntryType {
   TimelineComment = 'timeline_comment',
 }
@@ -9208,15 +9448,15 @@ export type TrackEventsPublishResponse = object;
  */
 export interface Unit {
   /**
-   * This represents human readable unit name of the UOM For example,
-   * number of API calls.
-   */
-  name: string;
-  /**
    * This defines the UOM unit type. For example, for 'number of video
    * calls', unit type will be a number.
    */
   type: UnitType;
+  /**
+   * This represents human readable unit name of the UOM For example,
+   * number of API calls.
+   */
+  name: string;
 }
 
 /**
@@ -9645,6 +9885,8 @@ export enum VistaGroupItemState {
  * Vista group item.
  */
 export interface VistaGroupItemSummary {
+  /** Type of the group object. */
+  type: VistaGroupItemType;
   /**
    * Timestamp when the vista ends.
    * @format date-time
@@ -9663,8 +9905,6 @@ export interface VistaGroupItemSummary {
   start_date?: string;
   /** Defines the state of the group item. */
   state?: VistaGroupItemState;
-  /** Type of the group object. */
-  type: VistaGroupItemType;
 }
 
 /** Type of the group object. */
@@ -9703,6 +9943,8 @@ export enum VistaType {
 export type Webhook = AtomBase & {
   /** The event types that the webhook will receive. */
   event_types?: WebhookEventType[];
+  /** Headers that are provided with every webhook invocation. */
+  headers?: WebhookHeader[];
   /**
    * The secret to use for verifying webhook events.
    * @format byte
@@ -9716,6 +9958,8 @@ export type Webhook = AtomBase & {
 
 /** webhook-event-request */
 export interface WebhookEventRequest {
+  /** The event types that the webhook will receive. */
+  type?: WebhookEventType;
   account_created?: EventAccountCreated;
   account_deleted?: EventAccountDeleted;
   account_updated?: EventAccountUpdated;
@@ -9760,8 +10004,6 @@ export interface WebhookEventRequest {
    * @example "2023-01-01T12:00:00.000Z"
    */
   timestamp?: string;
-  /** The event types that the webhook will receive. */
-  type?: WebhookEventType;
   verify?: WebhookEventVerify;
   webhook_created?: EventWebhookCreated;
   webhook_deleted?: EventWebhookDeleted;
@@ -9836,6 +10078,20 @@ export interface WebhookEventVerify {
   challenge: string;
 }
 
+/**
+ * webhook-header
+ * Defines a header that's provided with every webhook invocation.
+ */
+export interface WebhookHeader {
+  /**
+   * The name of the header. Only alphanumeric ASCII characters,
+   * hyphens, and underscores are permitted.
+   */
+  name: string;
+  /** The header's value. */
+  value: string;
+}
+
 /** The status of the webhook. */
 export enum WebhookStatus {
   Active = 'active',
@@ -9853,6 +10109,8 @@ export type WebhookSummary = AtomBaseSummary;
 export interface WebhooksCreateRequest {
   /** The event types that the webhook endpoint will receive. */
   event_types?: WebhookEventType[];
+  /** @maxItems 8 */
+  headers?: WebhookHeader[];
   /**
    * The secret to use when verifying webhook events. If provided, the
    * secret must be between 8 and 32 bytes (inclusive). If not set, a
@@ -9940,6 +10198,7 @@ export interface WebhooksUpdateRequest {
   /** The action to update the webhook's status. */
   action?: WebhooksUpdateAction;
   event_types?: WebhooksUpdateRequestEventTypes;
+  headers?: WebhooksUpdateRequestHeaders;
   /**
    * ID for the webhook.
    * @example "don:integration:<partition>:devo/<dev-org-id>:webhook/<webhook-id>"
@@ -9982,6 +10241,16 @@ export interface WebhooksUpdateRequestEventTypes {
    * 'remove'.
    */
   set?: WebhookEventType[];
+}
+
+/** webhooks-update-request-headers */
+export interface WebhooksUpdateRequestHeaders {
+  /** @maxItems 8 */
+  add?: WebhookHeader[];
+  /** @maxItems 8 */
+  remove?: string[];
+  /** @maxItems 8 */
+  set?: WebhookHeader[];
 }
 
 /**
@@ -10086,6 +10355,7 @@ export type WorksCreateRequest = (
   | WorksCreateRequestTask
   | WorksCreateRequestTicket
 ) & {
+  type: WorkType;
   /**
    * The [part](https://devrev.ai/docs/product/parts) that the work
    * applies to. Specifying a part is required when creating tickets and
@@ -10139,7 +10409,6 @@ export type WorksCreateRequest = (
   target_close_date?: string;
   /** Title of the work object. */
   title: string;
-  type: WorkType;
 };
 
 /** works-create-request-issue */
@@ -10251,6 +10520,8 @@ export type WorksDeleteResponse = object;
 
 /** works-export-request */
 export interface WorksExportRequest {
+  /** Filters for work of the provided types. */
+  type?: WorkType[];
   /** Provides ways to specify date ranges on objects. */
   actual_close_date?: DateFilter;
   /**
@@ -10301,8 +10572,6 @@ export interface WorksExportRequest {
   /** Provides ways to specify date ranges on objects. */
   target_close_date?: DateFilter;
   ticket?: WorksFilterTicket;
-  /** Filters for work of the provided types. */
-  type?: WorkType[];
 }
 
 /** works-export-response */
@@ -10397,6 +10666,8 @@ export interface WorksGetResponse {
 
 /** works-list-request */
 export interface WorksListRequest {
+  /** Filters for work of the provided types. */
+  type?: WorkType[];
   /** Provides ways to specify date ranges on objects. */
   actual_close_date?: DateFilter;
   /**
@@ -10459,8 +10730,6 @@ export interface WorksListRequest {
   /** Provides ways to specify date ranges on objects. */
   target_close_date?: DateFilter;
   ticket?: WorksFilterTicket;
-  /** Filters for work of the provided types. */
-  type?: WorkType[];
 }
 
 /** works-list-response */
@@ -10487,6 +10756,7 @@ export type WorksUpdateRequest = (
   | WorksUpdateRequestTask
   | WorksUpdateRequestTicket
 ) & {
+  type?: WorkType;
   /**
    * Updates the part that the work item applies to.
    * @example "PROD-12345"
@@ -10534,7 +10804,6 @@ export type WorksUpdateRequest = (
   target_close_date?: string | null;
   /** Updated title of the work object, or unchanged if not provided. */
   title?: string;
-  type?: WorkType;
 };
 
 /** works-update-request-artifacts */
@@ -11274,6 +11543,11 @@ export class Api<
        */
       applies_to_parts?: string[];
       /**
+       * Filter for the type of articles. If this is not provided, then
+       * articles that are not content blocks are returned.
+       */
+      article_type?: ArticleType[];
+      /**
        * Filters for articles authored by any of the provided users.
        * @example ["DEVU-12345"]
        */
@@ -11293,6 +11567,11 @@ export class Api<
        * @example ["DEVU-12345"]
        */
       owned_by?: string[];
+      /**
+       * Filter for the scope of the articles. If this is not provided, then
+       * only external articles are returned.
+       */
+      scope?: number[];
     },
     params: RequestParams = {}
   ) =>
@@ -11478,6 +11757,11 @@ export class Api<
        */
       applies_to_parts?: string[];
       /**
+       * Filter for the type of articles. If this is not provided, then
+       * articles that are not content blocks are returned.
+       */
+      article_type?: ArticleType[];
+      /**
        * Filters for articles authored by any of the provided users.
        * @example ["DEVU-12345"]
        */
@@ -11512,6 +11796,11 @@ export class Api<
        * @example ["DEVU-12345"]
        */
       owned_by?: string[];
+      /**
+       * Filter for the scope of the articles. If this is not provided, then
+       * only external articles are returned.
+       */
+      scope?: number[];
     },
     params: RequestParams = {}
   ) =>
@@ -14067,6 +14356,66 @@ export class Api<
     });
 
   /**
+   * @description OAuth2 authorization callback.
+   *
+   * @tags keyring
+   * @name KeyringsCreateCallback
+   * @request GET:/keyrings.authorize
+   */
+  keyringsCreateCallback = (
+    query: {
+      /** Code to exchange for an access token. */
+      code: string;
+      /** State value given to the authorization request. */
+      state: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      void,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/keyrings.authorize`,
+      method: 'GET',
+      query: query,
+      ...params,
+    });
+
+  /**
+   * @description OAuth2 authorization callback.
+   *
+   * @tags keyring
+   * @name KeyringsCreateCallbackPost
+   * @request POST:/keyrings.authorize
+   * @secure
+   */
+  keyringsCreateCallbackPost = (
+    data: KeyringsCreateCallbackRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      void,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/keyrings.authorize`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      ...params,
+    });
+
+  /**
    * @description Creates a link between two objects to indicate a relationship.
    *
    * @tags links
@@ -14220,6 +14569,11 @@ export class Api<
        * used.
        */
       mode?: ListMode;
+      /**
+       * The object types to filter for, otherwise if not present, all object
+       * types are included.
+       */
+      object_types?: LinkEndpointType[];
       /**
        * The link types to filter for, otherwise if not present, all link
        * types are included.
@@ -14385,6 +14739,36 @@ export class Api<
       body: data,
       secure: true,
       type: ContentType.Json,
+      ...params,
+    });
+
+  /**
+   * @description Generate a notification.
+   *
+   * @tags notifications
+   * @name NotificationsSend
+   * @request POST:/notifications.send
+   * @secure
+   */
+  notificationsSend = (
+    data: NotificationsSendRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      NotificationsSendResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/notifications.send`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
       ...params,
     });
 
@@ -17571,6 +17955,11 @@ export class Api<
        * @example ["ACC-12345"]
        */
       objects?: string[];
+      /**
+       * Filters for survey responses dispatched to any of these users.
+       * @example ["DEVU-12345"]
+       */
+      recipient?: string[];
       /**
        * Fields to sort the survey responses by and the direction to sort
        * them.

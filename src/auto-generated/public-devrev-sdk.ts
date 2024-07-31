@@ -426,6 +426,11 @@ export type AuthConnection = (
   | AuthConnectionOptionsSocial
 ) & {
   /**
+   * Defines the type for the authentication connection. The configuration
+   * for each authentication connection will depend on the type value.
+   */
+  type: AuthConnectionType;
+  /**
    * Display name of the authentication connection. This name will be
    * visible to all the users when they sign in to this Dev
    * organization. For example, if the display_name is 'abclogin', then
@@ -440,11 +445,6 @@ export type AuthConnection = (
   enabled?: boolean;
   /** ID of the authentication connection. */
   id: string;
-  /**
-   * Defines the type for the authentication connection. The configuration
-   * for each authentication connection will depend on the type value.
-   */
-  type: AuthConnectionType;
 };
 
 /**
@@ -591,11 +591,11 @@ export enum AuthTokenSubjectTokenType {
   UrnDevrevParamsOauthTokenTypeJwtAuth0 = 'urn:devrev:params:oauth:token-type:jwt:auth0',
   UrnDevrevParamsOauthTokenTypeJwtDev = 'urn:devrev:params:oauth:token-type:jwt:dev',
   UrnDevrevParamsOauthTokenTypeRat = 'urn:devrev:params:oauth:token-type:rat',
+  UrnDevrevParamsOauthTokenTypeRev = 'urn:devrev:params:oauth:token-type:rev',
   UrnDevrevParamsOauthTokenTypeRevinfo = 'urn:devrev:params:oauth:token-type:revinfo',
   UrnDevrevParamsOauthTokenTypeSession = 'urn:devrev:params:oauth:token-type:session',
   UrnDevrevParamsOauthTokenTypeSysu = 'urn:devrev:params:oauth:token-type:sysu',
   UrnDevrevParamsOauthTokenTypeUserinfo = 'urn:devrev:params:oauth:token-type:userinfo',
-  UrnDevrevParamsOauthTokenTypeUserinfoProfile = 'urn:devrev:params:oauth:token-type:userinfo:profile',
   UrnIetfParamsOauthTokenTypeJwt = 'urn:ietf:params:oauth:token-type:jwt',
 }
 
@@ -788,7 +788,10 @@ export interface AuthTokensRevInfo {
   account_ref?: string;
   /** Carries account info. */
   account_traits?: AuthTokensAccountTraits;
-  /** An identifier which uniquely identifies a Rev org. */
+  /**
+   * An identifier which uniquely identifies a Rev org.
+   * @deprecated
+   */
   org_ref?: string;
   /** Carries Rev org info. */
   org_traits?: AuthTokensOrgTraits;
@@ -979,17 +982,17 @@ export type DevOrgAuthConnectionsCreateRequest = (
   | AuthConnectionOptionsSaml
 ) & {
   /**
+   * Defines the type for the authentication connection. Different types of
+   * authentication connections have different configuration parameters.
+   */
+  type: DevOrgAuthConnectionsCreateRequestType;
+  /**
    * Display name of the authentication connection. This name will be
    * visible to all the users when they sign in to this Dev
    * organization. For example, if the display_name is 'abclogin', then
    * it would appear on the login button as 'Log in to abclogin'.
    */
   display_name?: string;
-  /**
-   * Defines the type for the authentication connection. Different types of
-   * authentication connections have different configuration parameters.
-   */
-  type: DevOrgAuthConnectionsCreateRequestType;
 };
 
 /**
@@ -1087,6 +1090,12 @@ export type DevOrgAuthConnectionsUpdateRequest = (
   | Empty
 ) & {
   /**
+   * Specifies the type for the authentication connection. Different types
+   * of authentication connections have different configuration parameters
+   * that can be updated.
+   */
+  type?: DevOrgAuthConnectionsUpdateRequestType;
+  /**
    * New display name of the authentication connection. This name will
    * be visible to all the users when they sign in to this Dev
    * organization. For example, if the display_name is 'abclogin', then
@@ -1095,12 +1104,6 @@ export type DevOrgAuthConnectionsUpdateRequest = (
   display_name?: string;
   /** ID of the authentication connection which is to be updated. */
   id: string;
-  /**
-   * Specifies the type for the authentication connection. Different types
-   * of authentication connections have different configuration parameters
-   * that can be updated.
-   */
-  type?: DevOrgAuthConnectionsUpdateRequestType;
 };
 
 /**
@@ -1254,18 +1257,18 @@ export type EnhancementSummary = PartBaseSummary;
 
 /**
  * enum-value
- * Enum Value defines the structure for an enum.
+ * The properties of an enum value.
  */
 export interface EnumValue {
   /**
-   * Unique ID of the enum value. This is immutable.
+   * The uiique ID of the enum value.
    * @format int64
    */
   id: number;
-  /** Display label of the enum value. This is mutable. */
+  /** The display label of the enum value. */
   label: string;
   /**
-   * Order number of the enum value. This is mutable.
+   * Used for determining the relative order of the enum value.
    * @format int64
    */
   ordinal: number;
@@ -1280,6 +1283,7 @@ export type ErrorBadRequest = ErrorBase &
     | ErrorBadRequestInvalidEnumValue
     | ErrorBadRequestInvalidField
     | ErrorBadRequestInvalidId
+    | ErrorBadRequestMergeWorksError
     | ErrorBadRequestMissingDependency
     | ErrorBadRequestMissingRequiredField
     | ErrorBadRequestParseError
@@ -1330,6 +1334,54 @@ export interface ErrorBadRequestInvalidId {
   field_name: string;
 }
 
+/** error-bad-request-merge-works-error */
+export interface ErrorBadRequestMergeWorksError {
+  /** The errors encountered during the validation of the merge. */
+  errors?: ErrorBadRequestMergeWorksErrorError[];
+}
+
+/** error-bad-request-merge-works-error-error */
+export interface ErrorBadRequestMergeWorksErrorError {
+  already_merged?: ErrorBadRequestMergeWorksErrorErrorAlreadyMerged;
+  closed?: ErrorBadRequestMergeWorksErrorErrorClosed;
+  /** The details of the error. */
+  details: string;
+  different_workspace?: ErrorBadRequestMergeWorksErrorErrorDifferentWorkspace;
+  invalid_stage_transition?: ErrorBadRequestMergeWorksErrorErrorInvalidStageTransition;
+  subtype?:
+    | 'already_merged'
+    | 'closed'
+    | 'different_workspace'
+    | 'invalid_stage_transition';
+  /** The ID of the work which failed the validation. */
+  work: string;
+}
+
+/** error-bad-request-merge-works-error-error-already-merged */
+export interface ErrorBadRequestMergeWorksErrorErrorAlreadyMerged {
+  /** ID of the work into which the work was merged. */
+  merged_into: string;
+}
+
+/** error-bad-request-merge-works-error-error-closed */
+export type ErrorBadRequestMergeWorksErrorErrorClosed = object;
+
+/** error-bad-request-merge-works-error-error-different-workspace */
+export interface ErrorBadRequestMergeWorksErrorErrorDifferentWorkspace {
+  /** The workspace of the primary work. */
+  primary_workspace: string;
+  /** The workspace of the secondary work. */
+  secondary_workspace: string;
+}
+
+/** error-bad-request-merge-works-error-error-invalid-stage-transition */
+export interface ErrorBadRequestMergeWorksErrorErrorInvalidStageTransition {
+  /** The current stage of the work. */
+  current_stage: string;
+  /** The stage to which the transition isn't allowed. */
+  requested_stage: string;
+}
+
 /** error-bad-request-missing-dependency */
 export interface ErrorBadRequestMissingDependency {
   /** The dependent fields. */
@@ -1378,6 +1430,7 @@ export enum ErrorBadRequestType {
   InvalidEnumValue = 'invalid_enum_value',
   InvalidField = 'invalid_field',
   InvalidId = 'invalid_id',
+  MergeWorksError = 'merge_works_error',
   MissingDependency = 'missing_dependency',
   MissingRequiredField = 'missing_required_field',
   ParseError = 'parse_error',
@@ -1457,12 +1510,12 @@ export enum ErrorForbiddenType {
 /** error-internal-server-error */
 export type ErrorInternalServerError = ErrorBase &
   ErrorInternalServerErrorInternalError & {
+    type: ErrorInternalServerErrorType;
     /**
      * A unique ID that's generated for the error that can be used for
      * inquiry.
      */
     reference_id?: string;
-    type: ErrorInternalServerErrorType;
   };
 
 /** error-internal-server-error-internal-error */
@@ -1501,12 +1554,12 @@ export enum ErrorServiceUnavailableType {
 /** error-too-many-requests */
 export type ErrorTooManyRequests = ErrorBase &
   ErrorTooManyRequestsTooManyRequests & {
+    type: ErrorTooManyRequestsType;
     /**
      * The number of seconds after which the client should retry.
      * @format int64
      */
     retry_after?: number;
-    type: ErrorTooManyRequestsType;
   };
 
 /** error-too-many-requests-too-many-requests */
@@ -1541,11 +1594,13 @@ export interface EventAccountDeleted {
    * @example "ACC-12345"
    */
   id: string;
+  old_account?: Account;
 }
 
 /** event-account-updated */
 export interface EventAccountUpdated {
   account: Account;
+  old_account?: Account;
 }
 
 /** event-conversation-created */
@@ -1573,11 +1628,13 @@ export interface EventDevUserCreated {
 export interface EventDevUserDeleted {
   /** The ID of the Dev user that was deleted. */
   id: string;
+  old_dev_user?: DevUser;
 }
 
 /** event-dev-user-updated */
 export interface EventDevUserUpdated {
   dev_user: DevUser;
+  old_dev_user?: DevUser;
 }
 
 /** event-group-created */
@@ -1608,10 +1665,12 @@ export interface EventPartDeleted {
    * @example "PROD-12345"
    */
   id: string;
+  old_part?: Part;
 }
 
 /** event-part-updated */
 export interface EventPartUpdated {
+  old_part?: Part;
   part: Part;
 }
 
@@ -1627,10 +1686,12 @@ export interface EventRevOrgDeleted {
    * @example "REV-AbCdEfGh"
    */
   id: string;
+  old_rev_org?: RevOrg;
 }
 
 /** event-rev-org-updated */
 export interface EventRevOrgUpdated {
+  old_rev_org?: RevOrg;
   rev_org: RevOrg;
 }
 
@@ -1643,10 +1704,12 @@ export interface EventRevUserCreated {
 export interface EventRevUserDeleted {
   /** The ID of the Rev user that was deleted. */
   id: string;
+  old_rev_user?: RevUser;
 }
 
 /** event-rev-user-updated */
 export interface EventRevUserUpdated {
+  old_rev_user?: RevUser;
   rev_user: RevUser;
 }
 
@@ -1751,10 +1814,12 @@ export interface EventWorkDeleted {
    * @example "ISS-12345"
    */
   id: string;
+  old_work?: Work;
 }
 
 /** event-work-updated */
 export interface EventWorkUpdated {
+  old_work?: Work;
   work: Work;
 }
 
@@ -1815,7 +1880,7 @@ export enum IssuePriority {
  * Defines a job history line item.
  */
 export interface JobHistoryItem {
-  /** Enum Value defines the structure for an enum. */
+  /** The properties of an enum value. */
   employment_status?: EnumValue;
   /**
    * The end date of the job, or not specified if current.
@@ -1835,6 +1900,14 @@ export interface JobHistoryItem {
   start_date?: string;
   /** The job title for the user. */
   title?: string;
+}
+
+/** keyrings-create-callback-request */
+export interface KeyringsCreateCallbackRequest {
+  /** Code to exchange for an access token. */
+  code: string;
+  /** State value given to the authorization request. */
+  state: string;
 }
 
 /**
@@ -1998,6 +2071,7 @@ export type PartsCreateRequest = (
   | PartsCreateRequestFeature
   | PartsCreateRequestProduct
 ) & {
+  type: PartType;
   /**
    * The IDs of the artifacts.
    * @example ["ARTIFACT-12345"]
@@ -2012,7 +2086,6 @@ export type PartsCreateRequest = (
    * @example ["DEVU-12345"]
    */
   owned_by: string[];
-  type: PartType;
 };
 
 /** parts-create-request-capability */
@@ -2094,6 +2167,8 @@ export interface PartsGetResponse {
 
 /** parts-list-request */
 export interface PartsListRequest {
+  /** Filters for parts of the provided type(s). */
+  type?: PartType[];
   /**
    * Filters for parts created by any of these users.
    * @example ["DEVU-12345"]
@@ -2126,8 +2201,6 @@ export interface PartsListRequest {
   owned_by?: string[];
   /** The filter for specifying parent part. */
   parent_part?: ParentPartFilter;
-  /** Filters for parts of the provided type(s). */
-  type?: PartType[];
 }
 
 /** parts-list-response */
@@ -2154,6 +2227,7 @@ export type PartsUpdateRequest = (
   | PartsUpdateRequestFeature
   | PartsUpdateRequestProduct
 ) & {
+  type?: PartType;
   artifacts?: PartsUpdateRequestArtifacts;
   /** The updated description of the part. */
   description?: string;
@@ -2165,7 +2239,6 @@ export type PartsUpdateRequest = (
   /** The updated name of the part. */
   name?: string;
   owned_by?: PartsUpdateRequestOwnedBy;
-  type?: PartType;
 };
 
 /** parts-update-request-artifacts */
@@ -2611,9 +2684,9 @@ export type SurveyResponse = AtomBase & {
   recipient?: UserSummary;
   /** Response for the survey. */
   response?: object;
-  /** Enum Value defines the structure for an enum. */
+  /** The properties of an enum value. */
   response_channel?: EnumValue;
-  /** Enum Value defines the structure for an enum. */
+  /** The properties of an enum value. */
   stage?: EnumValue;
   /** The ID of the survey for which response is taken. */
   survey?: string;
@@ -2856,6 +2929,8 @@ export type Ticket = WorkBase & {
   /** Whether the ticket needs a response. */
   needs_response?: boolean;
   rev_org?: OrgSummary;
+  /** The properties of an enum value. */
+  sentiment?: EnumValue;
   /** Severity of the ticket. */
   severity?: TicketSeverity;
   sla_tracker?: SlaTrackerSummary;
@@ -2909,6 +2984,7 @@ export enum TimelineCommentBodyType {
  */
 export type TimelineEntriesCreateRequest =
   TimelineEntriesCreateRequestTimelineComment & {
+    type: TimelineEntriesCreateRequestType;
     /**
      * If set, then the entry is ephemeral and will be deleted after the
      * provided time. The minimum value should be at least a minute more
@@ -2929,7 +3005,6 @@ export type TimelineEntriesCreateRequest =
      * @example ["DEVU-12345"]
      */
     private_to?: string[];
-    type: TimelineEntriesCreateRequestType;
     /**
      * The visibility of the entry. If 'private', then the entry is only
      * visible to the creator, 'internal' is visible with the Dev
@@ -3068,12 +3143,12 @@ export interface TimelineEntriesListResponse {
  */
 export type TimelineEntriesUpdateRequest =
   TimelineEntriesUpdateRequestTimelineComment & {
+    type: TimelineEntriesUpdateRequestType;
     /**
      * The ID of the timeline entry to update.
      * @example "don:core:<partition>:devo/<dev-org-id>:ticket/123:timeline_event/<timeline-event-id>"
      */
     id: string;
-    type: TimelineEntriesUpdateRequestType;
   };
 
 /** timeline-entries-update-request-timeline-comment */
@@ -3267,6 +3342,8 @@ export enum VistaGroupItemState {
  * Vista group item.
  */
 export interface VistaGroupItemSummary {
+  /** Type of the group object. */
+  type: VistaGroupItemType;
   /**
    * Timestamp when the vista ends.
    * @format date-time
@@ -3285,8 +3362,6 @@ export interface VistaGroupItemSummary {
   start_date?: string;
   /** Defines the state of the group item. */
   state?: VistaGroupItemState;
-  /** Type of the group object. */
-  type: VistaGroupItemType;
 }
 
 /** Type of the group object. */
@@ -3312,6 +3387,8 @@ export type Webhook = AtomBase & {
 
 /** webhook-event-request */
 export interface WebhookEventRequest {
+  /** The event types that the webhook will receive. */
+  type?: WebhookEventType;
   account_created?: EventAccountCreated;
   account_deleted?: EventAccountDeleted;
   account_updated?: EventAccountUpdated;
@@ -3356,8 +3433,6 @@ export interface WebhookEventRequest {
    * @example "2023-01-01T12:00:00.000Z"
    */
   timestamp?: string;
-  /** The event types that the webhook will receive. */
-  type?: WebhookEventType;
   verify?: WebhookEventVerify;
   webhook_created?: EventWebhookCreated;
   webhook_deleted?: EventWebhookDeleted;
@@ -3625,6 +3700,7 @@ export type WorksCreateRequest = (
   | WorksCreateRequestIssue
   | WorksCreateRequestTicket
 ) & {
+  type: WorkType;
   /**
    * The [part](https://devrev.ai/docs/product/parts) that the work
    * applies to. Specifying a part is required when creating tickets and
@@ -3663,7 +3739,6 @@ export type WorksCreateRequest = (
   target_close_date?: string;
   /** Title of the work object. */
   title: string;
-  type: WorkType;
 };
 
 /** works-create-request-issue */
@@ -3731,6 +3806,8 @@ export type WorksDeleteResponse = object;
 
 /** works-export-request */
 export interface WorksExportRequest {
+  /** Filters for work of the provided types. */
+  type?: WorkType[];
   /** Provides ways to specify date ranges on objects. */
   actual_close_date?: DateFilter;
   /**
@@ -3776,8 +3853,6 @@ export interface WorksExportRequest {
   /** Provides ways to specify date ranges on objects. */
   target_close_date?: DateFilter;
   ticket?: WorksFilterTicket;
-  /** Filters for work of the provided types. */
-  type?: WorkType[];
 }
 
 /** works-export-response */
@@ -3854,6 +3929,8 @@ export interface WorksGetResponse {
 
 /** works-list-request */
 export interface WorksListRequest {
+  /** Filters for work of the provided types. */
+  type?: WorkType[];
   /** Provides ways to specify date ranges on objects. */
   actual_close_date?: DateFilter;
   /**
@@ -3911,8 +3988,6 @@ export interface WorksListRequest {
   /** Provides ways to specify date ranges on objects. */
   target_close_date?: DateFilter;
   ticket?: WorksFilterTicket;
-  /** Filters for work of the provided types. */
-  type?: WorkType[];
 }
 
 /** works-list-response */
@@ -3937,6 +4012,7 @@ export type WorksUpdateRequest = (
   | WorksUpdateRequestIssue
   | WorksUpdateRequestTicket
 ) & {
+  type?: WorkType;
   /**
    * Updates the part that the work item applies to.
    * @example "PROD-12345"
@@ -3969,7 +4045,6 @@ export type WorksUpdateRequest = (
   target_close_date?: string | null;
   /** Updated title of the work object, or unchanged if not provided. */
   title?: string;
-  type?: WorkType;
 };
 
 /** works-update-request-artifacts */
@@ -5551,6 +5626,66 @@ export class Api<
       secure: true,
       type: ContentType.Json,
       format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description OAuth2 authorization callback.
+   *
+   * @tags keyring
+   * @name KeyringsCreateCallback
+   * @request GET:/keyrings.authorize
+   */
+  keyringsCreateCallback = (
+    query: {
+      /** Code to exchange for an access token. */
+      code: string;
+      /** State value given to the authorization request. */
+      state: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      void,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/keyrings.authorize`,
+      method: 'GET',
+      query: query,
+      ...params,
+    });
+
+  /**
+   * @description OAuth2 authorization callback.
+   *
+   * @tags keyring
+   * @name KeyringsCreateCallbackPost
+   * @request POST:/keyrings.authorize
+   * @secure
+   */
+  keyringsCreateCallbackPost = (
+    data: KeyringsCreateCallbackRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      void,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/keyrings.authorize`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
       ...params,
     });
 
