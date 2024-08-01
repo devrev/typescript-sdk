@@ -6069,6 +6069,106 @@ components:
         - group
       title: groups-update-response
       x-go-name: GroupsUpdateResponseBody
+    incident:
+      allOf:
+        - $ref: '#/components/schemas/atom-base'
+        - type: object
+          properties:
+            applies_to_parts:
+              type: array
+              description: Parts to which the incident is applicable to.
+              items:
+                $ref: '#/components/schemas/part-summary'
+            artifacts:
+              type: array
+              description: The artifacts attached to the incident.
+              items:
+                $ref: '#/components/schemas/artifact-summary'
+            body:
+              type: string
+              description: Body of the incident.
+            custom_fields:
+              type: object
+              description: Custom fields.
+            custom_schema_fragments:
+              type: array
+              description: Custom schema fragments.
+              example:
+                - don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>
+              items:
+                type: string
+            identified_at:
+              type: string
+              description: Time when the incident was identified/reported.
+              example: "2023-01-01T12:00:00.000Z"
+              format: date-time
+            impacted_customers:
+              type: array
+              description: List of customers impacted due to the Incident.
+              items:
+                $ref: '#/components/schemas/account-summary'
+            owned_by:
+              type: array
+              description: The users that own the incident.
+              items:
+                $ref: '#/components/schemas/user-summary'
+            resolved_at:
+              type: string
+              description: Timestamp when the incident was resolved.
+              example: "2023-01-01T12:00:00.000Z"
+              format: date-time
+            severity:
+              $ref: '#/components/schemas/enum-value'
+            stage:
+              $ref: '#/components/schemas/stage'
+            stakeholders:
+              type: array
+              description: |
+                Users, along with the incident commander, involved in resolving
+                incidents and handling communication.
+              items:
+                $ref: '#/components/schemas/user-summary'
+            stock_schema_fragment:
+              type: string
+              description: Stock schema fragment.
+              example: don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>
+            subtype:
+              type: string
+              description: Subtype corresponding to the custom type fragment.
+            tags:
+              type: array
+              description: Tags associated with the object.
+              items:
+                $ref: '#/components/schemas/tag-with-value'
+            target_close_date:
+              type: string
+              description: Timestamp when the incident is expected to be resolved.
+              example: "2023-01-01T12:00:00.000Z"
+              format: date-time
+            title:
+              type: string
+              description: Title of the incident.
+          required:
+            - title
+      title: incident
+    incidents-get-request:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the incident to get.
+      required:
+        - id
+      title: incidents-get-request
+    incidents-get-response:
+      type: object
+      properties:
+        incident:
+          $ref: '#/components/schemas/incident'
+      required:
+        - incident
+      title: incidents-get-response
+      x-go-name: IncidentsGetResponseBody
     issue:
       allOf:
         - $ref: '#/components/schemas/work-base'
@@ -10694,6 +10794,11 @@ components:
         - snap_widget
       title: snap-widgets-create-response
       x-go-name: SnapWidgetsCreateResponseBody
+    stage:
+      type: object
+      additionalProperties: false
+      description: Describes the current stage of a object.
+      title: stage
     stage-diagram-summary:
       allOf:
         - $ref: '#/components/schemas/atom-base-summary'
@@ -18167,6 +18272,73 @@ paths:
           $ref: '#/components/responses/service-unavailable'
       tags:
         - groups
+  /incidents.get:
+    get:
+      description: Gets an incident.
+      operationId: incidents-get
+      parameters:
+        - description: The ID of the incident to get.
+          explode: false
+          in: query
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/incidents-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - operate
+      x-request-name: IncidentsGetQuery
+    post:
+      description: Gets an incident.
+      operationId: incidents-get-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/incidents-get-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/incidents-get-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - operate
   /keyrings.authorize:
     get:
       description: OAuth2 authorization callback.
@@ -24868,6 +25040,8 @@ tags:
     name: links
   - description: DevRev notifications
     name: notifications
+  - description: DevRev incident management interactions.
+    name: operate
   - description: DevRev part interactions.
     name: parts
   - description: Product Usage APIs

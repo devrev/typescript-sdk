@@ -4526,6 +4526,76 @@ export interface GroupsUpdateResponse {
   group: Group;
 }
 
+/** incident */
+export type Incident = AtomBase & {
+  /** Parts to which the incident is applicable to. */
+  applies_to_parts?: PartSummary[];
+  /** The artifacts attached to the incident. */
+  artifacts?: ArtifactSummary[];
+  /** Body of the incident. */
+  body?: string;
+  /** Custom fields. */
+  custom_fields?: object;
+  /**
+   * Custom schema fragments.
+   * @example ["don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>"]
+   */
+  custom_schema_fragments?: string[];
+  /**
+   * Time when the incident was identified/reported.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  identified_at?: string;
+  /** List of customers impacted due to the Incident. */
+  impacted_customers?: AccountSummary[];
+  /** The users that own the incident. */
+  owned_by?: UserSummary[];
+  /**
+   * Timestamp when the incident was resolved.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  resolved_at?: string;
+  /** The properties of an enum value. */
+  severity?: EnumValue;
+  /** Describes the current stage of a object. */
+  stage?: Stage;
+  /**
+   * Users, along with the incident commander, involved in resolving
+   * incidents and handling communication.
+   */
+  stakeholders?: UserSummary[];
+  /**
+   * Stock schema fragment.
+   * @example "don:core:<partition>:devo/<dev-org-id>:custom_type_fragment/<custom-type-fragment-id>"
+   */
+  stock_schema_fragment?: string;
+  /** Subtype corresponding to the custom type fragment. */
+  subtype?: string;
+  /** Tags associated with the object. */
+  tags?: TagWithValue[];
+  /**
+   * Timestamp when the incident is expected to be resolved.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  target_close_date?: string;
+  /** Title of the incident. */
+  title: string;
+};
+
+/** incidents-get-request */
+export interface IncidentsGetRequest {
+  /** The ID of the incident to get. */
+  id: string;
+}
+
+/** incidents-get-response */
+export interface IncidentsGetResponse {
+  incident: Incident;
+}
+
 /** issue */
 export type Issue = WorkBase & {
   /** Parts associated based on git events. */
@@ -8138,6 +8208,12 @@ export enum SnapWidgetsCreateRequestType {
 export interface SnapWidgetsCreateResponse {
   snap_widget: SnapWidget;
 }
+
+/**
+ * stage
+ * Describes the current stage of a object.
+ */
+export type Stage = object;
 
 /** stage-diagram-summary */
 export type StageDiagramSummary = AtomBaseSummary;
@@ -14347,6 +14423,67 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/groups.update`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets an incident.
+   *
+   * @tags operate
+   * @name IncidentsGet
+   * @request GET:/incidents.get
+   * @secure
+   */
+  incidentsGet = (
+    query: {
+      /** The ID of the incident to get. */
+      id: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      IncidentsGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/incidents.get`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Gets an incident.
+   *
+   * @tags operate
+   * @name IncidentsGetPost
+   * @request POST:/incidents.get
+   * @secure
+   */
+  incidentsGetPost = (data: IncidentsGetRequest, params: RequestParams = {}) =>
+    this.request<
+      IncidentsGetResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/incidents.get`,
       method: 'POST',
       body: data,
       secure: true,
