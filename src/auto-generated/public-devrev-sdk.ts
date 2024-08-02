@@ -2045,6 +2045,8 @@ export type PartBase = AtomBase & {
 export type PartBaseSummary = AtomBaseSummary & {
   /** Name of the part. */
   name: string;
+  /** The users that own the part. */
+  owned_by: UserSummary[];
 };
 
 /** part-summary */

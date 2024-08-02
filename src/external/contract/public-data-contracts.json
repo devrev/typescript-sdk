@@ -3805,10 +3805,18 @@
               "name": {
                 "type": "string",
                 "description": "Name of the part."
+              },
+              "owned_by": {
+                "type": "array",
+                "description": "The users that own the part.",
+                "items": {
+                  "$ref": "#/components/schemas/user-summary"
+                }
               }
             },
             "required": [
-              "name"
+              "name",
+              "owned_by"
             ]
           }
         ],

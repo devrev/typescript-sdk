@@ -6169,6 +6169,211 @@ components:
         - incident
       title: incidents-get-response
       x-go-name: IncidentsGetResponseBody
+    incidents-group:
+      type: object
+      properties:
+        incidents:
+          type: array
+          description: The group of incidents.
+          items:
+            $ref: '#/components/schemas/incident'
+        key:
+          type: string
+          description: Unique key according to which the items are grouped.
+        next_cursor:
+          type: string
+          description: |
+            The cursor used to iterate subsequent results in accordance to the
+            sort order. If not set, then no later elements exist.
+        prev_cursor:
+          type: string
+          description: |
+            The cursor used to iterate preceding results in accordance to the
+            sort order. If not set, then no prior elements exist.
+      required:
+        - incidents
+        - key
+      title: incidents-group
+    incidents-group-request:
+      type: object
+      properties:
+        applies_to_parts:
+          type: array
+          description: |
+            Filters for incidents that apply to any of the provided parts.
+          items:
+            type: string
+        created_by:
+          type: array
+          description: |
+            Filters for incidents created by any of the provided users.
+          example:
+            - DEVU-12345
+          items:
+            type: string
+        created_date:
+          $ref: '#/components/schemas/date-filter'
+        cursor:
+          type: string
+          description: |
+            The cursor to resume iteration from. If not provided, then
+            iteration starts from the beginning.
+        group_by:
+          type: string
+          description: The field to group the incidents by.
+        limit:
+          type: integer
+          description: |
+            The maximum number of groups to return. If not set, then the
+            default is '10'.
+          format: int32
+        limit_per_group:
+          type: integer
+          description: |
+            The maximum number of incidents to return for an individual group.
+            The default is '50'.
+          format: int32
+        mode:
+          $ref: '#/components/schemas/list-mode'
+        modified_date:
+          $ref: '#/components/schemas/date-filter'
+        owned_by:
+          type: array
+          description: |
+            Filters for incidents owned by any of the provided users.
+          items:
+            type: string
+        severity:
+          type: array
+          description: |
+            Filters for incidents containing any of the provided severities.
+          items:
+            type: integer
+            format: int64
+        sort_by:
+          type: array
+          description: Comma-separated fields to sort the incidents by.
+          items:
+            type: string
+        stage:
+          type: array
+          description: Filters for incidents in any of the provided stages.
+          items:
+            type: string
+        title:
+          type: array
+          description: Filters for incidents by the provided titles.
+          items:
+            type: string
+      required:
+        - group_by
+      title: incidents-group-request
+    incidents-group-response:
+      type: object
+      properties:
+        groups:
+          type: array
+          description: The list of groups.
+          items:
+            $ref: '#/components/schemas/incidents-group'
+        next_cursor:
+          type: string
+          description: |
+            The cursor used to iterate subsequent results in accordance to the
+            sort order. If not set, then no later elements exist.
+        prev_cursor:
+          type: string
+          description: |
+            The cursor used to iterate preceding results in accordance to the
+            sort order. If not set, then no prior elements exist.
+      required:
+        - groups
+      title: incidents-group-response
+      x-go-name: IncidentsGroupResponseBody
+    incidents-list-request:
+      type: object
+      properties:
+        applies_to_parts:
+          type: array
+          description: |
+            Filters for incidents that apply to any of the provided parts.
+          items:
+            type: string
+        created_by:
+          type: array
+          description: |
+            Filters for incidents created by any of the provided users.
+          example:
+            - DEVU-12345
+          items:
+            type: string
+        created_date:
+          $ref: '#/components/schemas/date-filter'
+        cursor:
+          type: string
+          description: |
+            The cursor to resume iteration from. If not provided, then
+            iteration starts from the beginning.
+        limit:
+          type: integer
+          description: The maximum number of items.
+          format: int32
+        mode:
+          $ref: '#/components/schemas/list-mode'
+        modified_date:
+          $ref: '#/components/schemas/date-filter'
+        owned_by:
+          type: array
+          description: |
+            Filters for incidents owned by any of the provided users.
+          items:
+            type: string
+        severity:
+          type: array
+          description: |
+            Filters for incidents containing any of the provided severities.
+          items:
+            type: integer
+            format: int64
+        sort_by:
+          type: array
+          description: |
+            The list of fields to sort the items by and how to sort them.
+          items:
+            type: string
+        stage:
+          type: array
+          description: Filters for incidents in any of the provided stages.
+          items:
+            type: string
+        title:
+          type: array
+          description: Filters for incidents by the provided titles.
+          items:
+            type: string
+      title: incidents-list-request
+    incidents-list-response:
+      type: object
+      properties:
+        incidents:
+          type: array
+          description: The matching incidents.
+          items:
+            $ref: '#/components/schemas/incident'
+        next_cursor:
+          type: string
+          description: |
+            The cursor used to iterate subsequent results in accordance to the
+            sort order. If not set, then no later elements exist.
+        prev_cursor:
+          type: string
+          description: |
+            The cursor used to iterate preceding results in accordance to the
+            sort order. If not set, then no prior elements exist.
+      required:
+        - incidents
+      title: incidents-list-response
+      x-go-name: IncidentsListResponseBody
     issue:
       allOf:
         - $ref: '#/components/schemas/work-base'
@@ -6416,6 +6621,7 @@ components:
         - custom_link
         - developed_with
         - imports
+        - is_analyzed_by
         - is_dependent_on
         - is_duplicate_of
         - is_merged_into
@@ -7479,8 +7685,14 @@ components:
             name:
               type: string
               description: Name of the part.
+            owned_by:
+              type: array
+              description: The users that own the part.
+              items:
+                $ref: '#/components/schemas/user-summary'
           required:
             - name
+            - owned_by
       title: part-base-summary
     part-search-summary:
       allOf:
@@ -18331,6 +18543,307 @@ paths:
           $ref: '#/components/responses/forbidden'
         "404":
           $ref: '#/components/responses/not-found'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - operate
+  /incidents.group:
+    get:
+      description: Lists collections of incidents by groups.
+      operationId: incidents-group
+      parameters:
+        - description: The field to group the incidents by.
+          explode: false
+          in: query
+          name: group_by
+          required: true
+          schema:
+            type: string
+        - description: |
+            Filters for incidents that apply to any of the provided parts.
+          explode: false
+          in: query
+          name: applies_to_parts
+          schema:
+            type: array
+            items:
+              type: string
+        - description: |
+            Filters for incidents created by any of the provided users.
+          explode: false
+          in: query
+          name: created_by
+          schema:
+            type: array
+            example:
+              - DEVU-12345
+            items:
+              type: string
+        - description: |
+            The cursor to resume iteration from. If not provided, then iteration
+            starts from the beginning.
+          explode: false
+          in: query
+          name: cursor
+          schema:
+            type: string
+        - description: |
+            The maximum number of groups to return. If not set, then the default
+            is '10'.
+          explode: false
+          in: query
+          name: limit
+          schema:
+            type: integer
+            format: int32
+        - description: |
+            The maximum number of incidents to return for an individual group.
+            The default is '50'.
+          explode: false
+          in: query
+          name: limit_per_group
+          schema:
+            type: integer
+            format: int32
+        - description: |
+            The iteration mode to use, otherwise if not set, then "after" is
+            used.
+          explode: false
+          in: query
+          name: mode
+          schema:
+            $ref: '#/components/schemas/list-mode'
+        - description: Filters for incidents owned by any of the provided users.
+          explode: false
+          in: query
+          name: owned_by
+          schema:
+            type: array
+            items:
+              type: string
+        - description: |
+            Filters for incidents containing any of the provided severities.
+          explode: false
+          in: query
+          name: severity
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+        - description: Comma-separated fields to sort the incidents by.
+          explode: false
+          in: query
+          name: sort_by
+          schema:
+            type: array
+            items:
+              type: string
+        - description: Filters for incidents in any of the provided stages.
+          explode: false
+          in: query
+          name: stage
+          schema:
+            type: array
+            items:
+              type: string
+        - description: Filters for incidents by the provided titles.
+          explode: false
+          in: query
+          name: title
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/incidents-group-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - operate
+      x-request-name: IncidentsGroupQuery
+    post:
+      description: Lists collections of incidents by groups.
+      operationId: incidents-group-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/incidents-group-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/incidents-group-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - operate
+  /incidents.list:
+    get:
+      description: Lists incidents.
+      operationId: incidents-list
+      parameters:
+        - description: |
+            Filters for incidents that apply to any of the provided parts.
+          explode: false
+          in: query
+          name: applies_to_parts
+          schema:
+            type: array
+            items:
+              type: string
+        - description: |
+            Filters for incidents created by any of the provided users.
+          explode: false
+          in: query
+          name: created_by
+          schema:
+            type: array
+            example:
+              - DEVU-12345
+            items:
+              type: string
+        - description: |
+            The cursor to resume iteration from. If not provided, then iteration
+            starts from the beginning.
+          explode: false
+          in: query
+          name: cursor
+          schema:
+            type: string
+        - description: The maximum number of items.
+          explode: false
+          in: query
+          name: limit
+          schema:
+            type: integer
+            format: int32
+        - description: |
+            The iteration mode to use, otherwise if not set, then "after" is
+            used.
+          explode: false
+          in: query
+          name: mode
+          schema:
+            $ref: '#/components/schemas/list-mode'
+        - description: Filters for incidents owned by any of the provided users.
+          explode: false
+          in: query
+          name: owned_by
+          schema:
+            type: array
+            items:
+              type: string
+        - description: |
+            Filters for incidents containing any of the provided severities.
+          explode: false
+          in: query
+          name: severity
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+        - description: |
+            The list of fields to sort the items by and how to sort them.
+          explode: false
+          in: query
+          name: sort_by
+          schema:
+            type: array
+            items:
+              type: string
+        - description: Filters for incidents in any of the provided stages.
+          explode: false
+          in: query
+          name: stage
+          schema:
+            type: array
+            items:
+              type: string
+        - description: Filters for incidents by the provided titles.
+          explode: false
+          in: query
+          name: title
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/incidents-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - operate
+      x-request-name: IncidentsListQuery
+    post:
+      description: Lists incidents.
+      operationId: incidents-list-post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/incidents-list-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/incidents-list-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
         "429":
           $ref: '#/components/responses/too-many-requests'
         "500":

@@ -4596,6 +4596,151 @@ export interface IncidentsGetResponse {
   incident: Incident;
 }
 
+/** incidents-group */
+export interface IncidentsGroup {
+  /** The group of incidents. */
+  incidents: Incident[];
+  /** Unique key according to which the items are grouped. */
+  key: string;
+  /**
+   * The cursor used to iterate subsequent results in accordance to the
+   * sort order. If not set, then no later elements exist.
+   */
+  next_cursor?: string;
+  /**
+   * The cursor used to iterate preceding results in accordance to the
+   * sort order. If not set, then no prior elements exist.
+   */
+  prev_cursor?: string;
+}
+
+/** incidents-group-request */
+export interface IncidentsGroupRequest {
+  /** Filters for incidents that apply to any of the provided parts. */
+  applies_to_parts?: string[];
+  /**
+   * Filters for incidents created by any of the provided users.
+   * @example ["DEVU-12345"]
+   */
+  created_by?: string[];
+  /** Provides ways to specify date ranges on objects. */
+  created_date?: DateFilter;
+  /**
+   * The cursor to resume iteration from. If not provided, then
+   * iteration starts from the beginning.
+   */
+  cursor?: string;
+  /** The field to group the incidents by. */
+  group_by: string;
+  /**
+   * The maximum number of groups to return. If not set, then the
+   * default is '10'.
+   * @format int32
+   */
+  limit?: number;
+  /**
+   * The maximum number of incidents to return for an individual group.
+   * The default is '50'.
+   * @format int32
+   */
+  limit_per_group?: number;
+  /**
+   * The iteration mode to use. If "after", then entries after the provided
+   * cursor will be returned, or if no cursor is provided, then from the
+   * beginning. If "before", then entries before the provided cursor will be
+   * returned, or if no cursor is provided, then from the end. Entries will
+   * always be returned in the specified sort-by order.
+   */
+  mode?: ListMode;
+  /** Provides ways to specify date ranges on objects. */
+  modified_date?: DateFilter;
+  /** Filters for incidents owned by any of the provided users. */
+  owned_by?: string[];
+  /** Filters for incidents containing any of the provided severities. */
+  severity?: number[];
+  /** Comma-separated fields to sort the incidents by. */
+  sort_by?: string[];
+  /** Filters for incidents in any of the provided stages. */
+  stage?: string[];
+  /** Filters for incidents by the provided titles. */
+  title?: string[];
+}
+
+/** incidents-group-response */
+export interface IncidentsGroupResponse {
+  /** The list of groups. */
+  groups: IncidentsGroup[];
+  /**
+   * The cursor used to iterate subsequent results in accordance to the
+   * sort order. If not set, then no later elements exist.
+   */
+  next_cursor?: string;
+  /**
+   * The cursor used to iterate preceding results in accordance to the
+   * sort order. If not set, then no prior elements exist.
+   */
+  prev_cursor?: string;
+}
+
+/** incidents-list-request */
+export interface IncidentsListRequest {
+  /** Filters for incidents that apply to any of the provided parts. */
+  applies_to_parts?: string[];
+  /**
+   * Filters for incidents created by any of the provided users.
+   * @example ["DEVU-12345"]
+   */
+  created_by?: string[];
+  /** Provides ways to specify date ranges on objects. */
+  created_date?: DateFilter;
+  /**
+   * The cursor to resume iteration from. If not provided, then
+   * iteration starts from the beginning.
+   */
+  cursor?: string;
+  /**
+   * The maximum number of items.
+   * @format int32
+   */
+  limit?: number;
+  /**
+   * The iteration mode to use. If "after", then entries after the provided
+   * cursor will be returned, or if no cursor is provided, then from the
+   * beginning. If "before", then entries before the provided cursor will be
+   * returned, or if no cursor is provided, then from the end. Entries will
+   * always be returned in the specified sort-by order.
+   */
+  mode?: ListMode;
+  /** Provides ways to specify date ranges on objects. */
+  modified_date?: DateFilter;
+  /** Filters for incidents owned by any of the provided users. */
+  owned_by?: string[];
+  /** Filters for incidents containing any of the provided severities. */
+  severity?: number[];
+  /** The list of fields to sort the items by and how to sort them. */
+  sort_by?: string[];
+  /** Filters for incidents in any of the provided stages. */
+  stage?: string[];
+  /** Filters for incidents by the provided titles. */
+  title?: string[];
+}
+
+/** incidents-list-response */
+export interface IncidentsListResponse {
+  /** The matching incidents. */
+  incidents: Incident[];
+  /**
+   * The cursor used to iterate subsequent results in accordance to the
+   * sort order. If not set, then no later elements exist.
+   */
+  next_cursor?: string;
+  /**
+   * The cursor used to iterate preceding results in accordance to the
+   * sort order. If not set, then no prior elements exist.
+   */
+  prev_cursor?: string;
+}
+
 /** issue */
 export type Issue = WorkBase & {
   /** Parts associated based on git events. */
@@ -4796,6 +4941,7 @@ export enum LinkType {
   CustomLink = 'custom_link',
   DevelopedWith = 'developed_with',
   Imports = 'imports',
+  IsAnalyzedBy = 'is_analyzed_by',
   IsDependentOn = 'is_dependent_on',
   IsDuplicateOf = 'is_duplicate_of',
   IsMergedInto = 'is_merged_into',
@@ -5646,6 +5792,8 @@ export type PartBase = AtomBase & {
 export type PartBaseSummary = AtomBaseSummary & {
   /** Name of the part. */
   name: string;
+  /** The users that own the part. */
+  owned_by: UserSummary[];
 };
 
 /** part-search-summary */
@@ -14484,6 +14632,199 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/incidents.get`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Lists collections of incidents by groups.
+   *
+   * @tags operate
+   * @name IncidentsGroup
+   * @request GET:/incidents.group
+   * @secure
+   */
+  incidentsGroup = (
+    query: {
+      /** The field to group the incidents by. */
+      group_by: string;
+      /** Filters for incidents that apply to any of the provided parts. */
+      applies_to_parts?: string[];
+      /**
+       * Filters for incidents created by any of the provided users.
+       * @example ["DEVU-12345"]
+       */
+      created_by?: string[];
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /**
+       * The maximum number of groups to return. If not set, then the default
+       * is '10'.
+       * @format int32
+       */
+      limit?: number;
+      /**
+       * The maximum number of incidents to return for an individual group.
+       * The default is '50'.
+       * @format int32
+       */
+      limit_per_group?: number;
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /** Filters for incidents owned by any of the provided users. */
+      owned_by?: string[];
+      /** Filters for incidents containing any of the provided severities. */
+      severity?: number[];
+      /** Comma-separated fields to sort the incidents by. */
+      sort_by?: string[];
+      /** Filters for incidents in any of the provided stages. */
+      stage?: string[];
+      /** Filters for incidents by the provided titles. */
+      title?: string[];
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      IncidentsGroupResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/incidents.group`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Lists collections of incidents by groups.
+   *
+   * @tags operate
+   * @name IncidentsGroupPost
+   * @request POST:/incidents.group
+   * @secure
+   */
+  incidentsGroupPost = (
+    data: IncidentsGroupRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      IncidentsGroupResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/incidents.group`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Lists incidents.
+   *
+   * @tags operate
+   * @name IncidentsList
+   * @request GET:/incidents.list
+   * @secure
+   */
+  incidentsList = (
+    query?: {
+      /** Filters for incidents that apply to any of the provided parts. */
+      applies_to_parts?: string[];
+      /**
+       * Filters for incidents created by any of the provided users.
+       * @example ["DEVU-12345"]
+       */
+      created_by?: string[];
+      /**
+       * The cursor to resume iteration from. If not provided, then iteration
+       * starts from the beginning.
+       */
+      cursor?: string;
+      /**
+       * The maximum number of items.
+       * @format int32
+       */
+      limit?: number;
+      /**
+       * The iteration mode to use, otherwise if not set, then "after" is
+       * used.
+       */
+      mode?: ListMode;
+      /** Filters for incidents owned by any of the provided users. */
+      owned_by?: string[];
+      /** Filters for incidents containing any of the provided severities. */
+      severity?: number[];
+      /** The list of fields to sort the items by and how to sort them. */
+      sort_by?: string[];
+      /** Filters for incidents in any of the provided stages. */
+      stage?: string[];
+      /** Filters for incidents by the provided titles. */
+      title?: string[];
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      IncidentsListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/incidents.list`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Lists incidents.
+   *
+   * @tags operate
+   * @name IncidentsListPost
+   * @request POST:/incidents.list
+   * @secure
+   */
+  incidentsListPost = (
+    data: IncidentsListRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      IncidentsListResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/incidents.list`,
       method: 'POST',
       body: data,
       secure: true,
