@@ -3941,11 +3941,25 @@ export interface EventGroupCreated {
 export interface EventGroupDeleted {
   /** The ID of the group that was deleted. */
   id: string;
+  old_group?: Group;
+}
+
+/** event-group-member-added */
+export interface EventGroupMemberAdded {
+  group: GroupSummary;
+  member: UserSummary;
+}
+
+/** event-group-member-removed */
+export interface EventGroupMemberRemoved {
+  group: GroupSummary;
+  member: UserSummary;
 }
 
 /** event-group-updated */
 export interface EventGroupUpdated {
   group: Group;
+  old_group?: Group;
 }
 
 /** event-part-created */
@@ -10195,6 +10209,8 @@ export interface WebhookEventRequest {
   dev_user_updated?: EventDevUserUpdated;
   group_created?: EventGroupCreated;
   group_deleted?: EventGroupDeleted;
+  group_member_added?: EventGroupMemberAdded;
+  group_member_removed?: EventGroupMemberRemoved;
   group_updated?: EventGroupUpdated;
   /** The event's ID. */
   id: string;
@@ -10265,6 +10281,8 @@ export enum WebhookEventType {
   DevUserUpdated = 'dev_user_updated',
   GroupCreated = 'group_created',
   GroupDeleted = 'group_deleted',
+  GroupMemberAdded = 'group_member_added',
+  GroupMemberRemoved = 'group_member_removed',
   GroupUpdated = 'group_updated',
   PartCreated = 'part_created',
   PartDeleted = 'part_deleted',

@@ -2220,13 +2220,39 @@ components:
         id:
           type: string
           description: The ID of the group that was deleted.
+        old_group:
+          $ref: '#/components/schemas/group'
       required:
         - id
       title: event-group-deleted
+    event-group-member-added:
+      type: object
+      properties:
+        group:
+          $ref: '#/components/schemas/group-summary'
+        member:
+          $ref: '#/components/schemas/user-summary'
+      required:
+        - group
+        - member
+      title: event-group-member-added
+    event-group-member-removed:
+      type: object
+      properties:
+        group:
+          $ref: '#/components/schemas/group-summary'
+        member:
+          $ref: '#/components/schemas/user-summary'
+      required:
+        - group
+        - member
+      title: event-group-member-removed
     event-group-updated:
       type: object
       properties:
         group:
+          $ref: '#/components/schemas/group'
+        old_group:
           $ref: '#/components/schemas/group'
       required:
         - group
@@ -4448,6 +4474,10 @@ components:
           $ref: '#/components/schemas/event-group-created'
         group_deleted:
           $ref: '#/components/schemas/event-group-deleted'
+        group_member_added:
+          $ref: '#/components/schemas/event-group-member-added'
+        group_member_removed:
+          $ref: '#/components/schemas/event-group-member-removed'
         group_updated:
           $ref: '#/components/schemas/event-group-updated'
         id:
@@ -4552,6 +4582,8 @@ components:
         - dev_user_updated
         - group_created
         - group_deleted
+        - group_member_added
+        - group_member_removed
         - group_updated
         - part_created
         - part_deleted
