@@ -1131,6 +1131,13 @@
           "display_name": {
             "type": "string",
             "description": "The display name of the account."
+          },
+          "domains": {
+            "type": "array",
+            "description": "List of company's domain names on accounts. Example -\n['devrev.ai'].\n",
+            "items": {
+              "type": "string"
+            }
           }
         },
         "title": "auth-tokens-account-traits"
@@ -5353,7 +5360,8 @@
           "email",
           "plug",
           "slack",
-          "twilio"
+          "twilio",
+          "twilio_sms"
         ]
       },
       "ticket-severity": {

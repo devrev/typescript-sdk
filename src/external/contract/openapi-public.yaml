@@ -852,6 +852,13 @@ components:
         display_name:
           type: string
           description: The display name of the account.
+        domains:
+          type: array
+          description: |
+            List of company's domain names on accounts. Example -
+            ['devrev.ai'].
+          items:
+            type: string
       title: auth-tokens-account-traits
     auth-tokens-create-request:
       type: object
@@ -3925,6 +3932,7 @@ components:
         - plug
         - slack
         - twilio
+        - twilio_sms
     ticket-severity:
       type: string
       description: Severity of the ticket.

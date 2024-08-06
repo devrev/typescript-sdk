@@ -1115,6 +1115,7 @@ export type AtomSummary = (
   | TaskSummary
   | TenantFragmentSummary
   | TicketSummary
+  | TimelineChangeEventSummary
   | TimelineCommentSummary
   | WebhookSummary
 ) & {
@@ -1143,6 +1144,7 @@ export enum AtomType {
   Task = 'task',
   TenantFragment = 'tenant_fragment',
   Ticket = 'ticket',
+  TimelineChangeEvent = 'timeline_change_event',
   TimelineComment = 'timeline_comment',
   Webhook = 'webhook',
 }
@@ -1345,6 +1347,11 @@ export enum AuthTokenTokenType {
 export interface AuthTokensAccountTraits {
   /** The display name of the account. */
   display_name?: string;
+  /**
+   * List of company's domain names on accounts. Example -
+   * ['devrev.ai'].
+   */
+  domains?: string[];
 }
 
 /**
@@ -4257,10 +4264,180 @@ export type Feature = PartBase;
 export type FeatureSummary = PartBaseSummary;
 
 /**
+ * field-delta
+ * A field change.
+ */
+export interface FieldDelta {
+  /** Set of field attributes. */
+  field_descriptor?: SchemaFieldDescriptor;
+  /** The name of the field. */
+  name?: string;
+  new_value?: FieldValue;
+  old_value?: FieldValue;
+}
+
+/**
  * field-descriptor
  * Set of field attributes.
  */
 export type FieldDescriptor = object;
+
+/** field-value */
+export type FieldValue = (
+  | FieldValueBool
+  | FieldValueBoolList
+  | FieldValueComposite
+  | FieldValueCompositeList
+  | FieldValueDateList
+  | FieldValueDateTimeList
+  | FieldValueDateTimeValue
+  | FieldValueDateValue
+  | FieldValueDouble
+  | FieldValueDoubleList
+  | FieldValueId
+  | FieldValueIdList
+  | FieldValueInt64
+  | FieldValueInt64List
+  | FieldValueStage
+  | FieldValueString
+  | FieldValueStringList
+  | FieldValueTagSummary
+  | FieldValueTagSummaryList
+) & {
+  type: FieldValueType;
+};
+
+/** field-value-bool */
+export interface FieldValueBool {
+  value: boolean;
+}
+
+/** field-value-bool-list */
+export interface FieldValueBoolList {
+  values: boolean[];
+}
+
+/** field-value-composite */
+export interface FieldValueComposite {
+  fields: Record<string, FieldValue>;
+}
+
+/** field-value-composite-list */
+export interface FieldValueCompositeList {
+  values: FieldValueComposite[];
+}
+
+/** field-value-date-list */
+export interface FieldValueDateList {
+  /** @example ["2023-01-01"] */
+  values: string[];
+}
+
+/** field-value-date-time-list */
+export interface FieldValueDateTimeList {
+  /** @example ["2023-01-01T12:00:00.000Z"] */
+  values: string[];
+}
+
+/** field-value-date-time-value */
+export interface FieldValueDateTimeValue {
+  /**
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  value: string;
+}
+
+/** field-value-date-value */
+export interface FieldValueDateValue {
+  /**
+   * @format date
+   * @example "2023-01-01"
+   */
+  value: string;
+}
+
+/** field-value-double */
+export interface FieldValueDouble {
+  /** @format double */
+  value: number;
+}
+
+/** field-value-double-list */
+export interface FieldValueDoubleList {
+  values: number[];
+}
+
+/** field-value-id */
+export interface FieldValueId {
+  value: string;
+}
+
+/** field-value-id-list */
+export interface FieldValueIdList {
+  values: string[];
+}
+
+/** field-value-int64 */
+export interface FieldValueInt64 {
+  /** @format int64 */
+  value: number;
+}
+
+/** field-value-int64-list */
+export interface FieldValueInt64List {
+  values: number[];
+}
+
+/** field-value-stage */
+export interface FieldValueStage {
+  name?: string;
+  notes?: string;
+}
+
+/** field-value-string */
+export interface FieldValueString {
+  value: string;
+}
+
+/** field-value-string-list */
+export interface FieldValueStringList {
+  values: string[];
+}
+
+/** field-value-tag-summary */
+export interface FieldValueTagSummary {
+  name?: string;
+  style?: string;
+  tag_id: string;
+}
+
+/** field-value-tag-summary-list */
+export interface FieldValueTagSummaryList {
+  values: FieldValueTagSummary[];
+}
+
+export enum FieldValueType {
+  Bool = 'bool',
+  BoolList = 'bool_list',
+  Composite = 'composite',
+  CompositeList = 'composite_list',
+  Date = 'date',
+  DateList = 'date_list',
+  DateTime = 'date_time',
+  DateTimeList = 'date_time_list',
+  Double = 'double',
+  DoubleList = 'double_list',
+  Id = 'id',
+  IdList = 'id_list',
+  Int = 'int',
+  IntList = 'int_list',
+  Stage = 'stage',
+  String = 'string',
+  StringList = 'string_list',
+  TagSummary = 'tag_summary',
+  TagSummaryList = 'tag_summary_list',
+}
 
 /** Event type of the notification. */
 export enum GenericNotificationEventType {
@@ -4544,7 +4721,7 @@ export interface GroupsUpdateResponse {
 export type Incident = AtomBase & {
   /** Parts to which the incident is applicable to. */
   applies_to_parts?: PartSummary[];
-  /** The artifacts attached to the incident. */
+  /** Artifacts attached to the incident. */
   artifacts?: ArtifactSummary[];
   /** Body of the incident. */
   body?: string;
@@ -4561,7 +4738,7 @@ export type Incident = AtomBase & {
    * @example "2023-01-01T12:00:00.000Z"
    */
   identified_at?: string;
-  /** List of customers impacted due to the Incident. */
+  /** List of customers impacted due to the incident. */
   impacted_customers?: AccountSummary[];
   /** The users that own the incident. */
   owned_by?: UserSummary[];
@@ -4753,6 +4930,62 @@ export interface IncidentsListResponse {
    * sort order. If not set, then no prior elements exist.
    */
   prev_cursor?: string;
+}
+
+/** incidents-update-request */
+export interface IncidentsUpdateRequest {
+  applies_to_parts?: UpdateIncidentAppliesToParts;
+  artifacts?: UpdateIncidentArtifacts;
+  /** Body of the incident. */
+  body?: string;
+  /** Application-defined custom fields. */
+  custom_fields?: object;
+  /**
+   * Requested custom schemas described abstractly. Every provided schema's
+   * custom field must be specified, otherwise a bad request error is
+   * returned. If a new custom schema specifier is provided, then it will be
+   * added to the work, otherwise if a custom schema is omitted from the
+   * specifier, it remains unmodified.
+   */
+  custom_schema_spec?: CustomSchemaSpec;
+  /** The ID of the incident to be updated. */
+  id: string;
+  /**
+   * Time when the incident was identified/reported.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  identified_at?: string;
+  impacted_customers?: UpdateIncidentImpactedCustomers;
+  owned_by?: UpdateIncidentOwnedBy;
+  /**
+   * Timestamp when the incident was resolved.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  resolved_at?: string;
+  /**
+   * Severity of the incident.
+   * @format int64
+   */
+  severity?: number;
+  /** Update object for Stage. */
+  stage?: UpdateStage;
+  stakeholders?: UpdateIncidentStakeholders;
+  tags?: UpdateIncidentTags;
+  /**
+   * Timestamp when the incident is expected to be resolved.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  target_close_date?: string;
+  /** Title of the incident. */
+  title?: string;
+}
+
+/** incidents-update-response */
+export interface IncidentsUpdateResponse {
+  incident: Incident;
 }
 
 /** issue */
@@ -9185,6 +9418,7 @@ export enum TicketChannels {
   Plug = 'plug',
   Slack = 'slack',
   Twilio = 'twilio',
+  TwilioSms = 'twilio_sms',
 }
 
 /** Severity of the ticket. */
@@ -9201,6 +9435,77 @@ export type TicketSummary = WorkBaseSummary & {
   /** Severity of the ticket. */
   severity?: TicketSeverity;
 };
+
+/** timeline-change-event */
+export type TimelineChangeEvent = TimelineEntryBase & {
+  /** A timeline change event. */
+  event?: TimelineChangeEventEvent;
+};
+
+/**
+ * timeline-change-event-created
+ * A creation event.
+ */
+export interface TimelineChangeEventCreated {
+  object?: AtomSummary;
+}
+
+/**
+ * timeline-change-event-deleted
+ * A deletion event.
+ */
+export interface TimelineChangeEventDeleted {
+  /** The ID correspending to the deleted object. */
+  object_id?: string;
+}
+
+/**
+ * timeline-change-event-event
+ * A timeline change event.
+ */
+export interface TimelineChangeEventEvent {
+  /** The type of the event. */
+  type?: TimelineChangeEventEventType;
+  /** A creation event. */
+  created?: TimelineChangeEventCreated;
+  /** A deletion event. */
+  deleted?: TimelineChangeEventDeleted;
+  /** A linking event. */
+  linked?: TimelineChangeEventLinked;
+  /** An update event. */
+  updated?: TimelineChangeEventUpdated;
+}
+
+/** The type of the event. */
+export enum TimelineChangeEventEventType {
+  Annotated = 'annotated',
+  Created = 'created',
+  Deleted = 'deleted',
+  Linked = 'linked',
+  Updated = 'updated',
+}
+
+/**
+ * timeline-change-event-linked
+ * A linking event.
+ */
+export interface TimelineChangeEventLinked {
+  link?: LinkSummary;
+}
+
+/** timeline-change-event-summary */
+export type TimelineChangeEventSummary = TimelineEntryBaseSummary;
+
+/**
+ * timeline-change-event-updated
+ * An update event.
+ */
+export interface TimelineChangeEventUpdated {
+  /** List of field changes. */
+  field_deltas?: FieldDelta[];
+  /** Type of DevRev object. */
+  object_type?: string;
+}
 
 /** timeline-comment */
 export type TimelineComment = TimelineEntryBase & {
@@ -9526,7 +9831,7 @@ export interface TimelineEntriesUpdateResponse {
 }
 
 /** timeline-entry */
-export type TimelineEntry = TimelineComment & {
+export type TimelineEntry = (TimelineChangeEvent | TimelineComment) & {
   type: TimelineEntryType;
 };
 
@@ -9578,6 +9883,7 @@ export enum TimelineEntryObjectType {
   RevUser = 'rev_user',
   Task = 'task',
   Ticket = 'ticket',
+  TimelineChangeEvent = 'timeline_change_event',
   TimelineComment = 'timeline_comment',
 }
 
@@ -9589,6 +9895,7 @@ export enum TimelineEntryPanel {
 }
 
 export enum TimelineEntryType {
+  TimelineChangeEvent = 'timeline_change_event',
   TimelineComment = 'timeline_comment',
 }
 
@@ -10029,6 +10336,73 @@ export interface UomsUpdateRequestDimensions {
 /** uoms-update-response */
 export interface UomsUpdateResponse {
   uom: Uom;
+}
+
+/** update-incident-applies-to-parts */
+export interface UpdateIncidentAppliesToParts {
+  /** Sets the parts to which the incident is applicable to. */
+  set?: string[];
+}
+
+/** update-incident-artifacts */
+export interface UpdateIncidentArtifacts {
+  /**
+   * Sets the artifacts attached to the incident.
+   * @example ["ARTIFACT-12345"]
+   */
+  set?: string[];
+}
+
+/** update-incident-impacted-customers */
+export interface UpdateIncidentImpactedCustomers {
+  /** Sets the list of customers impacted due to the incident. */
+  set?: string[];
+}
+
+/** update-incident-owned-by */
+export interface UpdateIncidentOwnedBy {
+  /** Sets the user IDs of the users that own the incident. */
+  set?: string[];
+}
+
+/** update-incident-stakeholders */
+export interface UpdateIncidentStakeholders {
+  /**
+   * Sets the users, along with the incident commander, involved in
+   * resolving incidents and handling communication.
+   */
+  set?: string[];
+}
+
+/** update-incident-tags */
+export interface UpdateIncidentTags {
+  /** Sets the tags associated with the object. */
+  set?: UpdateTagWithValue[];
+}
+
+/**
+ * update-stage
+ * Update object for Stage.
+ */
+export interface UpdateStage {
+  /** Notes relevant to the stage */
+  notes?: string;
+  /** DON of the stage. */
+  stage?: string;
+}
+
+/**
+ * update-tag-with-value
+ * Update object for TagWithValue.
+ */
+export interface UpdateTagWithValue {
+  /**
+   * ID of the referenced tag
+   * @example "TAG-12345"
+   */
+  tag_id?: string;
+  /** Value associated with the tag for the object. */
+  value?: string;
 }
 
 /** user-base */
@@ -14843,6 +15217,37 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/incidents.list`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Updates an incident.
+   *
+   * @tags operate
+   * @name IncidentsUpdate
+   * @request POST:/incidents.update
+   * @secure
+   */
+  incidentsUpdate = (
+    data: IncidentsUpdateRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      IncidentsUpdateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/incidents.update`,
       method: 'POST',
       body: data,
       secure: true,

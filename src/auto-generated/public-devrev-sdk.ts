@@ -611,6 +611,11 @@ export enum AuthTokenTokenType {
 export interface AuthTokensAccountTraits {
   /** The display name of the account. */
   display_name?: string;
+  /**
+   * List of company's domain names on accounts. Example -
+   * ['devrev.ai'].
+   */
+  domains?: string[];
 }
 
 /**
@@ -2960,6 +2965,7 @@ export enum TicketChannels {
   Plug = 'plug',
   Slack = 'slack',
   Twilio = 'twilio',
+  TwilioSms = 'twilio_sms',
 }
 
 /** Severity of the ticket. */

@@ -1498,6 +1498,7 @@ components:
           task: '#/components/schemas/task-summary'
           tenant_fragment: '#/components/schemas/tenant-fragment-summary'
           ticket: '#/components/schemas/ticket-summary'
+          timeline_change_event: '#/components/schemas/timeline-change-event-summary'
           timeline_comment: '#/components/schemas/timeline-comment-summary'
           webhook: '#/components/schemas/webhook-summary'
         propertyName: type
@@ -1523,6 +1524,7 @@ components:
         - $ref: '#/components/schemas/task-summary'
         - $ref: '#/components/schemas/tenant-fragment-summary'
         - $ref: '#/components/schemas/ticket-summary'
+        - $ref: '#/components/schemas/timeline-change-event-summary'
         - $ref: '#/components/schemas/timeline-comment-summary'
         - $ref: '#/components/schemas/webhook-summary'
       properties:
@@ -1555,6 +1557,7 @@ components:
         - task
         - tenant_fragment
         - ticket
+        - timeline_change_event
         - timeline_comment
         - webhook
     auth-connection:
@@ -1838,6 +1841,13 @@ components:
         display_name:
           type: string
           description: The display name of the account.
+        domains:
+          type: array
+          description: |
+            List of company's domain names on accounts. Example -
+            ['devrev.ai'].
+          items:
+            type: string
       title: auth-tokens-account-traits
     auth-tokens-create-request:
       type: object
@@ -5766,11 +5776,287 @@ components:
       allOf:
         - $ref: '#/components/schemas/part-base-summary'
       title: feature-summary
+    field-delta:
+      type: object
+      description: A field change.
+      properties:
+        field_descriptor:
+          $ref: '#/components/schemas/schema-field-descriptor'
+        name:
+          type: string
+          description: The name of the field.
+        new_value:
+          $ref: '#/components/schemas/field-value'
+        old_value:
+          $ref: '#/components/schemas/field-value'
+      title: field-delta
     field-descriptor:
       type: object
       additionalProperties: false
       description: Set of field attributes.
       title: field-descriptor
+    field-value:
+      type: object
+      discriminator:
+        mapping:
+          bool: '#/components/schemas/field-value-bool'
+          bool_list: '#/components/schemas/field-value-bool-list'
+          composite: '#/components/schemas/field-value-composite'
+          composite_list: '#/components/schemas/field-value-composite-list'
+          date: '#/components/schemas/field-value-date-value'
+          date_list: '#/components/schemas/field-value-date-list'
+          date_time: '#/components/schemas/field-value-date-time-value'
+          date_time_list: '#/components/schemas/field-value-date-time-list'
+          double: '#/components/schemas/field-value-double'
+          double_list: '#/components/schemas/field-value-double-list'
+          id: '#/components/schemas/field-value-id'
+          id_list: '#/components/schemas/field-value-id-list'
+          int: '#/components/schemas/field-value-int64'
+          int_list: '#/components/schemas/field-value-int64-list'
+          stage: '#/components/schemas/field-value-stage'
+          string: '#/components/schemas/field-value-string'
+          string_list: '#/components/schemas/field-value-string-list'
+          tag_summary: '#/components/schemas/field-value-tag-summary'
+          tag_summary_list: '#/components/schemas/field-value-tag-summary-list'
+        propertyName: type
+      oneOf:
+        - $ref: '#/components/schemas/field-value-bool'
+        - $ref: '#/components/schemas/field-value-bool-list'
+        - $ref: '#/components/schemas/field-value-composite'
+        - $ref: '#/components/schemas/field-value-composite-list'
+        - $ref: '#/components/schemas/field-value-date-list'
+        - $ref: '#/components/schemas/field-value-date-time-list'
+        - $ref: '#/components/schemas/field-value-date-time-value'
+        - $ref: '#/components/schemas/field-value-date-value'
+        - $ref: '#/components/schemas/field-value-double'
+        - $ref: '#/components/schemas/field-value-double-list'
+        - $ref: '#/components/schemas/field-value-id'
+        - $ref: '#/components/schemas/field-value-id-list'
+        - $ref: '#/components/schemas/field-value-int64'
+        - $ref: '#/components/schemas/field-value-int64-list'
+        - $ref: '#/components/schemas/field-value-stage'
+        - $ref: '#/components/schemas/field-value-string'
+        - $ref: '#/components/schemas/field-value-string-list'
+        - $ref: '#/components/schemas/field-value-tag-summary'
+        - $ref: '#/components/schemas/field-value-tag-summary-list'
+      properties:
+        type:
+          $ref: '#/components/schemas/field-value-type'
+      required:
+        - type
+      title: field-value
+    field-value-bool:
+      type: object
+      properties:
+        value:
+          type: boolean
+      required:
+        - value
+      title: field-value-bool
+    field-value-bool-list:
+      type: object
+      properties:
+        values:
+          type: array
+          items:
+            type: boolean
+      required:
+        - values
+      title: field-value-bool-list
+    field-value-composite:
+      type: object
+      properties:
+        fields:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/field-value'
+      required:
+        - fields
+      title: field-value-composite
+    field-value-composite-list:
+      type: object
+      properties:
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/field-value-composite'
+      required:
+        - values
+      title: field-value-composite-list
+    field-value-date-list:
+      type: object
+      properties:
+        values:
+          type: array
+          example:
+            - "2023-01-01"
+          items:
+            type: string
+            format: date
+      required:
+        - values
+      title: field-value-date-list
+    field-value-date-time-list:
+      type: object
+      properties:
+        values:
+          type: array
+          example:
+            - "2023-01-01T12:00:00.000Z"
+          items:
+            type: string
+            format: date-time
+      required:
+        - values
+      title: field-value-date-time-list
+    field-value-date-time-value:
+      type: object
+      properties:
+        value:
+          type: string
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+      required:
+        - value
+      title: field-value-date-time-value
+    field-value-date-value:
+      type: object
+      properties:
+        value:
+          type: string
+          example: "2023-01-01"
+          format: date
+      required:
+        - value
+      title: field-value-date-value
+    field-value-double:
+      type: object
+      properties:
+        value:
+          type: number
+          format: double
+      required:
+        - value
+      title: field-value-double
+    field-value-double-list:
+      type: object
+      properties:
+        values:
+          type: array
+          items:
+            type: number
+            format: double
+      required:
+        - values
+      title: field-value-double-list
+    field-value-id:
+      type: object
+      properties:
+        value:
+          type: string
+      required:
+        - value
+      title: field-value-id
+    field-value-id-list:
+      type: object
+      properties:
+        values:
+          type: array
+          items:
+            type: string
+      required:
+        - values
+      title: field-value-id-list
+    field-value-int64:
+      type: object
+      properties:
+        value:
+          type: integer
+          format: int64
+      required:
+        - value
+      title: field-value-int64
+    field-value-int64-list:
+      type: object
+      properties:
+        values:
+          type: array
+          items:
+            type: integer
+            format: int64
+      required:
+        - values
+      title: field-value-int64-list
+    field-value-stage:
+      type: object
+      properties:
+        name:
+          type: string
+        notes:
+          type: string
+      title: field-value-stage
+    field-value-string:
+      type: object
+      properties:
+        value:
+          type: string
+      required:
+        - value
+      title: field-value-string
+    field-value-string-list:
+      type: object
+      properties:
+        values:
+          type: array
+          items:
+            type: string
+      required:
+        - values
+      title: field-value-string-list
+    field-value-tag-summary:
+      type: object
+      properties:
+        name:
+          type: string
+        style:
+          type: string
+        tag_id:
+          type: string
+      required:
+        - tag_id
+      title: field-value-tag-summary
+    field-value-tag-summary-list:
+      type: object
+      properties:
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/field-value-tag-summary'
+      required:
+        - values
+      title: field-value-tag-summary-list
+    field-value-type:
+      type: string
+      enum:
+        - bool
+        - bool_list
+        - composite
+        - composite_list
+        - date
+        - date_list
+        - date_time
+        - date_time_list
+        - double
+        - double_list
+        - id
+        - id_list
+        - int
+        - int_list
+        - stage
+        - string
+        - string_list
+        - tag_summary
+        - tag_summary_list
     generic-notification-event-type:
       type: string
       description: Event type of the notification.
@@ -6107,7 +6393,7 @@ components:
                 $ref: '#/components/schemas/part-summary'
             artifacts:
               type: array
-              description: The artifacts attached to the incident.
+              description: Artifacts attached to the incident.
               items:
                 $ref: '#/components/schemas/artifact-summary'
             body:
@@ -6130,7 +6416,7 @@ components:
               format: date-time
             impacted_customers:
               type: array
-              description: List of customers impacted due to the Incident.
+              description: List of customers impacted due to the incident.
               items:
                 $ref: '#/components/schemas/account-summary'
             owned_by:
@@ -6400,6 +6686,68 @@ components:
         - incidents
       title: incidents-list-response
       x-go-name: IncidentsListResponseBody
+    incidents-update-request:
+      type: object
+      properties:
+        applies_to_parts:
+          $ref: '#/components/schemas/update-incident-applies-to-parts'
+        artifacts:
+          $ref: '#/components/schemas/update-incident-artifacts'
+        body:
+          type: string
+          description: Body of the incident.
+        custom_fields:
+          type: object
+          description: Application-defined custom fields.
+        custom_schema_spec:
+          $ref: '#/components/schemas/custom-schema-spec'
+        id:
+          type: string
+          description: The ID of the incident to be updated.
+        identified_at:
+          type: string
+          description: Time when the incident was identified/reported.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+        impacted_customers:
+          $ref: '#/components/schemas/update-incident-impacted-customers'
+        owned_by:
+          $ref: '#/components/schemas/update-incident-owned-by'
+        resolved_at:
+          type: string
+          description: Timestamp when the incident was resolved.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+        severity:
+          type: integer
+          description: Severity of the incident.
+          format: int64
+        stage:
+          $ref: '#/components/schemas/update-stage'
+        stakeholders:
+          $ref: '#/components/schemas/update-incident-stakeholders'
+        tags:
+          $ref: '#/components/schemas/update-incident-tags'
+        target_close_date:
+          type: string
+          description: Timestamp when the incident is expected to be resolved.
+          example: "2023-01-01T12:00:00.000Z"
+          format: date-time
+        title:
+          type: string
+          description: Title of the incident.
+      required:
+        - id
+      title: incidents-update-request
+    incidents-update-response:
+      type: object
+      properties:
+        incident:
+          $ref: '#/components/schemas/incident'
+      required:
+        - incident
+      title: incidents-update-response
+      x-go-name: IncidentsUpdateResponseBody
     issue:
       allOf:
         - $ref: '#/components/schemas/work-base'
@@ -12063,6 +12411,7 @@ components:
         - plug
         - slack
         - twilio
+        - twilio_sms
     ticket-severity:
       type: string
       description: Severity of the ticket.
@@ -12081,6 +12430,77 @@ components:
             severity:
               $ref: '#/components/schemas/ticket-severity'
       title: ticket-summary
+    timeline-change-event:
+      allOf:
+        - $ref: '#/components/schemas/timeline-entry-base'
+        - type: object
+          properties:
+            event:
+              $ref: '#/components/schemas/timeline-change-event-event'
+      title: timeline-change-event
+    timeline-change-event-created:
+      type: object
+      description: A creation event.
+      properties:
+        object:
+          $ref: '#/components/schemas/atom-summary'
+      title: timeline-change-event-created
+    timeline-change-event-deleted:
+      type: object
+      description: A deletion event.
+      properties:
+        object_id:
+          type: string
+          description: The ID correspending to the deleted object.
+      title: timeline-change-event-deleted
+    timeline-change-event-event:
+      type: object
+      description: A timeline change event.
+      properties:
+        type:
+          $ref: '#/components/schemas/timeline-change-event-event-type'
+        created:
+          $ref: '#/components/schemas/timeline-change-event-created'
+        deleted:
+          $ref: '#/components/schemas/timeline-change-event-deleted'
+        linked:
+          $ref: '#/components/schemas/timeline-change-event-linked'
+        updated:
+          $ref: '#/components/schemas/timeline-change-event-updated'
+      title: timeline-change-event-event
+    timeline-change-event-event-type:
+      type: string
+      description: The type of the event.
+      enum:
+        - annotated
+        - created
+        - deleted
+        - linked
+        - updated
+    timeline-change-event-linked:
+      type: object
+      description: A linking event.
+      properties:
+        link:
+          $ref: '#/components/schemas/link-summary'
+      title: timeline-change-event-linked
+    timeline-change-event-summary:
+      allOf:
+        - $ref: '#/components/schemas/timeline-entry-base-summary'
+      title: timeline-change-event-summary
+    timeline-change-event-updated:
+      type: object
+      description: An update event.
+      properties:
+        field_deltas:
+          type: array
+          description: List of field changes.
+          items:
+            $ref: '#/components/schemas/field-delta'
+        object_type:
+          type: string
+          description: Type of DevRev object.
+      title: timeline-change-event-updated
     timeline-comment:
       allOf:
         - $ref: '#/components/schemas/timeline-entry-base'
@@ -12463,9 +12883,11 @@ components:
       type: object
       discriminator:
         mapping:
+          timeline_change_event: '#/components/schemas/timeline-change-event'
           timeline_comment: '#/components/schemas/timeline-comment'
         propertyName: type
       oneOf:
+        - $ref: '#/components/schemas/timeline-change-event'
         - $ref: '#/components/schemas/timeline-comment'
       properties:
         type:
@@ -12532,6 +12954,7 @@ components:
         - rev_user
         - task
         - ticket
+        - timeline_change_event
         - timeline_comment
     timeline-entry-panel:
       type: string
@@ -12543,6 +12966,7 @@ components:
     timeline-entry-type:
       type: string
       enum:
+        - timeline_change_event
         - timeline_comment
     timeline-entry-visibility:
       type: string
@@ -13049,6 +13473,87 @@ components:
         - uom
       title: uoms-update-response
       x-go-name: UomsUpdateResponseBody
+    update-incident-applies-to-parts:
+      type: object
+      properties:
+        set:
+          type: array
+          description: Sets the parts to which the incident is applicable to.
+          items:
+            type: string
+      title: update-incident-applies-to-parts
+    update-incident-artifacts:
+      type: object
+      properties:
+        set:
+          type: array
+          description: Sets the artifacts attached to the incident.
+          example:
+            - ARTIFACT-12345
+          items:
+            type: string
+      title: update-incident-artifacts
+    update-incident-impacted-customers:
+      type: object
+      properties:
+        set:
+          type: array
+          description: Sets the list of customers impacted due to the incident.
+          items:
+            type: string
+      title: update-incident-impacted-customers
+    update-incident-owned-by:
+      type: object
+      properties:
+        set:
+          type: array
+          description: Sets the user IDs of the users that own the incident.
+          items:
+            type: string
+      title: update-incident-owned-by
+    update-incident-stakeholders:
+      type: object
+      properties:
+        set:
+          type: array
+          description: |
+            Sets the users, along with the incident commander, involved in
+            resolving incidents and handling communication.
+          items:
+            type: string
+      title: update-incident-stakeholders
+    update-incident-tags:
+      type: object
+      properties:
+        set:
+          type: array
+          description: Sets the tags associated with the object.
+          items:
+            $ref: '#/components/schemas/update-tag-with-value'
+      title: update-incident-tags
+    update-stage:
+      type: object
+      description: Update object for Stage.
+      properties:
+        notes:
+          type: string
+          description: Notes relevant to the stage
+        stage:
+          type: string
+          description: DON of the stage.
+      title: update-stage
+    update-tag-with-value:
+      type: object
+      description: Update object for TagWithValue.
+      properties:
+        tag_id:
+          type: string
+          description: ID of the referenced tag
+          example: TAG-12345
+        value:
+          type: string
+          description: Value associated with the tag for the object.
+      title: update-tag-with-value
     user-base:
       allOf:
         - $ref: '#/components/schemas/atom-base'
@@ -18876,6 +19381,38 @@ paths:
           $ref: '#/components/responses/unauthorized'
         "403":
           $ref: '#/components/responses/forbidden'
+        "429":
+          $ref: '#/components/responses/too-many-requests'
+        "500":
+          $ref: '#/components/responses/internal-server-error'
+        "503":
+          $ref: '#/components/responses/service-unavailable'
+      tags:
+        - operate
+  /incidents.update:
+    post:
+      description: Updates an incident.
+      operationId: incidents-update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/incidents-update-request'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/incidents-update-response'
+          description: Success.
+        "400":
+          $ref: '#/components/responses/bad-request'
+        "401":
+          $ref: '#/components/responses/unauthorized'
+        "403":
+          $ref: '#/components/responses/forbidden'
+        "404":
+          $ref: '#/components/responses/not-found'
         "429":
           $ref: '#/components/responses/too-many-requests'
         "500":
