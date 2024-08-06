@@ -7459,10 +7459,13 @@
     },
     "securitySchemes": {
       "auth-token": {
-        "type": "apiKey",
+        "type": "http",
         "description": "All the DevRev APIs require a token to authenticate the user. Provide `Authorization: <token>` as a header to every API request.\n [How do I find my token?](https://devrev.ai/docs/apis/auth)",
-        "in": "header",
-        "name": "Authorization"
+        "scheme": "bearer",
+        "x-fern-bearer": {
+          "env": "DEVREV_TOKEN",
+          "name": "token"
+        }
       }
     }
   },
@@ -7521,6 +7524,10 @@
         },
         "tags": [
           "accounts"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -7572,6 +7579,10 @@
         },
         "tags": [
           "accounts"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -7730,6 +7741,9 @@
         "tags": [
           "accounts"
         ],
+        "x-fern-audiences": [
+          "docs"
+        ],
         "x-request-name": "AccountsExportQuery"
       },
       "post": {
@@ -7776,6 +7790,10 @@
         },
         "tags": [
           "accounts"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -7832,6 +7850,9 @@
         "tags": [
           "accounts"
         ],
+        "x-fern-audiences": [
+          "docs"
+        ],
         "x-request-name": "AccountsGetQuery"
       },
       "post": {
@@ -7881,6 +7902,10 @@
         },
         "tags": [
           "accounts"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -8058,6 +8083,9 @@
         "tags": [
           "accounts"
         ],
+        "x-fern-audiences": [
+          "docs"
+        ],
         "x-request-name": "AccountsListQuery"
       },
       "post": {
@@ -8107,6 +8135,10 @@
         },
         "tags": [
           "accounts"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -8161,6 +8193,10 @@
         },
         "tags": [
           "accounts"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -8226,6 +8262,9 @@
         "tags": [
           "artifacts"
         ],
+        "x-fern-audiences": [
+          "docs"
+        ],
         "x-request-name": "ArtifactsGetQuery"
       },
       "post": {
@@ -8275,6 +8314,10 @@
         },
         "tags": [
           "artifacts"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -8329,6 +8372,9 @@
         "tags": [
           "artifacts"
         ],
+        "x-fern-audiences": [
+          "docs"
+        ],
         "x-request-name": "ArtifactsListQuery"
       },
       "post": {
@@ -8378,6 +8424,10 @@
         },
         "tags": [
           "artifacts"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -8443,6 +8493,9 @@
         "tags": [
           "artifacts"
         ],
+        "x-fern-audiences": [
+          "docs"
+        ],
         "x-request-name": "ArtifactsLocateQuery"
       },
       "post": {
@@ -8492,6 +8545,10 @@
         },
         "tags": [
           "artifacts"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -8540,6 +8597,10 @@
         },
         "tags": [
           "artifacts"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -8591,6 +8652,10 @@
         },
         "tags": [
           "auth-tokens"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -8635,6 +8700,10 @@
         },
         "tags": [
           "auth-tokens"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -8690,6 +8759,9 @@
         "tags": [
           "auth-tokens"
         ],
+        "x-fern-audiences": [
+          "docs"
+        ],
         "x-request-name": "AuthTokensGetQuery"
       },
       "post": {
@@ -8739,6 +8811,10 @@
         },
         "tags": [
           "auth-tokens"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -8811,6 +8887,9 @@
         "tags": [
           "auth-tokens"
         ],
+        "x-fern-audiences": [
+          "docs"
+        ],
         "x-request-name": "AuthTokensListQuery"
       },
       "post": {
@@ -8860,6 +8939,10 @@
         },
         "tags": [
           "auth-tokens"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -8904,6 +8987,10 @@
         },
         "tags": [
           "auth-tokens"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -8955,6 +9042,10 @@
         },
         "tags": [
           "auth-tokens"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -9004,6 +9095,10 @@
         "tags": [
           "auth-connection",
           "dev-orgs"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -9049,6 +9144,10 @@
         "tags": [
           "auth-connection",
           "dev-orgs"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -9105,6 +9204,9 @@
           "auth-connection",
           "dev-orgs"
         ],
+        "x-fern-audiences": [
+          "docs"
+        ],
         "x-request-name": "DevOrgAuthConnectionsGetQuery"
       },
       "post": {
@@ -9155,6 +9257,10 @@
         "tags": [
           "auth-connection",
           "dev-orgs"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -9195,6 +9301,9 @@
         "tags": [
           "auth-connection",
           "dev-orgs"
+        ],
+        "x-fern-audiences": [
+          "docs"
         ],
         "x-request-name": "DevOrgAuthConnectionsListQuery"
       },
@@ -9243,6 +9352,10 @@
         "tags": [
           "auth-connection",
           "dev-orgs"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -9288,6 +9401,10 @@
         "tags": [
           "auth-connection",
           "dev-orgs"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -9340,6 +9457,10 @@
         "tags": [
           "auth-connection",
           "dev-orgs"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -9395,6 +9516,9 @@
         "tags": [
           "dev-users"
         ],
+        "x-fern-audiences": [
+          "docs"
+        ],
         "x-request-name": "DevUsersGetQuery"
       },
       "post": {
@@ -9444,6 +9568,10 @@
         },
         "tags": [
           "dev-users"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -9568,6 +9696,9 @@
         "tags": [
           "dev-users"
         ],
+        "x-fern-audiences": [
+          "docs"
+        ],
         "x-request-name": "DevUsersListQuery"
       },
       "post": {
@@ -9614,6 +9745,10 @@
         },
         "tags": [
           "dev-users"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -9653,6 +9788,9 @@
         },
         "tags": [
           "dev-users"
+        ],
+        "x-fern-audiences": [
+          "docs"
         ],
         "x-request-name": "DevUsersSelfQuery"
       },
@@ -9700,6 +9838,10 @@
         },
         "tags": [
           "dev-users"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -9756,6 +9898,9 @@
         "tags": [
           "keyring"
         ],
+        "x-fern-audiences": [
+          "docs"
+        ],
         "x-request-name": "KeyringsCreateCallbackQuery"
       },
       "post": {
@@ -9795,6 +9940,10 @@
         },
         "tags": [
           "keyring"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -9843,6 +9992,10 @@
         },
         "tags": [
           "parts"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -9894,6 +10047,10 @@
         },
         "tags": [
           "parts"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -9950,6 +10107,9 @@
         "tags": [
           "parts"
         ],
+        "x-fern-audiences": [
+          "docs"
+        ],
         "x-request-name": "PartsGetQuery"
       },
       "post": {
@@ -9999,6 +10159,10 @@
         },
         "tags": [
           "parts"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -10150,6 +10314,9 @@
         "tags": [
           "parts"
         ],
+        "x-fern-audiences": [
+          "docs"
+        ],
         "x-request-name": "PartsListQuery"
       },
       "post": {
@@ -10196,6 +10363,10 @@
         },
         "tags": [
           "parts"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -10247,6 +10418,10 @@
         },
         "tags": [
           "parts"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -10298,6 +10473,10 @@
         },
         "tags": [
           "rev-orgs"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -10349,6 +10528,10 @@
         },
         "tags": [
           "rev-orgs"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -10414,6 +10597,9 @@
         "tags": [
           "rev-orgs"
         ],
+        "x-fern-audiences": [
+          "docs"
+        ],
         "x-request-name": "RevOrgsGetQuery"
       },
       "post": {
@@ -10463,6 +10649,10 @@
         },
         "tags": [
           "rev-orgs"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -10628,6 +10818,9 @@
         "tags": [
           "rev-orgs"
         ],
+        "x-fern-audiences": [
+          "docs"
+        ],
         "x-request-name": "RevOrgsListQuery"
       },
       "post": {
@@ -10677,6 +10870,10 @@
         },
         "tags": [
           "rev-orgs"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -10731,6 +10928,10 @@
         },
         "tags": [
           "rev-orgs"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -10786,6 +10987,9 @@
         "tags": [
           "slas"
         ],
+        "x-fern-audiences": [
+          "docs"
+        ],
         "x-request-name": "SlaTrackersGetQuery"
       },
       "post": {
@@ -10835,6 +11039,10 @@
         },
         "tags": [
           "slas"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -10883,6 +11091,10 @@
         },
         "tags": [
           "tags"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -10934,6 +11146,10 @@
         },
         "tags": [
           "tags"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -10990,6 +11206,9 @@
         "tags": [
           "tags"
         ],
+        "x-fern-audiences": [
+          "docs"
+        ],
         "x-request-name": "TagsGetQuery"
       },
       "post": {
@@ -11039,6 +11258,10 @@
         },
         "tags": [
           "tags"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -11133,6 +11356,9 @@
         "tags": [
           "tags"
         ],
+        "x-fern-audiences": [
+          "docs"
+        ],
         "x-request-name": "TagsListQuery"
       },
       "post": {
@@ -11179,6 +11405,10 @@
         },
         "tags": [
           "tags"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -11230,6 +11460,10 @@
         },
         "tags": [
           "tags"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -11278,6 +11512,10 @@
         },
         "tags": [
           "timeline-entries"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -11326,6 +11564,10 @@
         },
         "tags": [
           "timeline-entries"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -11382,6 +11624,9 @@
         "tags": [
           "timeline-entries"
         ],
+        "x-fern-audiences": [
+          "docs"
+        ],
         "x-request-name": "TimelineEntriesGetQuery"
       },
       "post": {
@@ -11431,6 +11676,10 @@
         },
         "tags": [
           "timeline-entries"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -11527,6 +11776,9 @@
         "tags": [
           "timeline-entries"
         ],
+        "x-fern-audiences": [
+          "docs"
+        ],
         "x-request-name": "TimelineEntriesListQuery"
       },
       "post": {
@@ -11576,6 +11828,10 @@
         },
         "tags": [
           "timeline-entries"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -11624,6 +11880,10 @@
         },
         "tags": [
           "timeline-entries"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -11672,6 +11932,10 @@
         },
         "tags": [
           "webhooks"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -11723,6 +11987,10 @@
         },
         "tags": [
           "webhooks"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -11779,6 +12047,9 @@
         "tags": [
           "webhooks"
         ],
+        "x-fern-audiences": [
+          "docs"
+        ],
         "x-request-name": "WebhooksGetQuery"
       },
       "post": {
@@ -11828,6 +12099,10 @@
         },
         "tags": [
           "webhooks"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -11867,6 +12142,9 @@
         },
         "tags": [
           "webhooks"
+        ],
+        "x-fern-audiences": [
+          "docs"
         ],
         "x-request-name": "WebhooksListQuery"
       },
@@ -11914,6 +12192,10 @@
         },
         "tags": [
           "webhooks"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -11965,6 +12247,10 @@
         },
         "tags": [
           "webhooks"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -12013,6 +12299,10 @@
         },
         "tags": [
           "works"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -12064,6 +12354,10 @@
         },
         "tags": [
           "works"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -12456,6 +12750,9 @@
         "tags": [
           "works"
         ],
+        "x-fern-audiences": [
+          "docs"
+        ],
         "x-request-name": "WorksExportQuery"
       },
       "post": {
@@ -12502,6 +12799,10 @@
         },
         "tags": [
           "works"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -12558,6 +12859,9 @@
         "tags": [
           "works"
         ],
+        "x-fern-audiences": [
+          "docs"
+        ],
         "x-request-name": "WorksGetQuery"
       },
       "post": {
@@ -12607,6 +12911,10 @@
         },
         "tags": [
           "works"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -13017,6 +13325,9 @@
         "tags": [
           "works"
         ],
+        "x-fern-audiences": [
+          "docs"
+        ],
         "x-request-name": "WorksListQuery"
       },
       "post": {
@@ -13063,6 +13374,10 @@
         },
         "tags": [
           "works"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     },
@@ -13114,6 +13429,10 @@
         },
         "tags": [
           "works"
+        ],
+        "x-fern-audiences": [
+          "docs",
+          "sdks"
         ]
       }
     }
@@ -13196,5 +13515,14 @@
       "description": "DevRev work interactions.",
       "name": "works"
     }
-  ]
+  ],
+  "x-fern-version": {
+    "version": {
+      "default": "2022-10-20",
+      "header": "X-DevRev-Version",
+      "values": [
+        "2022-10-20"
+      ]
+    }
+  }
 }

@@ -2339,6 +2339,31 @@ export interface CreateOrgScheduleInterval {
   to?: string;
 }
 
+/**
+ * create-stage
+ * Create object for stage.
+ */
+export interface CreateStage {
+  /** Notes relevant to the stage */
+  notes?: string;
+  /** DON of the stage. */
+  stage: string;
+}
+
+/**
+ * create-tag-with-value
+ * Create object for tag_summary.
+ */
+export interface CreateTagWithValue {
+  /**
+   * ID of the referenced tag
+   * @example "TAG-12345"
+   */
+  tag_id: string;
+  /** Value associated with the tag for the object. */
+  value?: string;
+}
+
 /** create-weekly-org-schedule-interval */
 export interface CreateWeeklyOrgScheduleInterval {
   /**
@@ -4775,6 +4800,87 @@ export type Incident = AtomBase & {
   /** Title of the incident. */
   title: string;
 };
+
+/** incidents-create-request */
+export interface IncidentsCreateRequest {
+  /** Parts to which the incident is applicable to. */
+  applies_to_parts?: string[];
+  /**
+   * Artifacts attached to the incident.
+   * @example ["ARTIFACT-12345"]
+   */
+  artifacts?: string[];
+  /** Body of the incident. */
+  body?: string;
+  /** Application-defined custom fields. */
+  custom_fields?: object;
+  /**
+   * Requested custom schemas described abstractly. Every provided schema's
+   * custom field must be specified, otherwise a bad request error is
+   * returned. If a new custom schema specifier is provided, then it will be
+   * added to the work, otherwise if a custom schema is omitted from the
+   * specifier, it remains unmodified.
+   */
+  custom_schema_spec?: CustomSchemaSpec;
+  /**
+   * Time when the incident was identified/reported.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  identified_at?: string;
+  /** List of customers impacted due to the incident. */
+  impacted_customers?: string[];
+  /** User IDs of the users that own the incident. */
+  owned_by?: string[];
+  /**
+   * Timestamp when the incident was resolved.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  resolved_at?: string;
+  /**
+   * Severity of the incident.
+   * @format int64
+   */
+  severity?: number;
+  /** Create object for stage. */
+  stage?: CreateStage;
+  /**
+   * Users, along with the incident commander, involved in resolving
+   * incidents and handling communication.
+   */
+  stakeholders?: string[];
+  /** Tags associated with the object. */
+  tags?: CreateTagWithValue[];
+  /**
+   * Timestamp when the incident is expected to be resolved.
+   * @format date-time
+   * @example "2023-01-01T12:00:00.000Z"
+   */
+  target_close_date?: string;
+  /** Title of the incident. */
+  title: string;
+}
+
+/** incidents-create-response */
+export interface IncidentsCreateResponse {
+  incident: Incident;
+}
+
+/**
+ * incidents-delete-request
+ * A request to delete an incident.
+ */
+export interface IncidentsDeleteRequest {
+  /** ID for the incident. */
+  id: string;
+}
+
+/**
+ * incidents-delete-response
+ * The response to deleting the incident.
+ */
+export type IncidentsDeleteResponse = object;
 
 /** incidents-get-request */
 export interface IncidentsGetRequest {
@@ -14963,6 +15069,67 @@ export class Api<
       | ErrorServiceUnavailable
     >({
       path: `/groups.update`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Creates an incident.
+   *
+   * @tags operate
+   * @name IncidentsCreate
+   * @request POST:/incidents.create
+   * @secure
+   */
+  incidentsCreate = (
+    data: IncidentsCreateRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      IncidentsCreateResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/incidents.create`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+
+  /**
+   * @description Deletes an incident.
+   *
+   * @tags operate
+   * @name IncidentsDelete
+   * @request POST:/incidents.delete
+   * @secure
+   */
+  incidentsDelete = (
+    data: IncidentsDeleteRequest,
+    params: RequestParams = {}
+  ) =>
+    this.request<
+      IncidentsDeleteResponse,
+      | ErrorBadRequest
+      | ErrorUnauthorized
+      | ErrorForbidden
+      | ErrorNotFound
+      | ErrorTooManyRequests
+      | ErrorInternalServerError
+      | ErrorServiceUnavailable
+    >({
+      path: `/incidents.delete`,
       method: 'POST',
       body: data,
       secure: true,
