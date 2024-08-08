@@ -13517,12 +13517,10 @@
     }
   ],
   "x-fern-version": {
-    "version": {
-      "default": "2022-10-20",
-      "header": "X-DevRev-Version",
-      "values": [
-        "2022-10-20"
-      ]
-    }
+    "default": "2022-10-20",
+    "header": "X-DevRev-Version",
+    "values": [
+      "2022-10-20"
+    ]
   }
 }
