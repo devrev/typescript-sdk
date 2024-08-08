@@ -3478,6 +3478,17 @@ components:
     custom-stage:
       allOf:
         - $ref: '#/components/schemas/atom-base'
+        - type: object
+          properties:
+            name:
+              type: string
+              description: The human readable name of the state.
+            ordinal:
+              type: integer
+              description: Ordinal used to sort/group stages.
+              format: int32
+            state:
+              $ref: '#/components/schemas/custom-state-summary'
       title: custom-stage
     custom-stage-summary:
       allOf:
@@ -3611,7 +3622,23 @@ components:
     custom-state:
       allOf:
         - $ref: '#/components/schemas/atom-base'
+        - type: object
+          properties:
+            is_final:
+              type: boolean
+              description: True if this is a final state.
+            name:
+              type: string
+              description: The human readable name of the state.
+            ordinal:
+              type: integer
+              description: Ordinal used to identify system states.
+              format: int32
       title: custom-state
+    custom-state-summary:
+      allOf:
+        - $ref: '#/components/schemas/atom-base-summary'
+      title: custom-state-summary
     custom-states-create-request:
       type: object
       properties:

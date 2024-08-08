@@ -2613,7 +2613,16 @@ export interface CustomSchemaSpec {
 }
 
 /** custom-stage */
-export type CustomStage = AtomBase;
+export type CustomStage = AtomBase & {
+  /** The human readable name of the state. */
+  name?: string;
+  /**
+   * Ordinal used to sort/group stages.
+   * @format int32
+   */
+  ordinal?: number;
+  state?: CustomStateSummary;
+};
 
 /** custom-stage-summary */
 export type CustomStageSummary = AtomBaseSummary;
@@ -2704,7 +2713,20 @@ export interface CustomStagesUpdateResponse {
 }
 
 /** custom-state */
-export type CustomState = AtomBase;
+export type CustomState = AtomBase & {
+  /** True if this is a final state. */
+  is_final?: boolean;
+  /** The human readable name of the state. */
+  name?: string;
+  /**
+   * Ordinal used to identify system states.
+   * @format int32
+   */
+  ordinal?: number;
+};
+
+/** custom-state-summary */
+export type CustomStateSummary = AtomBaseSummary;
 
 /** custom-states-create-request */
 export interface CustomStatesCreateRequest {
